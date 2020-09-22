@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="UISCoinNode:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/UISCoinNode_jar</output-path>
+    <root id="archive" name="UISCoinNode.jar">
+      <element id="module-output" name="UISCoinNode" />
+    </root>
+  </artifact>
+</component>
