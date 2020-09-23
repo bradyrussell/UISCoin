@@ -36,20 +36,12 @@ public class Hash {
     }
 
     public static boolean validateHash(byte[] Hash, int Difficulty){
+        //final byte[] Prefix = {74, 97, 99, 107}; // Jack
+        //final byte[] Prefix = {85, 73, 83}; // UIS
+        final byte[] Prefix = {0x55, 0x49, 0x53}; // UIS
+
         for(int i = 0; i < Difficulty; i++){
-            byte KeyByte;
-
-            switch (i % 4){
-                case 0 -> KeyByte = 74;
-                case 1 -> KeyByte = 97;
-                case 2 -> KeyByte = 99;
-                case 3 -> KeyByte = 107;
-                default -> {
-                    return false;
-                }
-            }
-
-            if(Hash[i] != KeyByte) return false;
+            if(Hash[i] != Prefix[i % Prefix.length]) return false;
         }
         return true;
     }

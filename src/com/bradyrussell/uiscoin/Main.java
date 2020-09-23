@@ -97,7 +97,7 @@ public class Main {
                 }
 
                 nTried++;
-                if (Hash.validateHash(sha512Bytes, 4)) {
+                if (Hash.validateHash(sha512Bytes, 3)) {
                     bCont = false;
                     System.out.println("Base found: " + base);
                     bases.add(base);
