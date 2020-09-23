@@ -35,7 +35,22 @@ public class Hash {
         return digest.digest();
     }
 
-    public static boolean validateHash(byte[] Hash){
-        return Hash[0] == 74 && Hash[1] == 97 && Hash[2] == 99 && Hash[3] == 107;
+    public static boolean validateHash(byte[] Hash, int Difficulty){
+        for(int i = 0; i < Difficulty; i++){
+            byte KeyByte;
+
+            switch (i % 4){
+                case 0 -> KeyByte = 74;
+                case 1 -> KeyByte = 97;
+                case 2 -> KeyByte = 99;
+                case 3 -> KeyByte = 107;
+                default -> {
+                    return false;
+                }
+            }
+
+            if(Hash[i] != KeyByte) return false;
+        }
+        return true;
     }
 }
