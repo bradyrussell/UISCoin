@@ -1,18 +1,14 @@
 package com.bradyrussell.uiscoin;
 
-import java.security.*;
-import java.security.interfaces.ECPrivateKey;
-import java.security.interfaces.ECPublicKey;
-import java.security.spec.ECGenParameterSpec;
-import java.security.spec.ECParameterSpec;
-import java.security.spec.ECPoint;
-import java.security.spec.InvalidParameterSpecException;
-import java.time.ZonedDateTime;
-import java.util.ArrayList;
+import com.bradyrussell.uiscoin.block.Block;
+import com.bradyrussell.uiscoin.block.BlockHeader;
+import com.bradyrussell.uiscoin.transaction.CoinbaseTransaction;
+import com.bradyrussell.uiscoin.transaction.Transaction;
+import com.bradyrussell.uiscoin.transaction.TransactionInput;
+import com.bradyrussell.uiscoin.transaction.TransactionOutput;
+
+import java.time.Instant;
 import java.util.Arrays;
-import java.util.Base64;
-import java.util.Scanner;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Main {
@@ -22,6 +18,53 @@ public class Main {
     public static boolean running = true;
 
     public static void main(String[] args) {
+
+        long timeStamp = Instant.now().getEpochSecond();
+        Transaction testTransaction = new Transaction(0, timeStamp);
+
+        testTransaction.addInput(new TransactionInput(Hash.getSHA512Bytes("hello world"),0,Hash.getSHA512Bytes("hello world"),0));
+        testTransaction.addOutput(new TransactionOutput(Conversions.CoinsToSatoshis(1),Hash.getSHA512Bytes("hello world")));
+
+        Block block = new Block(new BlockHeader(0xffffffff,timeStamp,2));
+        block.Header.HashPreviousBlock = Hash.getSHA512Bytes("hello world");
+        block.Header.HashMerkleRoot = Hash.getSHA512Bytes("hello world");
+
+        block.addCoinbaseTransaction(new CoinbaseTransaction(Hash.getSHA512Bytes("hello world"),0,Hash.getSHA512Bytes("hello world"),0));
+        block.addTransaction(testTransaction);
+
+        System.out.println(block.getSize());
+        System.out.println(Hash.getSHA512String(block.getBinaryData()));
+        System.out.println(Arrays.toString(block.getBinaryData()));
+
+        int n = 0;
+
+    while(!Hash.validateHash(block.getHash(),2)) {
+        block.Header.Nonce = n++;
+    }
+
+        System.out.println("Found block: "+Hash.getSHA512String(block.getBinaryData()));
+        System.out.println("Nonce: "+block.Header.Nonce);
+
+        System.out.println("Hash Bytes: "+Arrays.toString(block.getHash()));
+
+        System.out.println("Block Size: "+block.getSize());
+        System.out.println();
+
+        System.out.println("Block Data: "+Arrays.toString(block.getBinaryData()));
+
+        byte[] blockBinaryData = block.getBinaryData();
+
+        Block deserializedBlock = new Block();
+        deserializedBlock.setBinaryData(blockBinaryData);
+        System.out.println("Nonce: "+deserializedBlock.Header.Nonce);
+
+        System.out.println("Hash Bytes: "+Arrays.toString(deserializedBlock.getHash()));
+
+        System.out.println("Block Size: "+deserializedBlock.getSize());
+        System.out.println();
+
+        System.out.println("Block Data: "+Arrays.toString(deserializedBlock.getBinaryData()));
+
         /*try {
             KeyPair keyPair = Keys.makeKeyPair();
 
@@ -56,7 +99,7 @@ public class Main {
         }
 */
 
-
+/*
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter origin: ");
 
@@ -116,7 +159,7 @@ public class Main {
             System.out.println("Took " + (StopMS - StartMS) + " ms.");
 
 
-        }
+        }*/
 
     }
 }
