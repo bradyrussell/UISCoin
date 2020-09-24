@@ -10,7 +10,7 @@ public class TransactionInput  implements IBinaryData {
     public int IndexNumber; // 4
     //public int SignatureScriptLength; // 4
 
-    public byte[] ResponseScript;
+    public byte[] UnlockingScript; // response script
 
     public int InputSequenceNumber; // 4 // not used, we can make this something else
 
@@ -21,7 +21,7 @@ public class TransactionInput  implements IBinaryData {
         HashKey = hashKey;
         IndexNumber = indexNumber;
         //SignatureScriptLength = signatureScriptLength;
-        ResponseScript = responseScript;
+        UnlockingScript = responseScript;
         InputSequenceNumber = inputSequenceNumber;
     }
 
@@ -31,8 +31,8 @@ public class TransactionInput  implements IBinaryData {
 
         buf.put(HashKey);
         buf.putInt(IndexNumber);
-        buf.putInt(ResponseScript.length);
-        buf.put(ResponseScript);
+        buf.putInt(UnlockingScript.length);
+        buf.put(UnlockingScript);
         buf.putInt(InputSequenceNumber);
 
         return buf.array();
@@ -47,14 +47,14 @@ public class TransactionInput  implements IBinaryData {
         buffer.get(HashKey, 0, 64);
         IndexNumber = buffer.getInt();
         int SignatureScriptLength = buffer.getInt();
-        ResponseScript = new byte[SignatureScriptLength];
-        buffer.get(ResponseScript, 0, SignatureScriptLength);
+        UnlockingScript = new byte[SignatureScriptLength];
+        buffer.get(UnlockingScript, 0, SignatureScriptLength);
         InputSequenceNumber = buffer.getInt();
     }
 
     @Override
     public int getSize() {
-        return 64+4+4+4+ResponseScript.length;
+        return 64+4+4+4+ UnlockingScript.length;
     }
 
     @Override

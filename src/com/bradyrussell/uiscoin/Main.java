@@ -1,13 +1,9 @@
 package com.bradyrussell.uiscoin;
 
-import com.bradyrussell.uiscoin.block.Block;
-import com.bradyrussell.uiscoin.block.BlockHeader;
-import com.bradyrussell.uiscoin.transaction.CoinbaseTransaction;
-import com.bradyrussell.uiscoin.transaction.Transaction;
-import com.bradyrussell.uiscoin.transaction.TransactionInput;
-import com.bradyrussell.uiscoin.transaction.TransactionOutput;
+import com.bradyrussell.uiscoin.script.ScriptBuilder;
+import com.bradyrussell.uiscoin.script.ScriptExecution;
+import com.bradyrussell.uiscoin.script.ScriptOperator;
 
-import java.time.Instant;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -19,51 +15,32 @@ public class Main {
 
     public static void main(String[] args) {
 
-        long timeStamp = Instant.now().getEpochSecond();
-        Transaction testTransaction = new Transaction(0, timeStamp);
+        ScriptBuilder sb = new ScriptBuilder(32);
+        sb
+                .pushInt(420)
+                .pushInt(2)
+                .op(ScriptOperator.DIVIDE)
+                .pushInt(210)
+                .op(ScriptOperator.NUMEQUAL)
+                .op(ScriptOperator.SHA512)
+                .pushByte(1)
+                .op(ScriptOperator.SHA512EQUAL).op(ScriptOperator.SWAP)
+                .op(ScriptOperator.VERIFY);
 
-        testTransaction.addInput(new TransactionInput(Hash.getSHA512Bytes("hello world"),0,Hash.getSHA512Bytes("hello world"),0));
-        testTransaction.addOutput(new TransactionOutput(Conversions.CoinsToSatoshis(1),Hash.getSHA512Bytes("hello world")));
+        ;
+        System.out.println(Arrays.toString(sb.get()));
 
-        Block block = new Block(new BlockHeader(0xffffffff,timeStamp,2));
-        block.Header.HashPreviousBlock = Hash.getSHA512Bytes("hello world");
-        block.Header.HashMerkleRoot = Hash.getSHA512Bytes("hello world");
+        ScriptExecution scriptExecution = new ScriptExecution();
 
-        block.addCoinbaseTransaction(new CoinbaseTransaction(Hash.getSHA512Bytes("hello world"),0,Hash.getSHA512Bytes("hello world"),0));
-        block.addTransaction(testTransaction);
+        scriptExecution.Initialize(sb.get());
 
-        System.out.println(block.getSize());
-        System.out.println(Hash.getSHA512String(block.getBinaryData()));
-        System.out.println(Arrays.toString(block.getBinaryData()));
+        while (scriptExecution.Step()){
+            scriptExecution.dumpStack();
+        }
 
-        int n = 0;
+        System.out.println("Script returned: "+!scriptExecution.bScriptFailed);
 
-    while(!Hash.validateHash(block.getHash(),2)) {
-        block.Header.Nonce = n++;
-    }
-
-        System.out.println("Found block: "+Hash.getSHA512String(block.getBinaryData()));
-        System.out.println("Nonce: "+block.Header.Nonce);
-
-        System.out.println("Hash Bytes: "+Arrays.toString(block.getHash()));
-
-        System.out.println("Block Size: "+block.getSize());
-        System.out.println();
-
-        System.out.println("Block Data: "+Arrays.toString(block.getBinaryData()));
-
-        byte[] blockBinaryData = block.getBinaryData();
-
-        Block deserializedBlock = new Block();
-        deserializedBlock.setBinaryData(blockBinaryData);
-        System.out.println("Nonce: "+deserializedBlock.Header.Nonce);
-
-        System.out.println("Hash Bytes: "+Arrays.toString(deserializedBlock.getHash()));
-
-        System.out.println("Block Size: "+deserializedBlock.getSize());
-        System.out.println();
-
-        System.out.println("Block Data: "+Arrays.toString(deserializedBlock.getBinaryData()));
+        System.out.println("Finished: "+scriptExecution.InstructionCounter+" / "+scriptExecution.Script.length);
 
         /*try {
             KeyPair keyPair = Keys.makeKeyPair();

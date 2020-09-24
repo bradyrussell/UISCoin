@@ -53,6 +53,15 @@ public class Block implements IBinaryData {
         return n;
     }
 
+    public byte[] CalculateMerkleRoot(){
+        ByteBuffer buf = ByteBuffer.allocate(Transactions.size()*64);
+        for(Transaction transaction:Transactions){
+            buf.put(transaction.getHash());
+        }
+
+        return Hash.getSHA512Bytes(buf.array());
+    }
+
     @Override
     public byte[] getBinaryData() {
         ByteBuffer buf = ByteBuffer.allocate(getSize());
@@ -69,6 +78,7 @@ public class Block implements IBinaryData {
 
         return buf.array();
     }
+
 
     @Override
     public void setBinaryData(byte[] Data) {

@@ -24,7 +24,7 @@ public class BlockTest {
         byte[] RandomHash1 = new byte[64];
         byte[] RandomHash2 = new byte[64];
         byte[] RandomHash3 = new byte[64];
-        byte[] RandomHash4 = new byte[64];
+
         byte[] RandomHash5 = new byte[64];
         byte[] RandomHash6 = new byte[64];
         byte[] RandomHash7 = new byte[64];
@@ -32,7 +32,7 @@ public class BlockTest {
         ThreadLocalRandom.current().nextBytes(RandomHash1);
         ThreadLocalRandom.current().nextBytes(RandomHash2);
         ThreadLocalRandom.current().nextBytes(RandomHash3);
-        ThreadLocalRandom.current().nextBytes(RandomHash4);
+
         ThreadLocalRandom.current().nextBytes(RandomHash5);
 
         testTransaction.addInput(new TransactionInput(RandomHash1,0,RandomHash2,0));
@@ -40,10 +40,11 @@ public class BlockTest {
 
         Block block = new Block(new BlockHeader(0xffffffff,timeStamp,2));
         block.Header.HashPreviousBlock = RandomHash3;
-        block.Header.HashMerkleRoot = RandomHash4;
 
         block.addCoinbaseTransaction(new CoinbaseTransaction(RandomHash6,0,RandomHash7,0));
         block.addTransaction(testTransaction);
+
+        block.Header.HashMerkleRoot = block.CalculateMerkleRoot();
 
         byte[] blockBinaryData = block.getBinaryData();
 
