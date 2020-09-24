@@ -57,6 +57,7 @@ public class ScriptBuilder {
             data[i / 2] = (byte) ((Character.digit(Hex.charAt(i), 16) << 4)
                     + Character.digit(Hex.charAt(i+1), 16));
         }
+        buffer.put(ScriptOperator.PUSH.OPCode);
         buffer.put((byte)data.length);
         buffer.put(data);
         return this;
@@ -98,7 +99,7 @@ public class ScriptBuilder {
                 fromHexString(substring);
                 continue;
             }
-            if(parts[i].charAt(0) >= 48 && parts[i].charAt(0) <= 57) { // we need this so we dont have to add an elif for OP.LIMIT
+            if(parts[i].charAt(0) >= 48 && parts[i].charAt(0) <= 57) {
                 System.out.println("Interpreting Token "+i+" as numeric data: "+parts[i]);
                 int number = Integer.parseInt(parts[i]);
                 if(number < 128 && number > -128) {
@@ -117,7 +118,7 @@ public class ScriptBuilder {
 
             if(scriptOperator == ScriptOperator.PUSH) {
                 // PUSH 2576
-                // PUSH "ascii text"
+                // PUSH 'ascii text'
                 // PUSH [4,5,6,7]
                 //int I = ++i;
                 if(parts[++i].startsWith("'")) { // interp as ascii string
@@ -150,7 +151,13 @@ public class ScriptBuilder {
                         byteArray[j] = bytes.get(j);
                     }
                     push(byteArray);
-                } else { // interp as number
+                } else if(parts[i].startsWith("0x")){
+                    String hex = parts[i].substring(2);
+                    pushHexString(hex);
+
+                    System.out.println("Token "+i+": Hex Data "+parts[i]);
+                }
+                else { // interp as number
                     pushInt(Integer.parseInt(parts[i]));
                     System.out.println("Token "+i+": Number "+Integer.parseInt(parts[i]));
                 }

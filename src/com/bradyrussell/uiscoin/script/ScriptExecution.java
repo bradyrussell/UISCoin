@@ -3,6 +3,7 @@ package com.bradyrussell.uiscoin.script;
 import com.bradyrussell.uiscoin.Hash;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Stack;
 
 public class ScriptExecution {
@@ -52,7 +53,22 @@ public class ScriptExecution {
 
         if (scriptOperator != null) {
             switch (scriptOperator) {
+                case REVERSE -> {
+                    if (Stack.size() < 1) {
+                        bScriptFailed = true;
+                        System.out.println("Too few items in stack");
+                        return false;
+                    }
+                    byte[] A = Stack.pop();
+                    byte[] B = new byte[A.length];
 
+                    for (int i = 0, aLength = A.length; i < aLength; i++) {
+                        B[i] = A[(A.length-1)-i];
+                    }
+                    System.out.println("Reverse top stack element");
+                    Stack.push(B);
+                    return true;
+                }
                 case NULL -> {
                     System.out.println("Push null onto the stack");
                     Stack.push(new byte[]{});
@@ -224,20 +240,81 @@ public class ScriptExecution {
                     return true;
                 }
                 case ADDBYTES -> {
-                    System.out.println("Not yet implemented");
-                    return false;
+                    if (Stack.size() < 2) {
+                        bScriptFailed = true;
+                        System.out.println("Too few items in stack");
+                        return false;
+                    }
+                    byte[] B = Stack.pop();
+                    byte[] A = Stack.pop();
+                    byte[] C = new byte[A.length];
+
+                    for(int i = 0; i < A.length; i++){
+                        C[i] = (byte) (A[i] + B[i]);
+                    }
+
+                    Stack.push(C);
+
+                    return true;
                 }
                 case SUBTRACTBYTES -> {
-                    System.out.println("Not yet implemented");
-                    return false;
+                    if (Stack.size() < 2) {
+                        bScriptFailed = true;
+                        System.out.println("Too few items in stack");
+                        return false;
+                    }
+                    byte[] B = Stack.pop();
+                    byte[] A = Stack.pop();
+                    byte[] C = new byte[A.length];
+
+                    for(int i = 0; i < A.length; i++){
+                        C[i] = (byte) (A[i] - B[i]);
+                    }
+
+                    Stack.push(C);
+
+                    return true;
                 }
                 case MULTIPLYBYTES -> {
-                    System.out.println("Not yet implemented");
-                    return false;
+                    if (Stack.size() < 2) {
+                        bScriptFailed = true;
+                        System.out.println("Too few items in stack");
+                        return false;
+                    }
+                    byte[] B = Stack.pop();
+                    byte[] A = Stack.pop();
+                    byte[] C = new byte[A.length];
+
+                    for(int i = 0; i < A.length; i++){
+                        C[i] = (byte) (A[i] * B[i]);
+                    }
+
+                    Stack.push(C);
+
+                    return true;
                 }
                 case DIVIDEBYTES -> {
-                    System.out.println("Not yet implemented");
-                    return false;
+                    if (Stack.size() < 2) {
+                        bScriptFailed = true;
+                        System.out.println("Too few items in stack");
+                        return false;
+                    }
+                    byte[] B = Stack.pop();
+                    byte[] A = Stack.pop();
+                    byte[] C = new byte[A.length];
+
+                    for(int i = 0; i < A.length; i++){
+                        if(B[i] == 0){
+                            bScriptFailed = true;
+                            System.out.println("Divide by zero");
+                            return false;
+                        }
+                        C[i] = (byte) (A[i] / B[i]);
+                    }
+
+                    Stack.push(C);
+
+                    return true;
                 }
                 case NOT -> {
                     if (Stack.size() < 1) {
@@ -350,6 +427,25 @@ public class ScriptExecution {
                     Stack.push(A);
                     return true;
                 }
+                case CLEAR -> {
+                    Stack.clear();
+                    return true;
+                }
+                case CLONE -> {
+                    for(Object o:Stack.toArray()){
+                        Stack.push((byte[]) o);
+                    }
+                    return true;
+                }
+                case FLIP -> {
+                    Collections.reverse(Stack);
+                    return true;
+                }
+                case SHIFTUP -> {
+
+                }
+                case SHIFTDOWN -> {
+                }
                 case VERIFY -> {
                     byte[] bytes = Stack.peek();
                     System.out.println("Verify " + Arrays.toString(bytes) + " == true: " + (bytes.length == 1 && bytes[0] == 1));
@@ -372,15 +468,22 @@ public class ScriptExecution {
                     return true;
                 }
                 case LIMIT -> {
-                    if (Stack.size() < 1) {
+                    if (Stack.size() < 2) {
                         System.out.println("Too few items in stack");
                         bScriptFailed = true;
                         return false;
                     }
 
+                    byte[] B = Stack.pop();
                     byte[] A = Stack.pop();
 
-                    int NumberOfBytesToPush = Script[InstructionCounter++];
+                    if(B.length != 1){
+                        System.out.println("Expected a single byte on top of the stack");
+                        bScriptFailed = true;
+                        return false;
+                    }
+
+                    int NumberOfBytesToPush = B[0];
                     byte[] bytes = new byte[NumberOfBytesToPush];
 
                     for(int i = 0; i < NumberOfBytesToPush; i++){
@@ -392,6 +495,7 @@ public class ScriptExecution {
                 }
             }
         }
+        System.out.println("Not handled!");
         bScriptFailed = true;
         return false;
     }

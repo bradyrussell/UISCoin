@@ -25,16 +25,22 @@ public enum ScriptOperator {
     AND(0x33),
 
     APPEND(0x40),
-    LIMIT(0x41), // next byte is the number of elements to trim the top stack items to
+    LIMIT(0x41), // top stack item is a byte number of elements to trim the second-to-top stack array to
+    REVERSE(0x42), // reverse the order of the top stack element
 
     NULL(0x81), // push null onto the stack
     FALSE(0x82), // push 0 on the stack
     TRUE(0x83), // push 1 on the stack
 
-    DEPTH(0x90),
-    DROP(0x91),
-    DUP(0x92),
-    SWAP(0x93),
+    DEPTH(0x90), // number of elements in stack
+    DROP(0x91), // drop the top stack element
+    DUP(0x92),// duplicate the top stack element
+    SWAP(0x93), // swap the top 2 stack elements
+    CLEAR(0x94),// clear the stack
+    CLONE(0x95), // duplicate the entire stack
+    FLIP(0x96), // reverse the entire stack
+    SHIFTUP(0x97), // shift the entire stack, so the top element becomes last, second becomes first etc
+    SHIFTDOWN(0x98), // shift the entire stack, so the top element becomes second, last becomes first etc
 
     VERIFY(0xa0),
     RETURN(0xa1),
