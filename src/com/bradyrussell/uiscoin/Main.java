@@ -1,5 +1,6 @@
 package com.bradyrussell.uiscoin;
 
+import com.bradyrussell.uiscoin.address.UISCoinAddress;
 import com.bradyrussell.uiscoin.script.ScriptBuilder;
 import com.bradyrussell.uiscoin.script.ScriptExecution;
 import com.bradyrussell.uiscoin.script.ScriptOperator;
@@ -7,7 +8,11 @@ import com.bradyrussell.uiscoin.script.ScriptOperator;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.*;
+import java.security.interfaces.ECPublicKey;
+import java.security.spec.InvalidKeySpecException;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Main {
@@ -18,7 +23,22 @@ public class Main {
 
     public static void main(String[] args) {
 
-        ScriptBuilder sb1 = new ScriptBuilder(256);
+        try {
+            KeyPair keyPair = Keys.makeKeyPair();
+            byte[] publicKey = Util.TrimByteArray(UISCoinAddress.fromPublicKey((ECPublicKey) keyPair.getPublic()));
+            System.out.println(UISCoinAddress.verifyAddressChecksum(publicKey));
+
+            System.out.println(Base64.getEncoder().encodeToString(publicKey));
+            System.out.println(Util.TrimByteArray(publicKey).length);
+
+            Keys.SignedMessage fuc_uis = Keys.SignMessage(keyPair, "Fuc uis");
+            System.out.println(Keys.VerifyMessage(fuc_uis));
+
+        } catch (NoSuchAlgorithmException | InvalidAlgorithmParameterException | InvalidKeyException | SignatureException | InvalidKeySpecException e) {
+            e.printStackTrace();
+        }
+
+        /*ScriptBuilder sb1 = new ScriptBuilder(256);
         //sb1.fromText("PUSH 256 PUSH 123 PUSH 321 ADD ADD SHA512 PUSH 700 SHA512EQUAL VERIFY");
         try {
             String text = Files.readString(Path.of("script.uisc"));
@@ -29,7 +49,7 @@ public class Main {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        ScriptExecution.printBytesReadable(sb1.get());
+        ScriptExecution.printBytesReadable(sb1.get());*/
 
         /*ScriptBuilder sb = new ScriptBuilder(256);
         sb
@@ -44,7 +64,7 @@ public class Main {
         ;
         System.out.println(Arrays.toString(sb.get()));*/
 
-        ScriptExecution scriptExecution = new ScriptExecution();
+        /*ScriptExecution scriptExecution = new ScriptExecution();
 
         scriptExecution.Initialize(sb1.get());
 
@@ -57,7 +77,7 @@ public class Main {
 
         System.out.println("Script returned: "+!scriptExecution.bScriptFailed);
 
-        System.out.println("Finished: "+scriptExecution.InstructionCounter+" / "+scriptExecution.Script.length);
+        System.out.println("Finished: "+scriptExecution.InstructionCounter+" / "+scriptExecution.Script.length);*/
 
         /*try {
             KeyPair keyPair = Keys.makeKeyPair();

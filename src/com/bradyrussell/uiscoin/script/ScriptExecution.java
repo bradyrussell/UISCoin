@@ -1,6 +1,7 @@
 package com.bradyrussell.uiscoin.script;
 
 import com.bradyrussell.uiscoin.Hash;
+import com.bradyrussell.uiscoin.Util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -50,24 +51,10 @@ public class ScriptExecution {
         for (int i = 0, toArrayLength = toArray.length; i < toArrayLength; i++) {
             byte[] stackElem = (byte[]) toArray[i];
             System.out.print(i+" ");
-            printBytesReadable(stackElem);
+            Util.printBytesReadable(stackElem);
         }
     }
 
-    public static void printBytesReadable(byte[] bytes) {
-        System.out.print("[");
-        for(byte b: bytes){
-
-            if(b >= 32 && b <= 126) {
-                System.out.print((char)b);
-            } else {
-                System.out.print("0x");
-                System.out.printf("%02X", b);
-            }
-            System.out.print(" ");
-        }
-        System.out.println("]");
-    }
 
     public String getStackContents(){
         StringBuilder s = new StringBuilder();

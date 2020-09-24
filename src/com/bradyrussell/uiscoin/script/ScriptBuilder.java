@@ -1,5 +1,7 @@
 package com.bradyrussell.uiscoin.script;
 
+import com.bradyrussell.uiscoin.Util;
+
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -185,18 +187,6 @@ public class ScriptBuilder {
     }
 
     public byte[] get(){
-        byte[] array = buffer.array();
-
-        int LastNonNullByteIndex = 0;
-        for (int i = 0, arrayLength = array.length; i < arrayLength; i++) {
-            byte b = array[i];
-            if (b != 0) LastNonNullByteIndex = i;
-        }
-
-        byte[] trimmed = new byte[LastNonNullByteIndex+1];
-
-        System.arraycopy(array,0,trimmed, 0, LastNonNullByteIndex+1);
-
-        return trimmed;
+        return Util.TrimByteArray(buffer.array());
     }
 }
