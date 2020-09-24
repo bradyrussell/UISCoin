@@ -22,8 +22,9 @@ public class Main {
                 .op(ScriptOperator.APPEND)
                 .op(ScriptOperator.SHA512)
                 .pushASCIIString("Hello, world!")
-                .op(ScriptOperator.SHA512)
-                .op(ScriptOperator.BYTESEQUAL)
+                .op(ScriptOperator.SHA512EQUAL)
+                //.op(ScriptOperator.SHA512)
+                //.op(ScriptOperator.BYTESEQUAL)
                 .op(ScriptOperator.VERIFY);
 
         ;
