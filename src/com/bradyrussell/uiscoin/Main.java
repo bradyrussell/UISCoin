@@ -15,7 +15,12 @@ public class Main {
 
     public static void main(String[] args) {
 
-        ScriptBuilder sb = new ScriptBuilder(256);
+        ScriptBuilder sb1 = new ScriptBuilder(256);
+        //sb1.fromText("PUSH 256 PUSH 123 PUSH 321 ADD ADD SHA512 PUSH 700 SHA512EQUAL VERIFY");
+        sb1.fromText("push 'Hello world!'; push [72, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100, 33]; bytesequal; verify; return");
+        System.out.println(Arrays.toString(sb1.get()));
+
+        /*ScriptBuilder sb = new ScriptBuilder(256);
         sb
                 .pushASCIIString("Hello, ")
                 .pushASCIIString("world!")
@@ -23,16 +28,14 @@ public class Main {
                 .op(ScriptOperator.SHA512)
                 .pushASCIIString("Hello, world!")
                 .op(ScriptOperator.SHA512EQUAL)
-                //.op(ScriptOperator.SHA512)
-                //.op(ScriptOperator.BYTESEQUAL)
                 .op(ScriptOperator.VERIFY);
 
         ;
-        System.out.println(Arrays.toString(sb.get()));
+        System.out.println(Arrays.toString(sb.get()));*/
 
         ScriptExecution scriptExecution = new ScriptExecution();
 
-        scriptExecution.Initialize(sb.get());
+        scriptExecution.Initialize(sb1.get());
 
         while (scriptExecution.Step()){
             scriptExecution.dumpStack();

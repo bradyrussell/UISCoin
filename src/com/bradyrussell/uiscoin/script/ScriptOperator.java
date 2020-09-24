@@ -1,13 +1,15 @@
 package com.bradyrussell.uiscoin.script;
 
 public enum ScriptOperator {
-    NULL(0x00), // push null on the stack
+    NOP(0x00), // push null on the stack
     PUSH(0x01), // the next byte specifies the number of following bytes to put on the stack
     INSTRUCTION(0x02), // push the instruction counter value onto the stack
+
 
     NUMEQUAL(0x10),
     BYTESEQUAL(0x11),
     SHA512EQUAL(0x12), // does A == sha512(b)
+    LENEQUAL(0x13),
 
     ADD(0x20),
     SUBTRACT(0x21),
@@ -23,8 +25,9 @@ public enum ScriptOperator {
     AND(0x33),
 
     APPEND(0x40),
+    LIMIT(0x41), // next byte is the number of elements to trim the top stack items to
 
-    NOP(0x81), // do nothing
+    NULL(0x81), // push null onto the stack
     FALSE(0x82), // push 0 on the stack
     TRUE(0x83), // push 1 on the stack
 

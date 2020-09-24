@@ -38,19 +38,17 @@ public class ScriptExecution {
         return Bytes.length <= 4;
     }
 
-    public void dumpStack(){
-        Stack.elements().asIterator().forEachRemaining((byte[] bytes)->{
-            System.out.println(Arrays.toString(bytes));
-        });
+    public void dumpStack() {
+        Stack.elements().asIterator().forEachRemaining((byte[] bytes) -> System.out.println(Arrays.toString(bytes)));
     }
 
     // returns whether the script should continue
     public boolean Step() {
-        if(InstructionCounter >= Script.length) return false;
+        if (InstructionCounter >= Script.length) return false;
 
         ScriptOperator scriptOperator = ScriptOperator.getByOpCode(Script[InstructionCounter++]);
 
-        System.out.println("OP "+scriptOperator);
+        System.out.println("OP " + scriptOperator);
 
         if (scriptOperator != null) {
             switch (scriptOperator) {
@@ -67,17 +65,17 @@ public class ScriptExecution {
                     for (int i = 0; i < NumberOfBytesToPush; i++) {
                         bytes[i] = Script[InstructionCounter++];
                     }
-                    System.out.println("Push "+NumberOfBytesToPush+" bytes onto the stack: "+Arrays.toString(bytes));
+                    System.out.println("Push " + NumberOfBytesToPush + " bytes onto the stack: " + Arrays.toString(bytes));
                     Stack.push(bytes);
                     return true;
                 }
                 case INSTRUCTION -> {
                     Stack.push(NumberToByteArray(InstructionCounter));
-                    System.out.println("Push instruction counter onto the stack: "+InstructionCounter);
+                    System.out.println("Push instruction counter onto the stack: " + InstructionCounter);
                     return true;
                 }
                 case NUMEQUAL -> {
-                    if(Stack.size() < 2) {
+                    if (Stack.size() < 2) {
                         System.out.println("Too few items in stack");
                         bScriptFailed = true;
                         return false;
@@ -85,12 +83,12 @@ public class ScriptExecution {
                     byte[] B = Stack.pop();
                     byte[] A = Stack.pop();
 
-                    System.out.println("Push "+ByteArrayToNumber(A)+" == "+ByteArrayToNumber(B)+" onto the stack: "+(ByteArrayToNumber(A) == ByteArrayToNumber(B)));
+                    System.out.println("Push " + ByteArrayToNumber(A) + " == " + ByteArrayToNumber(B) + " onto the stack: " + (ByteArrayToNumber(A) == ByteArrayToNumber(B)));
                     Stack.push(new byte[]{ByteArrayToNumber(A) == ByteArrayToNumber(B) ? (byte) 1 : (byte) 0});
                     return true;
                 }
                 case BYTESEQUAL -> {
-                    if(Stack.size() < 2) {
+                    if (Stack.size() < 2) {
                         bScriptFailed = true;
                         System.out.println("Too few items in stack");
                         return false;
@@ -99,23 +97,23 @@ public class ScriptExecution {
                     byte[] A = Stack.pop();
 
                     if (A.length != B.length) {
-                        System.out.println("Push "+Arrays.toString(A)+" == "+Arrays.toString(B)+" onto the stack: "+0);
+                        System.out.println("Push " + Arrays.toString(A) + " == " + Arrays.toString(B) + " onto the stack: " + 0);
                         Stack.push(new byte[]{0});
                         return true;
                     }
                     for (int i = 0, aLength = A.length; i < aLength; i++) {
                         if (A[i] != B[i]) {
-                            System.out.println("Push "+Arrays.toString(A)+" == "+Arrays.toString(B)+" onto the stack: "+0);
+                            System.out.println("Push " + Arrays.toString(A) + " == " + Arrays.toString(B) + " onto the stack: " + 0);
                             Stack.push(new byte[]{0});
                             return true;
                         }
                     }
-                    System.out.println("Push "+Arrays.toString(A)+" == "+Arrays.toString(B)+" onto the stack: "+1);
+                    System.out.println("Push " + Arrays.toString(A) + " == " + Arrays.toString(B) + " onto the stack: " + 1);
                     Stack.push(new byte[]{1});
                     return true;
                 }
                 case SHA512EQUAL -> {
-                    if(Stack.size() < 2) {
+                    if (Stack.size() < 2) {
                         bScriptFailed = true;
                         System.out.println("Too few items in stack");
                         return false;
@@ -125,23 +123,38 @@ public class ScriptExecution {
                     byte[] HashedB = Hash.getSHA512Bytes(B);
 
                     if (A.length != HashedB.length) {
-                        System.out.println("Push "+Arrays.toString(A)+" == "+Arrays.toString(HashedB)+" onto the stack: "+0);
+                        System.out.println("Push " + Arrays.toString(A) + " == " + Arrays.toString(HashedB) + " onto the stack: " + 0);
                         Stack.push(new byte[]{0});
                         return true;
                     }
                     for (int i = 0, aLength = A.length; i < aLength; i++) {
                         if (A[i] != HashedB[i]) {
-                            System.out.println("Push "+Arrays.toString(A)+" == "+Arrays.toString(HashedB)+" onto the stack: "+0);
+                            System.out.println("Push " + Arrays.toString(A) + " == " + Arrays.toString(HashedB) + " onto the stack: " + 0);
                             Stack.push(new byte[]{0});
                             return true;
                         }
                     }
-                    System.out.println("Push "+Arrays.toString(A)+" == "+Arrays.toString(HashedB)+" onto the stack: "+1);
+                    System.out.println("Push " + Arrays.toString(A) + " == " + Arrays.toString(HashedB) + " onto the stack: " + 1);
                     Stack.push(new byte[]{1});
                     return true;
                 }
+                case LENEQUAL -> {
+                    if (Stack.size() < 2) {
+                        bScriptFailed = true;
+                        System.out.println("Too few items in stack");
+                        return false;
+                    }
+                    byte[] B = Stack.pop();
+                    byte[] A = Stack.pop();
+                    boolean equal = A.length == B.length;
+
+                    System.out.println("Push " + A.length + " == " + B.length + " onto the stack: " + equal);
+
+                    Stack.push(new byte[]{(byte) (equal ? 1 : 0)});
+                    return true;
+                }
                 case ADD -> {
-                    if(Stack.size() < 2) {
+                    if (Stack.size() < 2) {
                         bScriptFailed = true;
                         System.out.println("Too few items in stack");
                         return false;
@@ -154,12 +167,12 @@ public class ScriptExecution {
                         return false;
                     }
 
-                    System.out.println("Push "+ByteArrayToNumber(A)+" + "+ByteArrayToNumber(B)+" onto the stack: "+(ByteArrayToNumber(A) + ByteArrayToNumber(B)));
+                    System.out.println("Push " + ByteArrayToNumber(A) + " + " + ByteArrayToNumber(B) + " onto the stack: " + (ByteArrayToNumber(A) + ByteArrayToNumber(B)));
                     Stack.push(NumberToByteArray(ByteArrayToNumber(A) + ByteArrayToNumber(B)));
                     return true;
                 }
                 case SUBTRACT -> {
-                    if(Stack.size() < 2) {
+                    if (Stack.size() < 2) {
                         bScriptFailed = true;
                         System.out.println("Too few items in stack");
                         return false;
@@ -172,12 +185,12 @@ public class ScriptExecution {
                         return false;
                     }
 
-                    System.out.println("Push "+ByteArrayToNumber(A)+" - "+ByteArrayToNumber(B)+" onto the stack: "+(ByteArrayToNumber(A) - ByteArrayToNumber(B)));
+                    System.out.println("Push " + ByteArrayToNumber(A) + " - " + ByteArrayToNumber(B) + " onto the stack: " + (ByteArrayToNumber(A) - ByteArrayToNumber(B)));
                     Stack.push(NumberToByteArray(ByteArrayToNumber(A) - ByteArrayToNumber(B)));
                     return true;
                 }
                 case MULTIPLY -> {
-                    if(Stack.size() < 2) {
+                    if (Stack.size() < 2) {
                         bScriptFailed = true;
                         System.out.println("Too few items in stack");
                         return false;
@@ -189,12 +202,12 @@ public class ScriptExecution {
                         System.out.println("Invalid inputs");
                         return false;
                     }
-                    System.out.println("Push "+ByteArrayToNumber(A)+" * "+ByteArrayToNumber(B)+" onto the stack: "+(ByteArrayToNumber(A) * ByteArrayToNumber(B)));
+                    System.out.println("Push " + ByteArrayToNumber(A) + " * " + ByteArrayToNumber(B) + " onto the stack: " + (ByteArrayToNumber(A) * ByteArrayToNumber(B)));
                     Stack.push(NumberToByteArray(ByteArrayToNumber(A) * ByteArrayToNumber(B)));
                     return true;
                 }
                 case DIVIDE -> {
-                    if(Stack.size() < 2) {
+                    if (Stack.size() < 2) {
                         bScriptFailed = true;
                         System.out.println("Too few items in stack");
                         return false;
@@ -206,7 +219,7 @@ public class ScriptExecution {
                         System.out.println("Invalid inputs");
                         return false;
                     }
-                    System.out.println("Push "+ByteArrayToNumber(A)+" / "+ByteArrayToNumber(B)+" onto the stack: "+(ByteArrayToNumber(A) / ByteArrayToNumber(B)));
+                    System.out.println("Push " + ByteArrayToNumber(A) + " / " + ByteArrayToNumber(B) + " onto the stack: " + (ByteArrayToNumber(A) / ByteArrayToNumber(B)));
                     Stack.push(NumberToByteArray(ByteArrayToNumber(A) / ByteArrayToNumber(B)));
                     return true;
                 }
@@ -227,7 +240,7 @@ public class ScriptExecution {
                     return false;
                 }
                 case NOT -> {
-                    if(Stack.size() < 1) {
+                    if (Stack.size() < 1) {
                         bScriptFailed = true;
                         System.out.println("Too few items in stack");
                         return false;
@@ -236,14 +249,14 @@ public class ScriptExecution {
                     byte[] C = new byte[A.length];
 
                     for (int i = 0, aLength = A.length; i < aLength; i++) {
-                        C[i] = (byte)~A[i];
+                        C[i] = (byte) ~A[i];
                     }
 
                     Stack.push(C);
                     return true;
                 }
                 case OR -> {
-                    if(Stack.size() < 2) {
+                    if (Stack.size() < 2) {
                         bScriptFailed = true;
                         System.out.println("Too few items in stack");
                         return false;
@@ -252,7 +265,7 @@ public class ScriptExecution {
                     byte[] A = Stack.pop();
                     byte[] C = new byte[A.length];
 
-                    if(A.length != B.length) return false;
+                    if (A.length != B.length) return false;
 
                     for (int i = 0, aLength = A.length; i < aLength; i++) {
                         C[i] = (byte) (A[i] | B[i]);
@@ -262,7 +275,7 @@ public class ScriptExecution {
                     return true;
                 }
                 case AND -> {
-                    if(Stack.size() < 2) {
+                    if (Stack.size() < 2) {
                         bScriptFailed = true;
                         System.out.println("Too few items in stack");
                         return false;
@@ -271,7 +284,7 @@ public class ScriptExecution {
                     byte[] A = Stack.pop();
                     byte[] C = new byte[A.length];
 
-                    if(A.length != B.length) return false;
+                    if (A.length != B.length) return false;
 
                     for (int i = 0, aLength = A.length; i < aLength; i++) {
                         C[i] = (byte) (A[i] & B[i]);
@@ -281,18 +294,18 @@ public class ScriptExecution {
                     return true;
                 }
                 case APPEND -> {
-                    if(Stack.size() < 2) {
+                    if (Stack.size() < 2) {
                         bScriptFailed = true;
                         System.out.println("Too few items in stack");
                         return false;
                     }
                     byte[] B = Stack.pop();
                     byte[] A = Stack.pop();
-                    byte[] C = new byte[A.length+B.length];
+                    byte[] C = new byte[A.length + B.length];
 
-                    for(int i = 0; i < A.length+B.length; i++){
-                        if(i < A.length) C[i] = A[i];
-                        else C[i] = B[i-A.length];
+                    for (int i = 0; i < A.length + B.length; i++) {
+                        if (i < A.length) C[i] = A[i];
+                        else C[i] = B[i - A.length];
                     }
 
                     Stack.push(C);
@@ -302,11 +315,11 @@ public class ScriptExecution {
                     return true;
                 }
                 case FALSE -> {
-                    Stack.push(new byte[]{ 0 });
+                    Stack.push(new byte[]{0});
                     return true;
                 }
                 case TRUE -> {
-                    Stack.push(new byte[]{ 1 });
+                    Stack.push(new byte[]{1});
                     return true;
                 }
                 case DEPTH -> {
@@ -324,7 +337,7 @@ public class ScriptExecution {
                     return true;
                 }
                 case SWAP -> {
-                    if(Stack.size() < 2) {
+                    if (Stack.size() < 2) {
                         System.out.println("Too few items in stack");
                         bScriptFailed = true;
                         return false;
@@ -339,7 +352,7 @@ public class ScriptExecution {
                 }
                 case VERIFY -> {
                     byte[] bytes = Stack.peek();
-                    System.out.println("Verify "+Arrays.toString(bytes)+" == true: "+(bytes.length == 1 && bytes[0] == 1));
+                    System.out.println("Verify " + Arrays.toString(bytes) + " == true: " + (bytes.length == 1 && bytes[0] == 1));
 
                     bScriptFailed = !(bytes.length == 1 && bytes[0] == 1);
                     return false;
@@ -358,8 +371,28 @@ public class ScriptExecution {
                 case CODESEPARATOR -> {
                     return true;
                 }
+                case LIMIT -> {
+                    if (Stack.size() < 1) {
+                        System.out.println("Too few items in stack");
+                        bScriptFailed = true;
+                        return false;
+                    }
+
+                    byte[] A = Stack.pop();
+
+                    int NumberOfBytesToPush = Script[InstructionCounter++];
+                    byte[] bytes = new byte[NumberOfBytesToPush];
+
+                    for(int i = 0; i < NumberOfBytesToPush; i++){
+                        bytes[i] = A[i];
+                    }
+
+                    Stack.push(bytes);
+                    return true;
+                }
             }
         }
+        bScriptFailed = true;
         return false;
     }
 
