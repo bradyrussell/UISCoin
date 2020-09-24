@@ -210,6 +210,22 @@ public class ScriptExecution {
                     Stack.push(NumberToByteArray(ByteArrayToNumber(A) / ByteArrayToNumber(B)));
                     return true;
                 }
+                case ADDBYTES -> {
+                    System.out.println("Not yet implemented");
+                    return false;
+                }
+                case SUBTRACTBYTES -> {
+                    System.out.println("Not yet implemented");
+                    return false;
+                }
+                case MULTIPLYBYTES -> {
+                    System.out.println("Not yet implemented");
+                    return false;
+                }
+                case DIVIDEBYTES -> {
+                    System.out.println("Not yet implemented");
+                    return false;
+                }
                 case NOT -> {
                     if(Stack.size() < 1) {
                         bScriptFailed = true;
@@ -259,6 +275,24 @@ public class ScriptExecution {
 
                     for (int i = 0, aLength = A.length; i < aLength; i++) {
                         C[i] = (byte) (A[i] & B[i]);
+                    }
+
+                    Stack.push(C);
+                    return true;
+                }
+                case APPEND -> {
+                    if(Stack.size() < 2) {
+                        bScriptFailed = true;
+                        System.out.println("Too few items in stack");
+                        return false;
+                    }
+                    byte[] B = Stack.pop();
+                    byte[] A = Stack.pop();
+                    byte[] C = new byte[A.length+B.length];
+
+                    for(int i = 0; i < A.length+B.length; i++){
+                        if(i < A.length) C[i] = A[i];
+                        else C[i] = B[i-A.length];
                     }
 
                     Stack.push(C);

@@ -13,10 +13,16 @@ public enum ScriptOperator {
     SUBTRACT(0x21),
     MULTIPLY(0x22),
     DIVIDE(0x23),
+    ADDBYTES(0x24), // a[0] + b[0] = c[0]
+    SUBTRACTBYTES(0x25),
+    MULTIPLYBYTES(0x26),
+    DIVIDEBYTES(0x27),
 
     NOT(0x31),
     OR(0x32),
     AND(0x33),
+
+    APPEND(0x40),
 
     NOP(0x81), // do nothing
     FALSE(0x82), // push 0 on the stack

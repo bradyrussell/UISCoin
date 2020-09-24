@@ -20,6 +20,39 @@ import java.util.concurrent.ThreadLocalRandom;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class ScriptTest {
+    @Test
+    @DisplayName("Script Append")
+    void TestScriptAppend() {
+        ScriptBuilder sb = new ScriptBuilder(64);
+        sb
+                .pushASCIIString("Hello, ")
+                .pushASCIIString("world!")
+                .op(ScriptOperator.APPEND)
+                .op(ScriptOperator.SHA512)
+                .pushASCIIString("Hello, world!")
+                .op(ScriptOperator.SHA512EQUAL)
+                //.op(ScriptOperator.SHA512)
+                //.op(ScriptOperator.BYTESEQUAL)
+                .op(ScriptOperator.VERIFY);
+
+        ;
+        System.out.println(Arrays.toString(sb.get()));
+
+        ScriptExecution scriptExecution = new ScriptExecution();
+
+        scriptExecution.Initialize(sb.get());
+
+        while (scriptExecution.Step()){
+            scriptExecution.dumpStack();
+        }
+
+        System.out.println("Script returned: "+!scriptExecution.bScriptFailed);
+
+        System.out.println("Finished: "+scriptExecution.InstructionCounter+" / "+scriptExecution.Script.length);
+
+        assertFalse(scriptExecution.bScriptFailed);
+    }
+
     @RepeatedTest(100)
     @DisplayName("Script Addition")
     void TestScriptAddition() {

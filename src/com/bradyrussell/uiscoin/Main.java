@@ -15,16 +15,15 @@ public class Main {
 
     public static void main(String[] args) {
 
-        ScriptBuilder sb = new ScriptBuilder(32);
+        ScriptBuilder sb = new ScriptBuilder(256);
         sb
-                .pushInt(420)
-                .pushInt(2)
-                .op(ScriptOperator.DIVIDE)
-                .pushInt(210)
-                .op(ScriptOperator.NUMEQUAL)
+                .pushASCIIString("Hello, ")
+                .pushASCIIString("world!")
+                .op(ScriptOperator.APPEND)
                 .op(ScriptOperator.SHA512)
-                .pushByte(1)
-                .op(ScriptOperator.SHA512EQUAL).op(ScriptOperator.SWAP)
+                .pushASCIIString("Hello, world!")
+                .op(ScriptOperator.SHA512)
+                .op(ScriptOperator.BYTESEQUAL)
                 .op(ScriptOperator.VERIFY);
 
         ;
