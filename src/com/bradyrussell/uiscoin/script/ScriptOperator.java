@@ -36,11 +36,12 @@ public enum ScriptOperator {
     BITXOR(0x34),
 
     // byte[] / string functions
-    APPEND(0x40),
+    APPEND(0x40), // combine the top two stack items
     LIMIT(0x41), // top stack item is a byte number of elements to trim the second-to-top stack array to
     REVERSE(0x42), // reverse the order of the top stack element
     SPLIT(0x43), // split top most stack
-    COMBINE(0x44),
+    COMBINE(0x44), // combine N (top of the stack) elements into one array. use depth before combine to do all
+    LEN(0x45), // push the length of the top stack element on top of the stack WITHOUT removing it
 
     // boolean logic
     NOT(0x50),
@@ -63,6 +64,7 @@ public enum ScriptOperator {
     FLIP(0x96), // reverse the entire stack
     SHIFTUP(0x97), // shift the entire stack, so the top element becomes last, second becomes first etc
     SHIFTDOWN(0x98), // shift the entire stack, so the top element becomes second, last becomes first etc
+    PICK(0x99), // copy the Nth (top of the stack) element on the stack and push it onto the stack
 
     // returns
     VERIFY(0xa0),

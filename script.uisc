@@ -1,0 +1,11 @@
+#put the bytes for helloworld on the stack
+multiline comments only#
+push 'Hello world!'
+#reverse#
+reverse
+push 'Hello world!'
+reverse
+clone
+bytesequal
+verify
+return

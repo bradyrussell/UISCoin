@@ -44,11 +44,36 @@ public class ScriptExecution {
         Stack.elements().asIterator().forEachRemaining((byte[] bytes) -> System.out.println(Arrays.toString(bytes)));
     }
 
+    public void dumpStackReadable() {
+        Object[] toArray = Stack.toArray();
+
+        for (int i = 0, toArrayLength = toArray.length; i < toArrayLength; i++) {
+            byte[] stackElem = (byte[]) toArray[i];
+            System.out.print(i+" ");
+            printBytesReadable(stackElem);
+        }
+    }
+
+    public static void printBytesReadable(byte[] bytes) {
+        System.out.print("[");
+        for(byte b: bytes){
+
+            if(b >= 32 && b <= 126) {
+                System.out.print((char)b);
+            } else {
+                System.out.print("0x");
+                System.out.printf("%02X", b);
+            }
+            System.out.print(" ");
+        }
+        System.out.println("]");
+    }
+
     public String getStackContents(){
         StringBuilder s = new StringBuilder();
 
         for(Object b:Stack.toArray()){
-            s.append((byte[]) b);
+            s.append(Arrays.toString((byte[]) b));
         }
 
         return s.toString();
@@ -61,7 +86,7 @@ public class ScriptExecution {
     public int getStackBytes(){
         int n = 0;
         for(Object b:Stack.toArray()){
-            return ((byte[])b).length;
+            n+= ((byte[])b).length;
         }
         return n;
     }
@@ -567,9 +592,30 @@ public class ScriptExecution {
                     return true;
                 }
                 case SHIFTUP -> {
-
+                    Collections.rotate(Stack, 1);
+                    return true;
                 }
                 case SHIFTDOWN -> {
+                    Collections.rotate(Stack, -1);
+                    return true;
+                }
+                case PICK -> {
+                    if (Stack.size() < 2) {
+                        System.out.println("Too few items in stack");
+                        bScriptFailed = true;
+                        return false;
+                    }
+
+                    byte[] A = Stack.pop();
+
+                    if(A.length != 1){
+                        System.out.println("Expected a single byte on top of the stack");
+                        bScriptFailed = true;
+                        return false;
+                    }
+
+                    Stack.push(Stack.elementAt(A[0]));
+                    return true;
                 }
                 case VERIFY -> {
                     byte[] bytes = Stack.peek();
@@ -670,6 +716,18 @@ public class ScriptExecution {
                     Stack.push(bytesArray);
 
                     return true;
+                }
+                case LEN -> {
+                    if (Stack.size() < 1) {
+                        bScriptFailed = true;
+                        System.out.println("Too few items in stack");
+                        return false;
+                    }
+                    byte[] A = Stack.peek();
+                    Stack.push(new byte[]{(byte)A.length});
+
+                    return true;
+
                 }
                 case NOT -> {
                     if (Stack.size() < 1) {

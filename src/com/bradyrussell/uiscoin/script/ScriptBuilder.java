@@ -7,8 +7,8 @@ import java.util.ArrayList;
 public class ScriptBuilder {
     ByteBuffer buffer;
 
-    public ScriptBuilder(int Length) {
-        buffer = ByteBuffer.allocate(Length);
+    public ScriptBuilder(int BufferLength) {
+        buffer = ByteBuffer.allocate(BufferLength);
     }
 
     public ScriptBuilder op(ScriptOperator Operator){
@@ -92,9 +92,21 @@ public class ScriptBuilder {
     public ScriptBuilder fromText(String Text){
         System.out.println("Parsing script from text...");
 
-        String[] parts = Text.replace("\n", "").replace(";", " ").replace("  ", " ").split(" ");
+        String[] parts = Text.replace("\n", " ").replace(";", " ").replace("  ", " ").replace("\r", "").split(" ");
 
         for (int i = 0; i < parts.length; i++) {
+            if(parts[i].startsWith("#")) {
+                String substring = parts[i].substring(1);
+                System.out.println("Interpreting Token "+i+" as a comment: "+substring);
+
+                System.out.println("Token "+i+": Begin comment # ");
+                do { // single byte
+                    /*I = */;
+                    System.out.println("Token "+i+": comment Element "+parts[i].replace("#", "").replace("#", "") + " from comment part "+parts[i]);
+                }while(!parts[i++].endsWith("#"));
+
+               // i--; // todo fix the above loop making this necessary
+            }
             if(parts[i].startsWith("0x")) {
                 String substring = parts[i].substring(2);
                 System.out.println("Interpreting Token "+i+" as hex data: "+substring);
@@ -128,7 +140,7 @@ public class ScriptBuilder {
                     System.out.println("Token "+i+": Begin String ' ");
                     do { // single byte
                         /*I = */;
-                        sb.append(parts[i].replace("'", "").replace("'", ""));
+                        sb.append(parts[i].replace("'", "")/*.replace("'", "")*/);
                         if(!parts[i].endsWith("'")) sb.append(" ");
                         System.out.println("Token "+i+": String Element "+parts[i].replace("'", "").replace("'", "") + " from string part "+parts[i]);
                     }while(!parts[i++].endsWith("'"));
@@ -173,6 +185,18 @@ public class ScriptBuilder {
     }
 
     public byte[] get(){
-        return buffer.array();
+        byte[] array = buffer.array();
+
+        int LastNonNullByteIndex = 0;
+        for (int i = 0, arrayLength = array.length; i < arrayLength; i++) {
+            byte b = array[i];
+            if (b != 0) LastNonNullByteIndex = i;
+        }
+
+        byte[] trimmed = new byte[LastNonNullByteIndex+1];
+
+        System.arraycopy(array,0,trimmed, 0, LastNonNullByteIndex+1);
+
+        return trimmed;
     }
 }

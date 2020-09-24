@@ -4,6 +4,9 @@ import com.bradyrussell.uiscoin.script.ScriptBuilder;
 import com.bradyrussell.uiscoin.script.ScriptExecution;
 import com.bradyrussell.uiscoin.script.ScriptOperator;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -17,8 +20,16 @@ public class Main {
 
         ScriptBuilder sb1 = new ScriptBuilder(256);
         //sb1.fromText("PUSH 256 PUSH 123 PUSH 321 ADD ADD SHA512 PUSH 700 SHA512EQUAL VERIFY");
-        sb1.fromText("push 'Hello, world!' sha512 split flip depth combine reverse return");
-        System.out.println(Arrays.toString(sb1.get()));
+        try {
+            String text = Files.readString(Path.of("script.uisc"));
+
+            System.out.println(text);
+
+            sb1.fromText(text);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        ScriptExecution.printBytesReadable(sb1.get());
 
         /*ScriptBuilder sb = new ScriptBuilder(256);
         sb
@@ -39,6 +50,7 @@ public class Main {
 
         while (scriptExecution.Step()){
             scriptExecution.dumpStack();
+            scriptExecution.dumpStackReadable();
             System.out.println("Stack Depth: "+scriptExecution.getStackDepth());
             System.out.println("Stack Bytes: "+scriptExecution.getStackBytes());
         }

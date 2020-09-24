@@ -53,6 +53,28 @@ public class ScriptTest {
         assertFalse(scriptExecution.bScriptFailed);
     }
 
+    @Test
+    @DisplayName("Script Boolean Logic")
+    void TestScriptBoolLogic() {
+        ScriptBuilder sb = new ScriptBuilder(64);
+        sb.fromText("true true true false true false true true false false false true and or or and xor xor xor xor xor xor xor verify return");
+        System.out.println(Arrays.toString(sb.get()));
+
+        ScriptExecution scriptExecution = new ScriptExecution();
+
+        scriptExecution.Initialize(sb.get());
+
+        while (scriptExecution.Step()){
+            scriptExecution.dumpStack();
+        }
+
+        System.out.println("Script returned: "+!scriptExecution.bScriptFailed);
+
+        System.out.println("Finished: "+scriptExecution.InstructionCounter+" / "+scriptExecution.Script.length);
+
+        assertFalse(scriptExecution.bScriptFailed);
+    }
+
     @RepeatedTest(100)
     @DisplayName("Script Addition")
     void TestScriptAddition() {
