@@ -90,6 +90,8 @@ public class ScriptBuilder {
     }
 
     public ScriptBuilder fromText(String Text){
+        System.out.println("Parsing script from text...");
+
         String[] parts = Text.replace("\n", "").replace(";", " ").replace("  ", " ").split(" ");
 
         for (int i = 0; i < parts.length; i++) {
@@ -166,7 +168,7 @@ public class ScriptBuilder {
                 op(scriptOperator);
             }
         }
-
+        System.out.println("Script compiled into bytecode.");
         return this;
     }
 

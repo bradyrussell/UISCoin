@@ -17,7 +17,7 @@ public class Main {
 
         ScriptBuilder sb1 = new ScriptBuilder(256);
         //sb1.fromText("PUSH 256 PUSH 123 PUSH 321 ADD ADD SHA512 PUSH 700 SHA512EQUAL VERIFY");
-        sb1.fromText("push 1 push 2 push 3 push 4 flip shiftup return");
+        sb1.fromText("push 'Hello, world!' sha512 split flip depth combine reverse return");
         System.out.println(Arrays.toString(sb1.get()));
 
         /*ScriptBuilder sb = new ScriptBuilder(256);
@@ -39,6 +39,8 @@ public class Main {
 
         while (scriptExecution.Step()){
             scriptExecution.dumpStack();
+            System.out.println("Stack Depth: "+scriptExecution.getStackDepth());
+            System.out.println("Stack Bytes: "+scriptExecution.getStackBytes());
         }
 
         System.out.println("Script returned: "+!scriptExecution.bScriptFailed);
