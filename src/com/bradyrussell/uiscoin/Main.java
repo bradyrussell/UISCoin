@@ -1,17 +1,10 @@
 package com.bradyrussell.uiscoin;
 
 import com.bradyrussell.uiscoin.address.UISCoinAddress;
-import com.bradyrussell.uiscoin.script.ScriptBuilder;
-import com.bradyrussell.uiscoin.script.ScriptExecution;
-import com.bradyrussell.uiscoin.script.ScriptOperator;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.security.*;
 import java.security.interfaces.ECPublicKey;
 import java.security.spec.InvalidKeySpecException;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -31,8 +24,8 @@ public class Main {
             System.out.println(Base64.getEncoder().encodeToString(publicKey));
             System.out.println(Util.TrimByteArray(publicKey).length);
 
-            Keys.SignedMessage fuc_uis = Keys.SignMessage(keyPair, "Fuc uis");
-            System.out.println(Keys.VerifyMessage(fuc_uis));
+            Keys.SignedData fuc_uis = Keys.SignData(keyPair, Hash.getSHA512Bytes("fuc uis"));
+            System.out.println(Keys.VerifySignedData(fuc_uis));
 
         } catch (NoSuchAlgorithmException | InvalidAlgorithmParameterException | InvalidKeyException | SignatureException | InvalidKeySpecException e) {
             e.printStackTrace();
