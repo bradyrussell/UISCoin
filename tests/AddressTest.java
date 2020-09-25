@@ -33,11 +33,14 @@ public class AddressTest {
             ThreadLocalRandom.current().nextBytes(Randomseed);
 
             KeyPair keyPair = Keys.makeKeyPair(Randomseed);
-            byte[] publicKey = Util.TrimByteArray(UISCoinAddress.fromPublicKey((ECPublicKey) keyPair.getPublic()));
+
+            byte[] publicKey = UISCoinAddress.fromPublicKey((ECPublicKey) keyPair.getPublic());
+
             System.out.println(UISCoinAddress.verifyAddressChecksum(publicKey));
 
             System.out.println(Base64.getEncoder().encodeToString(publicKey));
-            System.out.println(Util.TrimByteArray(publicKey).length);
+            System.out.println(publicKey.length);
+
             assertTrue(UISCoinAddress.verifyAddressChecksum(publicKey));
 
         } catch (NoSuchAlgorithmException | InvalidAlgorithmParameterException e) {

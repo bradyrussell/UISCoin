@@ -185,6 +185,8 @@ public class ScriptBuilder {
     }
 
     public byte[] get(){
-        return Util.TrimByteArray(buffer.array());
+        byte[] ret = new byte[buffer.position()];
+        System.arraycopy(buffer.array(), 0, ret, 0, buffer.position());
+        return ret;
     }
 }

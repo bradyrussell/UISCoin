@@ -16,20 +16,6 @@ public class Util {
         System.out.println("]");
     }
 
-    public static byte[] TrimByteArray(byte[] array){
-        int LastNonNullByteIndex = 0;
-        for (int i = 0, arrayLength = array.length; i < arrayLength; i++) {
-            byte b = array[i];
-            if (b != 0) LastNonNullByteIndex = i;
-        }
-
-        byte[] trimmed = new byte[LastNonNullByteIndex+1];
-
-        System.arraycopy(array,0,trimmed, 0, LastNonNullByteIndex+1);
-
-        return trimmed;
-    }
-
     public static byte[] ConcatArray(byte[] A, byte[] B){
         byte[] C = new byte[A.length+B.length];
         for(int i = 0; i < A.length+B.length; i++){
