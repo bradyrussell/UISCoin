@@ -4,6 +4,7 @@ import com.bradyrussell.uiscoin.Keys;
 import com.bradyrussell.uiscoin.MagicBytes;
 import com.bradyrussell.uiscoin.address.UISCoinAddress;
 import com.bradyrussell.uiscoin.address.UISCoinKeypair;
+import com.bradyrussell.uiscoin.address.Wallet;
 import com.bradyrussell.uiscoin.block.Block;
 import com.bradyrussell.uiscoin.block.BlockHeader;
 import com.bradyrussell.uiscoin.transaction.CoinbaseTransaction;
@@ -14,6 +15,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.RepeatedTest;
 
 import java.nio.ByteBuffer;
+import java.nio.file.Path;
 import java.security.*;
 import java.security.interfaces.ECPrivateKey;
 import java.security.interfaces.ECPublicKey;
@@ -22,8 +24,7 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.concurrent.ThreadLocalRandom;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class KeysTest {
     @RepeatedTest(100)
@@ -67,5 +68,17 @@ public class KeysTest {
         } catch (NoSuchAlgorithmException | InvalidAlgorithmParameterException | InvalidKeyException | SignatureException | InvalidKeySpecException e) {
             e.printStackTrace();
         }
+    }
+
+    @RepeatedTest(100)
+    @DisplayName("Wallet Encrypted Keys Save / Load")
+    void TestWalletKeysSaveLoad() {
+        UISCoinKeypair uisCoinKeypair = UISCoinKeypair.Create();
+        Wallet.SaveKeypairToFileWithPassword(Path.of("tests/test_wallet.uisw"),"boomer", uisCoinKeypair);
+        UISCoinKeypair keypairFromFileWithPassword = Wallet.LoadKeypairFromFileWithPassword(Path.of("tests/test_wallet.uisw"), "boomer");
+
+        assertNotNull(keypairFromFileWithPassword);
+        assertTrue(Arrays.equals(uisCoinKeypair.getBinaryData(), keypairFromFileWithPassword.getBinaryData()));
+
     }
 }

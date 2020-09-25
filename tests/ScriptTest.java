@@ -219,12 +219,7 @@ public class ScriptTest {
         A = Hash.getSHA512Bytes(A);
 
         ScriptBuilder sb = new ScriptBuilder(256);
-        sb
-                .push(A)
-                .op(ScriptOperator.SHA512)
-                .push(B)
-                .op(ScriptOperator.SHA512EQUAL)
-                .op(ScriptOperator.VERIFY);
+        sb.push(A).push(B).fromText("sha512 swap sha512 lenequal verify return");
 
         System.out.println(Arrays.toString(sb.get()));
 
