@@ -31,7 +31,11 @@ public class KeysTest {
     @DisplayName("Data Signing / Verification")
     void TestDataSigning() {
         try {
-            KeyPair keyPair = Keys.makeKeyPair();
+            byte[] Randomseed = new byte[64];
+
+            ThreadLocalRandom.current().nextBytes(Randomseed);
+
+            KeyPair keyPair = Keys.makeKeyPair(Randomseed);
 
             byte[] RandomHash1 = new byte[64];
 
@@ -49,7 +53,11 @@ public class KeysTest {
     @DisplayName("Keys Save / Load")
     void TestKeysSaveLoad() {
         try {
-            KeyPair keyPair = Keys.makeKeyPair();
+            byte[] Randomseed = new byte[64];
+
+            ThreadLocalRandom.current().nextBytes(Randomseed);
+
+            KeyPair keyPair = Keys.makeKeyPair(Randomseed);
 
             KeyPair otherKeyPair = Keys.LoadKeys(keyPair.getPublic().getEncoded(), keyPair.getPrivate().getEncoded());
 

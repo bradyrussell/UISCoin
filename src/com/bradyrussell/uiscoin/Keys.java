@@ -4,10 +4,10 @@ import java.security.*;
 import java.security.spec.*;
 
 public class Keys {
-    public static KeyPair makeKeyPair() throws NoSuchAlgorithmException, InvalidAlgorithmParameterException {
+    public static KeyPair makeKeyPair(byte[] Seed) throws NoSuchAlgorithmException, InvalidAlgorithmParameterException {
         KeyPairGenerator keyGen = KeyPairGenerator.getInstance("EC");
         ECGenParameterSpec ecSpec = new ECGenParameterSpec("secp256k1");
-        keyGen.initialize(ecSpec, new SecureRandom());
+        keyGen.initialize(ecSpec, new SecureRandom(Seed));
         return keyGen.generateKeyPair();
     }
 

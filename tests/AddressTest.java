@@ -28,7 +28,11 @@ public class AddressTest {
     @DisplayName("Address Checksum")
     void TestAddressChecksum() {
         try {
-            KeyPair keyPair = Keys.makeKeyPair();
+            byte[] Randomseed = new byte[64];
+
+            ThreadLocalRandom.current().nextBytes(Randomseed);
+
+            KeyPair keyPair = Keys.makeKeyPair(Randomseed);
             byte[] publicKey = Util.TrimByteArray(UISCoinAddress.fromPublicKey((ECPublicKey) keyPair.getPublic()));
             System.out.println(UISCoinAddress.verifyAddressChecksum(publicKey));
 
