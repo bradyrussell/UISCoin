@@ -3,6 +3,7 @@ import com.bradyrussell.uiscoin.Hash;
 import com.bradyrussell.uiscoin.Keys;
 import com.bradyrussell.uiscoin.MagicBytes;
 import com.bradyrussell.uiscoin.address.UISCoinAddress;
+import com.bradyrussell.uiscoin.address.UISCoinKeypair;
 import com.bradyrussell.uiscoin.block.Block;
 import com.bradyrussell.uiscoin.block.BlockHeader;
 import com.bradyrussell.uiscoin.transaction.CoinbaseTransaction;
@@ -37,6 +38,31 @@ public class KeysTest {
 
             Keys.SignedData signedData = Keys.SignData(keyPair, RandomHash1);
             assertTrue(Keys.VerifySignedData(signedData));
+
+        } catch (NoSuchAlgorithmException | InvalidAlgorithmParameterException | InvalidKeyException | SignatureException | InvalidKeySpecException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @RepeatedTest(100)
+    @DisplayName("Keys Save / Load")
+    void TestKeysSaveLoad() {
+        try {
+            KeyPair keyPair = Keys.makeKeyPair();
+
+            KeyPair otherKeyPair = Keys.LoadKeys(keyPair.getPublic().getEncoded(), keyPair.getPrivate().getEncoded());
+
+            assertTrue(Arrays.equals(otherKeyPair.getPublic().getEncoded(), keyPair.getPublic().getEncoded()));
+            assertTrue(Arrays.equals(otherKeyPair.getPrivate().getEncoded(), keyPair.getPrivate().getEncoded()));
+
+            UISCoinKeypair uisCoinKeypair = UISCoinKeypair.Create();
+
+            byte[] uisCoinKeypairBinaryData = uisCoinKeypair.getBinaryData();
+
+            UISCoinKeypair newCoinKeypair = new UISCoinKeypair();
+            newCoinKeypair.setBinaryData(uisCoinKeypairBinaryData);
+
+            assertTrue(Arrays.equals(uisCoinKeypairBinaryData, newCoinKeypair.getBinaryData()));
 
         } catch (NoSuchAlgorithmException | InvalidAlgorithmParameterException | InvalidKeyException | SignatureException | InvalidKeySpecException e) {
             e.printStackTrace();

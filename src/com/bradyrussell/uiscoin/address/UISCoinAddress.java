@@ -16,22 +16,22 @@ public class UISCoinAddress {
         buf.put(PubKey.getW().getAffineX().toByteArray());
         buf.put(PubKey.getW().getAffineY().toByteArray());
 
-        System.out.println("pre hash data");
+       // System.out.println("pre hash data");
         // todo this fails sometimes when the end of the data has null bytes
         byte[] prehash = Util.TrimByteArray(buf.array());
-        Util.printBytesReadable(prehash);
+       // Util.printBytesReadable(prehash);
 
         byte[] checksum = new byte[4];
         System.arraycopy(Hash.getSHA512Bytes(prehash), 0, checksum, 0, 4);
         FillNullBytes(checksum);
 
-        System.out.println("checksum");
-        Util.printBytesReadable(checksum);
+        //System.out.println("checksum");
+      //  Util.printBytesReadable(checksum);
 
         buf.put(checksum);
-        System.out.println("final address");
+       // System.out.println("final address");
         byte[] output = Util.TrimByteArray(buf.array());
-        Util.printBytesReadable(output);
+        //Util.printBytesReadable(output);
         return output;
     }
 

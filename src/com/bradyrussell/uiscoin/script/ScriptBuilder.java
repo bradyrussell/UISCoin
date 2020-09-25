@@ -106,8 +106,6 @@ public class ScriptBuilder {
                     /*I = */;
                     System.out.println("Token "+i+": comment Element "+parts[i].replace("#", "").replace("#", "") + " from comment part "+parts[i]);
                 }while(!parts[i++].endsWith("#"));
-
-               // i--; // todo fix the above loop making this necessary
             }
             if(parts[i].startsWith("0x")) {
                 String substring = parts[i].substring(2);
