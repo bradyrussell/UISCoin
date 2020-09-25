@@ -74,6 +74,9 @@ public enum ScriptOperator {
     //hashes
     SHA512(0xb0),
 
+    // signature
+    VERIFYSIG(0xc0), // gets the public key (top of stack) and the signature (second to top) and pushes true if verified
+
     // code
     CODESEPARATOR(0xc0),
     ;

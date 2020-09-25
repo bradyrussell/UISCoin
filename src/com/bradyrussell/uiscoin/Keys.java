@@ -23,10 +23,8 @@ public class Keys {
     public static boolean VerifySignedData(SignedData Message) throws NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, SignatureException {
         Signature ecdsaVerify = Signature.getInstance("SHA512withECDSA");
 
-        EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(Message.Pubkey);
-
         KeyFactory keyFactory = KeyFactory.getInstance("EC");
-        PublicKey publicKey = keyFactory.generatePublic(publicKeySpec);
+        PublicKey publicKey = keyFactory.generatePublic(new X509EncodedKeySpec(Message.Pubkey));
 
         ecdsaVerify.initVerify(publicKey);
         ecdsaVerify.update(Message.Message);

@@ -1,8 +1,13 @@
 package com.bradyrussell.uiscoin.script;
 
 import com.bradyrussell.uiscoin.Hash;
+import com.bradyrussell.uiscoin.Keys;
 import com.bradyrussell.uiscoin.Util;
 
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SignatureException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -50,30 +55,30 @@ public class ScriptExecution {
 
         for (int i = 0, toArrayLength = toArray.length; i < toArrayLength; i++) {
             byte[] stackElem = (byte[]) toArray[i];
-            System.out.print(i+" ");
+            System.out.print(i + " ");
             Util.printBytesReadable(stackElem);
         }
     }
 
 
-    public String getStackContents(){
+    public String getStackContents() {
         StringBuilder s = new StringBuilder();
 
-        for(Object b:Stack.toArray()){
+        for (Object b : Stack.toArray()) {
             s.append(Arrays.toString((byte[]) b));
         }
 
         return s.toString();
     }
 
-    public int getStackDepth(){
+    public int getStackDepth() {
         return Stack.size();
     }
 
-    public int getStackBytes(){
+    public int getStackBytes() {
         int n = 0;
-        for(Object b:Stack.toArray()){
-            n+= ((byte[])b).length;
+        for (Object b : Stack.toArray()) {
+            n += ((byte[]) b).length;
         }
         return n;
     }
@@ -98,7 +103,7 @@ public class ScriptExecution {
                     byte[] B = new byte[A.length];
 
                     for (int i = 0, aLength = A.length; i < aLength; i++) {
-                        B[i] = A[(A.length-1)-i];
+                        B[i] = A[(A.length - 1) - i];
                     }
                     System.out.println("Reverse top stack element");
                     Stack.push(B);
@@ -380,7 +385,7 @@ public class ScriptExecution {
                     byte[] A = Stack.pop();
                     byte[] C = new byte[A.length];
 
-                    for(int i = 0; i < A.length; i++){
+                    for (int i = 0; i < A.length; i++) {
                         C[i] = (byte) (A[i] + B[i]);
                     }
 
@@ -398,7 +403,7 @@ public class ScriptExecution {
                     byte[] A = Stack.pop();
                     byte[] C = new byte[A.length];
 
-                    for(int i = 0; i < A.length; i++){
+                    for (int i = 0; i < A.length; i++) {
                         C[i] = (byte) (A[i] - B[i]);
                     }
 
@@ -416,7 +421,7 @@ public class ScriptExecution {
                     byte[] A = Stack.pop();
                     byte[] C = new byte[A.length];
 
-                    for(int i = 0; i < A.length; i++){
+                    for (int i = 0; i < A.length; i++) {
                         C[i] = (byte) (A[i] * B[i]);
                     }
 
@@ -434,8 +439,8 @@ public class ScriptExecution {
                     byte[] A = Stack.pop();
                     byte[] C = new byte[A.length];
 
-                    for(int i = 0; i < A.length; i++){
-                        if(B[i] == 0){
+                    for (int i = 0; i < A.length; i++) {
+                        if (B[i] == 0) {
                             bScriptFailed = true;
                             System.out.println("Divide by zero");
                             return false;
@@ -569,7 +574,7 @@ public class ScriptExecution {
                     return true;
                 }
                 case CLONE -> {
-                    for(Object o:Stack.toArray()){
+                    for (Object o : Stack.toArray()) {
                         Stack.push((byte[]) o);
                     }
                     return true;
@@ -595,7 +600,7 @@ public class ScriptExecution {
 
                     byte[] A = Stack.pop();
 
-                    if(A.length != 1){
+                    if (A.length != 1) {
                         System.out.println("Expected a single byte on top of the stack");
                         bScriptFailed = true;
                         return false;
@@ -622,6 +627,27 @@ public class ScriptExecution {
                     Stack.push(Hash.getSHA512Bytes(Stack.pop()));
                     return true;
                 }
+                case VERIFYSIG -> {
+                    if (Stack.size() < 2) {
+                        System.out.println("Too few items in stack");
+                        bScriptFailed = true;
+                        return false;
+                    }
+
+                    byte[] PublicKey = Stack.pop();
+                    byte[] Signature = Stack.pop();
+
+                    Keys.SignedData signedData = new Keys.SignedData(PublicKey, Signature, Hash.getSHA512Bytes("What is the message??"));
+                    try {
+                        boolean verifySignedData = Keys.VerifySignedData(signedData);
+                        bScriptFailed = !verifySignedData;
+                        return false;
+                    } catch (NoSuchAlgorithmException | InvalidKeySpecException | InvalidKeyException | SignatureException e) {
+                        e.printStackTrace();
+                        return false;
+                    }
+
+                }
                 case CODESEPARATOR -> {
                     return true;
                 }
@@ -635,7 +661,7 @@ public class ScriptExecution {
                     byte[] B = Stack.pop();
                     byte[] A = Stack.pop();
 
-                    if(B.length != 1){
+                    if (B.length != 1) {
                         System.out.println("Expected a single byte on top of the stack");
                         bScriptFailed = true;
                         return false;
@@ -644,7 +670,7 @@ public class ScriptExecution {
                     int NumberOfBytesToPush = B[0];
                     byte[] bytes = new byte[NumberOfBytesToPush];
 
-                    for(int i = 0; i < NumberOfBytesToPush; i++){
+                    for (int i = 0; i < NumberOfBytesToPush; i++) {
                         bytes[i] = A[i];
                     }
 
@@ -660,7 +686,7 @@ public class ScriptExecution {
 
                     byte[] A = Stack.pop();
 
-                    for(byte b:A){
+                    for (byte b : A) {
                         Stack.push(new byte[]{b});
                     }
 
@@ -675,7 +701,7 @@ public class ScriptExecution {
 
                     byte[] B = Stack.pop();
 
-                    if(B.length != 1){
+                    if (B.length != 1) {
                         System.out.println("Expected a single byte on top of the stack");
                         bScriptFailed = true;
                         return false;
@@ -685,10 +711,10 @@ public class ScriptExecution {
 
                     ArrayList<Byte> bytes = new ArrayList<>();
 
-                    for(int i = 0; i < NumberOfItemsToCombine; i++){
+                    for (int i = 0; i < NumberOfItemsToCombine; i++) {
                         byte[] A = Stack.pop();
                         for (int j = 0; j < A.length; j++) {
-                            byte b = A[(A.length-1)-j];
+                            byte b = A[(A.length - 1) - j];
                             bytes.add(b);
                         }
                     }
@@ -696,7 +722,7 @@ public class ScriptExecution {
                     Collections.reverse(bytes);
 
                     byte[] bytesArray = new byte[bytes.size()];
-                    for(int i = 0; i < bytesArray.length; i++){
+                    for (int i = 0; i < bytesArray.length; i++) {
                         bytesArray[i] = bytes.get(i);
                     }
 
@@ -711,7 +737,7 @@ public class ScriptExecution {
                         return false;
                     }
                     byte[] A = Stack.peek();
-                    Stack.push(new byte[]{(byte)A.length});
+                    Stack.push(new byte[]{(byte) A.length});
 
                     return true;
 
@@ -726,7 +752,7 @@ public class ScriptExecution {
                     byte[] A = Stack.pop();
                     byte[] C = new byte[A.length];
 
-                    for(int i = 0; i < A.length; i++){
+                    for (int i = 0; i < A.length; i++) {
                         C[i] = (byte) ((A[i] == 0) ? 1 : 0);
                     }
 
@@ -744,7 +770,7 @@ public class ScriptExecution {
                     byte[] A = Stack.pop();
                     byte[] C = new byte[A.length];
 
-                    for(int i = 0; i < A.length; i++){
+                    for (int i = 0; i < A.length; i++) {
                         C[i] = (byte) ((A[i] == 1 || B[i] == 1) ? 1 : 0);
                     }
 
@@ -762,7 +788,7 @@ public class ScriptExecution {
                     byte[] A = Stack.pop();
                     byte[] C = new byte[A.length];
 
-                    for(int i = 0; i < A.length; i++){
+                    for (int i = 0; i < A.length; i++) {
                         C[i] = (byte) ((A[i] == 1 && B[i] == 1) ? 1 : 0);
                     }
 
@@ -780,8 +806,8 @@ public class ScriptExecution {
                     byte[] A = Stack.pop();
                     byte[] C = new byte[A.length];
 
-                    for(int i = 0; i < A.length; i++){
-                        C[i] = (byte) (((A[i] == 1 || B[i] == 1)&&(!(A[i] == 1 && B[i] == 1))) ? 1 : 0);
+                    for (int i = 0; i < A.length; i++) {
+                        C[i] = (byte) (((A[i] == 1 || B[i] == 1) && (!(A[i] == 1 && B[i] == 1))) ? 1 : 0);
                     }
 
                     Stack.push(C);
