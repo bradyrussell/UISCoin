@@ -3,6 +3,7 @@
     <output-path>$PROJECT_DIR$/out/artifacts/UISCoinNode_jar</output-path>
     <root id="archive" name="UISCoinNode.jar">
       <element id="module-output" name="UISCoinNode" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/jetbrains/annotations/19.0.0/annotations-19.0.0.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>

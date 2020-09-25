@@ -19,17 +19,17 @@ public class UISCoinAddress {
         byte[] prehash = new byte[buf.position()];
         System.arraycopy(buf.array(), 0, prehash, 0, buf.position());
 
-        System.out.println("Pre hash: ");
-        Util.printBytesReadable(prehash);
+        //System.out.println("Pre hash: ");
+        //Util.printBytesReadable(prehash);
 
 
 
         byte[] checksum = new byte[4];
         System.arraycopy(Hash.getSHA512Bytes(prehash), 0, checksum, 0, 4);
-        FillNullBytes(checksum);
+       // FillNullBytes(checksum);
 
-        System.out.println("checksum");
-        Util.printBytesReadable(checksum);
+        //System.out.println("checksum");
+        //Util.printBytesReadable(checksum);
 
         buf.put(checksum);
        // System.out.println("final address");
@@ -56,7 +56,7 @@ public class UISCoinAddress {
 
         byte[] properChecksum = new byte[4];
         System.arraycopy(Hash.getSHA512Bytes(data), 0, properChecksum, 0, 4);
-        FillNullBytes(properChecksum);
+      //  FillNullBytes(properChecksum);
 
         System.out.println("proper checksum");
         Util.printBytesReadable(properChecksum);
