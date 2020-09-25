@@ -61,7 +61,7 @@ public class BlockHeader implements IBinaryData {
     }
 
     @Override
-    public void setBinaryData(byte[] Data) {
+    public int setBinaryData(byte[] Data) {
         HashMerkleRoot = new byte[64];
         HashPreviousBlock = new byte[64];
 
@@ -72,6 +72,7 @@ public class BlockHeader implements IBinaryData {
         Time = buffer.getLong();
         DifficultyTarget = buffer.getInt();
         Nonce = buffer.getInt();
+        return buffer.position();
     }
 
     @Override

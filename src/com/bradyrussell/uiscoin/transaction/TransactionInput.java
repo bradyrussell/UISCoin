@@ -46,7 +46,7 @@ public class TransactionInput  implements IBinaryData {
     }
 
     @Override
-    public void setBinaryData(byte[] Data) {
+    public int setBinaryData(byte[] Data) {
         ByteBuffer buffer = ByteBuffer.wrap(Data);
 
         InputHash = new byte[64];
@@ -57,6 +57,7 @@ public class TransactionInput  implements IBinaryData {
         UnlockingScript = new byte[SignatureScriptLength];
         buffer.get(UnlockingScript, 0, SignatureScriptLength);
         InputSequenceNumber = buffer.getInt();
+        return buffer.position();
     }
 
     @Override

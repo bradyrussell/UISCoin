@@ -27,13 +27,14 @@ public class TransactionOutput  implements IBinaryData {
     }
 
     @Override
-    public void setBinaryData(byte[] Data) {
+    public int setBinaryData(byte[] Data) {
         ByteBuffer buffer = ByteBuffer.wrap(Data);
 
         Amount = buffer.getLong();
         int LockingScriptLength = buffer.getInt();
         LockingScript = new byte[LockingScriptLength];
         buffer.get(LockingScript, 0, LockingScriptLength);
+        return buffer.position();
     }
 
     @Override

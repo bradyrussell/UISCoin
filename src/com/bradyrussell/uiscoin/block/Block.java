@@ -2,11 +2,13 @@ package com.bradyrussell.uiscoin.block;
 
 import com.bradyrussell.uiscoin.Hash;
 import com.bradyrussell.uiscoin.IBinaryData;
+import com.bradyrussell.uiscoin.Util;
 import com.bradyrussell.uiscoin.transaction.CoinbaseTransaction;
 import com.bradyrussell.uiscoin.transaction.Transaction;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Block implements IBinaryData {
     public BlockHeader Header;
@@ -53,13 +55,37 @@ public class Block implements IBinaryData {
         return n;
     }
 
-    public byte[] CalculateMerkleRoot(){
-        ByteBuffer buf = ByteBuffer.allocate(Transactions.size()*64);
-        for(Transaction transaction:Transactions){
-            buf.put(transaction.getHash());
+    private List<byte[]> MerkleRootStep(List<byte[]> Nodes) { // my interpretation of https://en.bitcoin.it/wiki/Protocol_documentation Merkle Trees header
+        List<byte[]> ret = new ArrayList<>();
+
+        for (int i = 0; i < Nodes.size(); i+=2) {
+            byte[] arr = Nodes.get(i);
+
+            if(i == Nodes.size()-1) {
+                ret.add(Hash.getSHA512Bytes(Util.ConcatArray(arr, arr)));
+            } else {
+                ret.add(Hash.getSHA512Bytes(Util.ConcatArray(arr, Nodes.get(i+1))));
+            }
         }
 
-        return Hash.getSHA512Bytes(buf.array());
+        return ret;
+    }
+
+
+    public byte[] CalculateMerkleRoot(){
+        if(Transactions.size() == 0) return new byte[0];
+
+        List<byte[]> hashes = new ArrayList<>();
+
+        for(Transaction transaction:Transactions){
+            hashes.add(transaction.getHash());
+        }
+
+        while(hashes.size() > 1) {
+            hashes = MerkleRootStep(hashes);
+        }
+
+        return hashes.get(0);
     }
 
     @Override
@@ -82,7 +108,7 @@ public class Block implements IBinaryData {
 
 
     @Override
-    public void setBinaryData(byte[] Data) {
+    public int setBinaryData(byte[] Data) {
         ByteBuffer buffer = ByteBuffer.wrap(Data);
 
         byte[] header = new byte[148];
@@ -108,6 +134,7 @@ public class Block implements IBinaryData {
 
             Transactions.add(t);
         }
+        return buffer.position();
     }
 
     @Override

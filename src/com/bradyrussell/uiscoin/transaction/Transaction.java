@@ -83,7 +83,7 @@ public class Transaction implements IBinaryData {
     }
 
     @Override
-    public void setBinaryData(byte[] Data) {
+    public int setBinaryData(byte[] Data) {
         ByteBuffer buffer = ByteBuffer.wrap(Data);
 
         Version = buffer.getInt();
@@ -119,6 +119,7 @@ public class Transaction implements IBinaryData {
         }
 
         TimeStamp = buffer.getLong();
+        return buffer.position();
     }
 
     @Override

@@ -38,7 +38,7 @@ public class UISCoinKeypair implements IBinaryData {
     }
 
     @Override
-    public void setBinaryData(byte[] Data) {
+    public int setBinaryData(byte[] Data) {
         ByteBuffer buf = ByteBuffer.wrap(Data);
 
         byte Version = buf.get();
@@ -56,7 +56,7 @@ public class UISCoinKeypair implements IBinaryData {
         } catch (NoSuchAlgorithmException | InvalidKeySpecException | InvalidKeyException | SignatureException e) {
             e.printStackTrace();
         }
-
+        return buf.position();
     }
 
     @Override

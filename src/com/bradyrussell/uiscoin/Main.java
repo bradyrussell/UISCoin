@@ -2,6 +2,8 @@ package com.bradyrussell.uiscoin;
 
 import com.bradyrussell.uiscoin.address.UISCoinAddress;
 import com.bradyrussell.uiscoin.address.UISCoinKeypair;
+import com.bradyrussell.uiscoin.node.Node;
+import com.bradyrussell.uiscoin.node.Peer;
 import com.bradyrussell.uiscoin.script.ScriptBuilder;
 import com.bradyrussell.uiscoin.script.ScriptExecution;
 import com.bradyrussell.uiscoin.transaction.Transaction;
@@ -10,6 +12,9 @@ import com.bradyrussell.uiscoin.transaction.TransactionInput;
 import com.bradyrussell.uiscoin.transaction.TransactionOutput;
 
 import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -19,12 +24,12 @@ import java.security.SignatureException;
 import java.security.interfaces.ECPublicKey;
 import java.util.Base64;
 import java.util.Scanner;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Main {
 
     public static void main(String[] args) {
-
-      UISCoinKeypair coinKeypair = UISCoinKeypair.Create();
+        UISCoinKeypair coinKeypair = UISCoinKeypair.Create();
       UISCoinKeypair coinKeypairRecipient = UISCoinKeypair.Create();
 
       TransactionBuilder tb = new TransactionBuilder();
