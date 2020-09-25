@@ -30,5 +30,12 @@ public class Util {
         return trimmed;
     }
 
+    public static byte[] ConcatArray(byte[] A, byte[] B){
+        byte[] C = new byte[A.length+B.length];
+        for(int i = 0; i < A.length+B.length; i++){
+            C[i] = (i < A.length) ? A[i] : B[i-A.length];
+        }
+        return C;
+    }
 
 }

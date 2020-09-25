@@ -4,6 +4,10 @@ import com.bradyrussell.uiscoin.address.UISCoinAddress;
 import com.bradyrussell.uiscoin.address.UISCoinKeypair;
 import com.bradyrussell.uiscoin.script.ScriptBuilder;
 import com.bradyrussell.uiscoin.script.ScriptExecution;
+import com.bradyrussell.uiscoin.transaction.Transaction;
+import com.bradyrussell.uiscoin.transaction.TransactionBuilder;
+import com.bradyrussell.uiscoin.transaction.TransactionInput;
+import com.bradyrussell.uiscoin.transaction.TransactionOutput;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -19,32 +23,22 @@ import java.util.Scanner;
 public class Main {
 
     public static void main(String[] args) {
-        UISCoinKeypair coinKeypair = UISCoinKeypair.Create();
-        try {
-            Keys.SignedData signedData = Keys.SignData(coinKeypair.Keys, Hash.getSHA512Bytes("What is the message??"));
 
-            byte[] script = new ScriptBuilder(256).push(signedData.Pubkey).push(signedData.Signature).fromText("flip VERIFYSIG return").get();
+      UISCoinKeypair coinKeypair = UISCoinKeypair.Create();
+      UISCoinKeypair coinKeypairRecipient = UISCoinKeypair.Create();
 
-            Util.printBytesReadable(script);
-            System.out.println(script.length);
+      TransactionBuilder tb = new TransactionBuilder();
+      Transaction transaction = tb.setVersion(1).setLockTime(-1)
+              .addInput(new TransactionInput(Hash.getSHA512Bytes("Nothing"), 0 , 0))
+              .addOutput(new TransactionOutput(Conversions.CoinsToSatoshis(1), UISCoinAddress.fromPublicKey((ECPublicKey) coinKeypairRecipient.Keys.getPublic())))
+              .signTransaction(coinKeypair).get();
 
-            ScriptExecution scriptExecution = new ScriptExecution();
+        byte[] transactionBinaryData = transaction.getBinaryData();
 
-            scriptExecution.Initialize(script);
-            while(scriptExecution.Step()){
-                scriptExecution.dumpStackReadable();
-            }
+        Util.printBytesReadable(transactionBinaryData);
+        System.out.println("Transaction is "+transactionBinaryData.length+" bytes.");
 
-            System.out.println("Script returned "+!scriptExecution.bScriptFailed);
-
-        } catch (NoSuchAlgorithmException | InvalidKeyException | SignatureException e) {
-            e.printStackTrace();
-        }
-
-
-
-
-       /* Scanner scanner = new Scanner(System.in);
+        Scanner scanner = new Scanner(System.in);
         System.out.println("Enter desired address: ");
         String search = scanner.nextLine();
 
@@ -52,6 +46,9 @@ public class Main {
         while(searching){
             UISCoinKeypair uisCoinKeypair = UISCoinKeypair.Create();
             byte[] address = UISCoinAddress.fromPublicKey((ECPublicKey) uisCoinKeypair.Keys.getPublic());
+
+            //if(!UISCoinAddress.verifyAddressChecksum(address)) continue;;
+
             String string = Base64.getEncoder().encodeToString(address);
            // System.out.println(string);
 
@@ -66,6 +63,6 @@ public class Main {
             }
 
         }
-*/
+
     }
 }

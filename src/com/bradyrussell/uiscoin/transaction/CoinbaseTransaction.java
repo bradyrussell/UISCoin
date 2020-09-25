@@ -4,33 +4,58 @@ import com.bradyrussell.uiscoin.Hash;
 import com.bradyrussell.uiscoin.IBinaryData;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 
 public class CoinbaseTransaction implements IBinaryData {
-    byte[] HashKey; // 64
-    int Index; //4
-    //int CoinbaseScriptLength; // 4
-    byte[] CoinbaseScript; // 64
-    int InputSequenceNumber; //4
+    public int Version; // 4
+    public ArrayList<TransactionOutput> Outputs;
+    public long TimeStamp; // 8
 
     public CoinbaseTransaction() {
+        Outputs = new ArrayList<>();
     }
 
-    public CoinbaseTransaction(byte[] hashKey, int index, byte[] coinbaseScript, int inputSequenceNumber) {
-        HashKey = hashKey;
-        Index = index;
-        CoinbaseScript = coinbaseScript;
-        InputSequenceNumber = inputSequenceNumber;
+    public CoinbaseTransaction(int version, long timeStamp) {
+        Version = version;
+        TimeStamp = timeStamp;
+        Outputs = new ArrayList<>();
     }
+
+    public CoinbaseTransaction(int version, long timeStamp, ArrayList<TransactionOutput> outputs) {
+        Version = version;
+        Outputs = outputs;
+        TimeStamp = timeStamp;
+    }
+
+    public CoinbaseTransaction addOutput(TransactionOutput Output){
+        Outputs.add(Output);
+        return this;
+    }
+
+
+    private int getOutputSize(){
+        int n = 0;
+        for(TransactionOutput output:Outputs){
+            n+=output.getSize();
+        }
+        return n;
+    }
+
 
     @Override
     public byte[] getBinaryData() {
         ByteBuffer buf = ByteBuffer.allocate(getSize());
 
-        buf.put(HashKey);
-        buf.putInt(Index);
-        buf.putInt(CoinbaseScript.length);
-        buf.put(CoinbaseScript);
-        buf.putInt(InputSequenceNumber);
+        buf.putInt(Version);
+
+        buf.putInt(Outputs.size());
+
+        for(TransactionOutput transactionOutput:Outputs){
+            buf.putInt(transactionOutput.getSize());
+            buf.put(transactionOutput.getBinaryData());
+        }
+
+        buf.putLong(TimeStamp);
 
         return buf.array();
     }
@@ -38,19 +63,30 @@ public class CoinbaseTransaction implements IBinaryData {
     @Override
     public void setBinaryData(byte[] Data) {
         ByteBuffer buffer = ByteBuffer.wrap(Data);
-        HashKey = new byte[64];
 
-        buffer.get(HashKey, 0, 64);
-        Index = buffer.getInt();
-        int ScriptLength = buffer.getInt();
-        CoinbaseScript = new byte[ScriptLength];
-        buffer.get(CoinbaseScript);
-        InputSequenceNumber = buffer.getInt();
+        Version = buffer.getInt();
+
+        int NumOutputs = buffer.getInt();
+
+        for(int i = 0; i < NumOutputs; i++){
+            int OutputLen = buffer.getInt();
+
+            TransactionOutput o = new TransactionOutput();
+
+            byte[] dst = new byte[OutputLen];
+            buffer.get(dst);
+
+            o.setBinaryData(dst);
+
+            Outputs.add(o);
+        }
+
+        TimeStamp = buffer.getLong();
     }
 
     @Override
     public int getSize() {
-        return 64+4+4+64+4;
+        return 28 + getOutputSize();
     }
 
     @Override

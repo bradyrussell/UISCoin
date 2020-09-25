@@ -453,8 +453,26 @@ public class ScriptExecution {
                     return true;
                 }
                 case NEGATE -> {
+                    if (Stack.size() < 1) {
+                        bScriptFailed = true;
+                        System.out.println("Too few items in stack");
+                        return false;
+                    }
+                    byte[] A = Stack.pop();
+
+                    Stack.push(NumberToByteArray(-ByteArrayToNumber(A)));
+                    return true;
                 }
                 case INVERT -> {
+                    if (Stack.size() < 1) {
+                        bScriptFailed = true;
+                        System.out.println("Too few items in stack");
+                        return false;
+                    }
+                    byte[] A = Stack.pop();
+
+                    Stack.push(NumberToByteArray((int) (1.0/(double) ByteArrayToNumber(A))));
+                    return true;
                 }
                 case BITNOT -> {
                     if (Stack.size() < 1) {
@@ -511,6 +529,23 @@ public class ScriptExecution {
                     return true;
                 }
                 case BITXOR -> {
+                    if (Stack.size() < 2) {
+                        bScriptFailed = true;
+                        System.out.println("Too few items in stack");
+                        return false;
+                    }
+                    byte[] B = Stack.pop();
+                    byte[] A = Stack.pop();
+                    byte[] C = new byte[A.length];
+
+                    if (A.length != B.length) return false;
+
+                    for (int i = 0, aLength = A.length; i < aLength; i++) {
+                        C[i] = (byte) (A[i] ^ B[i]);
+                    }
+
+                    Stack.push(C);
+                    return true;
                 }
                 case APPEND -> {
                     if (Stack.size() < 2) {
@@ -621,7 +656,7 @@ public class ScriptExecution {
                     return false;
                 }
                 case LOCKTIMEVERIFY -> {
-                    return true;
+
                 }
                 case SHA512 -> {
                     Stack.push(Hash.getSHA512Bytes(Stack.pop()));
@@ -649,7 +684,7 @@ public class ScriptExecution {
 
                 }
                 case CODESEPARATOR -> {
-                    return true;
+
                 }
                 case LIMIT -> {
                     if (Stack.size() < 2) {

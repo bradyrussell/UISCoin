@@ -68,6 +68,7 @@ public class Block implements IBinaryData {
 
         buf.put(Header.getBinaryData());
 
+        buf.putInt(Coinbase.getSize());
         buf.put(Coinbase.getBinaryData());
 
         buf.putInt(Transactions.size()); // transaction list prefixed with number of transactions
@@ -89,8 +90,10 @@ public class Block implements IBinaryData {
         Header = new BlockHeader();
         Header.setBinaryData(header);
 
-        byte[] coinbase = new byte[140];
-        buffer.get(coinbase, 0, 140);
+        int coinbaseSize = buffer.getInt();
+        byte[] coinbase = new byte[coinbaseSize];
+        buffer.get(coinbase, 0, coinbaseSize);
+
         Coinbase = new CoinbaseTransaction();
         Coinbase.setBinaryData(coinbase);
 
@@ -109,7 +112,7 @@ public class Block implements IBinaryData {
 
     @Override
     public int getSize() {
-        return 148+4+140+getTransactionsSize();
+        return Header.getSize()+Coinbase.getSize()+getTransactionsSize()+4+4;
     }
 
     @Override

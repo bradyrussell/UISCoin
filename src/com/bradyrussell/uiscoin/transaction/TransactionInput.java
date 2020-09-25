@@ -6,8 +6,8 @@ import com.bradyrussell.uiscoin.IBinaryData;
 import java.nio.ByteBuffer;
 
 public class TransactionInput  implements IBinaryData {
-    public byte[] HashKey; // 64
-    public int IndexNumber; // 4
+    public byte[] InputHash; // 64 // the UTXO hash // also txOutpoint??
+    public int IndexNumber; // 4  // the UTXO index
     //public int SignatureScriptLength; // 4
 
     public byte[] UnlockingScript; // response script
@@ -17,11 +17,17 @@ public class TransactionInput  implements IBinaryData {
     public TransactionInput() {
     }
 
-    public TransactionInput(byte[] hashKey, int indexNumber, byte[] responseScript, int inputSequenceNumber) {
-        HashKey = hashKey;
+    public TransactionInput(byte[] inputHash, int indexNumber) {
+        InputHash = inputHash;
         IndexNumber = indexNumber;
         //SignatureScriptLength = signatureScriptLength;
-        UnlockingScript = responseScript;
+        InputSequenceNumber = 0;
+    }
+
+    public TransactionInput(byte[] inputHash, int indexNumber, int inputSequenceNumber) {
+        InputHash = inputHash;
+        IndexNumber = indexNumber;
+        //SignatureScriptLength = signatureScriptLength;
         InputSequenceNumber = inputSequenceNumber;
     }
 
@@ -29,8 +35,9 @@ public class TransactionInput  implements IBinaryData {
     public byte[] getBinaryData() {
         ByteBuffer buf = ByteBuffer.allocate(getSize());
 
-        buf.put(HashKey);
+        buf.put(InputHash);
         buf.putInt(IndexNumber);
+
         buf.putInt(UnlockingScript.length);
         buf.put(UnlockingScript);
         buf.putInt(InputSequenceNumber);
@@ -42,9 +49,9 @@ public class TransactionInput  implements IBinaryData {
     public void setBinaryData(byte[] Data) {
         ByteBuffer buffer = ByteBuffer.wrap(Data);
 
-        HashKey = new byte[64];
+        InputHash = new byte[64];
 
-        buffer.get(HashKey, 0, 64);
+        buffer.get(InputHash, 0, 64);
         IndexNumber = buffer.getInt();
         int SignatureScriptLength = buffer.getInt();
         UnlockingScript = new byte[SignatureScriptLength];
