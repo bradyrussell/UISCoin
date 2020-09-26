@@ -19,7 +19,7 @@ public class TransactionOutputBuilder {
 
     // https://learnmeabitcoin.com/technical/p2pkh
     public TransactionOutputBuilder setPayToPublicKeyHash(byte[] PublicKeyHash){
-        output.LockingScript = new ScriptBuilder(128)
+        output.LockingScript = new ScriptBuilder(128) // todo or the wallet could strip the checksum itself... that would make more sense
                 .op(ScriptOperator.DUP) // dup the public key
                 .op(ScriptOperator.SHA512) // hash it
                 .push(PublicKeyHash) // push the address
