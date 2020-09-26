@@ -55,7 +55,7 @@ public class ScriptTest {
     @DisplayName("Script Boolean Logic")
     void TestScriptBoolLogic() {
         ScriptBuilder sb = new ScriptBuilder(64);
-        sb.fromText("true true true false true false true true false false false true and or or and xor xor xor xor xor xor xor verify return");
+        sb.fromText("true true true false true false true true false false false true and or or and xor xor xor xor xor xor xor verify");
         System.out.println(Arrays.toString(sb.get()));
 
         ScriptExecution scriptExecution = new ScriptExecution();
@@ -217,7 +217,7 @@ public class ScriptTest {
         A = Hash.getSHA512Bytes(A);
 
         ScriptBuilder sb = new ScriptBuilder(256);
-        sb.push(A).push(B).fromText("sha512 swap sha512 lenequal verify return");
+        sb.push(A).push(B).fromText("sha512 swap sha512 lenequal verify");
 
         System.out.println(Arrays.toString(sb.get()));
 
@@ -311,18 +311,18 @@ public class ScriptTest {
         UISCoinKeypair coinKeypairRecipient = UISCoinKeypair.Create();
 
         byte[] addressv1 = UISCoinAddress.fromPublicKey((ECPublicKey) coinKeypairRecipient.Keys.getPublic());
-        byte[] recipientPubkeyHash = new byte[addressv1.length - 4];
-        System.arraycopy(addressv1, 0, recipientPubkeyHash, 0, addressv1.length - 4);
+
+        UISCoinAddress.DecodedAddress decodedAddress = UISCoinAddress.decodeAddress(addressv1);
 
         assertTrue(UISCoinAddress.verifyAddressChecksum(addressv1));
 
         byte[] pubkey_sha512Bytes = Hash.getSHA512Bytes(coinKeypairRecipient.Keys.getPublic().getEncoded());
 
-        Util.printBytesReadable(recipientPubkeyHash);
+        Util.printBytesReadable(decodedAddress.PublicKeyHash);
         Util.printBytesReadable(pubkey_sha512Bytes);
-        assertTrue(Arrays.equals(recipientPubkeyHash, pubkey_sha512Bytes));
+        assertTrue(Arrays.equals(decodedAddress.PublicKeyHash, pubkey_sha512Bytes));
 
-        byte[] lockingScriptBytes = new TransactionOutputBuilder().setAmount(Conversions.CoinsToSatoshis(1.0)).setPayToPublicKeyHash(recipientPubkeyHash).get().LockingScript;
+        byte[] lockingScriptBytes = new TransactionOutputBuilder().setAmount(Conversions.CoinsToSatoshis(1.0)).setPayToPublicKeyHash(decodedAddress.PublicKeyHash).get().LockingScript;
         byte[] unlockingScriptBytes = new TransactionInputBuilder().setUnlockPayToPublicKeyHash(coinKeypairRecipient, lockingScriptBytes).get().UnlockingScript;
 
         ScriptExecution unlockingScript = new ScriptExecution();

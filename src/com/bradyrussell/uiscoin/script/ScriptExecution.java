@@ -656,11 +656,16 @@ public class ScriptExecution {
                     return true;
                 }
                 case VERIFY -> {
-                    byte[] bytes = Stack.peek();
+                    byte[] bytes = Stack.pop();
                     System.out.println("Verify " + Arrays.toString(bytes) + " == true: " + (bytes.length == 1 && bytes[0] == 1));
 
-                    bScriptFailed = !(bytes.length == 1 && bytes[0] == 1);
-                    return false;
+                    if(!(bytes.length == 1 && bytes[0] == 1)) {
+                        bScriptFailed = true;
+                        return false;
+                    }
+
+                    System.out.println("Verify confirmed, continuing...");
+                    return true;
                 }
                 case RETURN -> {
                     bScriptFailed = true;
