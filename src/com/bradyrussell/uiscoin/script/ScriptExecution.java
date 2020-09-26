@@ -71,7 +71,6 @@ public class ScriptExecution {
         }
     }
 
-
     public String getStackContents() {
         StringBuilder s = new StringBuilder();
 

@@ -314,6 +314,14 @@ public class ScriptTest {
         byte[] recipientPubkeyHash = new byte[addressv1.length - 4];
         System.arraycopy(addressv1, 0, recipientPubkeyHash, 0, addressv1.length - 4);
 
+        assertTrue(UISCoinAddress.verifyAddressChecksum(addressv1));
+
+        byte[] pubkey_sha512Bytes = Hash.getSHA512Bytes(coinKeypairRecipient.Keys.getPublic().getEncoded());
+
+        Util.printBytesReadable(recipientPubkeyHash);
+        Util.printBytesReadable(pubkey_sha512Bytes);
+        assertTrue(Arrays.equals(recipientPubkeyHash, pubkey_sha512Bytes));
+
         byte[] lockingScriptBytes = new TransactionOutputBuilder().setAmount(Conversions.CoinsToSatoshis(1.0)).setPayToPublicKeyHash(recipientPubkeyHash).get().LockingScript;
         byte[] unlockingScriptBytes = new TransactionInputBuilder().setUnlockPayToPublicKeyHash(coinKeypairRecipient, lockingScriptBytes).get().UnlockingScript;
 

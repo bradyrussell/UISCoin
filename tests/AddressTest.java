@@ -1,4 +1,5 @@
 import com.bradyrussell.uiscoin.Keys;
+import com.bradyrussell.uiscoin.Util;
 import com.bradyrussell.uiscoin.address.UISCoinAddress;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.RepeatedTest;
@@ -23,14 +24,22 @@ public class AddressTest {
 
             KeyPair keyPair = Keys.makeKeyPair(Randomseed);
 
-            byte[] publicKey = UISCoinAddress.fromPublicKey((ECPublicKey) keyPair.getPublic());
+            byte[] address = UISCoinAddress.fromPublicKey((ECPublicKey) keyPair.getPublic());
 
-            System.out.println(UISCoinAddress.verifyAddressChecksum(publicKey));
+            System.out.println(UISCoinAddress.verifyAddressChecksum(address));
 
-            System.out.println(Base64.getEncoder().encodeToString(publicKey));
-            System.out.println(publicKey.length);
+            System.out.println(Base64.getEncoder().encodeToString(address));
+            System.out.println(address.length);
 
-            assertTrue(UISCoinAddress.verifyAddressChecksum(publicKey));
+            UISCoinAddress.DecodedAddress decodedAddress = UISCoinAddress.decodeAddress(address);
+            System.out.println("Address Type: "+decodedAddress.Type);
+            System.out.println("Address Version: "+decodedAddress.Version);
+            System.out.print("Address PubKeyHash: ");
+            Util.printBytesReadable(decodedAddress.PublicKeyHash);
+            System.out.print("Address Checksum: ");
+            Util.printBytesReadable(decodedAddress.Checksum);
+
+            assertTrue(UISCoinAddress.verifyAddressChecksum(address));
 
         } catch (NoSuchAlgorithmException | InvalidAlgorithmParameterException e) {
             e.printStackTrace();
