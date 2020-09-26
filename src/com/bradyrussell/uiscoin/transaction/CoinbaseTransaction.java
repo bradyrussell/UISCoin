@@ -2,11 +2,12 @@ package com.bradyrussell.uiscoin.transaction;
 
 import com.bradyrussell.uiscoin.Hash;
 import com.bradyrussell.uiscoin.IBinaryData;
+import com.bradyrussell.uiscoin.IVerifiable;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
-public class CoinbaseTransaction implements IBinaryData {
+public class CoinbaseTransaction implements IBinaryData, IVerifiable {
     public int Version; // 4
     public ArrayList<TransactionOutput> Outputs;
     public long TimeStamp; // 8
@@ -93,5 +94,17 @@ public class CoinbaseTransaction implements IBinaryData {
     @Override
     public byte[] getHash() {
         return Hash.getSHA512Bytes(getBinaryData());
+    }
+
+    @Override
+    public boolean Verify() {
+        return VerifyOutputs();
+    }
+
+    private boolean VerifyOutputs(){
+        for(TransactionOutput output:Outputs){
+            if(!output.Verify()) return false;
+        }
+        return true;
     }
 }

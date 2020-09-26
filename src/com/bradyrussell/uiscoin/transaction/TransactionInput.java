@@ -2,10 +2,11 @@ package com.bradyrussell.uiscoin.transaction;
 
 import com.bradyrussell.uiscoin.Hash;
 import com.bradyrussell.uiscoin.IBinaryData;
+import com.bradyrussell.uiscoin.IVerifiable;
 
 import java.nio.ByteBuffer;
 
-public class TransactionInput  implements IBinaryData {
+public class TransactionInput  implements IBinaryData, IVerifiable {
     public byte[] InputHash; // 64 // the UTXO hash // also txOutpoint??
     public int IndexNumber; // 4  // the UTXO index
     //public int SignatureScriptLength; // 4
@@ -68,5 +69,10 @@ public class TransactionInput  implements IBinaryData {
     @Override
     public byte[] getHash() {
         return Hash.getSHA512Bytes(getBinaryData());
+    }
+
+    @Override
+    public boolean Verify() {
+        return false;
     }
 }

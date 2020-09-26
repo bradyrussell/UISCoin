@@ -2,6 +2,7 @@ package com.bradyrussell.uiscoin.block;
 
 import com.bradyrussell.uiscoin.Hash;
 import com.bradyrussell.uiscoin.IBinaryData;
+import com.bradyrussell.uiscoin.IVerifiable;
 import com.bradyrussell.uiscoin.Util;
 import com.bradyrussell.uiscoin.transaction.CoinbaseTransaction;
 import com.bradyrussell.uiscoin.transaction.Transaction;
@@ -10,7 +11,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Block implements IBinaryData {
+public class Block implements IBinaryData, IVerifiable {
     public BlockHeader Header;
     public CoinbaseTransaction Coinbase;
     public ArrayList<Transaction> Transactions;
@@ -111,9 +112,11 @@ public class Block implements IBinaryData {
     public int setBinaryData(byte[] Data) {
         ByteBuffer buffer = ByteBuffer.wrap(Data);
 
-        byte[] header = new byte[148];
-        buffer.get(header, 0, 148);
         Header = new BlockHeader();
+
+        byte[] header = new byte[Header.getSize()];
+        buffer.get(header, 0, Header.getSize());
+
         Header.setBinaryData(header);
 
         int coinbaseSize = buffer.getInt();
@@ -145,5 +148,17 @@ public class Block implements IBinaryData {
     @Override
     public byte[] getHash() {
         return Hash.getSHA512Bytes(getBinaryData());
+    }
+
+    @Override
+    public boolean Verify() {
+        return Header.Verify() && Coinbase.Verify() && VerifyTransactions();
+    }
+
+    private boolean VerifyTransactions(){
+        for(Transaction transaction:Transactions){
+            if(!transaction.Verify()) return false;
+        }
+        return true;
     }
 }

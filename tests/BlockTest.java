@@ -42,7 +42,7 @@ public class BlockTest {
                 .addOutput(new TransactionOutput(Conversions.CoinsToSatoshis(.5), RandomHash2))
                 .signTransaction(uisCoinKeypair).get();
 
-        Block block = new Block(new BlockHeader(1,timeStamp,1));
+        Block block = new Block(new BlockHeader(1,timeStamp,1, 0));
 
         block.addCoinbaseTransaction(new CoinbaseTransaction(1,1).addOutput(new TransactionOutput(Conversions.CoinsToSatoshis(1), RandomHash6)));
         block.addTransaction(transaction);
