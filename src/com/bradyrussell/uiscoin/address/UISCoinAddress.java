@@ -4,7 +4,6 @@ import com.bradyrussell.uiscoin.Hash;
 import com.bradyrussell.uiscoin.MagicBytes;
 import com.bradyrussell.uiscoin.Util;
 
-import java.nio.ByteBuffer;
 import java.security.interfaces.ECPublicKey;
 
 public class UISCoinAddress {

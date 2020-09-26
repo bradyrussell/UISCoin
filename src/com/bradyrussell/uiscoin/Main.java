@@ -3,23 +3,13 @@ package com.bradyrussell.uiscoin;
 import com.bradyrussell.uiscoin.address.UISCoinAddress;
 import com.bradyrussell.uiscoin.address.UISCoinKeypair;
 import com.bradyrussell.uiscoin.address.Wallet;
-import com.bradyrussell.uiscoin.script.ScriptBuilder;
-import com.bradyrussell.uiscoin.script.ScriptExecution;
-import com.bradyrussell.uiscoin.script.ScriptOperator;
-import com.bradyrussell.uiscoin.transaction.*;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.security.InvalidKeyException;
-import java.security.KeyPair;
-import java.security.NoSuchAlgorithmException;
-import java.security.SignatureException;
 import java.security.interfaces.ECPublicKey;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
-import java.util.Scanner;
 
 public class Main {
 
