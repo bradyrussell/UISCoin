@@ -772,7 +772,7 @@ public class ScriptExecution {
                         return false;
                     }
                     byte[] A = Stack.peek();
-                    Stack.push(new byte[]{(byte) A.length});
+                    Stack.push(NumberToByteArray(A.length));
 
                     return true;
 

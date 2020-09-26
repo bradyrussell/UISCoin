@@ -8,7 +8,6 @@ public enum MagicBytes {
     AddressVersion2(0xb2),
     AddressVersion3(0xb3),
 
-    NodeP2PPort(0x6540),
     ;
 
     public final byte Value;

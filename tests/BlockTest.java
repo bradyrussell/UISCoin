@@ -1,13 +1,17 @@
 import com.bradyrussell.uiscoin.Conversions;
+import com.bradyrussell.uiscoin.Hash;
 import com.bradyrussell.uiscoin.address.UISCoinKeypair;
 import com.bradyrussell.uiscoin.block.Block;
+import com.bradyrussell.uiscoin.block.BlockBuilder;
 import com.bradyrussell.uiscoin.block.BlockHeader;
 import com.bradyrussell.uiscoin.transaction.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -57,5 +61,18 @@ public class BlockTest {
         for (int i = 0, blockBinaryDataLength = blockBinaryData.length; i < blockBinaryDataLength; i++) {
             if(blockBinaryData[i] != deserializedBlockBinaryData[i]) fail("Byte mismatch at position "+i+"\n"+Arrays.toString(blockBinaryData)+"\n"+Arrays.toString(deserializedBlockBinaryData));
         }
+    }
+    @Test
+    @DisplayName("BlockBuilder")
+    void TestBlockBuilder(){
+        UISCoinKeypair MinerKeys = UISCoinKeypair.Create();
+
+            Block b = new BlockBuilder().setVersion(1).setHashPreviousBlock(Hash.getSHA512Bytes("CHANGEME"))
+                    .setTimestamp(Instant.now().getEpochSecond()).setDifficultyTarget(1)
+                    .setCoinbase(new CoinbaseTransaction(1, Instant.now().getEpochSecond()).addOutput(new TransactionOutput(Conversions.CoinsToSatoshis(1),MinerKeys.Keys.getPublic().getEncoded())))
+                    .addTransaction(new TransactionBuilder().setVersion(1).setLockTime(0).addInput(new TransactionInput(new byte[0], 0)).addOutput(new TransactionOutput(Conversions.CoinsToSatoshis(1),MinerKeys.Keys.getPublic().getEncoded())).signTransaction(MinerKeys).get()).CalculateMerkleRoot().get();
+
+            System.out.println(b.getSize());
+            System.out.println(Base64.getEncoder().encodeToString(b.getHash()));
     }
 }
