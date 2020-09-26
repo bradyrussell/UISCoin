@@ -1,7 +1,5 @@
 package com.bradyrussell.uiscoin.script;
 
-import com.bradyrussell.uiscoin.Util;
-
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -103,7 +101,7 @@ public class ScriptBuilder {
 
                 System.out.println("Token "+i+": Begin comment # ");
                 do { // single byte
-                    /*I = */;
+                    /*I = */
                     System.out.println("Token "+i+": comment Element "+parts[i].replace("#", "").replace("#", "") + " from comment part "+parts[i]);
                 }while(!parts[i++].endsWith("#"));
             }
@@ -139,7 +137,7 @@ public class ScriptBuilder {
                     StringBuilder sb = new StringBuilder();
                     System.out.println("Token "+i+": Begin String ' ");
                     do { // single byte
-                        /*I = */;
+                        /*I = */
                         sb.append(parts[i].replace("'", "")/*.replace("'", "")*/);
                         if(!parts[i].endsWith("'")) sb.append(" ");
                         System.out.println("Token "+i+": String Element "+parts[i].replace("'", "").replace("'", "") + " from string part "+parts[i]);
@@ -152,7 +150,7 @@ public class ScriptBuilder {
                     ArrayList<Byte> bytes = new ArrayList<>();
                     System.out.println("Token "+i+": Begin Byte Array [  ");
                     do { // single byte
-                        /*I = */;
+                        /*I = */
                         byte parseByte = Byte.parseByte(parts[i].replace("[", "").replace("]", "").replace(",", ""));
                         bytes.add(parseByte);
                         System.out.println("Token "+i+": Byte Array Element "+parseByte + " from string part "+parts[i]);

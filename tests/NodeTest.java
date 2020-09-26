@@ -1,5 +1,4 @@
 import com.bradyrussell.uiscoin.Conversions;
-import com.bradyrussell.uiscoin.Encryption;
 import com.bradyrussell.uiscoin.address.UISCoinKeypair;
 import com.bradyrussell.uiscoin.block.Block;
 import com.bradyrussell.uiscoin.block.BlockHeader;

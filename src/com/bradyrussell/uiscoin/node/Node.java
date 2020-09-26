@@ -1,6 +1,5 @@
 package com.bradyrussell.uiscoin.node;
 
-import com.bradyrussell.uiscoin.MagicBytes;
 import com.bradyrussell.uiscoin.MagicNumbers;
 
 import java.io.IOException;
@@ -44,9 +43,7 @@ public class Node {
     }
 
     public void SendAll(byte[] Data) {
-        Peers.forEach((k,v)-> {
-            v.Send(Data);
-        });
+        Peers.forEach((k,v)-> v.Send(Data));
     }
 
     public boolean Receive(DatagramPacket packet){

@@ -2,7 +2,6 @@ package com.bradyrussell.uiscoin.transaction;
 
 import com.bradyrussell.uiscoin.Hash;
 import com.bradyrussell.uiscoin.Keys;
-import com.bradyrussell.uiscoin.Util;
 import com.bradyrussell.uiscoin.address.UISCoinKeypair;
 import com.bradyrussell.uiscoin.script.ScriptBuilder;
 

@@ -1,6 +1,4 @@
 import com.bradyrussell.uiscoin.Hash;
-import com.bradyrussell.uiscoin.Keys;
-import com.bradyrussell.uiscoin.MagicBytes;
 import com.bradyrussell.uiscoin.Util;
 import com.bradyrussell.uiscoin.script.ScriptBuilder;
 import com.bradyrussell.uiscoin.script.ScriptExecution;
@@ -9,12 +7,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
-import java.nio.ByteBuffer;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.KeyPair;
-import java.security.NoSuchAlgorithmException;
-import java.security.interfaces.ECPrivateKey;
-import java.security.interfaces.ECPublicKey;
 import java.util.Arrays;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -37,7 +29,6 @@ public class ScriptTest {
                 //.op(ScriptOperator.BYTESEQUAL)
                 .op(ScriptOperator.VERIFY);
 
-        ;
         System.out.println(Arrays.toString(sb.get()));
 
         ScriptExecution scriptExecution = new ScriptExecution();

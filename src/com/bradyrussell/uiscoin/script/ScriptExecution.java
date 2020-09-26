@@ -713,9 +713,7 @@ public class ScriptExecution {
                     int NumberOfBytesToPush = B[0];
                     byte[] bytes = new byte[NumberOfBytesToPush];
 
-                    for (int i = 0; i < NumberOfBytesToPush; i++) {
-                        bytes[i] = A[i];
-                    }
+                    if (NumberOfBytesToPush >= 0) System.arraycopy(A, 0, bytes, 0, NumberOfBytesToPush);
 
                     Stack.push(bytes);
                     return true;
