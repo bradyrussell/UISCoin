@@ -1,6 +1,9 @@
 import com.bradyrussell.uiscoin.Keys;
 import com.bradyrussell.uiscoin.address.UISCoinKeypair;
 import com.bradyrussell.uiscoin.address.Wallet;
+import com.bradyrussell.uiscoin.script.ScriptBuilder;
+import com.bradyrussell.uiscoin.script.ScriptExecution;
+import com.bradyrussell.uiscoin.script.ScriptOperator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.RepeatedTest;
 
@@ -23,12 +26,27 @@ public class KeysTest {
 
             KeyPair keyPair = Keys.makeKeyPair(Randomseed);
 
-            byte[] RandomHash1 = new byte[64];
+            byte[] LOCKSCRIPT = new ScriptBuilder(256).push(keyPair.getPublic().getEncoded()).op(ScriptOperator.VERIFYSIG).get();
 
-            ThreadLocalRandom.current().nextBytes(RandomHash1);
+            Keys.SignedData signedData = Keys.SignData(keyPair, LOCKSCRIPT);
 
-            Keys.SignedData signedData = Keys.SignData(keyPair, RandomHash1);
             assertTrue(Keys.VerifySignedData(signedData));
+
+            ScriptExecution unlockingScript = new ScriptExecution();
+            unlockingScript.Initialize(new ScriptBuilder(256).push(signedData.Signature).get());
+
+            while(unlockingScript.Step()){
+                unlockingScript.dumpStack();
+            }
+
+            ScriptExecution lockingScript = new ScriptExecution();
+            lockingScript.Initialize(LOCKSCRIPT, unlockingScript.Stack.elements());
+
+            while(lockingScript.Step()){
+                lockingScript.dumpStack();
+            }
+
+            assertFalse(lockingScript.bScriptFailed);
 
         } catch (NoSuchAlgorithmException | InvalidAlgorithmParameterException | InvalidKeyException | SignatureException | InvalidKeySpecException e) {
             e.printStackTrace();

@@ -21,6 +21,7 @@ public class ScriptExecution {
         this.Script = Script;
         Stack = new Stack<>();
         //validate
+        System.out.println("Script initialized "+Script.length+" bytes with empty stack.");
         return true;
     }
 
@@ -32,6 +33,8 @@ public class ScriptExecution {
             byte[] b = it.next();
             Stack.push(b);
         }
+        System.out.println("Script initialized "+Script.length+" bytes with "+getStackDepth()+" value"+(getStackDepth() == 1 ? "" : "s")+" on the stack.");
+        System.out.println(getStackContents());
         return true;
     }
 
@@ -74,6 +77,7 @@ public class ScriptExecution {
 
         for (Object b : Stack.toArray()) {
             s.append(Arrays.toString((byte[]) b));
+            s.append('\n');
         }
 
         return s.toString();
@@ -680,9 +684,10 @@ public class ScriptExecution {
                     byte[] PublicKey = Stack.pop();
                     byte[] Signature = Stack.pop();
 
-                    Keys.SignedData signedData = new Keys.SignedData(PublicKey, Signature, Hash.getSHA512Bytes("What is the message??"));
+                    Keys.SignedData signedData = new Keys.SignedData(PublicKey, Signature, Script);
                     try {
                         boolean verifySignedData = Keys.VerifySignedData(signedData);
+                        System.out.println("Signature verification "+(verifySignedData? "successful.":"failed!"));
                         bScriptFailed = !verifySignedData;
                         return false;
                     } catch (NoSuchAlgorithmException | InvalidKeySpecException | InvalidKeyException | SignatureException e) {
