@@ -8,10 +8,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Stack;
+import java.util.*;
 
 public class ScriptExecution {
     public int InstructionCounter;
@@ -24,6 +21,17 @@ public class ScriptExecution {
         this.Script = Script;
         Stack = new Stack<>();
         //validate
+        return true;
+    }
+
+    public boolean Initialize(byte[] Script, Enumeration<byte[]> StackValues) {
+        this.Script = Script;
+        Stack = new Stack<>();
+        //validate
+        for (Iterator<byte[]> it = StackValues.asIterator(); it.hasNext(); ) {
+            byte[] b = it.next();
+            Stack.push(b);
+        }
         return true;
     }
 
