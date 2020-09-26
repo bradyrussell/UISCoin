@@ -1,6 +1,7 @@
 import com.bradyrussell.uiscoin.Hash;
 import com.bradyrussell.uiscoin.Keys;
 import com.bradyrussell.uiscoin.MagicBytes;
+import com.bradyrussell.uiscoin.Util;
 import com.bradyrussell.uiscoin.script.ScriptBuilder;
 import com.bradyrussell.uiscoin.script.ScriptExecution;
 import com.bradyrussell.uiscoin.script.ScriptOperator;
@@ -18,6 +19,7 @@ import java.util.Arrays;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ScriptTest {
     @Test
@@ -237,4 +239,33 @@ public class ScriptTest {
 
         assertFalse(scriptExecution.bScriptFailed);
     }
+
+    @Test @DisplayName("Script Builder & Text Parser Parity")
+    void TestBuilderAndTextParity(){
+        byte[] A = new byte[64];
+
+        ThreadLocalRandom.current().nextBytes(A);
+
+        byte[] a  = new ScriptBuilder(128)
+                .op(ScriptOperator.DUP) // dup the public key
+                .op(ScriptOperator.SHA512) // hash it
+                .push(A) // push the address
+                .op(ScriptOperator.LEN) // take its length
+                .pushInt(4) // push 4
+                .op(ScriptOperator.SWAP) // make length the top stack element, then 4
+                .op(ScriptOperator.SUBTRACT) // do length - 4
+                .op(ScriptOperator.LIMIT) // limit the address to length - 4 (remove checksum)
+                .op(ScriptOperator.BYTESEQUAL) // equal to pubkey hash?
+                .op(ScriptOperator.VERIFY)
+                .op(ScriptOperator.VERIFYSIG)
+                .get();
+
+        byte[] b= new ScriptBuilder(128).fromText("dup sha512").push(A).fromText("len push 4 swap subtract limit bytesequal verify verifysig").get();
+
+        Util.printBytesReadable(a);
+        Util.printBytesReadable(b);
+
+        assertTrue(Arrays.equals(a,b));
+    }
+
 }

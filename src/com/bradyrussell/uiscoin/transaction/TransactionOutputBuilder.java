@@ -32,6 +32,8 @@ public class TransactionOutputBuilder {
                 .op(ScriptOperator.VERIFY)
                 .op(ScriptOperator.VERIFYSIG)
                 .get();
+
+        new ScriptBuilder(128).fromText("dup sha512").push(PublicKeyHash).fromText("len push 4 swap subtract limit bytesequal verify verifysig").get();
         return this;
     }
 
