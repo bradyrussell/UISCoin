@@ -3,6 +3,7 @@ package com.bradyrussell.uiscoin.script;
 import com.bradyrussell.uiscoin.Hash;
 import com.bradyrussell.uiscoin.Keys;
 import com.bradyrussell.uiscoin.Util;
+import com.bradyrussell.uiscoin.transaction.TransactionOutput;
 
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -14,6 +15,8 @@ public class ScriptExecution {
     public int InstructionCounter;
     public Stack<byte[]> Stack;
     public boolean bScriptFailed = false;
+
+    private byte[] SignatureVerificationMessage = null; // we need a way to pass in the data for verifysig. i dont like this but...
 
     public byte[] Script;
 
@@ -36,6 +39,10 @@ public class ScriptExecution {
         System.out.println("Script initialized "+Script.length+" bytes with "+getStackDepth()+" value"+(getStackDepth() == 1 ? "" : "s")+" on the stack.");
         System.out.println(getStackContents());
         return true;
+    }
+
+    public void setSignatureVerificationMessage(byte[] signatureVerificationMessage) {
+        SignatureVerificationMessage = signatureVerificationMessage;
     }
 
     public static int ByteArrayToNumber(byte[] Bytes) {
@@ -679,6 +686,11 @@ public class ScriptExecution {
                     return true;
                 }
                 case VERIFYSIG -> {
+                    if(SignatureVerificationMessage == null) {
+                        System.out.println("SignatureVerificationMessage has not been set");
+                        bScriptFailed = true;
+                        return false;
+                    }
                     if (Stack.size() < 2) {
                         System.out.println("Too few items in stack");
                         bScriptFailed = true;
@@ -688,7 +700,7 @@ public class ScriptExecution {
                     byte[] PublicKey = Stack.pop();
                     byte[] Signature = Stack.pop();
 
-                    Keys.SignedData signedData = new Keys.SignedData(PublicKey, Signature, Script);
+                    Keys.SignedData signedData = new Keys.SignedData(PublicKey, Signature, SignatureVerificationMessage);
                     try {
                         boolean verifySignedData = Keys.VerifySignedData(signedData);
                         System.out.println("Signature verification "+(verifySignedData? "successful.":"failed!"));

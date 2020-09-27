@@ -11,7 +11,7 @@ public class TransactionInput  implements IBinaryData, IVerifiable {
     public int IndexNumber; // 4  // the UTXO index
     //public int SignatureScriptLength; // 4
 
-    public byte[] UnlockingScript; // response script
+    public byte[] UnlockingScript; // response script // aka scriptSig
 
     public int InputSequenceNumber; // 4 // not used, we can make this something else
 

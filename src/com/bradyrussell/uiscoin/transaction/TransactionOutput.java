@@ -8,7 +8,7 @@ import java.nio.ByteBuffer;
 
 public class TransactionOutput  implements IBinaryData, IVerifiable {
     public long Amount;
-    public byte[] LockingScript;
+    public byte[] LockingScript; // aka scriptPubkey
 
     public TransactionOutput() {
     }

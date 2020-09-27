@@ -7,6 +7,7 @@ import com.bradyrussell.uiscoin.script.ScriptBuilder;
 import com.bradyrussell.uiscoin.script.ScriptExecution;
 import com.bradyrussell.uiscoin.script.ScriptOperator;
 import com.bradyrussell.uiscoin.transaction.TransactionInputBuilder;
+import com.bradyrussell.uiscoin.transaction.TransactionOutput;
 import com.bradyrussell.uiscoin.transaction.TransactionOutputBuilder;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.RepeatedTest;
@@ -268,8 +269,9 @@ public class ScriptTest {
     void TestPayToPublicKey(){
         UISCoinKeypair coinKeypairRecipient = UISCoinKeypair.Create();
 
-        byte[] lockingScriptBytes = new TransactionOutputBuilder().setAmount(Conversions.CoinsToSatoshis(1.0)).setPayToPublicKey(coinKeypairRecipient.Keys.getPublic().getEncoded()).get().LockingScript;
-        byte[] unlockingScriptBytes = new TransactionInputBuilder().setUnlockPayToPublicKey(coinKeypairRecipient, lockingScriptBytes).get().UnlockingScript;
+        TransactionOutput transactionOutput = new TransactionOutputBuilder().setAmount(Conversions.CoinsToSatoshis(1.0)).setPayToPublicKey(coinKeypairRecipient.Keys.getPublic().getEncoded()).get();
+        byte[] lockingScriptBytes = transactionOutput.LockingScript;
+        byte[] unlockingScriptBytes = new TransactionInputBuilder().setUnlockPayToPublicKey(coinKeypairRecipient, transactionOutput).get().UnlockingScript;
 
         ScriptExecution unlockingScript = new ScriptExecution();
         unlockingScript.Initialize(unlockingScriptBytes);
@@ -289,6 +291,7 @@ public class ScriptTest {
 
         ScriptExecution lockingScript = new ScriptExecution();
         lockingScript.Initialize(lockingScriptBytes, unlockingScript.Stack.elements());
+        lockingScript.setSignatureVerificationMessage(transactionOutput.getHash());
 
         System.out.println("Running locking script...");
 
@@ -322,8 +325,9 @@ public class ScriptTest {
         Util.printBytesReadable(pubkey_sha512Bytes);
         assertTrue(Arrays.equals(decodedAddress.PublicKeyHash, pubkey_sha512Bytes));
 
-        byte[] lockingScriptBytes = new TransactionOutputBuilder().setAmount(Conversions.CoinsToSatoshis(1.0)).setPayToPublicKeyHash(decodedAddress.PublicKeyHash).get().LockingScript;
-        byte[] unlockingScriptBytes = new TransactionInputBuilder().setUnlockPayToPublicKeyHash(coinKeypairRecipient, lockingScriptBytes).get().UnlockingScript;
+        TransactionOutput transactionOutput = new TransactionOutputBuilder().setAmount(Conversions.CoinsToSatoshis(1.0)).setPayToPublicKeyHash(decodedAddress.PublicKeyHash).get();
+        byte[] lockingScriptBytes = transactionOutput.LockingScript;
+        byte[] unlockingScriptBytes = new TransactionInputBuilder().setUnlockPayToPublicKeyHash(coinKeypairRecipient, transactionOutput).get().UnlockingScript;
 
         ScriptExecution unlockingScript = new ScriptExecution();
         unlockingScript.Initialize(unlockingScriptBytes);
@@ -343,6 +347,7 @@ public class ScriptTest {
 
         ScriptExecution lockingScript = new ScriptExecution();
         lockingScript.Initialize(lockingScriptBytes, unlockingScript.Stack.elements());
+        lockingScript.setSignatureVerificationMessage(transactionOutput.getHash());
 
         System.out.println("Running locking script...");
 
