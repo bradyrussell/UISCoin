@@ -152,7 +152,7 @@ public class Block implements IBinaryData, IVerifiable {
 
     @Override
     public boolean Verify() {
-        return Header.Verify() && Coinbase.Verify() && VerifyTransactions();
+        return Header.Verify() && Coinbase.Verify() && VerifyTransactions() && Hash.validateHash(getHash(), Header.DifficultyTarget);
     }
 
     private boolean VerifyTransactions(){

@@ -3,9 +3,12 @@ package com.bradyrussell.uiscoin.transaction;
 import com.bradyrussell.uiscoin.Hash;
 import com.bradyrussell.uiscoin.IBinaryData;
 import com.bradyrussell.uiscoin.IVerifiable;
+import com.bradyrussell.uiscoin.MagicNumbers;
+import com.bradyrussell.uiscoin.blockchain.BlockChain;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Transaction implements IBinaryData, IVerifiable {
     public int Version; // 4
@@ -133,9 +136,11 @@ public class Transaction implements IBinaryData, IVerifiable {
         return Hash.getSHA512Bytes(getBinaryData());
     }
 
-    @Override
+    @Override //https://www.oreilly.com/library/view/mastering-bitcoin/9781491902639/ch08.html
     public boolean Verify() {
-        return VerifyInputs() && VerifyOutputs();
+        return VerifyInputs() && VerifyOutputs() && getFees()*MagicNumbers.MinSatPerByte.Value > getSize()
+                && Inputs.size() > 0 && Outputs.size() > 0 && TimeStamp < Long.MAX_VALUE
+                && getSize() < MagicNumbers.MaxTransactionSize.Value;
     }
 
     private boolean VerifyOutputs(){
@@ -151,4 +156,25 @@ public class Transaction implements IBinaryData, IVerifiable {
         }
         return true;
     }
+
+    private long getInputTotal() {
+        long amount = 0;
+        for(TransactionInput input:Inputs){
+            amount += BlockChain.get().getTransaction(input.InputHash).Outputs.get(input.IndexNumber).Amount;// Blockchain lookup : input.InputHash
+        }
+        return amount;
+    }
+
+    private long getOutputTotal() {
+        long amount = 0;
+        for(TransactionOutput output:Outputs){
+            amount += output.Amount;
+        }
+        return amount;
+    }
+
+    private long getFees() {
+        return getInputTotal() - getOutputTotal();
+    }
+
 }

@@ -58,7 +58,7 @@ public class Hash {
     public static boolean validateHash(byte[] Hash, int Difficulty){
         //final byte[] Prefix = {74, 97, 99, 107}; // Jack
         //final byte[] Prefix = {85, 73, 83}; // UIS
-        final byte[] Prefix = {0x55, 0x49, 0x53}; // UIS
+        final byte[] Prefix = {0x50, (byte) 0x84, (byte) 0x9a}; // UISa in base64
 
         for(int i = 0; i < Difficulty; i++){
             if(Hash[i] != Prefix[i % Prefix.length]) return false;
