@@ -21,6 +21,18 @@ public class TransactionInputBuilder {
         return this;
     }
 
+    public TransactionInputBuilder setInputTransaction(byte[] Hash, int Index){
+        input.InputHash = Hash;
+        input.IndexNumber = Index;
+        return this;
+    }
+
+    public TransactionInputBuilder setInputTransaction(TransactionOutput transactionOutput, int Index){
+        input.InputHash = transactionOutput.getHash();
+        input.IndexNumber = Index;
+        return this;
+    }
+
     public TransactionInputBuilder setSequenceNumber(int Sequence){
         input.InputSequenceNumber = Sequence;
         return this;

@@ -1,14 +1,11 @@
 package com.bradyrussell.uiscoin.transaction;
 
-import com.bradyrussell.uiscoin.Hash;
-import com.bradyrussell.uiscoin.IBinaryData;
-import com.bradyrussell.uiscoin.IVerifiable;
-import com.bradyrussell.uiscoin.MagicNumbers;
+import com.bradyrussell.uiscoin.*;
 import com.bradyrussell.uiscoin.blockchain.BlockChain;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 public class Transaction implements IBinaryData, IVerifiable {
     public int Version; // 4
@@ -49,7 +46,7 @@ public class Transaction implements IBinaryData, IVerifiable {
     private int getOutputSize(){
         int n = 0;
         for(TransactionOutput output:Outputs){
-            n+=output.getSize();
+            n+=output.getSize()+4;
         }
         return n;
     }
@@ -57,7 +54,7 @@ public class Transaction implements IBinaryData, IVerifiable {
     private int getInputSize(){
         int n = 0;
         for(TransactionInput input:Inputs){
-            n+=input.getSize();
+            n+=input.getSize()+4;
         }
         return n;
     }
@@ -128,7 +125,7 @@ public class Transaction implements IBinaryData, IVerifiable {
 
     @Override
     public int getSize() {
-        return 28 + getOutputSize() + getInputSize();
+        return 20 + getOutputSize() + getInputSize();
     }
 
     @Override
@@ -142,6 +139,31 @@ public class Transaction implements IBinaryData, IVerifiable {
                 && Inputs.size() > 0 && Outputs.size() > 0 && TimeStamp < Long.MAX_VALUE
                 && getSize() < MagicNumbers.MaxTransactionSize.Value;
     }
+
+    public boolean VerifyCoinbase() {
+        return VerifyInputs() && VerifyOutputs()
+                && Inputs.size() == 0 && Outputs.size() > 0 && TimeStamp < Long.MAX_VALUE
+                && getSize() < MagicNumbers.MaxTransactionSize.Value;
+    }
+
+    public void DebugVerify(){
+        assert VerifyInputs();
+        assert VerifyOutputs();
+        assert (getFees()*MagicNumbers.MinSatPerByte.Value) > getSize();
+        assert Inputs.size() > 0;
+        assert Outputs.size() > 0;
+        assert TimeStamp < Long.MAX_VALUE;
+        assert getSize() < MagicNumbers.MaxTransactionSize.Value;
+    }
+
+    public void DebugVerifyCoinbase(){
+        assert VerifyOutputs();
+        assert Inputs.size() == 0;
+        assert Outputs.size() > 0;
+        assert TimeStamp < Long.MAX_VALUE;
+        assert getSize() < MagicNumbers.MaxTransactionSize.Value;
+    }
+
 
     private boolean VerifyOutputs(){
         for(TransactionOutput output:Outputs){
@@ -157,15 +179,15 @@ public class Transaction implements IBinaryData, IVerifiable {
         return true;
     }
 
-    private long getInputTotal() {
+    public long getInputTotal() {
         long amount = 0;
         for(TransactionInput input:Inputs){
-            amount += BlockChain.get().getTransaction(input.InputHash).Outputs.get(input.IndexNumber).Amount;// Blockchain lookup : input.InputHash
+            amount += BlockChain.get().getUnspentTransactionOutput(input.InputHash, input.IndexNumber).Amount;// Blockchain lookup : input.InputHash
         }
         return amount;
     }
 
-    private long getOutputTotal() {
+    public long getOutputTotal() {
         long amount = 0;
         for(TransactionOutput output:Outputs){
             amount += output.Amount;
@@ -177,4 +199,11 @@ public class Transaction implements IBinaryData, IVerifiable {
         return getInputTotal() - getOutputTotal();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Transaction that = (Transaction) o;
+        return Arrays.equals(getHash(), that.getHash());
+    }
 }

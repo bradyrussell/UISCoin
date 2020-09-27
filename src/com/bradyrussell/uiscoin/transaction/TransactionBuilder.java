@@ -2,6 +2,7 @@ package com.bradyrussell.uiscoin.transaction;
 
 import com.bradyrussell.uiscoin.Hash;
 import com.bradyrussell.uiscoin.Keys;
+import com.bradyrussell.uiscoin.address.UISCoinAddress;
 import com.bradyrussell.uiscoin.address.UISCoinKeypair;
 import com.bradyrussell.uiscoin.script.ScriptBuilder;
 
@@ -29,6 +30,16 @@ public class TransactionBuilder {
 
     public TransactionBuilder addOutput(TransactionOutput transactionOutput){
         transaction.addOutput(transactionOutput);
+        return this;
+    }
+
+    public TransactionBuilder addChangeOutput(byte[] Address, long FeeToLeave){
+        long Amount = (transaction.getInputTotal() - transaction.getOutputTotal()) - FeeToLeave;
+
+        assert Amount > 0;
+
+        UISCoinAddress.DecodedAddress decodedAddress = UISCoinAddress.decodeAddress(Address);
+        transaction.addOutput(new TransactionOutputBuilder().setPayToPublicKeyHash(decodedAddress.PublicKeyHash).setAmount(Amount).get());
         return this;
     }
 

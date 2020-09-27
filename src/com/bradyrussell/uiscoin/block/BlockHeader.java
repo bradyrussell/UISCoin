@@ -3,8 +3,12 @@ package com.bradyrussell.uiscoin.block;
 import com.bradyrussell.uiscoin.Hash;
 import com.bradyrussell.uiscoin.IBinaryData;
 import com.bradyrussell.uiscoin.IVerifiable;
+import com.bradyrussell.uiscoin.MagicNumbers;
+import com.bradyrussell.uiscoin.blockchain.BlockChain;
 
 import java.nio.ByteBuffer;
+import java.time.Instant;
+import java.util.concurrent.TimeUnit;
 
 public class BlockHeader implements IBinaryData, IVerifiable {
     public int Version; // 4
@@ -94,6 +98,20 @@ public class BlockHeader implements IBinaryData, IVerifiable {
 
     @Override
     public boolean Verify() {
-        return false;
+        boolean valid = true;
+        if(BlockHeight > 0) {
+            BlockHeader previousBlockHeader = BlockChain.get().getBlockHeader(HashPreviousBlock);
+            valid = (BlockHeight == previousBlockHeader.BlockHeight + 1); // we are previous Block Height + 1
+            valid &= (DifficultyTarget >= CalculateDifficultyTarget(Time - previousBlockHeader.Time, previousBlockHeader.DifficultyTarget)); // we are using a proper difficulty
+        }
+        valid &= Time <= Instant.now().getEpochSecond(); // timestamp is not in the future
+
+        return valid;
+    }
+
+    public static int CalculateDifficultyTarget(long TimeSinceLastBlock, int LastBlockDifficulty) {
+        if(TimeSinceLastBlock < MagicNumbers.TargetSecondsPerBlock.Value) return Math.min(63, LastBlockDifficulty + 1);
+        if(TimeSinceLastBlock > MagicNumbers.TargetSecondsPerBlock.Value) return Math.max(1, LastBlockDifficulty - 1);
+        return LastBlockDifficulty;
     }
 }

@@ -11,6 +11,9 @@ import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.*;
 
+import static com.bradyrussell.uiscoin.Util.ByteArrayToNumber;
+import static com.bradyrussell.uiscoin.Util.NumberToByteArray;
+
 public class ScriptExecution {
     public int InstructionCounter;
     public Stack<byte[]> Stack;
@@ -45,20 +48,7 @@ public class ScriptExecution {
         SignatureVerificationMessage = signatureVerificationMessage;
     }
 
-    public static int ByteArrayToNumber(byte[] Bytes) {
-        int n = 0;
 
-        if (Bytes.length > 0) n |= Bytes[0] << 24;
-        if (Bytes.length > 1) n |= (Bytes[1] & 0xFF) << 16;
-        if (Bytes.length > 2) n |= (Bytes[2] & 0xFF) << 8;
-        if (Bytes.length > 3) n |= (Bytes[3] & 0xFF);
-
-        return n;
-    }
-
-    public static byte[] NumberToByteArray(int Number) {
-        return new byte[]{(byte) (Number >> 24), (byte) (Number >> 16), (byte) (Number >> 8), (byte) Number};
-    }
 
     public static boolean areBytesValidNumber(byte[] Bytes) {
         return Bytes.length <= 4;

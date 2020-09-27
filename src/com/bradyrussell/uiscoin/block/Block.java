@@ -1,13 +1,11 @@
 package com.bradyrussell.uiscoin.block;
 
-import com.bradyrussell.uiscoin.Hash;
-import com.bradyrussell.uiscoin.IBinaryData;
-import com.bradyrussell.uiscoin.IVerifiable;
-import com.bradyrussell.uiscoin.Util;
+import com.bradyrussell.uiscoin.*;
 import com.bradyrussell.uiscoin.transaction.Transaction;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Block implements IBinaryData, IVerifiable {
@@ -150,10 +148,43 @@ public class Block implements IBinaryData, IVerifiable {
         return Header.Verify() && VerifyTransactions() && Hash.validateHash(getHash(), Header.DifficultyTarget);
     }
 
+    public void DebugVerify(){
+       assert Header.Verify();
+       assert VerifyTransactions();
+       assert Hash.validateHash(getHash(), Header.DifficultyTarget);
+    }
+
     private boolean VerifyTransactions(){
-        for(Transaction transaction:Transactions){
-            if(!transaction.Verify()) return false;
+        for (int i = 0; i < Transactions.size(); i++) {
+            Transaction transaction = Transactions.get(i);
+            if (i == 0)  {
+                transaction.DebugVerifyCoinbase();
+                if (!transaction.VerifyCoinbase()) return false;
+            } else {
+                transaction.DebugVerify();
+                if (!transaction.Verify()) return false;
+            }
         }
         return true;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Block that = (Block) o;
+        return Arrays.equals(getHash(), that.getHash());
+    }
+
+    private static int CalculateBlockReward(int BlockHeight){
+        int NumberOfHalvings = BlockHeight / 21000000;
+        return 50 >> NumberOfHalvings;
+    }
+
+    private boolean VerifyBlockReward(){
+        Transaction coinbase = Transactions.get(0);
+        if(coinbase == null) return false;
+        return coinbase.getOutputTotal() <= CalculateBlockReward(Header.BlockHeight);
+    }
+
 }

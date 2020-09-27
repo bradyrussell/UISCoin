@@ -29,6 +29,11 @@ public class BlockBuilder {
         return this;
     }
 
+    public BlockBuilder setBlockHeight(int BlockHeigth){
+        getOrCreateHeader().BlockHeight = BlockHeigth;
+        return this;
+    }
+
     public BlockBuilder setNonce(int Nonce){
         getOrCreateHeader().Nonce = Nonce;
         return this;
@@ -60,7 +65,10 @@ public class BlockBuilder {
     }
 
     public BlockBuilder shuffleTransactions(){
+        Transaction coinbase = block.Transactions.get(0);
+        block.Transactions.remove(0);
         Collections.shuffle(block.Transactions);
+        block.Transactions.add(0, coinbase);
         return this;
     }
 

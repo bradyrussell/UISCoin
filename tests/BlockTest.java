@@ -1,19 +1,25 @@
 import com.bradyrussell.uiscoin.Conversions;
 import com.bradyrussell.uiscoin.Hash;
+import com.bradyrussell.uiscoin.address.UISCoinAddress;
 import com.bradyrussell.uiscoin.address.UISCoinKeypair;
+import com.bradyrussell.uiscoin.address.Wallet;
 import com.bradyrussell.uiscoin.block.Block;
 import com.bradyrussell.uiscoin.block.BlockBuilder;
 import com.bradyrussell.uiscoin.block.BlockHeader;
+import com.bradyrussell.uiscoin.blockchain.BlockChain;
 import com.bradyrussell.uiscoin.transaction.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
+import java.nio.file.Path;
+import java.security.interfaces.ECPublicKey;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.concurrent.ThreadLocalRandom;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 public class BlockTest {
@@ -62,4 +68,29 @@ public class BlockTest {
         }
     }
 
+    @RepeatedTest(1)
+    @DisplayName("Verification")
+    void TestBlockVerification() {
+        UISCoinKeypair address1 = Wallet.LoadKeypairFromFileWithPassword(Path.of("C:\\Users\\Admin\\Desktop\\MyRealUISCoinWallet\\kushJr.uisw"), "VanityAddress1");
+        assert address1 != null;
+        byte[] addressBytes = UISCoinAddress.fromPublicKey((ECPublicKey) address1.Keys.getPublic());
+
+        BlockBuilder blockBuilder = new BlockBuilder().setVersion(1).setTimestamp(Instant.now().getEpochSecond()).setDifficultyTarget(2)
+                .setHashPreviousBlock(Hash.getSHA512Bytes("Hello world from UISCoin."))
+                .addCoinbase(new TransactionBuilder().setVersion(1).setLockTime(0).addOutput(new TransactionOutputBuilder().setPayToPublicKeyHash(addressBytes).setAmount(Conversions.CoinsToSatoshis(1)).get()).get())
+                .CalculateMerkleRoot();
+
+        while(!Hash.validateHash(blockBuilder.get().getHash(), blockBuilder.get().Header.DifficultyTarget)) {
+            blockBuilder.setNonce(ThreadLocalRandom.current().nextInt());
+        }
+
+        Block finishedBlock = blockBuilder.get();
+        System.out.println(Base64.getEncoder().encodeToString(finishedBlock.getHash()));
+
+        finishedBlock.DebugVerify();
+
+        assertTrue(finishedBlock.Verify());
+        //BlockChain.get().putBlock(finishedBlock);
+
+    }
 }

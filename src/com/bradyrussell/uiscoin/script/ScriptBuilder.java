@@ -1,5 +1,7 @@
 package com.bradyrussell.uiscoin.script;
 
+import com.bradyrussell.uiscoin.Util;
+
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -46,7 +48,7 @@ public class ScriptBuilder {
     public ScriptBuilder pushInt(int IntToPush){
         buffer.put(ScriptOperator.PUSH.OPCode);
         buffer.put((byte)4);
-        buffer.put(ScriptExecution.NumberToByteArray(IntToPush));
+        buffer.put(Util.NumberToByteArray(IntToPush));
         return this;
     }
 
@@ -117,7 +119,7 @@ public class ScriptBuilder {
                 if(number < 128 && number > -128) {
                     buffer.put((byte)number);
                 } else {
-                    buffer.put(ScriptExecution.NumberToByteArray(number));
+                    buffer.put(Util.NumberToByteArray(number));
                 }
 
                 continue;

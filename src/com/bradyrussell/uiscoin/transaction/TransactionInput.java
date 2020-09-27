@@ -3,6 +3,7 @@ package com.bradyrussell.uiscoin.transaction;
 import com.bradyrussell.uiscoin.Hash;
 import com.bradyrussell.uiscoin.IBinaryData;
 import com.bradyrussell.uiscoin.IVerifiable;
+import com.bradyrussell.uiscoin.blockchain.BlockChain;
 
 import java.nio.ByteBuffer;
 
@@ -73,6 +74,7 @@ public class TransactionInput  implements IBinaryData, IVerifiable {
 
     @Override
     public boolean Verify() {
-        return false;
+        TransactionOutput unspentTransactionOutput = BlockChain.get().getUnspentTransactionOutput(InputHash, IndexNumber);
+        return unspentTransactionOutput != null;
     }
 }

@@ -3,72 +3,87 @@ package com.bradyrussell.uiscoin;
 import com.bradyrussell.uiscoin.address.UISCoinAddress;
 import com.bradyrussell.uiscoin.address.UISCoinKeypair;
 import com.bradyrussell.uiscoin.address.Wallet;
-import com.bradyrussell.uiscoin.block.Block;
-import com.bradyrussell.uiscoin.block.BlockHeader;
 import com.bradyrussell.uiscoin.blockchain.BlockChain;
-import com.bradyrussell.uiscoin.blockchain.BlockChainStorageBase;
 import com.bradyrussell.uiscoin.blockchain.BlockChainStorageFile;
+import com.bradyrussell.uiscoin.node.MemPool;
 import com.bradyrussell.uiscoin.transaction.*;
 
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.interfaces.ECPublicKey;
-import java.time.Instant;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class Main {
 
     public static void main(String[] args) {
+        String myTransactionInputHash = "YdfeDWmoO9Xklr_T3dSfdrCuHZBohDlw9gS7Z4RutuDg6ASjmaGbZmfIIcNIV2nZsfYR_NrqzcuA5Y0D9ScbgQ==";
 
         BlockChain.Initialize(BlockChainStorageFile.class);
+        MemPool memPool = new MemPool();
+        //byte[] bytes = BlockChain.get().get(Hash.getSHA512Bytes("mempool"), "mempool");
+        //if(bytes != null){
+         //   memPool.setBinaryData(bytes);
+       // }
 
-        Transaction transaction = BlockChain.get().getTransactionFromIndex(Base64.getUrlDecoder().decode("EM7fAPBMVQX2TZw48wvjOggrp5x8WtKi0gSOVBvwv_iaMHOCcDbA2gPnCATrFsNA3ZMzMCbOAZNdoNULRKF9-Q=="));
-
-        System.out.println(Arrays.toString(transaction.Outputs.get(0).LockingScript));
-/*
-        long timeStamp = Instant.now().getEpochSecond();
-
-        UISCoinKeypair uisCoinKeypair = UISCoinKeypair.Create();
-
-        byte[] RandomHash1 = new byte[64];
-        byte[] RandomHash2 = new byte[64];
-        byte[] RandomHash3 = new byte[64];
-        byte[] RandomHash5 = new byte[64];
-        byte[] RandomHash6 = new byte[64];
-
-        ThreadLocalRandom.current().nextBytes(RandomHash1);
-        ThreadLocalRandom.current().nextBytes(RandomHash2);
-        ThreadLocalRandom.current().nextBytes(RandomHash3);
-        ThreadLocalRandom.current().nextBytes(RandomHash5);
-        ThreadLocalRandom.current().nextBytes(RandomHash6);
-
-*//*        TransactionBuilder tb = new TransactionBuilder();
-        Transaction transaction = tb.setVersion(1).setLockTime(-1)
-                .addInput(new TransactionInput(RandomHash1, 0))
-                .addOutput(new TransactionOutput(Conversions.CoinsToSatoshis(.5), RandomHash2))
-                .signTransaction(uisCoinKeypair).get();*//*
-
-        Block block = new Block(new BlockHeader(1,timeStamp,3, 0));
-
-        block.addTransaction(new Transaction(1,timeStamp).addOutput(
-                new TransactionOutputBuilder().setAmount(Conversions.CoinsToSatoshis(50))
-                        .setPayToPublicKeyHash(Base64.getDecoder().decode("UISxUisdl8E31ksaCZvw3RKR9biwgXPi/m6lUTyN4E9K0n2vI+Xc5QFVtWpPz9+8fr2DwE5T40qLVbEj7QFsEyve3YteiPg=")).get()));
-       // block.addTransaction(transaction);
-
-        block.Header.HashPreviousBlock = RandomHash2;
-        block.Header.HashMerkleRoot = block.CalculateMerkleRoot();
-
-        while(!Hash.validateHash(block.getHash(), block.Header.DifficultyTarget)) {
-            block.Header.Nonce = ThreadLocalRandom.current().nextInt();
+        System.out.println("Loaded mempool with "+memPool.pendingTransactions.size()+" pending transactions.");
+        for(Transaction pendingTransaction:memPool.pendingTransactions){
+            //System.out.println("Pending Transaction: "+Util.Base64Encode(pendingTransaction.getBinaryData()));
+            for(TransactionInput transactionInput: pendingTransaction.Inputs){
+                System.out.println(Util.Base64Encode(transactionInput.UnlockingScript));
+            }
+/*            for(TransactionOutput transactionOutput: pendingTransaction.Outputs){
+                System.out.println("Output: "+Util.Base64Encode(transactionOutput.getHash()));
+            }*/
         }
 
-        System.out.println(Base64.getEncoder().encodeToString(block.getHash()));
+        UISCoinKeypair address1 = Wallet.LoadKeypairFromFileWithPassword(Path.of("C:\\Users\\Admin\\Desktop\\MyRealUISCoinWallet\\kushJr.uisw"), "VanityAddress1");
+        UISCoinKeypair address2 = Wallet.LoadKeypairFromFileWithPassword(Path.of("C:\\Users\\Admin\\Desktop\\MyRealUISCoinWallet\\coin.uisw"), "VanityAddress1");
 
-        BlockChain.get().putBlockAndIndex(block);*/
+        assert address1 != null;
+        assert address2 != null;
+
+        TransactionOutput outputToSpend = BlockChain.get().getUnspentTransactionOutput(Util.Base64Decode(myTransactionInputHash),0);
+
+        assert outputToSpend != null;
+
+        TransactionInput transactionInput = new TransactionInputBuilder().setInputTransaction(Util.Base64Decode(myTransactionInputHash), 0).setUnlockPayToPublicKeyHash(address1, outputToSpend).get();
+        TransactionOutput transactionOutput = new TransactionOutputBuilder().setAmount(Conversions.CoinsToSatoshis(.25)).setPayToPublicKeyHash(UISCoinAddress.decodeAddress(UISCoinAddress.fromPublicKey((ECPublicKey) address2.Keys.getPublic())).PublicKeyHash).get();
+
+        Transaction transaction = new TransactionBuilder().setVersion(1).addInput(transactionInput).addOutput(transactionOutput).addChangeOutput(UISCoinAddress.decodeAddress(UISCoinAddress.fromPublicKey((ECPublicKey) address1.Keys.getPublic())).PublicKeyHash, 1024).get();
+
+        System.out.println(Util.Base64Encode(transaction.getHash()));
+        transaction.DebugVerify();
+        System.out.println(transaction.Verify());
+
+        BlockChain.get().put(Hash.getSHA512Bytes("mempool"), memPool.getBinaryData(), "mempool");
+/*
+        Block block = BlockChain.get().getBlock(Util.Base64Decode("UISXXJXK9KEfRp1bc6oiCOjAS_Ks_KBvfUoGrKDl_Kaw0bl4a_Ufh8mTiISr7qEkc_NQ2rlbvH1K8l1AeM2QFg=="));
+
+        System.out.println(Util.Base64Encode(block.getHash()));
+        for(Transaction transaction: block.Transactions){
+            System.out.println(Util.Base64Encode(transaction.getHash()));
+        }
+*/
+
+
+/*        UISCoinKeypair address1 = Wallet.LoadKeypairFromFileWithPassword(Path.of("C:\\Users\\Admin\\Desktop\\MyRealUISCoinWallet\\kushJr.uisw"), "VanityAddress1");
+        assert address1 != null;
+        byte[] addressBytes = UISCoinAddress.fromPublicKey((ECPublicKey) address1.Keys.getPublic());
+
+        BlockBuilder blockBuilder = new BlockBuilder().setVersion(1).setTimestamp(Instant.now().getEpochSecond()).setDifficultyTarget(2)
+                .setHashPreviousBlock(Hash.getSHA512Bytes("Hello world from UISCoin."))
+                .addCoinbase(new TransactionBuilder().setVersion(1).setLockTime(0).addOutput(new TransactionOutputBuilder().setPayToPublicKeyHash(addressBytes).setAmount(Conversions.CoinsToSatoshis(1)).get()).get())
+                .CalculateMerkleRoot();
+
+        while(!Hash.validateHash(blockBuilder.get().getHash(), blockBuilder.get().Header.DifficultyTarget)) {
+            blockBuilder.setNonce(ThreadLocalRandom.current().nextInt());
+        }
+
+        Block finishedBlock = blockBuilder.get();
+        System.out.println(Base64.getEncoder().encodeToString(finishedBlock.getHash()));
+
+        BlockChain.get().putBlock(finishedBlock);*/
+
+
+
 
         /*try {
             List<String> strings = Files.readAllLines(Path.of("search.txt"));

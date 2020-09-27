@@ -1,5 +1,7 @@
 package com.bradyrussell.uiscoin;
 
+import java.util.Base64;
+
 public class Util {
     public static void printBytesReadable(byte[] bytes) {
         System.out.print("[");
@@ -24,4 +26,26 @@ public class Util {
         return C;
     }
 
+    public static int ByteArrayToNumber(byte[] Bytes) {
+        int n = 0;
+
+        if (Bytes.length > 0) n |= Bytes[0] << 24;
+        if (Bytes.length > 1) n |= (Bytes[1] & 0xFF) << 16;
+        if (Bytes.length > 2) n |= (Bytes[2] & 0xFF) << 8;
+        if (Bytes.length > 3) n |= (Bytes[3] & 0xFF);
+
+        return n;
+    }
+
+    public static byte[] NumberToByteArray(int Number) {
+        return new byte[]{(byte) (Number >> 24), (byte) (Number >> 16), (byte) (Number >> 8), (byte) Number};
+    }
+
+    public static String Base64Encode(byte[] Data){
+        return Base64.getUrlEncoder().encodeToString(Data);
+    }
+
+    public static byte[] Base64Decode(String Base64String){
+        return Base64.getUrlDecoder().decode(Base64String);
+    }
 }
