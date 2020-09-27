@@ -145,16 +145,18 @@ public class Block implements IBinaryData, IVerifiable {
 
     @Override
     public boolean Verify() {
-        return Header.Verify() && VerifyTransactions() && Hash.validateHash(getHash(), Header.DifficultyTarget);
+        return Header.Verify() && VerifyTransactions() && VerifyBlockReward() && Hash.validateHash(getHash(), Header.DifficultyTarget);
     }
 
     public void DebugVerify(){
        assert Header.Verify();
        assert VerifyTransactions();
+       assert VerifyBlockReward();
        assert Hash.validateHash(getHash(), Header.DifficultyTarget);
     }
 
     private boolean VerifyTransactions(){
+        if(Header.BlockHeight != 0 && Transactions.size() < 2) return false;
         for (int i = 0; i < Transactions.size(); i++) {
             Transaction transaction = Transactions.get(i);
             if (i == 0)  {
@@ -176,9 +178,9 @@ public class Block implements IBinaryData, IVerifiable {
         return Arrays.equals(getHash(), that.getHash());
     }
 
-    private static int CalculateBlockReward(int BlockHeight){
+    public static long CalculateBlockReward(int BlockHeight){
         int NumberOfHalvings = BlockHeight / 21000000;
-        return 50 >> NumberOfHalvings;
+        return Conversions.CoinsToSatoshis(50) >> NumberOfHalvings;
     }
 
     private boolean VerifyBlockReward(){

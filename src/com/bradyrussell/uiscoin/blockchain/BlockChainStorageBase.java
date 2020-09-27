@@ -15,6 +15,9 @@ public abstract class BlockChainStorageBase {
     public static final String TransactionToBlockDatabase = "transaction_to_block";
     public static final String TransactionOutputDatabase = "unspent_transaction_outputs";
 
+    public int BlockHeight = -1;
+    public byte[] HighestBlockHash = null;
+
    // public abstract byte[] get(byte[] Key);
     public abstract byte[] get(byte[] Key, String Database);
     // public abstract void get(byte[] Key, byte[] Value);
@@ -63,7 +66,19 @@ public abstract class BlockChainStorageBase {
         }
     }
 
+    public void putBlockHeader(BlockHeader header, byte[] BlockHash) {
+        if(BlockHeight < header.BlockHeight) {
+            BlockHeight = header.BlockHeight;
+            HighestBlockHash = BlockHash;
+        }
+        put(BlockHash, header.getBinaryData(), BlockHeadersDatabase);
+    }
+
     public void putBlockHeader(Block block) {
+        if(BlockHeight < block.Header.BlockHeight) {
+            BlockHeight = block.Header.BlockHeight;
+            HighestBlockHash = block.getHash();
+        }
         put(block.getHash(), block.Header.getBinaryData(), BlockHeadersDatabase);
     }
 
