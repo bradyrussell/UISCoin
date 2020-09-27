@@ -16,7 +16,7 @@ public class BlockChainStorageFile extends BlockChainStorageBase {
         if(!Files.exists(Path.of("blockchain/"+Base64.getUrlEncoder().encodeToString(BlockHash)))) return null;
 
         try {
-            byte[] Bytes = Files.readAllBytes(Path.of(Base64.getUrlEncoder().encodeToString(BlockHash)));
+            byte[] Bytes = Files.readAllBytes(Path.of("blockchain/"+Base64.getUrlEncoder().encodeToString(BlockHash)));
 
             Block block = new Block();
             block.setBinaryData(Bytes);
@@ -59,15 +59,21 @@ public class BlockChainStorageFile extends BlockChainStorageBase {
         return null;
     }
 
-    @Override
+/*    @Override
     public Transaction getTransactionFromIndex(byte[] TransactionHash) {
+        Block block = getTransactionBlockFromIndex(TransactionHash);
+        for(Transaction transaction:block.Transactions){
+            if(Arrays.equals(transaction.getHash(), TransactionHash)) return transaction;
+        }
+        return null;
+    }*/
+
+    @Override
+    public Block getTransactionBlockFromIndex(byte[] TransactionHash) {
         try {
             byte[] Bytes = Files.readAllBytes(Path.of("blockchain/"+Base64.getUrlEncoder().encodeToString(TransactionHash)));
 
-            Block block = getBlock(Bytes);
-            for(Transaction transaction:block.Transactions){
-                if(Arrays.equals(transaction.getHash(), TransactionHash)) return transaction;
-            }
+            return getBlock(Bytes);
         } catch (IOException e) {
             e.printStackTrace();
         }

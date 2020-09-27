@@ -15,6 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.interfaces.ECPublicKey;
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -25,6 +26,10 @@ public class Main {
 
         BlockChain.Initialize(BlockChainStorageFile.class);
 
+        Transaction transaction = BlockChain.get().getTransactionFromIndex(Base64.getUrlDecoder().decode("EM7fAPBMVQX2TZw48wvjOggrp5x8WtKi0gSOVBvwv_iaMHOCcDbA2gPnCATrFsNA3ZMzMCbOAZNdoNULRKF9-Q=="));
+
+        System.out.println(Arrays.toString(transaction.Outputs.get(0).LockingScript));
+/*
         long timeStamp = Instant.now().getEpochSecond();
 
         UISCoinKeypair uisCoinKeypair = UISCoinKeypair.Create();
@@ -41,11 +46,11 @@ public class Main {
         ThreadLocalRandom.current().nextBytes(RandomHash5);
         ThreadLocalRandom.current().nextBytes(RandomHash6);
 
-/*        TransactionBuilder tb = new TransactionBuilder();
+*//*        TransactionBuilder tb = new TransactionBuilder();
         Transaction transaction = tb.setVersion(1).setLockTime(-1)
                 .addInput(new TransactionInput(RandomHash1, 0))
                 .addOutput(new TransactionOutput(Conversions.CoinsToSatoshis(.5), RandomHash2))
-                .signTransaction(uisCoinKeypair).get();*/
+                .signTransaction(uisCoinKeypair).get();*//*
 
         Block block = new Block(new BlockHeader(1,timeStamp,3, 0));
 
@@ -63,7 +68,7 @@ public class Main {
 
         System.out.println(Base64.getEncoder().encodeToString(block.getHash()));
 
-        BlockChain.get().putBlock(block);
+        BlockChain.get().putBlockAndIndex(block);*/
 
         /*try {
             List<String> strings = Files.readAllLines(Path.of("search.txt"));
