@@ -4,7 +4,6 @@ import com.bradyrussell.uiscoin.Hash;
 import com.bradyrussell.uiscoin.IBinaryData;
 import com.bradyrussell.uiscoin.IVerifiable;
 import com.bradyrussell.uiscoin.Util;
-import com.bradyrussell.uiscoin.transaction.CoinbaseTransaction;
 import com.bradyrussell.uiscoin.transaction.Transaction;
 
 import java.nio.ByteBuffer;
@@ -13,7 +12,6 @@ import java.util.List;
 
 public class Block implements IBinaryData, IVerifiable {
     public BlockHeader Header;
-    public CoinbaseTransaction Coinbase;
     public ArrayList<Transaction> Transactions;
 
     public Block() {
@@ -25,15 +23,9 @@ public class Block implements IBinaryData, IVerifiable {
         Transactions = new ArrayList<>();
     }
 
-    public Block(BlockHeader header, CoinbaseTransaction coinbase) {
-        Header = header;
-        Coinbase = coinbase;
-        Transactions = new ArrayList<>();
-    }
 
-    public Block(BlockHeader header, CoinbaseTransaction coinbase, ArrayList<Transaction> transactions) {
+    public Block(BlockHeader header, ArrayList<Transaction> transactions) {
         Header = header;
-        Coinbase = coinbase;
         Transactions = transactions;
     }
 
@@ -42,11 +34,19 @@ public class Block implements IBinaryData, IVerifiable {
         return this;
     }
 
-    public Block addCoinbaseTransaction(CoinbaseTransaction coinbase){
-        Coinbase = coinbase;
+    public Block addCoinbaseTransaction(Transaction transaction){
+        Transactions.add(0, transaction);
         return this;
     }
 
+    public Block setCoinbaseTransaction(Transaction transaction){
+        if(Transactions.size() < 1) {
+            addCoinbaseTransaction(transaction);
+        } else {
+            Transactions.set(0, transaction);
+        }
+        return this;
+    }
 
     private int getTransactionsSize(){
         int n = 0;
@@ -95,9 +95,6 @@ public class Block implements IBinaryData, IVerifiable {
 
         buf.put(Header.getBinaryData());
 
-        buf.putInt(Coinbase.getSize());
-        buf.put(Coinbase.getBinaryData());
-
         buf.putInt(Transactions.size()); // transaction list prefixed with number of transactions
         for(Transaction transaction:Transactions){
             buf.putInt(transaction.getSize()); // each transaction is prefixed with size
@@ -119,12 +116,10 @@ public class Block implements IBinaryData, IVerifiable {
 
         Header.setBinaryData(header);
 
-        int coinbaseSize = buffer.getInt();
+/*        int coinbaseSize = buffer.getInt();
         byte[] coinbase = new byte[coinbaseSize];
-        buffer.get(coinbase, 0, coinbaseSize);
+        buffer.get(coinbase, 0, coinbaseSize);*/
 
-        Coinbase = new CoinbaseTransaction();
-        Coinbase.setBinaryData(coinbase);
 
         int TransactionsNum = buffer.getInt();
 
@@ -142,7 +137,7 @@ public class Block implements IBinaryData, IVerifiable {
 
     @Override
     public int getSize() {
-        return Header.getSize()+Coinbase.getSize()+getTransactionsSize()+4+4;
+        return Header.getSize()+getTransactionsSize()+4+4;
     }
 
     @Override
@@ -152,7 +147,7 @@ public class Block implements IBinaryData, IVerifiable {
 
     @Override
     public boolean Verify() {
-        return Header.Verify() && Coinbase.Verify() && VerifyTransactions() && Hash.validateHash(getHash(), Header.DifficultyTarget);
+        return Header.Verify() && VerifyTransactions() && Hash.validateHash(getHash(), Header.DifficultyTarget);
     }
 
     private boolean VerifyTransactions(){

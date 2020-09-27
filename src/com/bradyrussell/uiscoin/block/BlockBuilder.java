@@ -1,6 +1,5 @@
 package com.bradyrussell.uiscoin.block;
 
-import com.bradyrussell.uiscoin.transaction.CoinbaseTransaction;
 import com.bradyrussell.uiscoin.transaction.Transaction;
 
 import java.util.Collections;
@@ -45,13 +44,18 @@ public class BlockBuilder {
         return this;
     }
 
-    public BlockBuilder setCoinbase(CoinbaseTransaction coinbase){
-        block.Coinbase = coinbase;
+    public BlockBuilder setCoinbase(Transaction coinbase){
+        block.setCoinbaseTransaction(coinbase);
         return this;
     }
 
     public BlockBuilder addTransaction(Transaction transaction){
         block.Transactions.add(transaction);
+        return this;
+    }
+
+    public BlockBuilder addCoinbase(Transaction transaction){
+        block.addCoinbaseTransaction(transaction);
         return this;
     }
 

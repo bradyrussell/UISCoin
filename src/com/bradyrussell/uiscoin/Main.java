@@ -49,7 +49,7 @@ public class Main {
 
         Block block = new Block(new BlockHeader(1,timeStamp,3, 0));
 
-        block.addCoinbaseTransaction(new CoinbaseTransaction(1,timeStamp).addOutput(
+        block.addTransaction(new Transaction(1,timeStamp).addOutput(
                 new TransactionOutputBuilder().setAmount(Conversions.CoinsToSatoshis(50))
                         .setPayToPublicKeyHash(Base64.getDecoder().decode("UISxUisdl8E31ksaCZvw3RKR9biwgXPi/m6lUTyN4E9K0n2vI+Xc5QFVtWpPz9+8fr2DwE5T40qLVbEj7QFsEyve3YteiPg=")).get()));
        // block.addTransaction(transaction);

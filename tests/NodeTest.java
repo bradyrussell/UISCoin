@@ -75,7 +75,7 @@ public class NodeTest {
 
         Block block = new Block(new BlockHeader(1,timeStamp,1, 0));
 
-        block.addCoinbaseTransaction(new CoinbaseTransaction(1,1).addOutput(new TransactionOutput(Conversions.CoinsToSatoshis(1), RandomHash6)));
+        block.addCoinbaseTransaction(new Transaction(1,1).addOutput(new TransactionOutput(Conversions.CoinsToSatoshis(1), RandomHash6)));
         block.addTransaction(transaction);
 
         block.Header.HashPreviousBlock = RandomHash2;

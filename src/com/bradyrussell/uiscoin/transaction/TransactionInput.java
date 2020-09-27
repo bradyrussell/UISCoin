@@ -63,7 +63,7 @@ public class TransactionInput  implements IBinaryData, IVerifiable {
 
     @Override
     public int getSize() {
-        return 64+4+4+4+ UnlockingScript.length;
+        return 64+4+4+4+UnlockingScript.length;
     }
 
     @Override

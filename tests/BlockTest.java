@@ -44,7 +44,7 @@ public class BlockTest {
 
         Block block = new Block(new BlockHeader(1,timeStamp,1, 0));
 
-        block.addCoinbaseTransaction(new CoinbaseTransaction(1,1).addOutput(new TransactionOutput(Conversions.CoinsToSatoshis(1), RandomHash6)));
+        block.addCoinbaseTransaction(new TransactionBuilder().setVersion(1).setLockTime(0).addOutput(new TransactionOutputBuilder().setAmount(Conversions.CoinsToSatoshis(1)).setPayToPublicKeyHash(Base64.getDecoder().decode("UISxUisdl8E31ksaCZvw3RKR9biwgXPi/m6lUTyN4E9K0n2vI+Xc5QFVtWpPz9+8fr2DwE5T40qLVbEj7QFsEyve3YteiPg=")).get()).get());
         block.addTransaction(transaction);
 
         block.Header.HashPreviousBlock = RandomHash2;
@@ -61,17 +61,5 @@ public class BlockTest {
             if(blockBinaryData[i] != deserializedBlockBinaryData[i]) fail("Byte mismatch at position "+i+"\n"+Arrays.toString(blockBinaryData)+"\n"+Arrays.toString(deserializedBlockBinaryData));
         }
     }
-    @Test
-    @DisplayName("BlockBuilder")
-    void TestBlockBuilder(){
-        UISCoinKeypair MinerKeys = UISCoinKeypair.Create();
 
-            Block b = new BlockBuilder().setVersion(1).setHashPreviousBlock(Hash.getSHA512Bytes("CHANGEME"))
-                    .setTimestamp(Instant.now().getEpochSecond()).setDifficultyTarget(1)
-                    .setCoinbase(new CoinbaseTransaction(1, Instant.now().getEpochSecond()).addOutput(new TransactionOutput(Conversions.CoinsToSatoshis(1),MinerKeys.Keys.getPublic().getEncoded())))
-                    .addTransaction(new TransactionBuilder().setVersion(1).setLockTime(0).addInput(new TransactionInput(new byte[0], 0)).addOutput(new TransactionOutput(Conversions.CoinsToSatoshis(1),MinerKeys.Keys.getPublic().getEncoded())).signTransaction(MinerKeys).get()).CalculateMerkleRoot().get();
-
-            System.out.println(b.getSize());
-            System.out.println(Base64.getEncoder().encodeToString(b.getHash()));
-    }
 }
