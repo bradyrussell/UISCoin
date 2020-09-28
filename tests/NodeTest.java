@@ -1,4 +1,5 @@
 import com.bradyrussell.uiscoin.Conversions;
+import com.bradyrussell.uiscoin.Util;
 import com.bradyrussell.uiscoin.address.UISCoinKeypair;
 import com.bradyrussell.uiscoin.block.Block;
 import com.bradyrussell.uiscoin.block.BlockHeader;
@@ -12,12 +13,12 @@ import org.junit.jupiter.api.RepeatedTest;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.nio.ByteBuffer;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.concurrent.ThreadLocalRandom;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class NodeTest {
     @RepeatedTest(100)
@@ -47,6 +48,7 @@ public class NodeTest {
 
         assertTrue(Arrays.equals(RandomHash1,RandomHash2));
     }
+
 
     @RepeatedTest(100)
     @DisplayName("Node Packets Communication")
@@ -86,7 +88,8 @@ public class NodeTest {
 
         node.AddPeer(InetAddress.getLocalHost());
 
-        node.SendAll(new PeerPacketBuilder(2048).putBlock(block).get());
+        byte[] dataToSend = new PeerPacketBuilder(2048).putBlock(block).get();
+        node.SendAll(dataToSend);
 
         byte[] buffer = new byte[64];
         DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
@@ -94,6 +97,22 @@ public class NodeTest {
         if(node.Receive(packet)) {
             byte[] packetData = packet.getData();
             assertEquals(packetData[0], PeerPacketType.BLOCK.Header);
+
+            Util.printBytesReadable(dataToSend);
+            Util.printBytesReadable(packetData);
+            assertTrue(Arrays.equals(dataToSend, packetData));
+
+            ByteBuffer byteBuffer = ByteBuffer.wrap(packetData);
+
+            byte Header = byteBuffer.get();
+            int BlockLen = byteBuffer.getInt();
+
+            byte[] BlockData = new byte[BlockLen];
+            byteBuffer.get(BlockData);
+
+            assertTrue(Arrays.equals(BlockData, block.getBinaryData()));
+        } else {
+            System.out.println("Nothing to receive!");
         }
 
         node.Stop();

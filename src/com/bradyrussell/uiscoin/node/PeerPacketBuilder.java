@@ -25,12 +25,14 @@ public class PeerPacketBuilder {
 
     public PeerPacketBuilder putTransaction(Transaction transaction){
         buffer.put(PeerPacketType.TRANSACTION.Header);
+        buffer.putInt(transaction.getSize());
         buffer.put(transaction.getBinaryData());
         return this;
     }
 
     public PeerPacketBuilder putBlock(Block block){
         buffer.put(PeerPacketType.BLOCK.Header);
+        buffer.putInt(block.getSize());
         buffer.put(block.getBinaryData());
         return this;
     }

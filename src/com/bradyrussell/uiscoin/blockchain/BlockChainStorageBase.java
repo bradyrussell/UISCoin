@@ -4,10 +4,13 @@ import com.bradyrussell.uiscoin.Util;
 import com.bradyrussell.uiscoin.block.Block;
 import com.bradyrussell.uiscoin.block.BlockHeader;
 import com.bradyrussell.uiscoin.transaction.Transaction;
+import com.bradyrussell.uiscoin.transaction.TransactionBuilder;
 import com.bradyrussell.uiscoin.transaction.TransactionOutput;
+import com.bradyrussell.uiscoin.transaction.TransactionOutputBuilder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public abstract class BlockChainStorageBase {
     public static final String BlocksDatabase = "blocks";
@@ -24,6 +27,7 @@ public abstract class BlockChainStorageBase {
     //public abstract void put(byte[] Key, byte[] Value);
     public abstract void put(byte[] Key, byte[] Value, String Database);
     public abstract void remove(byte[] Key, String Database);
+    public abstract List<byte[]> keys(String Database);
 
     public Block getBlock(byte[] BlockHash) {
         Block block = new Block();
@@ -43,6 +47,12 @@ public abstract class BlockChainStorageBase {
             if(Arrays.equals(transaction.getHash(), TransactionHash)) return transaction;
         }
         return null;
+    }
+
+    public TransactionOutput getTransactionOutput(byte[] TransactionHash, int Index){
+        TransactionOutput unspentTransactionOutput = getUnspentTransactionOutput(TransactionHash, Index);
+        if(unspentTransactionOutput != null) return unspentTransactionOutput;
+        return getTransaction(TransactionHash).Outputs.get(Index);
     }
 
     public TransactionOutput getUnspentTransactionOutput(byte[] TransactionHash, int Index){
@@ -88,6 +98,21 @@ public abstract class BlockChainStorageBase {
 
     public void removeUnspentTransactionOutput(byte[] TransactionHash, int Index){
         remove(Util.ConcatArray(TransactionHash,Util.NumberToByteArray(Index)), TransactionOutputDatabase);
+    }
+
+    public List<TransactionOutput> ScanUnspentOutputsToAddress(byte[] PublicKeyHash) {
+        ArrayList<TransactionOutput> utxo = new ArrayList<>();
+
+        for(byte[] UTXOHash:keys(TransactionOutputDatabase)){
+            TransactionOutput output = new TransactionOutput();
+            output.setBinaryData(get(UTXOHash,TransactionOutputDatabase));
+
+            byte[] lockingScript = new TransactionOutputBuilder().setPayToPublicKeyHash(PublicKeyHash).get().LockingScript;
+            if(Arrays.equals(output.LockingScript,lockingScript)) {
+                utxo.add(output);
+            }
+        }
+        return utxo;
     }
 
 }
