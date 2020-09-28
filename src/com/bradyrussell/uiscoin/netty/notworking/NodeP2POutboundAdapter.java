@@ -1,4 +1,4 @@
-package com.bradyrussell.uiscoin.netty;
+package com.bradyrussell.uiscoin.netty.notworking;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOutboundHandlerAdapter;

@@ -1,4 +1,4 @@
-package com.bradyrussell.uiscoin.netty;
+package com.bradyrussell.uiscoin.netty.notworking;
 
 import com.bradyrussell.uiscoin.block.Block;
 import com.bradyrussell.uiscoin.node.PeerPacketType;
@@ -9,6 +9,7 @@ import io.netty.handler.codec.MessageToByteEncoder;
 public class NodeP2PBlockEncoder extends MessageToByteEncoder<Block> {
     @Override
     protected void encode(ChannelHandlerContext channelHandlerContext, Block block, ByteBuf byteBuf) throws Exception {
+        System.out.println("Encoding block");
         byteBuf.writeByte(PeerPacketType.BLOCK.Header);
         byteBuf.writeInt(block.getSize());
         byteBuf.writeBytes(block.getBinaryData());

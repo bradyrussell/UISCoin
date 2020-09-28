@@ -1,4 +1,4 @@
-package com.bradyrussell.uiscoin.netty;
+package com.bradyrussell.uiscoin.netty.notworking;
 
 import com.bradyrussell.uiscoin.MagicBytes;
 import com.bradyrussell.uiscoin.block.Block;

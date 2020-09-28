@@ -1,4 +1,4 @@
-package com.bradyrussell.uiscoin.netty;
+package com.bradyrussell.uiscoin.netty.notworking;
 
 import com.bradyrussell.uiscoin.node.PeerPacketType;
 import com.bradyrussell.uiscoin.transaction.Transaction;
@@ -11,6 +11,7 @@ import java.net.InetAddress;
 public class NodeP2PPeerEncoder extends MessageToByteEncoder<InetAddress> {
     @Override
     protected void encode(ChannelHandlerContext channelHandlerContext, InetAddress inetAddress, ByteBuf byteBuf) throws Exception {
+        System.out.println("Encoding peer");
         byteBuf.writeByte(PeerPacketType.PEER.Header);
         byte[] address = inetAddress.getAddress();
         byteBuf.writeInt(address.length);
