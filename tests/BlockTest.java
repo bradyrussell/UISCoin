@@ -71,7 +71,7 @@ public class BlockTest {
     @RepeatedTest(1)
     @DisplayName("Verification")
     void TestBlockVerification() {
-        UISCoinKeypair address1 = Wallet.LoadKeypairFromFileWithPassword(Path.of("C:\\Users\\Admin\\Desktop\\MyRealUISCoinWallet\\kushJr.uisw"), "VanityAddress1");
+        UISCoinKeypair address1 = UISCoinKeypair.Create();
         assert address1 != null;
         byte[] addressBytes = UISCoinAddress.fromPublicKey((ECPublicKey) address1.Keys.getPublic());
 

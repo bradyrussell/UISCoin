@@ -41,6 +41,7 @@ public class KeysTest {
 
             ScriptExecution lockingScript = new ScriptExecution();
             lockingScript.Initialize(LOCKSCRIPT, unlockingScript.Stack.elements());
+            lockingScript.setSignatureVerificationMessage(LOCKSCRIPT);
 
             while(lockingScript.Step()){
                 lockingScript.dumpStack();
