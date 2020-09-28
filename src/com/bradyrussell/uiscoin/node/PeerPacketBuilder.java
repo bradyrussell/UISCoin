@@ -6,6 +6,7 @@ import com.bradyrussell.uiscoin.transaction.Transaction;
 import java.net.InetAddress;
 import java.nio.ByteBuffer;
 
+@Deprecated
 public class PeerPacketBuilder {
     ByteBuffer buffer;
 
