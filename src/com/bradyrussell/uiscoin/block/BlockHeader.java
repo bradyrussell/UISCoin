@@ -102,8 +102,13 @@ public class BlockHeader implements IBinaryData, IVerifiable {
             BlockHeader previousBlockHeader = BlockChain.get().getBlockHeader(HashPreviousBlock);
             valid = (BlockHeight == previousBlockHeader.BlockHeight + 1); // we are previous Block Height + 1
             valid &= (DifficultyTarget >= CalculateDifficultyTarget(Time - previousBlockHeader.Time, previousBlockHeader.DifficultyTarget)); // we are using a proper difficulty
+        } else {
+            System.out.println("Genesis block!");
         }
         valid &= Time <= Instant.now().getEpochSecond(); // timestamp is not in the future
+        System.out.println(Time <= Instant.now().getEpochSecond());
+        System.out.println(Time);
+        System.out.println(Instant.now().getEpochSecond());
 
         return valid;
     }

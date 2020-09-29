@@ -149,9 +149,13 @@ public class Block implements IBinaryData, IVerifiable {
     }
 
     public void DebugVerify(){
+        System.out.println(Header.Verify());
        assert Header.Verify();
+        System.out.println(VerifyTransactions());
        assert VerifyTransactions();
+        System.out.println(VerifyBlockReward());
        assert VerifyBlockReward();
+        System.out.println(Hash.validateHash(getHash(), Header.DifficultyTarget));
        assert Hash.validateHash(getHash(), Header.DifficultyTarget);
     }
 

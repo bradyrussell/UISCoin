@@ -22,6 +22,7 @@ import io.netty.handler.logging.LoggingHandler;
 import io.netty.util.concurrent.GlobalEventExecutor;
 
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -109,4 +110,22 @@ public class Node {
         }
     }
 
+    public List<InetAddress> getPeers(){
+        List<InetAddress> addresses = new ArrayList<>();
+
+        nodeClients.forEach((channel -> {
+            InetAddress address = ((InetSocketAddress) channel.remoteAddress()).getAddress();
+            if(!addresses.contains(address)) {
+                addresses.add(address);
+            }
+        }));
+        peerClients.forEach((channel -> {
+            InetAddress address = ((InetSocketAddress) channel.remoteAddress()).getAddress();
+            if(!addresses.contains(address)) {
+                addresses.add(address);
+            }
+        }));
+
+        return addresses;
+    }
 }

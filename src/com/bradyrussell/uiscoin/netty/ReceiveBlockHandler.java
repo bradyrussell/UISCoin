@@ -34,8 +34,8 @@ public class ReceiveBlockHandler extends SimpleChannelInboundHandler<Block> {
             return;
         }
 
-        block.DebugVerify();
         if(!block.Verify()) {
+            block.DebugVerify();
             System.out.println("Invalid block! Discarding.");
             return;
         }
