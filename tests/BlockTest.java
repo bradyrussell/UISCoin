@@ -2,17 +2,13 @@ import com.bradyrussell.uiscoin.Conversions;
 import com.bradyrussell.uiscoin.Hash;
 import com.bradyrussell.uiscoin.address.UISCoinAddress;
 import com.bradyrussell.uiscoin.address.UISCoinKeypair;
-import com.bradyrussell.uiscoin.address.Wallet;
 import com.bradyrussell.uiscoin.block.Block;
 import com.bradyrussell.uiscoin.block.BlockBuilder;
 import com.bradyrussell.uiscoin.block.BlockHeader;
-import com.bradyrussell.uiscoin.blockchain.BlockChain;
 import com.bradyrussell.uiscoin.transaction.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.RepeatedTest;
-import org.junit.jupiter.api.Test;
 
-import java.nio.file.Path;
 import java.security.interfaces.ECPublicKey;
 import java.time.Instant;
 import java.util.Arrays;
@@ -72,7 +68,6 @@ public class BlockTest {
     @DisplayName("Verification")
     void TestBlockVerification() {
         UISCoinKeypair address1 = UISCoinKeypair.Create();
-        assert address1 != null;
         byte[] addressBytes = UISCoinAddress.fromPublicKey((ECPublicKey) address1.Keys.getPublic());
 
         BlockBuilder blockBuilder = new BlockBuilder().setVersion(1).setTimestamp(Instant.now().getEpochSecond()).setDifficultyTarget(2).setBlockHeight(0)

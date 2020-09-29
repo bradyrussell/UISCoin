@@ -9,6 +9,7 @@ public enum PeerPacketType {
     TRANSACTION(0x05), // this is a transaction broadcast
     BLOCK(0x06), // block broadcast
 
+    REQUEST(0x07), // this indicates a request for a block
 
 ;
 

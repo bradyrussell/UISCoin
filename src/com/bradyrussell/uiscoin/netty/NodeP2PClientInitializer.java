@@ -1,6 +1,5 @@
 package com.bradyrussell.uiscoin.netty;
 
-import com.bradyrussell.uiscoin.netty.notworking.NodeP2PSendGreetingHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;

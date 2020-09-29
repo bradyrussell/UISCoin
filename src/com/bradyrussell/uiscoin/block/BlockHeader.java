@@ -8,7 +8,6 @@ import com.bradyrussell.uiscoin.blockchain.BlockChain;
 
 import java.nio.ByteBuffer;
 import java.time.Instant;
-import java.util.concurrent.TimeUnit;
 
 public class BlockHeader implements IBinaryData, IVerifiable {
     public int Version; // 4

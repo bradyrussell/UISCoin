@@ -59,7 +59,7 @@ public class PeerPacketBuilder {
 
     public PeerPacketBuilder putPing(int Value){
         buffer.put(PeerPacketType.PING.Header);
-        buffer.putInt(Value);
+        //buffer.putInt(Value);
         return this;
     }
 

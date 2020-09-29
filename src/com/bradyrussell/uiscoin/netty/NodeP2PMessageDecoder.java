@@ -17,12 +17,6 @@ import java.net.InetAddress;
 import java.util.List;
 
 public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
-/*
-    @Override
-    public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        ctx.writeAndFlush(new PeerPacketBuilder(8).putPing(1));
-    }
-*/
 
     @Override
     protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, List<Object> list) throws Exception {
@@ -35,12 +29,7 @@ public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
                 case DISCONNECT -> {
                     System.out.println("3 Received disconnect!");
                     channelHandlerContext.writeAndFlush(new PeerPacketBuilder(2).putDisconnect().get());
-                    channelHandlerContext.disconnect().addListener(new ChannelFutureListener() {
-                        @Override
-                        public void operationComplete(ChannelFuture channelFuture) throws Exception {
-                            System.out.println("Disconnected");
-                        }
-                    });
+                    channelHandlerContext.disconnect().addListener((ChannelFutureListener) channelFuture -> System.out.println("Disconnected"));
                     list.add(true);
                 }
                 case GREETING -> {
@@ -56,12 +45,9 @@ public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
                     ByteBuf wrappedBuffer = Unpooled.wrappedBuffer(new PeerPacketBuilder(5).putHandshake(1).get());
                     ChannelFuture channelFuture = channelHandlerContext.writeAndFlush(wrappedBuffer);
                     //wrappedBuffer.release();
-                    channelFuture.addListener(new ChannelFutureListener() {
-                        @Override
-                        public void operationComplete(ChannelFuture channelFuture) throws Exception {
-                            if(!channelFuture.isSuccess())
-                                channelFuture.cause().printStackTrace();
-                        }
+                    channelFuture.addListener((ChannelFutureListener) channelFuture1 -> {
+                        if(!channelFuture1.isSuccess())
+                            channelFuture1.cause().printStackTrace();
                     });
 
                     list.add(true);
@@ -70,10 +56,14 @@ public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
                     System.out.println("3 Received handshake!");
                     int Version = byteBuf.readInt();
                     if(Version != MagicBytes.ProtocolVersion.Value) {
+                        System.out.println("Protocol version mismatch, disconnecting!");
                         channelHandlerContext.disconnect();
                         list.add(true);
                         return;
                     }
+
+                    channelHandlerContext.fireUserEventTriggered(true);
+
                     list.add(true);
                 }
                 case PING -> {
@@ -112,6 +102,13 @@ public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
 
                     System.out.println("3 Received block "+Util.Base64Encode(block.getHash()));
                     list.add(block);
+                }
+                case REQUEST -> {
+                    byte[] Bytes = new byte[64];
+                    byteBuf.readBytes(Bytes);
+
+                    System.out.println("3 Received block request "+Util.Base64Encode(Bytes));
+                    list.add(true);
                 }
             }
         }

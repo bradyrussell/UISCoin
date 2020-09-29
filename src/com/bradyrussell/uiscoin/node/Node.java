@@ -1,7 +1,6 @@
 package com.bradyrussell.uiscoin.node;
 
 import com.bradyrussell.uiscoin.MagicNumbers;
-import com.bradyrussell.uiscoin.Util;
 
 import java.io.IOException;
 import java.net.DatagramPacket;

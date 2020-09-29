@@ -4,7 +4,6 @@ import com.bradyrussell.uiscoin.Util;
 import com.bradyrussell.uiscoin.block.Block;
 import com.bradyrussell.uiscoin.block.BlockHeader;
 import com.bradyrussell.uiscoin.transaction.Transaction;
-import com.bradyrussell.uiscoin.transaction.TransactionBuilder;
 import com.bradyrussell.uiscoin.transaction.TransactionOutput;
 import com.bradyrussell.uiscoin.transaction.TransactionOutputBuilder;
 
