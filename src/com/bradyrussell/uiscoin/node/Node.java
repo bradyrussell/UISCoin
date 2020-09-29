@@ -1,77 +1,112 @@
 package com.bradyrussell.uiscoin.node;
 
 import com.bradyrussell.uiscoin.MagicNumbers;
+import com.bradyrussell.uiscoin.Util;
+import com.bradyrussell.uiscoin.block.Block;
+import com.bradyrussell.uiscoin.netty.ClientHandler;
+import com.bradyrussell.uiscoin.netty.NodeP2PClientInitializer;
+import com.bradyrussell.uiscoin.netty.NodeP2PServerInitializer;
+import com.bradyrussell.uiscoin.transaction.Transaction;
+import io.netty.bootstrap.Bootstrap;
+import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.group.ChannelGroup;
+import io.netty.channel.group.DefaultChannelGroup;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.logging.LogLevel;
+import io.netty.handler.logging.LoggingHandler;
+import io.netty.util.concurrent.GlobalEventExecutor;
 
-import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.SocketException;
-import java.time.Instant;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Node {
-    DatagramSocket ServerSocket;
-    HashMap<InetAddress, Peer> Peers = new HashMap<>();
+    EventLoopGroup bossGroup;
+    EventLoopGroup workerGroup;
+    Channel serverChannel;
+
+    EventLoopGroup peerGroup = new NioEventLoopGroup();
+    Bootstrap peerBootstrap = new Bootstrap();
+
+    public ChannelGroup nodeClients = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE); // nodes connections to me
+    public ChannelGroup peerClients = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE); // my connection to other nodes
+
     int Version;
 
     public Node(int Version) {
         this.Version = Version;
+    }
+
+    public void ConnectToPeer(InetAddress Address){
+        peerBootstrap.group(peerGroup)
+                .channel(NioSocketChannel.class)
+                .handler(new NodeP2PClientInitializer());
+
+        // Make a new connection.
+        ChannelFuture sync = null;
         try {
-            ServerSocket = new DatagramSocket(MagicNumbers.NodeP2PPort.Value);
-            ServerSocket.setSoTimeout(1);
-        } catch (SocketException e) {
+            sync = peerBootstrap.connect(Address, MagicNumbers.NodeP2PPort.Value).sync();
+            peerClients.add(sync.channel());
+
+           // ChannelFuture closeFuture = sync.channel().closeFuture();
+
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
     }
 
-    public void CheckForTimeouts(){
-        List<InetAddress> deadPeers = new ArrayList<>();
-
-        Peers.forEach((k,v)-> {
-            if(v.LastSeen < (Instant.now().getEpochSecond() - MagicNumbers.NodeP2PTimeout.Value)) {
-                deadPeers.add(v.Address);
-            }
-            else if(v.LastSeen < (Instant.now().getEpochSecond() - MagicNumbers.NodeP2PTimeout.Value/2)) {
-                v.Send(new PeerPacketBuilder(8).putPing(1).get());
-            }
-        });
-
-        for(InetAddress addr: deadPeers){
-            Peers.remove(addr);
-        }
+    public void RequestBlockFromPeers(BlockRequest request){
+        peerClients.writeAndFlush(request);
+        nodeClients.writeAndFlush(request);
     }
 
-    public void SendAll(byte[] Data) {
-        Peers.forEach((k,v)-> v.Send(Data));
+    public void BroadcastBlockToPeers(Block block){
+        peerClients.writeAndFlush(block);
+        nodeClients.writeAndFlush(block);
     }
 
-    public boolean Receive(DatagramPacket packet){
+    public void BroadcastTransactionToPeers(Transaction transaction){
+        peerClients.writeAndFlush(transaction);
+        nodeClients.writeAndFlush(transaction);
+    }
+
+    public void BroadcastPeerToPeers(InetAddress address){
+        peerClients.writeAndFlush(address);
+        nodeClients.writeAndFlush(address);
+    }
+
+    public void Start(){
+        //startup the node server
+        EventLoopGroup bossGroup = new NioEventLoopGroup(1);
+        EventLoopGroup workerGroup = new NioEventLoopGroup();
+        ServerBootstrap b = new ServerBootstrap();
+        b.group(bossGroup, workerGroup)
+                .channel(NioServerSocketChannel.class)
+                .handler(new LoggingHandler(LogLevel.INFO))
+                .childHandler(new NodeP2PServerInitializer(this));
+
         try {
-            ServerSocket.receive(packet);
-            AddPeer(packet.getAddress());
-            Peers.get(packet.getAddress()).Seen();
-        } catch (IOException e) {
-           // e.printStackTrace();
+            serverChannel = b.bind(MagicNumbers.NodeP2PPort.Value).sync().channel();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
-        return packet.getPort() > 0;
-    }
 
-    public void AddPeer(InetAddress Address){
-        Peers.put(Address, new Peer(Address));
-    }
-
-    public int getNumberPeers(){
-        return Peers.size();
-    }
-
-    public Set<InetAddress> getPeers(){
-        return Peers.keySet();
     }
 
     public void Stop(){
-        ServerSocket.disconnect();
-        ServerSocket.close();
+        try {
+            bossGroup.shutdownGracefully().sync();
+            workerGroup.shutdownGracefully().sync();
+            peerGroup.shutdownGracefully().sync();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
 }

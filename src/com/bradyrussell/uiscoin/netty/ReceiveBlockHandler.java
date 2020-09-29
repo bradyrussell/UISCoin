@@ -3,6 +3,7 @@ package com.bradyrussell.uiscoin.netty;
 import com.bradyrussell.uiscoin.Util;
 import com.bradyrussell.uiscoin.block.Block;
 import com.bradyrussell.uiscoin.blockchain.BlockChain;
+import com.bradyrussell.uiscoin.blockchain.BlockChainStorageBase;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
@@ -27,6 +28,11 @@ public class ReceiveBlockHandler extends SimpleChannelInboundHandler<Block> {
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, Block block) throws Exception {
         System.out.println("Handler Received block "+ Util.Base64Encode(block.getHash()));
+
+        if(BlockChain.get().exists(block.getHash(), BlockChainStorageBase.BlocksDatabase)){
+            System.out.println("Already have. Discarding...");
+            return;
+        }
 
         block.DebugVerify();
         if(!block.Verify()) {

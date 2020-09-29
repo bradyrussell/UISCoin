@@ -1,5 +1,6 @@
 package com.bradyrussell.uiscoin.netty;
 
+import com.bradyrussell.uiscoin.node.Node;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
@@ -9,8 +10,12 @@ import io.netty.handler.codec.compression.ZlibWrapper;
 
 public class NodeP2PServerInitializer extends ChannelInitializer<SocketChannel> {
 
+    Node node;
 
-   // private final SslContext sslCtx;
+    public NodeP2PServerInitializer(Node node) {
+        this.node = node;
+    }
+// private final SslContext sslCtx;
 
    // public FactorialServerInitializer(SslContext sslCtx) {
        // this.sslCtx = sslCtx;
@@ -46,6 +51,6 @@ public class NodeP2PServerInitializer extends ChannelInitializer<SocketChannel> 
         pipeline.addLast(new ReceivePeerHandler());
         pipeline.addLast(new ReceiveBlockRequestHandler());
 
-        pipeline.addLast(new ServerHandler());
+        pipeline.addLast(new ServerHandler(node));
     }
 }

@@ -1,5 +1,6 @@
 package com.bradyrussell.uiscoin.netty;
 
+import com.bradyrussell.uiscoin.MagicNumbers;
 import com.bradyrussell.uiscoin.blockchain.BlockChain;
 import com.bradyrussell.uiscoin.blockchain.BlockChainStorageFile;
 import io.netty.bootstrap.ServerBootstrap;
@@ -35,9 +36,9 @@ public class NodeP2PServer {
             b.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
                     .handler(new LoggingHandler(LogLevel.INFO))
-                    .childHandler(new NodeP2PServerInitializer());
+                    .childHandler(new NodeP2PServerInitializer(null));
 
-            b.bind(PORT).sync().channel().closeFuture().sync();
+            b.bind(MagicNumbers.NodeP2PPort.Value).sync().channel().closeFuture().sync();
         } finally {
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();

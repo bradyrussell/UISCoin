@@ -5,16 +5,39 @@ import com.bradyrussell.uiscoin.address.UISCoinKeypair;
 import com.bradyrussell.uiscoin.address.Wallet;
 import com.bradyrussell.uiscoin.blockchain.BlockChain;
 import com.bradyrussell.uiscoin.blockchain.BlockChainStorageFile;
+import com.bradyrussell.uiscoin.node.BlockRequest;
 import com.bradyrussell.uiscoin.node.MemPool;
+import com.bradyrussell.uiscoin.node.Node;
 import com.bradyrussell.uiscoin.transaction.*;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.nio.file.Path;
 import java.security.interfaces.ECPublicKey;
+import java.util.Base64;
 
 public class Main {
 
     public static void main(String[] args) {
-        String myTransactionInputHash = "YdfeDWmoO9Xklr_T3dSfdrCuHZBohDlw9gS7Z4RutuDg6ASjmaGbZmfIIcNIV2nZsfYR_NrqzcuA5Y0D9ScbgQ==";
+        BlockChain.Initialize(BlockChainStorageFile.class);
+
+        Node node = new Node(1);
+
+        //node.Start();
+
+        try {
+            node.ConnectToPeer(InetAddress.getLocalHost());
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+
+        node.RequestBlockFromPeers(new BlockRequest(Util.Base64Decode("UIRTCXb5LIKUQMJuU5dM18OoNdlHztGJMRv0KUM3FbzhxHk9_rJyphibpcTT40NfjmE4GN5AZrGDQo1X2c8mJg==")));
+
+
+        while (!node.peerClients.isEmpty());
+
+        node.Stop();
+       /* String myTransactionInputHash = "YdfeDWmoO9Xklr_T3dSfdrCuHZBohDlw9gS7Z4RutuDg6ASjmaGbZmfIIcNIV2nZsfYR_NrqzcuA5Y0D9ScbgQ==";
 
         BlockChain.Initialize(BlockChainStorageFile.class);
         MemPool memPool = new MemPool();
@@ -29,9 +52,9 @@ public class Main {
             for(TransactionInput transactionInput: pendingTransaction.Inputs){
                 System.out.println(Util.Base64Encode(transactionInput.UnlockingScript));
             }
-/*            for(TransactionOutput transactionOutput: pendingTransaction.Outputs){
+*//*            for(TransactionOutput transactionOutput: pendingTransaction.Outputs){
                 System.out.println("Output: "+Util.Base64Encode(transactionOutput.getHash()));
-            }*/
+            }*//*
         }
 
         UISCoinKeypair address1 = Wallet.LoadKeypairFromFileWithPassword(Path.of("C:\\Users\\Admin\\Desktop\\MyRealUISCoinWallet\\kushJr.uisw"), "VanityAddress1");
@@ -53,7 +76,7 @@ public class Main {
         transaction.DebugVerify();
         System.out.println(transaction.Verify());
 
-        BlockChain.get().put(Hash.getSHA512Bytes("mempool"), memPool.getBinaryData(), "mempool");
+        BlockChain.get().put(Hash.getSHA512Bytes("mempool"), memPool.getBinaryData(), "mempool");*/
 /*
         Block block = BlockChain.get().getBlock(Util.Base64Decode("UISXXJXK9KEfRp1bc6oiCOjAS_Ks_KBvfUoGrKDl_Kaw0bl4a_Ufh8mTiISr7qEkc_NQ2rlbvH1K8l1AeM2QFg=="));
 
