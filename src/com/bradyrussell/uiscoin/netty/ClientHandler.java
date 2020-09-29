@@ -1,6 +1,7 @@
 package com.bradyrussell.uiscoin.netty;
 
 import com.bradyrussell.uiscoin.Hash;
+import com.bradyrussell.uiscoin.Util;
 import com.bradyrussell.uiscoin.block.Block;
 import com.bradyrussell.uiscoin.block.BlockBuilder;
 import com.bradyrussell.uiscoin.node.PeerPacketBuilder;
@@ -19,16 +20,33 @@ import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.time.Instant;
+import java.util.ArrayDeque;
 import java.util.Base64;
+import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class ClientHandler extends SimpleChannelInboundHandler<ByteBuf> {
     private ChannelHandlerContext ctx;
-    final BlockingQueue<BigInteger> answer = new LinkedBlockingQueue<>();
+  //  final BlockingQueue<BigInteger> answer = new LinkedBlockingQueue<>();
 
-    public BigInteger getFactorial() {
+    //final Queue<byte[]> PendingBlockRequests = new ArrayDeque<>();
+
+    void SendBlockRequest(byte[] BlockHash){ // i feel like this is a threading issue
+        ByteBuf b = Unpooled.buffer();
+        b.writeByte(PeerPacketType.REQUEST.Header);
+        b.writeBytes(Util.Base64Decode("UIRTCXb5LIKUQMJuU5dM18OoNdlHztGJMRv0KUM3FbzhxHk9_rJyphibpcTT40NfjmE4GN5AZrGDQo1X2c8mJg=="));
+
+        ChannelFuture channelFuture = ctx.writeAndFlush(b);
+        // wrappedBuffer.release();
+        channelFuture.addListener((ChannelFutureListener) channelFuture1 -> {
+            if(!channelFuture1.isSuccess())
+                channelFuture1.cause().printStackTrace();
+        });
+    }
+
+/*    public BigInteger getFactorial() {
         boolean interrupted = false;
         try {
             for (;;) {
@@ -43,7 +61,7 @@ public class ClientHandler extends SimpleChannelInboundHandler<ByteBuf> {
                 Thread.currentThread().interrupt();
             }
         }
-    }
+    }*/
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
@@ -73,8 +91,8 @@ public class ClientHandler extends SimpleChannelInboundHandler<ByteBuf> {
 
     private void sendNumbers() {
         // Do not send more than 4096 numbers.
-
-        switch (ThreadLocalRandom.current().nextInt(4)){
+        return;
+      /*  switch (ThreadLocalRandom.current().nextInt(4)){
             case 0 -> {
                 Transaction transaction = new TransactionBuilder().setVersion(1).setLockTime(0).addOutput(new TransactionOutputBuilder().setAmount(ThreadLocalRandom.current().nextInt()).setPayToPublicKeyHash(Base64.getDecoder().decode("UISxUisdl8E31ksaCZvw3RKR9biwgXPi/m6lUTyN4E9K0n2vI+Xc5QFVtWpPz9+8fr2DwE5T40qLVbEj7QFsEyve3YteiPg=")).get()).get();
                 ctx.writeAndFlush(transaction).addListener(numberSender);
@@ -103,13 +121,13 @@ public class ClientHandler extends SimpleChannelInboundHandler<ByteBuf> {
             case 3 -> {
                 ByteBuf b = Unpooled.buffer();
                 b.writeByte(PeerPacketType.REQUEST.Header);
-                b.writeBytes(Hash.getSHA512Bytes("oof"));
+                b.writeBytes(Util.Base64Decode("UIRTCXb5LIKUQMJuU5dM18OoNdlHztGJMRv0KUM3FbzhxHk9_rJyphibpcTT40NfjmE4GN5AZrGDQo1X2c8mJg=="));
 
                 ctx.writeAndFlush(b).addListener(numberSender);
             }
         }
 
-
+*/
         /*ChannelFuture future = null;
         for (int i = 0; i < 4096 && next <= NodeP2PClient.COUNT; i++) {
             future = ctx.write(Integer.valueOf(next));
@@ -138,7 +156,7 @@ public class ClientHandler extends SimpleChannelInboundHandler<ByteBuf> {
 
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-        System.out.println("USER EVENT");
+        System.out.println("USER EVENT"); // using this to signal we are accepted and ready to send requests
         sendNumbers();
     }
 }

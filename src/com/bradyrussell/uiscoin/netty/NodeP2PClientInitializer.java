@@ -32,7 +32,9 @@ public class NodeP2PClientInitializer extends ChannelInitializer<SocketChannel> 
         pipeline.addLast(new NodeP2PTransactionEncoder());
         pipeline.addLast(new NodeP2PBlockEncoder());
         pipeline.addLast(new NodeP2PPeerEncoder());
+        pipeline.addLast(new ReceiveBlockRequestHandler());
 
+        pipeline.addLast(new ReceiveBlockHandler());
      //   pipeline.addLast(new NodeP2PPacketEncoder());
       //  pipeline.addLast(new NodeP2PSendGreetingHandler());
 

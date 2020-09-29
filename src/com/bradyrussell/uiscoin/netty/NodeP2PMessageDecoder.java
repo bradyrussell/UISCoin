@@ -108,7 +108,7 @@ public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
                     byteBuf.readBytes(Bytes);
 
                     System.out.println("3 Received block request "+Util.Base64Encode(Bytes));
-                    list.add(true);
+                    list.add(Bytes);
                 }
             }
         }

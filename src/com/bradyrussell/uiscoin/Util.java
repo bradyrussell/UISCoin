@@ -1,5 +1,7 @@
 package com.bradyrussell.uiscoin;
 
+import com.bradyrussell.uiscoin.transaction.Transaction;
+
 import java.util.Base64;
 
 public class Util {
@@ -47,5 +49,9 @@ public class Util {
 
     public static byte[] Base64Decode(String Base64String){
         return Base64.getUrlDecoder().decode(Base64String);
+    }
+
+    public static void putMempool(Transaction transaction){
+        System.out.println("Util.putMempool not implemented. Discarding...");
     }
 }

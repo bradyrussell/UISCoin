@@ -44,6 +44,7 @@ public class NodeP2PServerInitializer extends ChannelInitializer<SocketChannel> 
         pipeline.addLast(new ReceiveBlockHandler());
         pipeline.addLast(new ReceiveTransactionHandler());
         pipeline.addLast(new ReceivePeerHandler());
+        pipeline.addLast(new ReceiveBlockRequestHandler());
 
         pipeline.addLast(new ServerHandler());
     }

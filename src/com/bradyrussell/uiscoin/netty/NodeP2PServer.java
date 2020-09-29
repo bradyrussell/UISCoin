@@ -1,5 +1,7 @@
 package com.bradyrussell.uiscoin.netty;
 
+import com.bradyrussell.uiscoin.blockchain.BlockChain;
+import com.bradyrussell.uiscoin.blockchain.BlockChainStorageFile;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -15,6 +17,8 @@ public class NodeP2PServer {
     static final int PORT = Integer.parseInt(System.getProperty("port", "8322"));
 
     public static void main(String[] args) throws Exception {
+        BlockChain.Initialize(BlockChainStorageFile.class);
+
         // Configure SSL.
         final SslContext sslCtx;
         if (SSL) {
