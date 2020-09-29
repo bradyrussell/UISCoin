@@ -3,6 +3,10 @@ package com.bradyrussell.uiscoin.netty;
 import com.bradyrussell.uiscoin.MagicBytes;
 import com.bradyrussell.uiscoin.Util;
 import com.bradyrussell.uiscoin.block.Block;
+import com.bradyrussell.uiscoin.block.BlockHeader;
+import com.bradyrussell.uiscoin.blockchain.BlockChain;
+import com.bradyrussell.uiscoin.blockchain.BlockChainStorageBase;
+import com.bradyrussell.uiscoin.node.BlockHeaderResponse;
 import com.bradyrussell.uiscoin.node.BlockRequest;
 import com.bradyrussell.uiscoin.node.PeerPacketBuilder;
 import com.bradyrussell.uiscoin.node.PeerPacketType;
@@ -104,6 +108,21 @@ public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
                     System.out.println("3 Received block "+Util.Base64Encode(block.getHash()));
                     list.add(block);
                 }
+                case HEADER -> {
+                    //this assumes headers are fixed size
+                    BlockHeader blockHeader = new BlockHeader();
+
+                    byte[] Hash = new byte[64];
+                    byte[] Bytes = new byte[blockHeader.getSize()];
+
+                    byteBuf.readBytes(Hash);
+                    byteBuf.readBytes(Bytes);
+
+                    blockHeader.setBinaryData(Bytes);
+
+                    System.out.println("3 Received block header "+Util.Base64Encode(Hash));
+                    list.add(new BlockHeaderResponse(Hash, blockHeader));
+                }
                 case REQUEST -> {
                     boolean bOnlyHeader = byteBuf.readBoolean();
                     byte[] Bytes = new byte[64];
@@ -111,6 +130,20 @@ public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
 
                     System.out.println("3 Received block request "+Util.Base64Encode(Bytes));
                     list.add(new BlockRequest(Bytes, bOnlyHeader));
+                }
+                case SYNC -> {
+                    boolean bOnlyHeader = byteBuf.readBoolean();
+                    int BlockHeight = byteBuf.readInt();
+
+                    System.out.println("3 Received sync request "+BlockHeight);
+
+                    for(Block block:BlockChain.get().getBlockChainFromHeight(BlockHeight)){
+                        channelHandlerContext.write(bOnlyHeader ? block.Header : block);
+                    }
+                    channelHandlerContext.flush();
+                    list.add(true);
+                }
+                case MEMPOOL -> {
                 }
             }
         }

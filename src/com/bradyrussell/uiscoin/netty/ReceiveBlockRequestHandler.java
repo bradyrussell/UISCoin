@@ -4,6 +4,7 @@ import com.bradyrussell.uiscoin.Util;
 import com.bradyrussell.uiscoin.blockchain.BlockChain;
 import com.bradyrussell.uiscoin.blockchain.BlockChainStorageBase;
 import com.bradyrussell.uiscoin.blockchain.BlockChainStorageFile;
+import com.bradyrussell.uiscoin.node.BlockHeaderResponse;
 import com.bradyrussell.uiscoin.node.BlockRequest;
 import com.bradyrussell.uiscoin.node.PeerPacketBuilder;
 import com.bradyrussell.uiscoin.transaction.Transaction;
@@ -42,7 +43,7 @@ public class ReceiveBlockRequestHandler extends SimpleChannelInboundHandler<Bloc
 
         System.out.println("Sending block" + (blockRequest.bOnlyHeader ? "header" : "") + "...");
 
-        ChannelFuture channelFuture = channelHandlerContext.writeAndFlush(blockRequest.bOnlyHeader ? BlockChain.get().getBlockHeader(blockRequest.BlockHash) : BlockChain.get().getBlock(blockRequest.BlockHash));
+        ChannelFuture channelFuture = channelHandlerContext.writeAndFlush(blockRequest.bOnlyHeader ? new BlockHeaderResponse(blockRequest.BlockHash, BlockChain.get().getBlockHeader(blockRequest.BlockHash)) : BlockChain.get().getBlock(blockRequest.BlockHash));
         channelFuture.addListener((ChannelFutureListener) channelFuture1 -> {
             if (!channelFuture1.isSuccess())
                 channelFuture1.cause().printStackTrace();

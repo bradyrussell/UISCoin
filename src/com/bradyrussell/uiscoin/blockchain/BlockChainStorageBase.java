@@ -9,6 +9,7 @@ import com.bradyrussell.uiscoin.transaction.TransactionOutputBuilder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public abstract class BlockChainStorageBase {
@@ -113,6 +114,30 @@ public abstract class BlockChainStorageBase {
             }
         }
         return utxo;
+    }
+
+    public Block getBlockByHeight(int BlockHeight){
+        if(BlockHeight < 0) return null;
+        byte[] currentBlockHash = HighestBlockHash;
+        while(getBlockHeader(currentBlockHash).BlockHeight != BlockHeight) {
+            currentBlockHash = getBlockHeader(currentBlockHash).HashPreviousBlock;
+        }
+        return getBlock(currentBlockHash);
+    }
+
+    public List<Block> getBlockChainFromHeight(int BlockHeight){
+        if(BlockHeight < 0) return null;
+        byte[] currentBlockHash = HighestBlockHash;
+
+        List<Block> blockchain = new ArrayList<>();
+
+        while(getBlockHeader(currentBlockHash).BlockHeight >= BlockHeight) {
+            blockchain.add(getBlock(currentBlockHash));
+            currentBlockHash = getBlockHeader(currentBlockHash).HashPreviousBlock;
+        }
+
+        Collections.reverse(blockchain);
+        return blockchain;
     }
 
 }
