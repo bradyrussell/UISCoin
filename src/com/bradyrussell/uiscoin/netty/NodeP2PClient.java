@@ -3,6 +3,7 @@ package com.bradyrussell.uiscoin.netty;
 import com.bradyrussell.uiscoin.Util;
 import com.bradyrussell.uiscoin.blockchain.BlockChain;
 import com.bradyrussell.uiscoin.blockchain.BlockChainStorageFile;
+import com.bradyrussell.uiscoin.node.BlockRequest;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -49,7 +50,7 @@ public class NodeP2PClient {
 
             while (!closeFuture.isDone()) {
                 if (ThreadLocalRandom.current().nextBoolean()) {
-                    handler.SendBlockRequest(Util.Base64Decode("UIRTCXb5LIKUQMJuU5dM18OoNdlHztGJMRv0KUM3FbzhxHk9_rJyphibpcTT40NfjmE4GN5AZrGDQo1X2c8mJg=="));
+                    handler.SendBlockRequest(new BlockRequest(Util.Base64Decode("UIRTCXb5LIKUQMJuU5dM18OoNdlHztGJMRv0KUM3FbzhxHk9_rJyphibpcTT40NfjmE4GN5AZrGDQo1X2c8mJg==")));
                 }
                 Thread.sleep(1000);
             }

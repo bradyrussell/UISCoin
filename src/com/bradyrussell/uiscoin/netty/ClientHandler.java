@@ -4,6 +4,7 @@ import com.bradyrussell.uiscoin.Hash;
 import com.bradyrussell.uiscoin.Util;
 import com.bradyrussell.uiscoin.block.Block;
 import com.bradyrussell.uiscoin.block.BlockBuilder;
+import com.bradyrussell.uiscoin.node.BlockRequest;
 import com.bradyrussell.uiscoin.node.PeerPacketBuilder;
 import com.bradyrussell.uiscoin.node.PeerPacketType;
 import com.bradyrussell.uiscoin.transaction.Transaction;
@@ -33,12 +34,8 @@ public class ClientHandler extends SimpleChannelInboundHandler<ByteBuf> {
 
     //final Queue<byte[]> PendingBlockRequests = new ArrayDeque<>();
 
-    void SendBlockRequest(byte[] BlockHash){ // i feel like this is a threading issue
-        ByteBuf b = Unpooled.buffer();
-        b.writeByte(PeerPacketType.REQUEST.Header);
-        b.writeBytes(Util.Base64Decode("UIRTCXb5LIKUQMJuU5dM18OoNdlHztGJMRv0KUM3FbzhxHk9_rJyphibpcTT40NfjmE4GN5AZrGDQo1X2c8mJg=="));
-
-        ChannelFuture channelFuture = ctx.writeAndFlush(b);
+    void SendBlockRequest(BlockRequest request){ // i feel like this is a threading issue
+        ChannelFuture channelFuture = ctx.writeAndFlush(request);
         // wrappedBuffer.release();
         channelFuture.addListener((ChannelFutureListener) channelFuture1 -> {
             if(!channelFuture1.isSuccess())

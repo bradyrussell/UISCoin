@@ -3,6 +3,7 @@ package com.bradyrussell.uiscoin.netty;
 import com.bradyrussell.uiscoin.MagicBytes;
 import com.bradyrussell.uiscoin.Util;
 import com.bradyrussell.uiscoin.block.Block;
+import com.bradyrussell.uiscoin.node.BlockRequest;
 import com.bradyrussell.uiscoin.node.PeerPacketBuilder;
 import com.bradyrussell.uiscoin.node.PeerPacketType;
 import com.bradyrussell.uiscoin.transaction.Transaction;
@@ -104,11 +105,12 @@ public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
                     list.add(block);
                 }
                 case REQUEST -> {
+                    boolean bOnlyHeader = byteBuf.readBoolean();
                     byte[] Bytes = new byte[64];
                     byteBuf.readBytes(Bytes);
 
                     System.out.println("3 Received block request "+Util.Base64Encode(Bytes));
-                    list.add(Bytes);
+                    list.add(new BlockRequest(Bytes, bOnlyHeader));
                 }
             }
         }
