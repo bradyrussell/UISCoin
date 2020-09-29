@@ -44,9 +44,14 @@ public class Node {
     }
 
     public void ConnectToPeer(InetAddress Address){
+        if(getPeers().contains(Address)) {
+            System.out.println("Already connected to this peer!");
+            return;
+        }
+
         peerBootstrap.group(peerGroup)
                 .channel(NioSocketChannel.class)
-                .handler(new NodeP2PClientInitializer());
+                .handler(new NodeP2PClientInitializer(this));
 
         // Make a new connection.
         ChannelFuture sync = null;

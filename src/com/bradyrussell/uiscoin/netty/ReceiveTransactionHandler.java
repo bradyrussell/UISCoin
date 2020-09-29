@@ -2,11 +2,18 @@ package com.bradyrussell.uiscoin.netty;
 
 import com.bradyrussell.uiscoin.Util;
 import com.bradyrussell.uiscoin.blockchain.BlockChain;
+import com.bradyrussell.uiscoin.node.Node;
 import com.bradyrussell.uiscoin.transaction.Transaction;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
 public class ReceiveTransactionHandler extends SimpleChannelInboundHandler<Transaction> {
+    private Node thisNode;
+
+    public ReceiveTransactionHandler(Node thisNode) {
+        this.thisNode = thisNode;
+    }
+
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         super.channelActive(ctx);
@@ -36,5 +43,8 @@ public class ReceiveTransactionHandler extends SimpleChannelInboundHandler<Trans
 
         System.out.println("Storing transaction in mempool...");
         Util.putMempool(transaction);
+
+        System.out.println("Rebroadcasting...");
+        thisNode.BroadcastTransactionToPeers(transaction);
     }
 }

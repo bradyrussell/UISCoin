@@ -46,9 +46,9 @@ public class NodeP2PServerInitializer extends ChannelInitializer<SocketChannel> 
         // and then business logic.
         // Please note we create a handler for every new channel
         // because it has stateful properties.
-        pipeline.addLast(new ReceiveBlockHandler());
-        pipeline.addLast(new ReceiveTransactionHandler());
-        pipeline.addLast(new ReceivePeerHandler());
+        pipeline.addLast(new ReceiveBlockHandler(node));
+        pipeline.addLast(new ReceiveTransactionHandler(node));
+        pipeline.addLast(new ReceivePeerHandler(node));
         pipeline.addLast(new ReceiveBlockRequestHandler());
 
         pipeline.addLast(new ServerHandler(node));

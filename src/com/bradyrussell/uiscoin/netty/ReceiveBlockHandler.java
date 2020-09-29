@@ -4,10 +4,17 @@ import com.bradyrussell.uiscoin.Util;
 import com.bradyrussell.uiscoin.block.Block;
 import com.bradyrussell.uiscoin.blockchain.BlockChain;
 import com.bradyrussell.uiscoin.blockchain.BlockChainStorageBase;
+import com.bradyrussell.uiscoin.node.Node;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
 public class ReceiveBlockHandler extends SimpleChannelInboundHandler<Block> {
+    Node thisNode;
+
+    public ReceiveBlockHandler(Node thisNode) {
+        this.thisNode = thisNode;
+    }
+
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         super.channelActive(ctx);
@@ -42,5 +49,8 @@ public class ReceiveBlockHandler extends SimpleChannelInboundHandler<Block> {
 
         System.out.println("Storing block...");
         BlockChain.get().putBlock(block);
+
+        System.out.println("Rebroadcasting...");
+        thisNode.BroadcastBlockToPeers(block);
     }
 }

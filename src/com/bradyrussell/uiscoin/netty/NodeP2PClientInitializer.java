@@ -1,5 +1,6 @@
 package com.bradyrussell.uiscoin.netty;
 
+import com.bradyrussell.uiscoin.node.Node;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
@@ -7,8 +8,12 @@ import io.netty.handler.codec.compression.ZlibCodecFactory;
 import io.netty.handler.codec.compression.ZlibWrapper;
 
 public class NodeP2PClientInitializer extends ChannelInitializer<SocketChannel> {
+Node node;
 
-  //  private final SslContext sslCtx;
+    public NodeP2PClientInitializer(Node node) {
+        this.node = node;
+    }
+    //  private final SslContext sslCtx;
 
     public NodeP2PClientInitializer(/*SslContext sslCtx*/) {
        /* this.sslCtx = sslCtx;*/
@@ -34,10 +39,10 @@ public class NodeP2PClientInitializer extends ChannelInitializer<SocketChannel> 
         pipeline.addLast(new NodeP2PPeerEncoder());
         pipeline.addLast(new NodeP2PBlockRequestEncoder());
 
+        pipeline.addLast(new ReceiveBlockHandler(node));
+        pipeline.addLast(new ReceiveTransactionHandler(node));
+        pipeline.addLast(new ReceivePeerHandler(node));
         pipeline.addLast(new ReceiveBlockRequestHandler());
-        pipeline.addLast(new ReceiveBlockHandler());
-     //   pipeline.addLast(new NodeP2PPacketEncoder());
-      //  pipeline.addLast(new NodeP2PSendGreetingHandler());
 
         // and then business logic.
         pipeline.addLast(new ClientHandler());

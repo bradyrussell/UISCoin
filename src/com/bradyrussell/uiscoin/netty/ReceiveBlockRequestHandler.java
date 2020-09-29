@@ -35,7 +35,6 @@ public class ReceiveBlockRequestHandler extends SimpleChannelInboundHandler<Bloc
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, BlockRequest blockRequest) throws Exception {
         System.out.println("Handler Received block request " + Util.Base64Encode(blockRequest.BlockHash));
-        //todo maybe add a first bit whether we want the whole block or just headers
         if (!BlockChain.get().exists(blockRequest.BlockHash, blockRequest.bOnlyHeader ? BlockChainStorageFile.BlockHeadersDatabase : BlockChainStorageFile.BlocksDatabase)) {
             System.out.println("Not found in database! Discarding.");
             return;
