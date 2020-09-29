@@ -3,33 +3,40 @@ package com.bradyrussell.uiscoin.netty;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
-import io.netty.handler.codec.DelimiterBasedFrameDecoder;
-import io.netty.handler.codec.Delimiters;
-import io.netty.handler.codec.string.StringDecoder;
-import io.netty.handler.codec.string.StringEncoder;
-import io.netty.handler.ssl.SslContext;
+import io.netty.handler.codec.compression.ZlibCodecFactory;
+import io.netty.handler.codec.compression.ZlibWrapper;
 
 
 public class NodeP2PServerInitializer extends ChannelInitializer<SocketChannel> {
 
+
+   // private final SslContext sslCtx;
+
+   // public FactorialServerInitializer(SslContext sslCtx) {
+       // this.sslCtx = sslCtx;
+  //  }
+
     @Override
-    public void initChannel(SocketChannel ch) throws Exception {
+    public void initChannel(SocketChannel ch) {
         ChannelPipeline pipeline = ch.pipeline();
 
-        // Add SSL handler first to encrypt and decrypt everything.
-        // In this example, we use a bogus certificate in the server side
-        // and accept any invalid certificates in the client side.
-        // You will need something more complicated to identify both
-        // and server in the real world.
-     //   pipeline.addLast(sslCtx.newHandler(ch.alloc()));
+/*
+        if (sslCtx != null) {
+            pipeline.addLast(sslCtx.newHandler(ch.alloc()));
+        }
+*/
+        // Enable stream compression (you can remove these two if unnecessary)
+        pipeline.addLast(ZlibCodecFactory.newZlibEncoder(ZlibWrapper.GZIP));
+        pipeline.addLast(ZlibCodecFactory.newZlibDecoder(ZlibWrapper.GZIP));
 
-        // On top of the SSL handler, add the text line codec.
-/*     */ pipeline.addLast(new DelimiterBasedFrameDecoder(8192, Delimiters.lineDelimiter()));
-        pipeline.addLast(new StringDecoder());
-        pipeline.addLast(new StringEncoder());
+        // Add the number codec first,
+        pipeline.addLast(new NodeP2PMessageDecoder());
+        pipeline.addLast(new Decoder());
+        pipeline.addLast(new Encoder());
 
         // and then business logic.
-        //pipeline.addLast(new NodeP2PSendGreetingHandler());
+        // Please note we create a handler for every new channel
+        // because it has stateful properties.
         pipeline.addLast(new ServerHandler());
     }
 }

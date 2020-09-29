@@ -10,55 +10,33 @@ import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import io.netty.util.concurrent.GlobalEventExecutor;
 
+import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-public class ServerHandler extends SimpleChannelInboundHandler<String> {
-
-    static final ChannelGroup channels = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
+public class ServerHandler extends SimpleChannelInboundHandler<BigInteger> {
+    private BigInteger lastMultiplier = new BigInteger("1");
+    private BigInteger factorial = new BigInteger("1");
 
     @Override
-    public void channelActive(final ChannelHandlerContext ctx) {
-        // Once session is secured, send a greeting and register the channel to the global channel
-        // list so the channel received the messages from others.
-      //  ctx.pipeline().get(SslHandler.class).handshakeFuture().addListener(
-           //     new GenericFutureListener<Future<Channel>>() {
-              //      @Override
-                 //   public void operationComplete(Future<Channel> future) throws Exception {
-        try {
-            ctx.writeAndFlush(
-                    "Welcome to " + InetAddress.getLocalHost().getHostName() + " secure chat service!\n");
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
-        ctx.writeAndFlush(
-                                "Your session is protected by " +
-                                    //    ctx.pipeline().get(SslHandler.class).engine().getSession().getCipherSuite() +
-                                        " cipher suite.\n");
-
-                        channels.add(ctx.channel());
-              //      }
-          //      });
+    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        super.channelActive(ctx);
     }
 
     @Override
-    public void channelRead0(ChannelHandlerContext ctx, String msg) throws Exception {
-        // Send the received message to all channels but the current one.
-        for (Channel c: channels) {
-            if (c != ctx.channel()) {
-                c.writeAndFlush("[" + ctx.channel().remoteAddress() + "] " + msg + '\n');
-            } else {
-                c.writeAndFlush("[you] " + msg + '\n');
-            }
-        }
-
-        // Close the connection if the client has sent 'bye'.
-        if ("bye".equals(msg.toLowerCase())) {
-            ctx.close();
-        }
+    public void channelRead0(ChannelHandlerContext ctx, BigInteger msg) throws Exception {
+        // Calculate the cumulative factorial and send it to the client.
+        lastMultiplier = msg;
+        factorial = factorial.multiply(msg);
+        ctx.writeAndFlush(factorial);
     }
 
     @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        System.err.printf("Factorial of %,d is: %,d%n", lastMultiplier, factorial);
+    }
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         cause.printStackTrace();
         ctx.close();
     }

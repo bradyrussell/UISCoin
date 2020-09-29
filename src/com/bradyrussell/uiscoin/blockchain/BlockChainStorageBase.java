@@ -27,6 +27,7 @@ public abstract class BlockChainStorageBase {
     //public abstract void put(byte[] Key, byte[] Value);
     public abstract void put(byte[] Key, byte[] Value, String Database);
     public abstract void remove(byte[] Key, String Database);
+    public abstract boolean exists(byte[] Key, String Database);
     public abstract List<byte[]> keys(String Database);
 
     public Block getBlock(byte[] BlockHash) {

@@ -45,6 +45,11 @@ public class BlockChainStorageFile extends BlockChainStorageBase {
     }
 
     @Override
+    public boolean exists(byte[] Key, String Database) {
+        return Files.exists(Path.of("blockchain/"+Database+"/"+ Util.Base64Encode(Key)));
+    }
+
+    @Override
     public List<byte[]> keys(String Database){
         try (Stream<Path> stream = Files.walk(Path.of("blockchain/"+Database+"/"), 1)) {
             return stream
