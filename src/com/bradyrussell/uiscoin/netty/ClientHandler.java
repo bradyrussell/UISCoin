@@ -10,6 +10,7 @@ import com.bradyrussell.uiscoin.node.Peer;
 import com.bradyrussell.uiscoin.transaction.Transaction;
 import com.bradyrussell.uiscoin.transaction.TransactionBuilder;
 import com.bradyrussell.uiscoin.transaction.TransactionOutputBuilder;
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
@@ -25,7 +26,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class ClientHandler extends SimpleChannelInboundHandler<BigInteger> {
+public class ClientHandler extends SimpleChannelInboundHandler<ByteBuf> {
     private ChannelHandlerContext ctx;
     private int receivedMessages;
     private int next = 1;
@@ -51,7 +52,7 @@ public class ClientHandler extends SimpleChannelInboundHandler<BigInteger> {
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
         this.ctx = ctx;
-        sendNumbers();
+        //sendNumbers();
     }
 
     @Override
@@ -59,7 +60,7 @@ public class ClientHandler extends SimpleChannelInboundHandler<BigInteger> {
         System.out.println("Inactive");
         super.channelInactive(ctx);
     }
-
+/*
     @Override
     public void channelRead0(ChannelHandlerContext ctx, final BigInteger msg) {
         receivedMessages ++;
@@ -72,7 +73,7 @@ public class ClientHandler extends SimpleChannelInboundHandler<BigInteger> {
                     assert offered;
                 }
             }); }
-    }
+    }*/
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
@@ -90,7 +91,7 @@ public class ClientHandler extends SimpleChannelInboundHandler<BigInteger> {
             }
             case 1 -> {
                 System.out.println("Mining...");
-                BlockBuilder blockBuilder = new BlockBuilder().setVersion(1).setTimestamp(Instant.now().getEpochSecond()).setDifficultyTarget(2).setBlockHeight(0)
+                BlockBuilder blockBuilder = new BlockBuilder().setVersion(1).setTimestamp(Instant.now().getEpochSecond()).setDifficultyTarget(3).setBlockHeight(0)
                         .setHashPreviousBlock(Hash.getSHA512Bytes("Hello world from UISCoin."))
                         .addCoinbase(new TransactionBuilder().setVersion(1).setLockTime(0).addOutput(new TransactionOutputBuilder().setPayToPublicKeyHash(Base64.getDecoder().decode("UISxUisdl8E31ksaCZvw3RKR9biwgXPi/m6lUTyN4E9K0n2vI+Xc5QFVtWpPz9+8fr2DwE5T40qLVbEj7QFsEyve3YteiPg=")).setAmount(Block.CalculateBlockReward(0)).get()).get())
                         .CalculateMerkleRoot();
@@ -135,4 +136,9 @@ public class ClientHandler extends SimpleChannelInboundHandler<BigInteger> {
             }
         }
     };
+
+    @Override
+    protected void channelRead0(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf) throws Exception {
+        System.out.println("READ");
+    }
 }

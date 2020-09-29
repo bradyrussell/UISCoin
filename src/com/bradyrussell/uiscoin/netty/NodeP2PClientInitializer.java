@@ -1,8 +1,6 @@
 package com.bradyrussell.uiscoin.netty;
 
-import com.bradyrussell.uiscoin.netty.notworking.NodeP2PBlockEncoder;
-import com.bradyrussell.uiscoin.netty.notworking.NodeP2PPeerEncoder;
-import com.bradyrussell.uiscoin.netty.notworking.NodeP2PTransactionEncoder;
+import com.bradyrussell.uiscoin.netty.notworking.NodeP2PSendGreetingHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
@@ -31,11 +29,16 @@ public class NodeP2PClientInitializer extends ChannelInitializer<SocketChannel> 
 
         // Add the number codec first,
         pipeline.addLast(new NodeP2PMessageDecoder());
+
         pipeline.addLast(new NodeP2PTransactionEncoder());
         pipeline.addLast(new NodeP2PBlockEncoder());
         pipeline.addLast(new NodeP2PPeerEncoder());
 
+     //   pipeline.addLast(new NodeP2PPacketEncoder());
+      //  pipeline.addLast(new NodeP2PSendGreetingHandler());
+
         // and then business logic.
         pipeline.addLast(new ClientHandler());
+
     }
 }

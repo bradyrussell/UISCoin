@@ -1,4 +1,4 @@
-package com.bradyrussell.uiscoin.netty.notworking;
+package com.bradyrussell.uiscoin.netty;
 
 import com.bradyrussell.uiscoin.node.PeerPacketType;
 import com.bradyrussell.uiscoin.transaction.Transaction;

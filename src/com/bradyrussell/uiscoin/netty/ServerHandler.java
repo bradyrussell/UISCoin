@@ -1,43 +1,29 @@
 package com.bradyrussell.uiscoin.netty;
 
-import io.netty.channel.Channel;
+import com.bradyrussell.uiscoin.node.PeerPacketBuilder;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.channel.group.ChannelGroup;
-import io.netty.channel.group.DefaultChannelGroup;
-import io.netty.handler.ssl.SslHandler;
-import io.netty.util.concurrent.Future;
-import io.netty.util.concurrent.GenericFutureListener;
-import io.netty.util.concurrent.GlobalEventExecutor;
+import io.netty.channel.ChannelInboundHandlerAdapter;
 
-import java.math.BigInteger;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
-public class ServerHandler extends SimpleChannelInboundHandler<BigInteger> {
-    private BigInteger lastMultiplier = new BigInteger("1");
-    private BigInteger factorial = new BigInteger("1");
 
+public class ServerHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         super.channelActive(ctx);
-    }
-
-    @Override
-    public void channelRead0(ChannelHandlerContext ctx, BigInteger msg) throws Exception {
-        // Calculate the cumulative factorial and send it to the client.
-        lastMultiplier = msg;
-        factorial = factorial.multiply(msg);
-        ctx.writeAndFlush(factorial);
-    }
-
-    @Override
-    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        System.err.printf("Factorial of %,d is: %,d%n", lastMultiplier, factorial);
-    }
-
-    @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        cause.printStackTrace();
-        ctx.close();
+        System.out.println("ACTIVE");
+        ByteBuf wrappedBuffer = Unpooled.wrappedBuffer(new PeerPacketBuilder(5).putGreeting(1).get());
+        ChannelFuture channelFuture = ctx.writeAndFlush(wrappedBuffer);
+       // wrappedBuffer.release();
+        channelFuture.addListener(new ChannelFutureListener() {
+            @Override
+            public void operationComplete(ChannelFuture channelFuture) throws Exception {
+                if(!channelFuture.isSuccess())
+                channelFuture.cause().printStackTrace();
+            }
+        });
     }
 }

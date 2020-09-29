@@ -7,6 +7,7 @@ import com.bradyrussell.uiscoin.node.PeerPacketBuilder;
 import com.bradyrussell.uiscoin.node.PeerPacketType;
 import com.bradyrussell.uiscoin.transaction.Transaction;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
@@ -25,13 +26,14 @@ public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
 
     @Override
     protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, List<Object> list) throws Exception {
-        System.out.println("decode");
+        System.out.println("1 Decode");
         PeerPacketType packetType = PeerPacketType.getByHeader(byteBuf.readByte());
-        System.out.println("Decoding "+packetType+" packet.");
+        System.out.println("2 Decoding "+packetType+" packet.");
 
         if (packetType != null) {
             switch (packetType){
                 case DISCONNECT -> {
+                    System.out.println("3 Received disconnect!");
                     channelHandlerContext.writeAndFlush(new PeerPacketBuilder(2).putDisconnect().get());
                     channelHandlerContext.disconnect().addListener(new ChannelFutureListener() {
                         @Override
@@ -42,16 +44,30 @@ public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
                     list.add(true);
                 }
                 case GREETING -> {
+                    System.out.println("3 Received greeting!");
                     int Version = byteBuf.readInt();
                     if(Version != MagicBytes.ProtocolVersion.Value) {
+                        System.out.println("Protocol version mismatch, disconnecting!");
                         channelHandlerContext.disconnect();
                         list.add(true);
                         return;
                     }
-                    channelHandlerContext.write(new PeerPacketBuilder(8).putHandshake(MagicBytes.ProtocolVersion.Value).get());
+
+                    ByteBuf wrappedBuffer = Unpooled.wrappedBuffer(new PeerPacketBuilder(5).putHandshake(1).get());
+                    ChannelFuture channelFuture = channelHandlerContext.writeAndFlush(wrappedBuffer);
+                    //wrappedBuffer.release();
+                    channelFuture.addListener(new ChannelFutureListener() {
+                        @Override
+                        public void operationComplete(ChannelFuture channelFuture) throws Exception {
+                            if(!channelFuture.isSuccess())
+                                channelFuture.cause().printStackTrace();
+                        }
+                    });
+
                     list.add(true);
                 }
                 case HANDSHAKE -> {
+                    System.out.println("3 Received handshake!");
                     int Version = byteBuf.readInt();
                     if(Version != MagicBytes.ProtocolVersion.Value) {
                         channelHandlerContext.disconnect();
@@ -61,6 +77,7 @@ public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
                     list.add(true);
                 }
                 case PING -> {
+                    System.out.println("3 Received ping!");
                     list.add(true);
                 }
                 case PEER -> {
@@ -71,7 +88,7 @@ public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
                     InetAddress address = InetAddress.getByAddress(Bytes);
                     // Node.addPeer()
 
-                    System.out.println("Received peer "+Util.Base64Encode(Bytes));
+                    System.out.println("3 Received peer "+Util.Base64Encode(Bytes));
                     list.add(address);
                 }
                 case TRANSACTION -> {
@@ -82,7 +99,7 @@ public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
                     Transaction transaction = new Transaction();
                     transaction.setBinaryData(Bytes);
 
-                    System.out.println("Received transaction "+Util.Base64Encode(transaction.getHash()));
+                    System.out.println("3 Received transaction "+Util.Base64Encode(transaction.getHash()));
                     list.add(transaction);
                 }
                 case BLOCK -> {
@@ -93,7 +110,7 @@ public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
                     Block block = new Block();
                     block.setBinaryData(Bytes);
 
-                    System.out.println("Received block "+Util.Base64Encode(block.getHash()));
+                    System.out.println("3 Received block "+Util.Base64Encode(block.getHash()));
                     list.add(block);
                 }
             }
