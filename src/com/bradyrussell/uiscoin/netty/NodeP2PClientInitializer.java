@@ -33,13 +33,17 @@ Node node;
 
         // Add the number codec first,
         pipeline.addLast(new NodeP2PMessageDecoder());
-
         pipeline.addLast(new NodeP2PTransactionEncoder());
         pipeline.addLast(new NodeP2PBlockEncoder());
+        pipeline.addLast(new NodeP2PBlockHeaderEncoder());
         pipeline.addLast(new NodeP2PPeerEncoder());
         pipeline.addLast(new NodeP2PBlockRequestEncoder());
 
+        // and then business logic.
+        // Please note we create a handler for every new channel
+        // because it has stateful properties.
         pipeline.addLast(new ReceiveBlockHandler(node));
+        pipeline.addLast(new ReceiveBlockHeaderResponseHandler(node));
         pipeline.addLast(new ReceiveTransactionHandler(node));
         pipeline.addLast(new ReceivePeerHandler(node));
         pipeline.addLast(new ReceiveBlockRequestHandler());
@@ -49,3 +53,4 @@ Node node;
 
     }
 }
+//

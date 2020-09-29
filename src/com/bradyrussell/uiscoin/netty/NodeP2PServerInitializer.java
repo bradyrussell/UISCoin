@@ -40,6 +40,7 @@ public class NodeP2PServerInitializer extends ChannelInitializer<SocketChannel> 
         pipeline.addLast(new Encoder());*/
         pipeline.addLast(new NodeP2PTransactionEncoder());
         pipeline.addLast(new NodeP2PBlockEncoder());
+        pipeline.addLast(new NodeP2PBlockHeaderEncoder());
         pipeline.addLast(new NodeP2PPeerEncoder());
         pipeline.addLast(new NodeP2PBlockRequestEncoder());
 
@@ -47,6 +48,7 @@ public class NodeP2PServerInitializer extends ChannelInitializer<SocketChannel> 
         // Please note we create a handler for every new channel
         // because it has stateful properties.
         pipeline.addLast(new ReceiveBlockHandler(node));
+        pipeline.addLast(new ReceiveBlockHeaderResponseHandler(node));
         pipeline.addLast(new ReceiveTransactionHandler(node));
         pipeline.addLast(new ReceivePeerHandler(node));
         pipeline.addLast(new ReceiveBlockRequestHandler());
