@@ -51,7 +51,4 @@ public class Util {
         return Base64.getUrlDecoder().decode(Base64String);
     }
 
-    public static void putMempool(Transaction transaction){
-        System.out.println("Util.putMempool not implemented. Discarding...");
-    }
 }

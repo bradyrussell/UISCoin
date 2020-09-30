@@ -35,14 +35,14 @@ public class NodeP2PReceiveTransactionHandler extends SimpleChannelInboundHandle
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, Transaction transaction) throws Exception {
         System.out.println("Handler Received transaction "+ Util.Base64Encode(transaction.getHash()));
 
-        transaction.DebugVerify();
         if(!transaction.Verify()) {
+            transaction.DebugVerify();
             System.out.println("Invalid transaction! Discarding.");
             return;
         }
 
         System.out.println("Storing transaction in mempool...");
-        Util.putMempool(transaction);
+        BlockChain.get().addToMempool(transaction);
 
         System.out.println("Rebroadcasting...");
         thisNode.BroadcastTransactionToPeers(transaction);

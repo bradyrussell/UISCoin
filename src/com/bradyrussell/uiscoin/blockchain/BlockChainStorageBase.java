@@ -7,10 +7,7 @@ import com.bradyrussell.uiscoin.transaction.Transaction;
 import com.bradyrussell.uiscoin.transaction.TransactionOutput;
 import com.bradyrussell.uiscoin.transaction.TransactionOutputBuilder;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public abstract class BlockChainStorageBase {
     public static final String BlocksDatabase = "blocks";
@@ -23,6 +20,10 @@ public abstract class BlockChainStorageBase {
 
     public abstract boolean open();
     public abstract void close();
+
+    public abstract void addToMempool(Transaction t);
+    public abstract void removeFromMempool(Transaction t);
+    public abstract List<Transaction> getMempool();
 
    // public abstract byte[] get(byte[] Key);
     public abstract byte[] get(byte[] Key, String Database);

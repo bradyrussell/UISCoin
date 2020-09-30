@@ -6,7 +6,7 @@ import com.bradyrussell.uiscoin.transaction.Transaction;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-
+@Deprecated
 public class MemPool implements IBinaryData {
     public ArrayList<Transaction> pendingTransactions = new ArrayList<>();
 

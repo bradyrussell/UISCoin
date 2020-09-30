@@ -1,8 +1,12 @@
 package com.bradyrussell.uiscoin.block;
 
+import com.bradyrussell.uiscoin.blockchain.BlockChain;
 import com.bradyrussell.uiscoin.transaction.Transaction;
 
+import java.time.Instant;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 public class BlockBuilder {
     Block block = new Block();
@@ -56,6 +60,26 @@ public class BlockBuilder {
 
     public BlockBuilder addTransaction(Transaction transaction){
         block.Transactions.add(transaction);
+        return this;
+    }
+
+    public BlockBuilder addMemPoolTransactions(int SizeLimit){
+        List<Transaction> mempool = BlockChain.get().getMempool();
+        mempool.sort((a,b)->{
+            long ASecondsOld = Instant.now().getEpochSecond() - a.TimeStamp;
+            long BSecondsOld = Instant.now().getEpochSecond() - b.TimeStamp;
+
+            return (int) ((a.getFees()*((ASecondsOld/600)+1)) - (b.getFees()*((BSecondsOld/600)+1))); // sort by fee but add a bonus multiplier for every 10 minutes old
+        });
+
+        int size = 0;
+        for(Transaction t:mempool){
+            if((size + t.getSize()) < SizeLimit) {
+                block.Transactions.add(t);
+            } else {
+                break;
+            }
+        }
         return this;
     }
 

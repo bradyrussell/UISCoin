@@ -195,7 +195,7 @@ public class Transaction implements IBinaryData, IVerifiable {
         return amount;
     }
 
-    private long getFees() {
+    public long getFees() {
         return getInputTotal() - getOutputTotal();
     }
 

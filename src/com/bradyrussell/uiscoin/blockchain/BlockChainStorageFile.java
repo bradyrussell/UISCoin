@@ -1,16 +1,20 @@
 package com.bradyrussell.uiscoin.blockchain;
 
 import com.bradyrussell.uiscoin.Util;
+import com.bradyrussell.uiscoin.transaction.Transaction;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class BlockChainStorageFile extends BlockChainStorageBase {
+    public HashMap<byte[], Transaction> MemPool;
+
     @Override
     public boolean open() {
         for(byte[] highestBlock:keys("blockheight")){
@@ -18,12 +22,28 @@ public class BlockChainStorageFile extends BlockChainStorageBase {
             BlockHeight = Util.ByteArrayToNumber(get(highestBlock, "blockheight"));
             System.out.println("Loaded blockchain "+(BlockHeight+1)+" blocks long. Last block: "+Util.Base64Encode(HighestBlockHash));
         }
+        MemPool = new HashMap<>();
         return true;
     }
 
     @Override
     public void close() {
         if(HighestBlockHash != null && BlockHeight >= 0) put(HighestBlockHash, Util.NumberToByteArray(BlockHeight), "blockheight");
+    }
+
+    @Override
+    public void addToMempool(Transaction t) {
+        MemPool.put(t.getHash(), t);
+    }
+
+    @Override
+    public void removeFromMempool(Transaction t) {
+        MemPool.remove(t.getHash());
+    }
+
+    @Override
+    public List<Transaction> getMempool() {
+        return new ArrayList<>(MemPool.values());
     }
 
     @Override
