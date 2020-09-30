@@ -1,7 +1,5 @@
 package com.bradyrussell.uiscoin;
 
-import com.bradyrussell.uiscoin.transaction.Transaction;
-
 import java.util.Base64;
 
 public class Util {

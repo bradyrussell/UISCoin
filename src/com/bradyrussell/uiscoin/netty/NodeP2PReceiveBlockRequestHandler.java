@@ -2,14 +2,9 @@ package com.bradyrussell.uiscoin.netty;
 
 import com.bradyrussell.uiscoin.Util;
 import com.bradyrussell.uiscoin.blockchain.BlockChain;
-import com.bradyrussell.uiscoin.blockchain.BlockChainStorageBase;
 import com.bradyrussell.uiscoin.blockchain.BlockChainStorageFile;
 import com.bradyrussell.uiscoin.node.BlockHeaderResponse;
 import com.bradyrussell.uiscoin.node.BlockRequest;
-import com.bradyrussell.uiscoin.node.PeerPacketBuilder;
-import com.bradyrussell.uiscoin.transaction.Transaction;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;

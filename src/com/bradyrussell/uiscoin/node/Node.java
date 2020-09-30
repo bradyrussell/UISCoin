@@ -57,7 +57,7 @@ public class Node {
                 .handler(new NodeP2PClientInitializer(this));
 
         // Make a new connection.
-        ChannelFuture sync = null;
+        ChannelFuture sync;
         try {
             sync = peerBootstrap.connect(Address, MagicNumbers.NodeP2PPort.Value).sync();
             peerClients.add(sync.channel());

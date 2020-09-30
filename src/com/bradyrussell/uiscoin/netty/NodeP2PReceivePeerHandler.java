@@ -8,7 +8,7 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import java.net.InetAddress;
 
 public class NodeP2PReceivePeerHandler extends SimpleChannelInboundHandler<InetAddress> {
-    private Node thisNode;
+    private final Node thisNode;
 
     public NodeP2PReceivePeerHandler(Node thisNode) {
         this.thisNode = thisNode;

@@ -1,32 +1,13 @@
 package com.bradyrussell.uiscoin.netty;
 
-import com.bradyrussell.uiscoin.Hash;
-import com.bradyrussell.uiscoin.Util;
-import com.bradyrussell.uiscoin.block.Block;
-import com.bradyrussell.uiscoin.block.BlockBuilder;
 import com.bradyrussell.uiscoin.node.BlockRequest;
 import com.bradyrussell.uiscoin.node.PeerPacketBuilder;
-import com.bradyrussell.uiscoin.node.PeerPacketType;
-import com.bradyrussell.uiscoin.transaction.Transaction;
-import com.bradyrussell.uiscoin.transaction.TransactionBuilder;
-import com.bradyrussell.uiscoin.transaction.TransactionOutputBuilder;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-
-import java.math.BigInteger;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.time.Instant;
-import java.util.ArrayDeque;
-import java.util.Base64;
-import java.util.Queue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class NodeP2PClientHandler extends SimpleChannelInboundHandler<ByteBuf> {
     private ChannelHandlerContext ctx;

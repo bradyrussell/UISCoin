@@ -8,7 +8,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
 public class NodeP2PReceiveTransactionHandler extends SimpleChannelInboundHandler<Transaction> {
-    private Node thisNode;
+    private final Node thisNode;
 
     public NodeP2PReceiveTransactionHandler(Node thisNode) {
         this.thisNode = thisNode;
