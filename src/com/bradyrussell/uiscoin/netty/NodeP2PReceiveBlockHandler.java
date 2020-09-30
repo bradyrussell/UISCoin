@@ -40,7 +40,10 @@ public class NodeP2PReceiveBlockHandler extends SimpleChannelInboundHandler<Bloc
             System.out.println("Already have. Discarding...");
             return;
         }
-
+        if(BlockChain.get().BlockHeight >= block.Header.BlockHeight) {
+            System.out.println("Block is on a shorter chain. Discarding...");
+            return; // we are on a longer chain!
+        }
         if(!block.Verify()) {
             block.DebugVerify();
             System.out.println("Invalid block! Discarding.");

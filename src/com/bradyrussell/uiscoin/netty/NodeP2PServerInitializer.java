@@ -41,7 +41,7 @@ public class NodeP2PServerInitializer extends ChannelInitializer<SocketChannel> 
         pipeline.addLast(new NodeP2PBlockRequestEncoder());
 
         // Add the number codec first,
-        pipeline.addLast(new NodeP2PMessageDecoder());
+        pipeline.addLast(new NodeP2PMessageDecoder(node));
 /*        pipeline.addLast(new Decoder());
         pipeline.addLast(new Encoder());*/
 

@@ -2,6 +2,7 @@ package com.bradyrussell.uiscoin.node;
 
 import com.bradyrussell.uiscoin.MagicNumbers;
 import com.bradyrussell.uiscoin.block.Block;
+import com.bradyrussell.uiscoin.blockchain.BlockChain;
 import com.bradyrussell.uiscoin.netty.NodeP2PClientInitializer;
 import com.bradyrussell.uiscoin.netty.NodeP2PServerInitializer;
 import com.bradyrussell.uiscoin.transaction.Transaction;
@@ -38,8 +39,11 @@ public class Node {
 
     int Version;
 
+    public int HighestSeenBlockHeight;
+
     public Node(int Version) {
         this.Version = Version;
+        this.HighestSeenBlockHeight = BlockChain.get().BlockHeight;
     }
 
     public void ConnectToPeer(InetAddress Address){
@@ -66,6 +70,15 @@ public class Node {
 
     }
 
+    public void RequestBlockHeightFromPeers(){
+        ByteBuf buffer = Unpooled.buffer();
+        buffer.writeByte(PeerPacketType.HEIGHTQUERY.Header);
+
+        peerClients.writeAndFlush(buffer.copy());
+        nodeClients.writeAndFlush(buffer);
+    }
+
+    @Deprecated
     public void RequestBlockChainFromPeers(int BlockHeight){
         ByteBuf buffer = Unpooled.buffer();
         buffer.writeByte(PeerPacketType.SYNC.Header);
@@ -121,9 +134,9 @@ public class Node {
 
     public void Stop(){
         try {
-            bossGroup.shutdownGracefully().sync();
-            workerGroup.shutdownGracefully().sync();
-            peerGroup.shutdownGracefully().sync();
+            if(bossGroup != null) bossGroup.shutdownGracefully().sync();
+            if(workerGroup != null) workerGroup.shutdownGracefully().sync();
+            if(peerGroup != null) peerGroup.shutdownGracefully().sync();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

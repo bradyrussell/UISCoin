@@ -5,10 +5,7 @@ import com.bradyrussell.uiscoin.Util;
 import com.bradyrussell.uiscoin.block.Block;
 import com.bradyrussell.uiscoin.block.BlockHeader;
 import com.bradyrussell.uiscoin.blockchain.BlockChain;
-import com.bradyrussell.uiscoin.node.BlockHeaderResponse;
-import com.bradyrussell.uiscoin.node.BlockRequest;
-import com.bradyrussell.uiscoin.node.PeerPacketBuilder;
-import com.bradyrussell.uiscoin.node.PeerPacketType;
+import com.bradyrussell.uiscoin.node.*;
 import com.bradyrussell.uiscoin.transaction.Transaction;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -21,6 +18,12 @@ import java.net.InetAddress;
 import java.util.List;
 
 public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
+
+    Node node;
+
+    public NodeP2PMessageDecoder(Node node) {
+        this.node = node;
+    }
 
     @Override
     protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, List<Object> list) throws Exception {
@@ -123,8 +126,21 @@ public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
                     list.add(new BlockHeaderResponse(Hash, blockHeader));
                 }
                 case HEIGHT -> {
-                    System.out.println("Height not implemented!");
-                    //todo ask the highest one to sync after n seconds
+                    int BlockHeight = byteBuf.readInt();
+
+                    System.out.println("3 Received block height "+BlockHeight);
+
+                    if(BlockHeight > node.HighestSeenBlockHeight) {
+                        System.out.println("4 This is a longer chain! Syncing...");
+                        node.HighestSeenBlockHeight = BlockHeight;
+
+                        ByteBuf buffer = Unpooled.buffer();
+                        buffer.writeByte(PeerPacketType.SYNC.Header);
+                        buffer.writeBoolean(false);
+                        buffer.writeInt(BlockChain.get().BlockHeight+1); // start from next block after ours
+                        channelHandlerContext.writeAndFlush(buffer);
+                    }
+
                 }
                 case REQUEST -> {
                     boolean bOnlyHeader = byteBuf.readBoolean();
@@ -139,6 +155,8 @@ public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
                     int BlockHeight = byteBuf.readInt();
 
                     System.out.println("3 Received sync request "+BlockHeight);
+
+                    //if(BlockHeight > BlockChain.get().BlockHeight) BlockHeight = BlockChain.get().BlockHeight;
 
                     List<Block> blockChainFromHeight = BlockChain.get().getBlockChainFromHeight(BlockHeight);
                     for (int i = 0; i < blockChainFromHeight.size(); i++) {
@@ -164,12 +182,19 @@ public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
                     buf.writeByte(PeerPacketType.HEIGHT.Header);
                     buf.writeInt(BlockChain.get().BlockHeight);
 
+                    System.out.println("4 Sending blockheight "+BlockChain.get().BlockHeight);
+
                     ChannelFuture channelFuture = channelHandlerContext.writeAndFlush(buf);
 
                     channelFuture.addListener((ChannelFutureListener) channelFuture1 -> {
                         if(!channelFuture1.isSuccess())
                             channelFuture1.cause().printStackTrace();
                     });
+                    list.add(true);
+                }
+                default -> {
+                    System.out.println("3 Received invalid request, disconnecting.");
+                    channelHandlerContext.disconnect();
                     list.add(true);
                 }
             }

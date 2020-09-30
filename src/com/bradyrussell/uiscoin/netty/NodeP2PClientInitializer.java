@@ -39,7 +39,7 @@ Node node;
         pipeline.addLast(new NodeP2PPeerEncoder());
         pipeline.addLast(new NodeP2PBlockRequestEncoder());
 
-        pipeline.addLast(new NodeP2PMessageDecoder());
+        pipeline.addLast(new NodeP2PMessageDecoder(node));
         // and then business logic.
         // Please note we create a handler for every new channel
         // because it has stateful properties.
