@@ -3,7 +3,9 @@ package com.bradyrussell.uiscoin.transaction;
 import com.bradyrussell.uiscoin.Hash;
 import com.bradyrussell.uiscoin.IBinaryData;
 import com.bradyrussell.uiscoin.IVerifiable;
+import com.bradyrussell.uiscoin.MagicNumbers;
 import com.bradyrussell.uiscoin.blockchain.BlockChain;
+import com.bradyrussell.uiscoin.script.ScriptExecution;
 
 import java.nio.ByteBuffer;
 
@@ -74,7 +76,25 @@ public class TransactionInput  implements IBinaryData, IVerifiable {
 
     @Override
     public boolean Verify() {
+        if(UnlockingScript.length > MagicNumbers.MaxUnlockingScriptLength.Value) return false;
+
         TransactionOutput unspentTransactionOutput = BlockChain.get().getUnspentTransactionOutput(InputHash, IndexNumber);
-        return unspentTransactionOutput != null;
+        if(unspentTransactionOutput == null) return false;
+
+        ScriptExecution UnlockingScriptEx = new ScriptExecution();
+        UnlockingScriptEx.Initialize(UnlockingScript);
+
+        while(UnlockingScriptEx.Step());
+
+        if(UnlockingScriptEx.bScriptFailed) return false;
+
+        ScriptExecution LockingScriptEx = new ScriptExecution();
+        LockingScriptEx.Initialize(unspentTransactionOutput.LockingScript, UnlockingScriptEx.Stack.elements());
+
+        while(LockingScriptEx.Step());
+
+        if(LockingScriptEx.bScriptFailed) return false;
+
+        return true;
     }
 }
