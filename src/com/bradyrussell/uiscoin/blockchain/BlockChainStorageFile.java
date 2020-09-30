@@ -19,14 +19,15 @@ public class BlockChainStorageFile extends BlockChainStorageBase {
 
     @Override
     public boolean open() {
-        byte[] bytes = get(Hash.getSHA512Bytes("blockheight"), "blockheight");
-        ByteBuffer buf = ByteBuffer.wrap(bytes);
-        HighestBlockHash = new byte[64];
-        BlockHeight = buf.getInt();
-        buf.get(HighestBlockHash);
+        if(exists(Hash.getSHA512Bytes("blockheight"), "blockheight")) {
+            byte[] bytes = get(Hash.getSHA512Bytes("blockheight"), "blockheight");
+            ByteBuffer buf = ByteBuffer.wrap(bytes);
+            HighestBlockHash = new byte[64];
+            BlockHeight = buf.getInt();
+            buf.get(HighestBlockHash);
 
-        System.out.println("Loaded blockchain "+(BlockHeight+1)+" blocks long. Last block: "+Util.Base64Encode(HighestBlockHash));
-
+            System.out.println("Loaded blockchain " + (BlockHeight + 1) + " blocks long. Last block: " + Util.Base64Encode(HighestBlockHash));
+        }
         MemPool = new HashMap<>();
         return true;
     }
