@@ -1,9 +1,11 @@
 package com.bradyrussell.uiscoin.blockchain;
 
+import com.bradyrussell.uiscoin.Hash;
 import com.bradyrussell.uiscoin.Util;
 import com.bradyrussell.uiscoin.transaction.Transaction;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -17,18 +19,27 @@ public class BlockChainStorageFile extends BlockChainStorageBase {
 
     @Override
     public boolean open() {
-        for(byte[] highestBlock:keys("blockheight")){
-            HighestBlockHash = highestBlock;
-            BlockHeight = Util.ByteArrayToNumber(get(highestBlock, "blockheight"));
-            System.out.println("Loaded blockchain "+(BlockHeight+1)+" blocks long. Last block: "+Util.Base64Encode(HighestBlockHash));
-        }
+        byte[] bytes = get(Hash.getSHA512Bytes("blockheight"), "blockheight");
+        ByteBuffer buf = ByteBuffer.wrap(bytes);
+        HighestBlockHash = new byte[64];
+        BlockHeight = buf.getInt();
+        buf.get(HighestBlockHash);
+
+        System.out.println("Loaded blockchain "+(BlockHeight+1)+" blocks long. Last block: "+Util.Base64Encode(HighestBlockHash));
+
         MemPool = new HashMap<>();
         return true;
     }
 
     @Override
     public void close() {
-        if(HighestBlockHash != null && BlockHeight >= 0) put(HighestBlockHash, Util.NumberToByteArray(BlockHeight), "blockheight");
+        if(HighestBlockHash != null && BlockHeight >= 0) {
+            ByteBuffer buf = ByteBuffer.allocate(68);
+            buf.putInt(BlockHeight);
+            buf.put(HighestBlockHash);
+
+            put(Hash.getSHA512Bytes("blockheight"), buf.array(), "blockheight");
+        }
     }
 
     @Override
