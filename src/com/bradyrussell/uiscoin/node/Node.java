@@ -12,6 +12,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.group.ChannelGroup;
 import io.netty.channel.group.DefaultChannelGroup;
@@ -57,8 +58,13 @@ public class Node {
 
         // Make a new connection.
         ChannelFuture sync;
-        sync = peerBootstrap.connect(Address, MagicNumbers.NodeP2PPort.Value)/*.sync()*/;
-        peerClients.add(sync.channel());
+        sync = peerBootstrap.connect(Address, MagicNumbers.NodeP2PPort.Value).addListener(new ChannelFutureListener() {
+            @Override
+            public void operationComplete(ChannelFuture channelFuture) throws Exception {
+                peerClients.add(channelFuture.channel());
+                System.out.println("Connection established with peer "+channelFuture.channel().remoteAddress().toString());
+            }
+        })/*.sync()*/;
         // ChannelFuture closeFuture = sync.channel().closeFuture();
     }
 
