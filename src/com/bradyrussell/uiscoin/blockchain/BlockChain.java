@@ -2,8 +2,11 @@ package com.bradyrussell.uiscoin.blockchain;
 
 import com.bradyrussell.uiscoin.Util;
 import com.bradyrussell.uiscoin.block.Block;
+import com.bradyrussell.uiscoin.transaction.Transaction;
+import com.bradyrussell.uiscoin.transaction.TransactionInput;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class BlockChain {
@@ -30,6 +33,35 @@ public class BlockChain {
                 System.out.println("Block "+ Util.Base64Encode(b.getHash())+" at height "+b.Header.BlockHeight+" has failed verification!");
                 return false;
             }
+        }
+        return true;
+    }
+
+    public static boolean BuildUTXOSet(int StartBlockHeight){
+        List<Block> blockChain = get().getBlockChainFromHeight(StartBlockHeight);
+
+        ArrayList<byte[]> TransactionOutputs = new ArrayList<>();
+
+        for(Block b:blockChain){
+            for (Transaction transaction : b.Transactions) {
+                for (TransactionInput input : transaction.Inputs) {
+                    TransactionOutputs.remove(Util.ConcatArray(input.InputHash, Util.NumberToByteArray(input.IndexNumber)));
+                }
+                for (int i = 0; i < transaction.Outputs.size(); i++) {
+                    TransactionOutputs.add(Util.ConcatArray(transaction.getHash(), Util.NumberToByteArray(i)));
+                }
+            }
+        }
+
+        for (byte[] transactionOutput : TransactionOutputs) {
+            byte[] TsxnHash = new byte[64];
+            byte[] Index = new byte[4];
+
+            System.arraycopy(transactionOutput, 0, TsxnHash, 0, 64);
+            System.arraycopy(transactionOutput, 64, Index, 0, 4);
+
+            System.out.println("Saving UTXO "+Util.Base64Encode(transactionOutput));
+            Storage.putUnspentTransactionOutput(TsxnHash, Util.ByteArrayToNumber(Index), Storage.getTransactionOutput(TsxnHash, Util.ByteArrayToNumber(Index)));
         }
         return true;
     }
