@@ -7,10 +7,10 @@ import com.bradyrussell.uiscoin.transaction.Transaction;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
-public class ReceiveTransactionHandler extends SimpleChannelInboundHandler<Transaction> {
+public class NodeP2PReceiveTransactionHandler extends SimpleChannelInboundHandler<Transaction> {
     private Node thisNode;
 
-    public ReceiveTransactionHandler(Node thisNode) {
+    public NodeP2PReceiveTransactionHandler(Node thisNode) {
         this.thisNode = thisNode;
     }
 

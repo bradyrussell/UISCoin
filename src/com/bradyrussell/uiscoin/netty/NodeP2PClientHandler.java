@@ -28,7 +28,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class ClientHandler extends SimpleChannelInboundHandler<ByteBuf> {
+public class NodeP2PClientHandler extends SimpleChannelInboundHandler<ByteBuf> {
     private ChannelHandlerContext ctx;
 
     @Deprecated

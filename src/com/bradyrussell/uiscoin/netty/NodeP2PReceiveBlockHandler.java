@@ -8,10 +8,10 @@ import com.bradyrussell.uiscoin.node.Node;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
-public class ReceiveBlockHandler extends SimpleChannelInboundHandler<Block> {
+public class NodeP2PReceiveBlockHandler extends SimpleChannelInboundHandler<Block> {
     Node thisNode;
 
-    public ReceiveBlockHandler(Node thisNode) {
+    public NodeP2PReceiveBlockHandler(Node thisNode) {
         this.thisNode = thisNode;
     }
 

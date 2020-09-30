@@ -1,9 +1,7 @@
 package com.bradyrussell.uiscoin.node;
 
 import com.bradyrussell.uiscoin.MagicNumbers;
-import com.bradyrussell.uiscoin.Util;
 import com.bradyrussell.uiscoin.block.Block;
-import com.bradyrussell.uiscoin.netty.ClientHandler;
 import com.bradyrussell.uiscoin.netty.NodeP2PClientInitializer;
 import com.bradyrussell.uiscoin.netty.NodeP2PServerInitializer;
 import com.bradyrussell.uiscoin.transaction.Transaction;
@@ -26,7 +24,6 @@ import io.netty.util.concurrent.GlobalEventExecutor;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class Node {
     EventLoopGroup bossGroup;

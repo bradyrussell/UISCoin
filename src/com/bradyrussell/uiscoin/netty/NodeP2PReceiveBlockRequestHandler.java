@@ -15,7 +15,7 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
-public class ReceiveBlockRequestHandler extends SimpleChannelInboundHandler<BlockRequest> {
+public class NodeP2PReceiveBlockRequestHandler extends SimpleChannelInboundHandler<BlockRequest> {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         super.channelActive(ctx);

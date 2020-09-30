@@ -43,14 +43,14 @@ Node node;
         // and then business logic.
         // Please note we create a handler for every new channel
         // because it has stateful properties.
-        pipeline.addLast(new ReceiveBlockHandler(node));
-        pipeline.addLast(new ReceiveBlockHeaderResponseHandler(node));
-        pipeline.addLast(new ReceiveTransactionHandler(node));
-        pipeline.addLast(new ReceivePeerHandler(node));
-        pipeline.addLast(new ReceiveBlockRequestHandler());
+        pipeline.addLast(new NodeP2PReceiveBlockHandler(node));
+        pipeline.addLast(new NodeP2PReceiveBlockHeaderResponseHandler(node));
+        pipeline.addLast(new NodeP2PReceiveTransactionHandler(node));
+        pipeline.addLast(new NodeP2PReceivePeerHandler(node));
+        pipeline.addLast(new NodeP2PReceiveBlockRequestHandler());
 
         // and then business logic.
-        pipeline.addLast(new ClientHandler());
+        pipeline.addLast(new NodeP2PClientHandler());
 
     }
 }

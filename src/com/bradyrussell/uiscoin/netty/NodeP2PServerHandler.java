@@ -4,9 +4,9 @@ import com.bradyrussell.uiscoin.node.Node;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
-public class ServerHandler extends ChannelInboundHandlerAdapter {
+public class NodeP2PServerHandler extends ChannelInboundHandlerAdapter {
     Node node;
-    public ServerHandler(Node node) {
+    public NodeP2PServerHandler(Node node) {
         this.node = node;
     }
 

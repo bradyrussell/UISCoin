@@ -7,10 +7,10 @@ import io.netty.channel.SimpleChannelInboundHandler;
 
 import java.net.InetAddress;
 
-public class ReceivePeerHandler extends SimpleChannelInboundHandler<InetAddress> {
+public class NodeP2PReceivePeerHandler extends SimpleChannelInboundHandler<InetAddress> {
     private Node thisNode;
 
-    public ReceivePeerHandler(Node thisNode) {
+    public NodeP2PReceivePeerHandler(Node thisNode) {
         this.thisNode = thisNode;
     }
 
