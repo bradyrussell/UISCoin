@@ -21,7 +21,6 @@ public class NodeP2PReceivePeerHandler extends SimpleChannelInboundHandler<InetA
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        //System.err.printf("Factorial of %,d is: %,d%n", lastMultiplier, factorial);
         super.channelInactive(ctx);
     }
 

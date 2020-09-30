@@ -57,15 +57,9 @@ public class Node {
 
         // Make a new connection.
         ChannelFuture sync;
-        try {
-            sync = peerBootstrap.connect(Address, MagicNumbers.NodeP2PPort.Value).sync();
-            peerClients.add(sync.channel());
-
-           // ChannelFuture closeFuture = sync.channel().closeFuture();
-
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        sync = peerBootstrap.connect(Address, MagicNumbers.NodeP2PPort.Value)/*.sync()*/;
+        peerClients.add(sync.channel());
+        // ChannelFuture closeFuture = sync.channel().closeFuture();
     }
 
     public void RequestBlockHeightFromPeers(){
@@ -132,6 +126,10 @@ public class Node {
 
     public void Stop(){
         try {
+            if(peerClients != null) peerClients.close().sync();
+            if(nodeClients != null) nodeClients.close().sync();
+
+            if(serverChannel != null) serverChannel.close().sync();
             if(bossGroup != null) bossGroup.shutdownGracefully().sync();
             if(workerGroup != null) workerGroup.shutdownGracefully().sync();
             if(peerGroup != null) peerGroup.shutdownGracefully().sync();
@@ -143,16 +141,23 @@ public class Node {
     public List<InetAddress> getPeers(){
         List<InetAddress> addresses = new ArrayList<>();
 
+        if(nodeClients != null)
         nodeClients.forEach((channel -> {
-            InetAddress address = ((InetSocketAddress) channel.remoteAddress()).getAddress();
-            if(!addresses.contains(address)) {
-                addresses.add(address);
+            if(channel.isActive() && channel.isOpen()) {
+                InetAddress address = ((InetSocketAddress) channel.remoteAddress()).getAddress();
+                if (!addresses.contains(address)) {
+                    addresses.add(address);
+                }
             }
         }));
+
+        if(peerClients != null)
         peerClients.forEach((channel -> {
-            InetAddress address = ((InetSocketAddress) channel.remoteAddress()).getAddress();
-            if(!addresses.contains(address)) {
-                addresses.add(address);
+            if(channel.isActive() && channel.isOpen()) {
+                InetAddress address = ((InetSocketAddress) channel.remoteAddress()).getAddress();
+                if (!addresses.contains(address)) {
+                    addresses.add(address);
+                }
             }
         }));
 

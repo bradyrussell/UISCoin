@@ -144,7 +144,7 @@ public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
                         buffer.writeInt(BlockChain.get().BlockHeight+1); // start from next block after ours
                         channelHandlerContext.writeAndFlush(buffer);
                     }
-
+                    list.add(true);
                 }
                 case REQUEST -> {
                     boolean bOnlyHeader = byteBuf.readBoolean();
