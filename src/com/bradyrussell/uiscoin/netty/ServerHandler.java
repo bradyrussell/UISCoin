@@ -15,7 +15,7 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
         super.channelActive(ctx);
         if(node != null) {
             node.nodeClients.add(ctx.channel());
-            System.out.println("Added new peer." + node.nodeClients.size());
+            System.out.println("Added new peer. Peer count: " + node.getPeers().size());
         }
     }
 }

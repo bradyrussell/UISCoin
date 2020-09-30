@@ -21,6 +21,9 @@ public abstract class BlockChainStorageBase {
     public int BlockHeight = -1;
     public byte[] HighestBlockHash = null;
 
+    public abstract boolean open();
+    public abstract void close();
+
    // public abstract byte[] get(byte[] Key);
     public abstract byte[] get(byte[] Key, String Database);
     // public abstract void get(byte[] Key, byte[] Value);
@@ -38,7 +41,9 @@ public abstract class BlockChainStorageBase {
 
     public BlockHeader getBlockHeader(byte[] BlockHash) {
         BlockHeader blockHeader = new BlockHeader();
-        blockHeader.setBinaryData(get(BlockHash, BlockHeadersDatabase));
+        byte[] data = get(BlockHash, BlockHeadersDatabase);
+        if(data == null) return null;
+        blockHeader.setBinaryData(data);
         return blockHeader;
     }
 
@@ -126,12 +131,15 @@ public abstract class BlockChainStorageBase {
     }
 
     public List<Block> getBlockChainFromHeight(int BlockHeight){
+        if(HighestBlockHash == null) return null;
         if(BlockHeight < 0) return null;
         byte[] currentBlockHash = HighestBlockHash;
 
         List<Block> blockchain = new ArrayList<>();
 
-        while(getBlockHeader(currentBlockHash).BlockHeight >= BlockHeight) {
+        System.out.println("GetBlockChainFromHeight: CurrentBlockHash = "+Util.Base64Encode(currentBlockHash));
+
+        while(getBlockHeader(currentBlockHash) != null && getBlockHeader(currentBlockHash).BlockHeight >= BlockHeight) {
             blockchain.add(getBlock(currentBlockHash));
             currentBlockHash = getBlockHeader(currentBlockHash).HashPreviousBlock;
         }

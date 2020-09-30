@@ -137,10 +137,19 @@ public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
 
                     System.out.println("3 Received sync request "+BlockHeight);
 
-                    for(Block block:BlockChain.get().getBlockChainFromHeight(BlockHeight)){
-                        channelHandlerContext.write(bOnlyHeader ? block.Header : block);
+                    List<Block> blockChainFromHeight = BlockChain.get().getBlockChainFromHeight(BlockHeight);
+                    for (int i = 0; i < blockChainFromHeight.size(); i++) {
+                        Block block = blockChainFromHeight.get(i);
+                        System.out.println("4 Sending blockchain "+i+"/"+blockChainFromHeight.size());
+                        ChannelFuture channelFuture = channelHandlerContext.write(bOnlyHeader ? block.Header : block);
+
+                        channelFuture.addListener((ChannelFutureListener) channelFuture1 -> {
+                            if(!channelFuture1.isSuccess())
+                                channelFuture1.cause().printStackTrace();
+                        });
                     }
                     channelHandlerContext.flush();
+                    System.out.println("5 Flushing");
                     list.add(true);
                 }
                 case MEMPOOL -> {

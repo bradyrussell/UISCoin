@@ -24,6 +24,13 @@ public class PeerPacketBuilder {
         return this;
     }
 
+    public PeerPacketBuilder putSync(boolean bHeadersOnly, int BlockHeight){
+        buffer.put(PeerPacketType.SYNC.Header);
+        buffer.put((byte) (bHeadersOnly ? 1 : 0));
+        buffer.putInt(BlockHeight);
+        return this;
+    }
+
     public PeerPacketBuilder putTransaction(Transaction transaction){
         buffer.put(PeerPacketType.TRANSACTION.Header);
         buffer.putInt(transaction.getSize());

@@ -34,15 +34,17 @@ public class NodeP2PServerInitializer extends ChannelInitializer<SocketChannel> 
         pipeline.addLast(ZlibCodecFactory.newZlibEncoder(ZlibWrapper.GZIP));
         pipeline.addLast(ZlibCodecFactory.newZlibDecoder(ZlibWrapper.GZIP));
 
-        // Add the number codec first,
-        pipeline.addLast(new NodeP2PMessageDecoder());
-/*        pipeline.addLast(new Decoder());
-        pipeline.addLast(new Encoder());*/
-        pipeline.addLast(new NodeP2PTransactionEncoder());
+        pipeline.addLast(new NodeP2PTransactionEncoder()); // need encoders before decoder so it can send blocks back
         pipeline.addLast(new NodeP2PBlockEncoder());
         pipeline.addLast(new NodeP2PBlockHeaderEncoder());
         pipeline.addLast(new NodeP2PPeerEncoder());
         pipeline.addLast(new NodeP2PBlockRequestEncoder());
+
+        // Add the number codec first,
+        pipeline.addLast(new NodeP2PMessageDecoder());
+/*        pipeline.addLast(new Decoder());
+        pipeline.addLast(new Encoder());*/
+
 
         // and then business logic.
         // Please note we create a handler for every new channel

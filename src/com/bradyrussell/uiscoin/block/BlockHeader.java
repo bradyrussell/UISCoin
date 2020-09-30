@@ -98,6 +98,9 @@ public class BlockHeader implements IBinaryData, IVerifiable {
     @Override
     public boolean Verify() {
         boolean valid = true;
+
+        if(BlockChain.get().BlockHeight >= BlockHeight) return false; // we are on a longer chain!
+
         if(BlockHeight > 0) {
             BlockHeader previousBlockHeader = BlockChain.get().getBlockHeader(HashPreviousBlock);
             valid = (BlockHeight == previousBlockHeader.BlockHeight + 1); // we are previous Block Height + 1

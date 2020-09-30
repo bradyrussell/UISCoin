@@ -9,6 +9,8 @@ import com.bradyrussell.uiscoin.netty.NodeP2PServerInitializer;
 import com.bradyrussell.uiscoin.transaction.Transaction;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.bootstrap.ServerBootstrap;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.EventLoopGroup;
@@ -67,6 +69,16 @@ public class Node {
 
     }
 
+    public void RequestBlockChainFromPeers(int BlockHeight){
+        ByteBuf buffer = Unpooled.buffer();
+        buffer.writeByte(PeerPacketType.SYNC.Header);
+        buffer.writeBoolean(false);
+        buffer.writeInt(BlockHeight);
+
+        peerClients.writeAndFlush(buffer.copy());
+        nodeClients.writeAndFlush(buffer);
+    }
+
     public void RequestBlockFromPeers(BlockRequest request){
         peerClients.writeAndFlush(request);
         nodeClients.writeAndFlush(request);
@@ -75,6 +87,11 @@ public class Node {
     public void BroadcastBlockToPeers(Block block){
         peerClients.writeAndFlush(block);
         nodeClients.writeAndFlush(block);
+    }
+
+    public void BroadcastBlockHeaderToPeers(BlockHeaderResponse blockHeaderResponse){
+        peerClients.writeAndFlush(blockHeaderResponse);
+        nodeClients.writeAndFlush(blockHeaderResponse);
     }
 
     public void BroadcastTransactionToPeers(Transaction transaction){

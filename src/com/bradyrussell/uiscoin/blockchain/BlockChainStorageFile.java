@@ -5,14 +5,33 @@ import com.bradyrussell.uiscoin.Util;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class BlockChainStorageFile extends BlockChainStorageBase {
     @Override
+    public boolean open() {
+        for(byte[] highestBlock:keys("blockheight")){
+            HighestBlockHash = highestBlock;
+            BlockHeight = Util.ByteArrayToNumber(get(highestBlock, "blockheight"));
+            System.out.println("Loaded blockchain "+(BlockHeight+1)+" blocks long. Last block: "+Util.Base64Encode(HighestBlockHash));
+        }
+        return true;
+    }
+
+    @Override
+    public void close() {
+        if(HighestBlockHash != null && BlockHeight >= 0) put(HighestBlockHash, Util.NumberToByteArray(BlockHeight), "blockheight");
+    }
+
+    @Override
     public byte[] get(byte[] Key, String Database) {
-        if(!Files.exists(Path.of("blockchain/"+Database+"/"+ Util.Base64Encode(Key)))) return null;
+        if(!Files.exists(Path.of("blockchain/"+Database+"/"+ Util.Base64Encode(Key)))) {
+            System.out.println("Path does not exist! "+"blockchain/"+Database+"/"+ Util.Base64Encode(Key));
+            return null;
+        }
         try {
             return Files.readAllBytes(Path.of("blockchain/"+Database+"/"+Util.Base64Encode(Key)));
         } catch (IOException e) {
@@ -34,7 +53,10 @@ public class BlockChainStorageFile extends BlockChainStorageBase {
 
     @Override
     public void remove(byte[] Key, String Database) {
-        if(!Files.exists(Path.of("blockchain/"+Database+"/"+ Util.Base64Encode(Key)))) return;
+        if(!Files.exists(Path.of("blockchain/"+Database+"/"+ Util.Base64Encode(Key)))) {
+            System.out.println("Path does not exist! "+"blockchain/"+Database+"/"+ Util.Base64Encode(Key));
+            return;
+        }
         try {
             Files.delete(Path.of("blockchain/"+Database+"/"+ Util.Base64Encode(Key)));
         } catch (IOException e) {
@@ -49,6 +71,7 @@ public class BlockChainStorageFile extends BlockChainStorageBase {
 
     @Override
     public List<byte[]> keys(String Database){
+        if(!Files.exists(Path.of("blockchain/"+Database+"/"))) return new ArrayList<>();
         try (Stream<Path> stream = Files.walk(Path.of("blockchain/"+Database+"/"), 1)) {
             return stream
                     .filter(file -> !Files.isDirectory(file))
@@ -59,7 +82,7 @@ public class BlockChainStorageFile extends BlockChainStorageBase {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return null;
+        return new ArrayList<>();
     }
 
 
