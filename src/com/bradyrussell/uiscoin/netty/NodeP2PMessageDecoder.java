@@ -174,7 +174,13 @@ public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
                     list.add(true);
                 }
                 case MEMPOOL -> {
-                    System.out.println("Mempool not implemented!");
+                    System.out.println("3 Received mempool query");
+                    for (Transaction transaction : BlockChain.get().getMempool()) {
+                        channelHandlerContext.write(transaction);
+                    }
+                    channelHandlerContext.flush();
+                    System.out.println("4 Sent mempool");
+                    list.add(true);
                 }
                 case HEIGHTQUERY -> {
                     System.out.println("3 Received blockheight query");
