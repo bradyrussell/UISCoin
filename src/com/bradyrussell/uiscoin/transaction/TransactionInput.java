@@ -77,7 +77,8 @@ public class TransactionInput  implements IBinaryData, IVerifiable {
 
         if(UnlockingScript.length > MagicNumbers.MaxUnlockingScriptLength.Value) return false;
 
-        TransactionOutput unspentTransactionOutput = BlockChain.get().getUnspentTransactionOutput(InputHash, IndexNumber);
+        //TransactionOutput unspentTransactionOutput = BlockChain.get().getUnspentTransactionOutput(InputHash, IndexNumber);
+        TransactionOutput unspentTransactionOutput = BlockChain.get().getTransactionOutput(InputHash, IndexNumber);
         if(unspentTransactionOutput == null) return false;
 
         ScriptExecution UnlockingScriptEx = new ScriptExecution();
