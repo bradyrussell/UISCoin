@@ -21,7 +21,6 @@ public class Block implements IBinaryData, IVerifiable {
         Transactions = new ArrayList<>();
     }
 
-
     public Block(BlockHeader header, ArrayList<Transaction> transactions) {
         Header = header;
         Transactions = transactions;

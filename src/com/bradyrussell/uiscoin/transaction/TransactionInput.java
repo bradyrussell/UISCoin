@@ -93,8 +93,6 @@ public class TransactionInput  implements IBinaryData, IVerifiable {
 
         while(LockingScriptEx.Step());
 
-        if(LockingScriptEx.bScriptFailed) return false;
-
-        return true;
+        return !LockingScriptEx.bScriptFailed;
     }
 }
