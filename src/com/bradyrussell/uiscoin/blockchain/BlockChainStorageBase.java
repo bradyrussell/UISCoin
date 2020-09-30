@@ -131,8 +131,9 @@ public abstract class BlockChainStorageBase {
     }
 
     public List<Block> getBlockChainFromHeight(int BlockHeight){
-        if(HighestBlockHash == null) return null;
-        if(BlockHeight < 0) return null;
+        if(this.BlockHeight < BlockHeight) return new ArrayList<>();
+        if(HighestBlockHash == null) return new ArrayList<>();
+        if(BlockHeight < 0) return new ArrayList<>();
         byte[] currentBlockHash = HighestBlockHash;
 
         List<Block> blockchain = new ArrayList<>();
