@@ -4,6 +4,7 @@ import com.bradyrussell.uiscoin.Util;
 import com.bradyrussell.uiscoin.block.Block;
 import com.bradyrussell.uiscoin.block.BlockHeader;
 import com.bradyrussell.uiscoin.transaction.Transaction;
+import com.bradyrussell.uiscoin.transaction.TransactionInput;
 import com.bradyrussell.uiscoin.transaction.TransactionOutput;
 import com.bradyrussell.uiscoin.transaction.TransactionOutputBuilder;
 
@@ -75,7 +76,11 @@ public abstract class BlockChainStorageBase {
         put(block.getHash(), block.getBinaryData(), BlocksDatabase);
         putBlockHeader(block);
         for(Transaction transaction:block.Transactions){
+            BlockChain.get().removeFromMempool(transaction); // remove from mempool
             put(transaction.getHash(), block.getHash(), TransactionToBlockDatabase);
+            for (TransactionInput input : transaction.Inputs) { //spend input UTXOs
+                removeUnspentTransactionOutput(input.InputHash, input.IndexNumber);
+            }
             ArrayList<TransactionOutput> outputs = transaction.Outputs;
             for (int i = 0; i < outputs.size(); i++) {
                 putUnspentTransactionOutput(transaction.getHash(), i, outputs.get(i));
