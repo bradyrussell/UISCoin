@@ -15,7 +15,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class BlockChainStorageFile extends BlockChainStorageBase {
-    public HashMap<byte[], Transaction> MemPool;
+    //public HashMap<byte[], Transaction> MemPool;
+    public ArrayList<Transaction> MemPool;
 
     @Override
     public boolean open() {
@@ -28,7 +29,7 @@ public class BlockChainStorageFile extends BlockChainStorageBase {
 
             System.out.println("Loaded blockchain " + (BlockHeight + 1) + " blocks long. Last block: " + Util.Base64Encode(HighestBlockHash));
         }
-        MemPool = new HashMap<>();
+        MemPool = new ArrayList<>();
         return true;
     }
 
@@ -45,18 +46,18 @@ public class BlockChainStorageFile extends BlockChainStorageBase {
 
     @Override
     public void addToMempool(Transaction t) {
-        MemPool.put(t.getHash(), t);
+        MemPool.add(t);
     }
 
     @Override
     public void removeFromMempool(Transaction t) {
-        if(!MemPool.containsKey(t.getHash())) System.out.println("Error: Mempool does not contain this transaction");
-        MemPool.remove(t.getHash());
+        if(!MemPool.contains(t)) System.out.println("Error: Mempool does not contain this transaction");
+        MemPool.remove(t);
     }
 
     @Override
     public List<Transaction> getMempool() {
-        return new ArrayList<>(MemPool.values());
+        return MemPool;
     }
 
     @Override

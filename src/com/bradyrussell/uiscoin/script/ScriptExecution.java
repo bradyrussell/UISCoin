@@ -18,6 +18,8 @@ public class ScriptExecution {
     public Stack<byte[]> Stack;
     public boolean bScriptFailed = false;
 
+    public boolean LogScriptExecution = false;
+
     private byte[] SignatureVerificationMessage = null; // we need a way to pass in the data for verifysig. i dont like this but...
 
     public byte[] Script;
@@ -26,7 +28,7 @@ public class ScriptExecution {
         this.Script = Script;
         Stack = new Stack<>();
         //validate
-        System.out.println("Script initialized "+Script.length+" bytes with empty stack.");
+        if(LogScriptExecution) System.out.println("Script initialized "+Script.length+" bytes with empty stack.");
         return true;
     }
 
@@ -38,8 +40,8 @@ public class ScriptExecution {
             byte[] b = it.next();
             Stack.push(b);
         }
-        System.out.println("Script initialized "+Script.length+" bytes with "+getStackDepth()+" value"+(getStackDepth() == 1 ? "" : "s")+" on the stack.");
-        System.out.println(getStackContents());
+        if(LogScriptExecution) System.out.println("Script initialized "+Script.length+" bytes with "+getStackDepth()+" value"+(getStackDepth() == 1 ? "" : "s")+" on the stack.");
+        if(LogScriptExecution) System.out.println(getStackContents());
         return true;
     }
 
@@ -96,7 +98,7 @@ public class ScriptExecution {
 
         ScriptOperator scriptOperator = ScriptOperator.getByOpCode(Script[InstructionCounter++]);
 
-        System.out.println("OP " + scriptOperator);
+        if(LogScriptExecution) System.out.println("OP " + scriptOperator);
 
         if (scriptOperator != null) {
             switch (scriptOperator) {
@@ -112,12 +114,12 @@ public class ScriptExecution {
                     for (int i = 0, aLength = A.length; i < aLength; i++) {
                         B[i] = A[(A.length - 1) - i];
                     }
-                    System.out.println("Reverse top stack element");
+                    if(LogScriptExecution) System.out.println("Reverse top stack element");
                     Stack.push(B);
                     return true;
                 }
                 case NULL -> {
-                    System.out.println("Push null onto the stack");
+                    if(LogScriptExecution) System.out.println("Push null onto the stack");
                     Stack.push(new byte[]{});
                     return true;
                 }
@@ -128,13 +130,13 @@ public class ScriptExecution {
                     for (int i = 0; i < NumberOfBytesToPush; i++) {
                         bytes[i] = Script[InstructionCounter++];
                     }
-                    System.out.println("Push " + NumberOfBytesToPush + " bytes onto the stack: " + Arrays.toString(bytes));
+                    if(LogScriptExecution) System.out.println("Push " + NumberOfBytesToPush + " bytes onto the stack: " + Arrays.toString(bytes));
                     Stack.push(bytes);
                     return true;
                 }
                 case INSTRUCTION -> {
                     Stack.push(NumberToByteArray(InstructionCounter));
-                    System.out.println("Push instruction counter onto the stack: " + InstructionCounter);
+                    if(LogScriptExecution) System.out.println("Push instruction counter onto the stack: " + InstructionCounter);
                     return true;
                 }
                 case NUMEQUAL -> {
@@ -146,7 +148,7 @@ public class ScriptExecution {
                     byte[] B = Stack.pop();
                     byte[] A = Stack.pop();
 
-                    System.out.println("Push " + ByteArrayToNumber(A) + " == " + ByteArrayToNumber(B) + " onto the stack: " + (ByteArrayToNumber(A) == ByteArrayToNumber(B)));
+                    if(LogScriptExecution) System.out.println("Push " + ByteArrayToNumber(A) + " == " + ByteArrayToNumber(B) + " onto the stack: " + (ByteArrayToNumber(A) == ByteArrayToNumber(B)));
                     Stack.push(new byte[]{ByteArrayToNumber(A) == ByteArrayToNumber(B) ? (byte) 1 : (byte) 0});
                     return true;
                 }
@@ -160,18 +162,18 @@ public class ScriptExecution {
                     byte[] A = Stack.pop();
 
                     if (A.length != B.length) {
-                        System.out.println("Push " + Arrays.toString(A) + " == " + Arrays.toString(B) + " onto the stack: " + 0);
+                        if(LogScriptExecution) System.out.println("Push " + Arrays.toString(A) + " == " + Arrays.toString(B) + " onto the stack: " + 0);
                         Stack.push(new byte[]{0});
                         return true;
                     }
                     for (int i = 0, aLength = A.length; i < aLength; i++) {
                         if (A[i] != B[i]) {
-                            System.out.println("Push " + Arrays.toString(A) + " == " + Arrays.toString(B) + " onto the stack: " + 0);
+                            if(LogScriptExecution)  System.out.println("Push " + Arrays.toString(A) + " == " + Arrays.toString(B) + " onto the stack: " + 0);
                             Stack.push(new byte[]{0});
                             return true;
                         }
                     }
-                    System.out.println("Push " + Arrays.toString(A) + " == " + Arrays.toString(B) + " onto the stack: " + 1);
+                    if(LogScriptExecution)  System.out.println("Push " + Arrays.toString(A) + " == " + Arrays.toString(B) + " onto the stack: " + 1);
                     Stack.push(new byte[]{1});
                     return true;
                 }
@@ -186,18 +188,18 @@ public class ScriptExecution {
                     byte[] HashedB = Hash.getSHA512Bytes(B);
 
                     if (A.length != HashedB.length) {
-                        System.out.println("Push " + Arrays.toString(A) + " == " + Arrays.toString(HashedB) + " onto the stack: " + 0);
+                        if(LogScriptExecution) System.out.println("Push " + Arrays.toString(A) + " == " + Arrays.toString(HashedB) + " onto the stack: " + 0);
                         Stack.push(new byte[]{0});
                         return true;
                     }
                     for (int i = 0, aLength = A.length; i < aLength; i++) {
                         if (A[i] != HashedB[i]) {
-                            System.out.println("Push " + Arrays.toString(A) + " == " + Arrays.toString(HashedB) + " onto the stack: " + 0);
+                            if(LogScriptExecution) System.out.println("Push " + Arrays.toString(A) + " == " + Arrays.toString(HashedB) + " onto the stack: " + 0);
                             Stack.push(new byte[]{0});
                             return true;
                         }
                     }
-                    System.out.println("Push " + Arrays.toString(A) + " == " + Arrays.toString(HashedB) + " onto the stack: " + 1);
+                    if(LogScriptExecution) System.out.println("Push " + Arrays.toString(A) + " == " + Arrays.toString(HashedB) + " onto the stack: " + 1);
                     Stack.push(new byte[]{1});
                     return true;
                 }
@@ -211,7 +213,7 @@ public class ScriptExecution {
                     byte[] A = Stack.pop();
                     boolean equal = A.length == B.length;
 
-                    System.out.println("Push " + A.length + " == " + B.length + " onto the stack: " + equal);
+                    if(LogScriptExecution) System.out.println("Push " + A.length + " == " + B.length + " onto the stack: " + equal);
 
                     Stack.push(new byte[]{(byte) (equal ? 1 : 0)});
                     return true;
@@ -225,7 +227,7 @@ public class ScriptExecution {
                     byte[] B = Stack.pop();
                     byte[] A = Stack.pop();
 
-                    System.out.println("Push " + ByteArrayToNumber(A) + " < " + ByteArrayToNumber(B) + " onto the stack: " + (ByteArrayToNumber(A) < ByteArrayToNumber(B)));
+                    if(LogScriptExecution) System.out.println("Push " + ByteArrayToNumber(A) + " < " + ByteArrayToNumber(B) + " onto the stack: " + (ByteArrayToNumber(A) < ByteArrayToNumber(B)));
                     Stack.push(new byte[]{ByteArrayToNumber(A) < ByteArrayToNumber(B) ? (byte) 1 : (byte) 0});
                     return true;
                 }
@@ -238,7 +240,7 @@ public class ScriptExecution {
                     byte[] B = Stack.pop();
                     byte[] A = Stack.pop();
 
-                    System.out.println("Push " + ByteArrayToNumber(A) + " <= " + ByteArrayToNumber(B) + " onto the stack: " + (ByteArrayToNumber(A) <= ByteArrayToNumber(B)));
+                    if(LogScriptExecution) System.out.println("Push " + ByteArrayToNumber(A) + " <= " + ByteArrayToNumber(B) + " onto the stack: " + (ByteArrayToNumber(A) <= ByteArrayToNumber(B)));
                     Stack.push(new byte[]{ByteArrayToNumber(A) <= ByteArrayToNumber(B) ? (byte) 1 : (byte) 0});
                     return true;
                 }
@@ -251,7 +253,7 @@ public class ScriptExecution {
                     byte[] B = Stack.pop();
                     byte[] A = Stack.pop();
 
-                    System.out.println("Push " + ByteArrayToNumber(A) + " > " + ByteArrayToNumber(B) + " onto the stack: " + (ByteArrayToNumber(A) > ByteArrayToNumber(B)));
+                    if(LogScriptExecution) System.out.println("Push " + ByteArrayToNumber(A) + " > " + ByteArrayToNumber(B) + " onto the stack: " + (ByteArrayToNumber(A) > ByteArrayToNumber(B)));
                     Stack.push(new byte[]{ByteArrayToNumber(A) > ByteArrayToNumber(B) ? (byte) 1 : (byte) 0});
                     return true;
                 }
@@ -264,7 +266,7 @@ public class ScriptExecution {
                     byte[] B = Stack.pop();
                     byte[] A = Stack.pop();
 
-                    System.out.println("Push " + ByteArrayToNumber(A) + " >= " + ByteArrayToNumber(B) + " onto the stack: " + (ByteArrayToNumber(A) >= ByteArrayToNumber(B)));
+                    if(LogScriptExecution) System.out.println("Push " + ByteArrayToNumber(A) + " >= " + ByteArrayToNumber(B) + " onto the stack: " + (ByteArrayToNumber(A) >= ByteArrayToNumber(B)));
                     Stack.push(new byte[]{ByteArrayToNumber(A) >= ByteArrayToNumber(B) ? (byte) 1 : (byte) 0});
                     return true;
                 }
@@ -278,18 +280,18 @@ public class ScriptExecution {
                     byte[] A = Stack.pop();
 
                     if (A.length != B.length) {
-                        System.out.println("Push " + Arrays.toString(A) + " != " + Arrays.toString(B) + " onto the stack: " + 0);
+                        if(LogScriptExecution) System.out.println("Push " + Arrays.toString(A) + " != " + Arrays.toString(B) + " onto the stack: " + 0);
                         Stack.push(new byte[]{1});
                         return true;
                     }
                     for (int i = 0, aLength = A.length; i < aLength; i++) {
                         if (A[i] != B[i]) {
-                            System.out.println("Push " + Arrays.toString(A) + " != " + Arrays.toString(B) + " onto the stack: " + 0);
+                            if(LogScriptExecution) System.out.println("Push " + Arrays.toString(A) + " != " + Arrays.toString(B) + " onto the stack: " + 0);
                             Stack.push(new byte[]{1});
                             return true;
                         }
                     }
-                    System.out.println("Push " + Arrays.toString(A) + " != " + Arrays.toString(B) + " onto the stack: " + 1);
+                    if(LogScriptExecution) System.out.println("Push " + Arrays.toString(A) + " != " + Arrays.toString(B) + " onto the stack: " + 1);
                     Stack.push(new byte[]{0});
                     return true;
                 }
@@ -303,12 +305,12 @@ public class ScriptExecution {
 
                     for (byte b : A) {
                         if (b != 0) {
-                            System.out.println("Push " + Arrays.toString(A) + " != 0 onto the stack: " + 1);
+                            if(LogScriptExecution) System.out.println("Push " + Arrays.toString(A) + " != 0 onto the stack: " + 1);
                             Stack.push(new byte[]{1});
                             return true;
                         }
                     }
-                    System.out.println("Push " + Arrays.toString(A) + " != 0 onto the stack: " + 0);
+                    if(LogScriptExecution) System.out.println("Push " + Arrays.toString(A) + " != 0 onto the stack: " + 0);
                     Stack.push(new byte[]{0});
                     return true;
                 }
@@ -326,7 +328,7 @@ public class ScriptExecution {
                         return false;
                     }
 
-                    System.out.println("Push " + ByteArrayToNumber(A) + " + " + ByteArrayToNumber(B) + " onto the stack: " + (ByteArrayToNumber(A) + ByteArrayToNumber(B)));
+                    if(LogScriptExecution) System.out.println("Push " + ByteArrayToNumber(A) + " + " + ByteArrayToNumber(B) + " onto the stack: " + (ByteArrayToNumber(A) + ByteArrayToNumber(B)));
                     Stack.push(NumberToByteArray(ByteArrayToNumber(A) + ByteArrayToNumber(B)));
                     return true;
                 }
@@ -344,7 +346,7 @@ public class ScriptExecution {
                         return false;
                     }
 
-                    System.out.println("Push " + ByteArrayToNumber(A) + " - " + ByteArrayToNumber(B) + " onto the stack: " + (ByteArrayToNumber(A) - ByteArrayToNumber(B)));
+                    if(LogScriptExecution) System.out.println("Push " + ByteArrayToNumber(A) + " - " + ByteArrayToNumber(B) + " onto the stack: " + (ByteArrayToNumber(A) - ByteArrayToNumber(B)));
                     Stack.push(NumberToByteArray(ByteArrayToNumber(A) - ByteArrayToNumber(B)));
                     return true;
                 }
@@ -361,7 +363,7 @@ public class ScriptExecution {
                         System.out.println("Invalid inputs");
                         return false;
                     }
-                    System.out.println("Push " + ByteArrayToNumber(A) + " * " + ByteArrayToNumber(B) + " onto the stack: " + (ByteArrayToNumber(A) * ByteArrayToNumber(B)));
+                    if(LogScriptExecution) System.out.println("Push " + ByteArrayToNumber(A) + " * " + ByteArrayToNumber(B) + " onto the stack: " + (ByteArrayToNumber(A) * ByteArrayToNumber(B)));
                     Stack.push(NumberToByteArray(ByteArrayToNumber(A) * ByteArrayToNumber(B)));
                     return true;
                 }
@@ -378,7 +380,7 @@ public class ScriptExecution {
                         System.out.println("Invalid inputs");
                         return false;
                     }
-                    System.out.println("Push " + ByteArrayToNumber(A) + " / " + ByteArrayToNumber(B) + " onto the stack: " + (ByteArrayToNumber(A) / ByteArrayToNumber(B)));
+                    if(LogScriptExecution) System.out.println("Push " + ByteArrayToNumber(A) + " / " + ByteArrayToNumber(B) + " onto the stack: " + (ByteArrayToNumber(A) / ByteArrayToNumber(B)));
                     Stack.push(NumberToByteArray(ByteArrayToNumber(A) / ByteArrayToNumber(B)));
                     return true;
                 }
@@ -653,14 +655,14 @@ public class ScriptExecution {
                 }
                 case VERIFY -> {
                     byte[] bytes = Stack.pop();
-                    System.out.println("Verify " + Arrays.toString(bytes) + " == true: " + (bytes.length == 1 && bytes[0] == 1));
+                    if(LogScriptExecution)        System.out.println("Verify " + Arrays.toString(bytes) + " == true: " + (bytes.length == 1 && bytes[0] == 1));
 
                     if(!(bytes.length == 1 && bytes[0] == 1)) {
                         bScriptFailed = true;
                         return false;
                     }
 
-                    System.out.println("Verify confirmed, continuing...");
+                    if(LogScriptExecution)        System.out.println("Verify confirmed, continuing...");
                     return true;
                 }
                 case RETURN -> {
@@ -692,7 +694,7 @@ public class ScriptExecution {
                     Keys.SignedData signedData = new Keys.SignedData(PublicKey, Signature, SignatureVerificationMessage);
                     try {
                         boolean verifySignedData = Keys.VerifySignedData(signedData);
-                        System.out.println("Signature verification "+(verifySignedData? "successful.":"failed!"));
+                        if(LogScriptExecution)          System.out.println("Signature verification "+(verifySignedData? "successful.":"failed!"));
                         bScriptFailed = !verifySignedData;
                         return false;
                     } catch (NoSuchAlgorithmException | InvalidKeySpecException | InvalidKeyException | SignatureException e) {
