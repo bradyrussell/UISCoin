@@ -34,6 +34,12 @@ public class NodeP2PReceivePeerHandler extends SimpleChannelInboundHandler<InetA
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, InetAddress inetAddress) throws Exception {
         System.out.println("Handler Received peer "+ Util.Base64Encode(inetAddress.getAddress()));
+
+        if(thisNode.getPeers().contains(inetAddress)) {
+            System.out.println("4 Already known, discarding...");
+            return;
+        }
+
         thisNode.ConnectToPeer(inetAddress);
 
         System.out.println("Rebroadcasting...");

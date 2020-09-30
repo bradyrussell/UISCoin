@@ -32,7 +32,7 @@ public class Node {
     Channel serverChannel;
 
     EventLoopGroup peerGroup = new NioEventLoopGroup();
-    Bootstrap peerBootstrap = new Bootstrap();
+    Bootstrap peerBootstrap = new Bootstrap().group(peerGroup).channel(NioSocketChannel.class);
 
     public ChannelGroup nodeClients = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE); // nodes connections to me
     public ChannelGroup peerClients = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE); // my connection to other nodes
@@ -43,7 +43,7 @@ public class Node {
 
     public Node(int Version) {
         this.Version = Version;
-        this.HighestSeenBlockHeight = BlockChain.get().BlockHeight;
+        this.HighestSeenBlockHeight = -1; // we have not seen another nodes blockheight yet
     }
 
     public void ConnectToPeer(InetAddress Address){
@@ -52,8 +52,7 @@ public class Node {
             return;
         }
 
-        peerBootstrap.group(peerGroup)
-                .channel(NioSocketChannel.class)
+        peerBootstrap
                 .handler(new NodeP2PClientInitializer(this));
 
         // Make a new connection.

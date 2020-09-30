@@ -86,10 +86,10 @@ public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
                     byte[] Bytes = new byte[Size];
                     byteBuf.readBytes(Bytes);
 
-                    InetAddress address = InetAddress.getByAddress(Bytes);
-                    // Node.addPeer()
-
                     System.out.println("3 Received peer "+Util.Base64Encode(Bytes));
+
+                    InetAddress address = InetAddress.getByAddress(Bytes);
+
                     list.add(address);
                 }
                 case TRANSACTION -> {
