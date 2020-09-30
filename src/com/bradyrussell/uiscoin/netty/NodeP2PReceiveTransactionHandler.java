@@ -2,6 +2,7 @@ package com.bradyrussell.uiscoin.netty;
 
 import com.bradyrussell.uiscoin.Util;
 import com.bradyrussell.uiscoin.blockchain.BlockChain;
+import com.bradyrussell.uiscoin.blockchain.BlockChainStorageBase;
 import com.bradyrussell.uiscoin.node.Node;
 import com.bradyrussell.uiscoin.transaction.Transaction;
 import io.netty.channel.ChannelHandlerContext;
@@ -34,6 +35,11 @@ public class NodeP2PReceiveTransactionHandler extends SimpleChannelInboundHandle
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, Transaction transaction) throws Exception {
         System.out.println("Handler Received transaction "+ Util.Base64Encode(transaction.getHash()));
+
+        if(BlockChain.get().getMempool().contains(transaction)){
+            System.out.println("Already have. Discarding...");
+            return;
+        }
 
         if(!transaction.Verify()) {
             transaction.DebugVerify();

@@ -64,6 +64,7 @@ public abstract class BlockChainStorageBase {
     }
 
     public TransactionOutput getUnspentTransactionOutput(byte[] TransactionHash, int Index){
+        if(TransactionHash == null) System.out.println("null");
         TransactionOutput transactionOutput = new TransactionOutput();
         byte[] binaryData = get(Util.ConcatArray(TransactionHash, Util.NumberToByteArray(Index)), TransactionOutputDatabase);
         if(binaryData == null) return null;
