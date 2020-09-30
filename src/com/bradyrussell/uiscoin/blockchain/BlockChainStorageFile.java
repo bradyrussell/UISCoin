@@ -49,6 +49,7 @@ public class BlockChainStorageFile extends BlockChainStorageBase {
 
     @Override
     public void removeFromMempool(Transaction t) {
+        if(!MemPool.containsKey(t.getHash())) System.out.println("Error: Mempool does not contain this transaction");
         MemPool.remove(t.getHash());
     }
 

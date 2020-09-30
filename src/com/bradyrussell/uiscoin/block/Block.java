@@ -163,11 +163,15 @@ public class Block implements IBinaryData, IVerifiable {
         for (int i = 0; i < Transactions.size(); i++) {
             Transaction transaction = Transactions.get(i);
             if (i == 0)  {
-                transaction.DebugVerifyCoinbase();
-                if (!transaction.VerifyCoinbase()) return false;
+                if (!transaction.VerifyCoinbase()) {
+                    transaction.DebugVerifyCoinbase();
+                    return false;
+                }
             } else {
-                transaction.DebugVerify();
-                if (!transaction.Verify()) return false;
+                if (!transaction.Verify()){
+                    transaction.DebugVerify();
+                    return false;
+                }
             }
         }
         return true;
