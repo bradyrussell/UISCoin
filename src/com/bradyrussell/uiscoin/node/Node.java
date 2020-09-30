@@ -67,7 +67,6 @@ public class Node {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
     }
 
     public void RequestBlockHeightFromPeers(){

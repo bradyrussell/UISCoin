@@ -15,6 +15,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ReplayingDecoder;
 
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.util.List;
 
 public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
@@ -48,6 +49,9 @@ public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
                         list.add(true);
                         return;
                     }
+
+                    System.out.println("4 Broadcasting new peer");
+                    node.BroadcastPeerToPeers(((InetSocketAddress)channelHandlerContext.channel().remoteAddress()).getAddress());
 
                     ByteBuf wrappedBuffer = Unpooled.wrappedBuffer(new PeerPacketBuilder(5).putHandshake(1).get());
                     ChannelFuture channelFuture = channelHandlerContext.writeAndFlush(wrappedBuffer);
