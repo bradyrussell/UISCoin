@@ -192,7 +192,7 @@ public class Transaction implements IBinaryData, IVerifiable {
     public long getInputTotal() {
         long amount = 0;
         for(TransactionInput input:Inputs){
-            amount += BlockChain.get().getUnspentTransactionOutput(input.InputHash, input.IndexNumber).Amount;// Blockchain lookup : input.InputHash
+            amount += BlockChain.get().getTransactionOutput(input.InputHash, input.IndexNumber).Amount;// Blockchain lookup : input.InputHash
         }
         return amount;
     }
