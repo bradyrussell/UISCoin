@@ -5,7 +5,6 @@ import com.bradyrussell.uiscoin.Util;
 import com.bradyrussell.uiscoin.block.Block;
 import com.bradyrussell.uiscoin.block.BlockHeader;
 import com.bradyrussell.uiscoin.blockchain.BlockChain;
-import com.bradyrussell.uiscoin.blockchain.BlockChainStorageBase;
 import com.bradyrussell.uiscoin.node.BlockHeaderResponse;
 import com.bradyrussell.uiscoin.node.BlockRequest;
 import com.bradyrussell.uiscoin.node.PeerPacketBuilder;
@@ -123,6 +122,10 @@ public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
                     System.out.println("3 Received block header "+Util.Base64Encode(Hash));
                     list.add(new BlockHeaderResponse(Hash, blockHeader));
                 }
+                case HEIGHT -> {
+                    System.out.println("Height not implemented!");
+                    //todo ask the highest one to sync after n seconds
+                }
                 case REQUEST -> {
                     boolean bOnlyHeader = byteBuf.readBoolean();
                     byte[] Bytes = new byte[64];
@@ -153,6 +156,21 @@ public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
                     list.add(true);
                 }
                 case MEMPOOL -> {
+                    System.out.println("Mempool not implemented!");
+                }
+                case HEIGHTQUERY -> {
+                    System.out.println("3 Received blockheight query");
+                    ByteBuf buf = Unpooled.buffer();
+                    buf.writeByte(PeerPacketType.HEIGHT.Header);
+                    buf.writeInt(BlockChain.get().BlockHeight);
+
+                    ChannelFuture channelFuture = channelHandlerContext.writeAndFlush(buf);
+
+                    channelFuture.addListener((ChannelFutureListener) channelFuture1 -> {
+                        if(!channelFuture1.isSuccess())
+                            channelFuture1.cause().printStackTrace();
+                    });
+                    list.add(true);
                 }
             }
         }

@@ -9,11 +9,12 @@ public enum PeerPacketType {
     TRANSACTION(0x05), // this is a transaction broadcast
     BLOCK(0x06), // block broadcast
     HEADER(0x07), // blockheader broadcast
+    HEIGHT(0x08), // blockheight broadcast
 
     REQUEST(0x10), // this indicates a request for a block/header
-    SYNC(0x011), // this indicates a request for the entire blockchain
-
-    MEMPOOL(0x012), // requests a list of transaction hashes that are in the mempool
+    SYNC(0x11), // this indicates a request for the entire blockchain
+    MEMPOOL(0x12), // requests a list of transaction hashes that are in the mempool
+    HEIGHTQUERY(0x13), // requests the blockheight
 ;
 
     public final byte Header;
