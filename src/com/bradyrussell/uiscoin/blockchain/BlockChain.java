@@ -37,7 +37,7 @@ public class BlockChain {
         return true;
     }
 
-    public static boolean BuildUTXOSet(int StartBlockHeight){
+    public static void BuildUTXOSet(int StartBlockHeight){
         List<Block> blockChain = get().getBlockChainFromHeight(StartBlockHeight);
 
         ArrayList<byte[]> TransactionOutputs = new ArrayList<>();
@@ -63,6 +63,5 @@ public class BlockChain {
             System.out.println("Saving UTXO "+Util.Base64Encode(transactionOutput));
             Storage.putUnspentTransactionOutput(TsxnHash, Util.ByteArrayToNumber(Index), Storage.getTransactionOutput(TsxnHash, Util.ByteArrayToNumber(Index)));
         }
-        return true;
     }
 }

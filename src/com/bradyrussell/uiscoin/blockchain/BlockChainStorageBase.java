@@ -113,6 +113,7 @@ public abstract class BlockChainStorageBase {
         remove(Util.ConcatArray(TransactionHash,Util.NumberToByteArray(Index)), TransactionOutputDatabase);
     }
 
+    //todo we actually want to extract the Hash,Index not the output object. we can do that by breaking the Key into 64,4 bytes
     public List<TransactionOutput> ScanUnspentOutputsToAddress(byte[] PublicKeyHash) {
         ArrayList<TransactionOutput> utxo = new ArrayList<>();
 
