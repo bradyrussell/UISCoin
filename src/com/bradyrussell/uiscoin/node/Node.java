@@ -53,8 +53,7 @@ public class Node {
             return;
         }
 
-        peerBootstrap
-                .handler(new NodeP2PClientInitializer(this));
+        peerBootstrap.handler(new NodeP2PClientInitializer(this));
 
         // Make a new connection.
         ChannelFuture sync;
@@ -62,6 +61,7 @@ public class Node {
             @Override
             public void operationComplete(ChannelFuture channelFuture) throws Exception {
                 peerClients.add(channelFuture.channel());
+                if(channelFuture.isSuccess())
                 System.out.println("Connection established with peer "+channelFuture.channel().remoteAddress().toString());
             }
         })/*.sync()*/;
@@ -134,11 +134,18 @@ public class Node {
         try {
             if(peerClients != null) peerClients.close().sync();
             if(nodeClients != null) nodeClients.close().sync();
+            System.out.println("Closed peer connections.");
 
             if(serverChannel != null) serverChannel.close().sync();
-            if(bossGroup != null) bossGroup.shutdownGracefully().sync();
-            if(workerGroup != null) workerGroup.shutdownGracefully().sync();
-            if(peerGroup != null) peerGroup.shutdownGracefully().sync();
+            if(bossGroup != null) bossGroup.shutdownGracefully();
+            if(workerGroup != null) workerGroup.shutdownGracefully();
+            if(peerGroup != null) peerGroup.shutdownGracefully();
+            System.out.println("Closed channel and shutdown worker event groups.");
+
+/*            if(bossGroup != null) bossGroup.shutdownNow();
+            if(workerGroup != null) workerGroup.shutdownNow();
+            if(peerGroup != null) peerGroup.shutdownNow();*/
+            System.out.println("Shutting down...");
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
