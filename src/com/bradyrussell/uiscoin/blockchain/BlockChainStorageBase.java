@@ -50,11 +50,15 @@ public abstract class BlockChainStorageBase {
     }
 
     public Transaction getTransaction(byte[] TransactionHash){
-        Block block = getBlock(get(TransactionHash, TransactionToBlockDatabase));
+        Block block = getBlockWithTransaction(TransactionHash);
         for(Transaction transaction:block.Transactions){
             if(Arrays.equals(transaction.getHash(), TransactionHash)) return transaction;
         }
         return null;
+    }
+
+    public Block getBlockWithTransaction(byte[] TransactionHash){
+        return getBlock(get(TransactionHash, TransactionToBlockDatabase));
     }
 
     public TransactionOutput getTransactionOutput(byte[] TransactionHash, int Index){
@@ -113,17 +117,17 @@ public abstract class BlockChainStorageBase {
         remove(Util.ConcatArray(TransactionHash,Util.NumberToByteArray(Index)), TransactionOutputDatabase);
     }
 
-    //todo we actually want to extract the Hash,Index not the output object. we can do that by breaking the Key into 64,4 bytes
-    public List<TransactionOutput> ScanUnspentOutputsToAddress(byte[] PublicKeyHash) {
-        ArrayList<TransactionOutput> utxo = new ArrayList<>();
+    //this returns UTXO, which are 64 bytes TransactionHash, 4 bytes Index
+    public ArrayList<byte[]> ScanUnspentOutputsToAddress(byte[] PublicKeyHash) {
+        ArrayList<byte[]> utxo = new ArrayList<>();
+        byte[] lockingScript = new TransactionOutputBuilder().setPayToPublicKeyHash(PublicKeyHash).get().LockingScript;
 
         for(byte[] UTXOHash:keys(TransactionOutputDatabase)){
             TransactionOutput output = new TransactionOutput();
             output.setBinaryData(get(UTXOHash,TransactionOutputDatabase));
 
-            byte[] lockingScript = new TransactionOutputBuilder().setPayToPublicKeyHash(PublicKeyHash).get().LockingScript;
             if(Arrays.equals(output.LockingScript,lockingScript)) {
-                utxo.add(output);
+                utxo.add(UTXOHash);
             }
         }
         return utxo;

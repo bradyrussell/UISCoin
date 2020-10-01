@@ -177,6 +177,13 @@ public class Block implements IBinaryData, IVerifiable {
         return true;
     }
 
+    public boolean VerifyTransactionsUnspent() {
+        for (Transaction transaction : Transactions) {
+            if (!transaction.VerifyInputsUnspent()) return false;
+        }
+        return true;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
