@@ -1,5 +1,6 @@
 import com.bradyrussell.uiscoin.Keys;
 import com.bradyrussell.uiscoin.address.UISCoinKeypair;
+import com.bradyrussell.uiscoin.address.UISCoinWallet;
 import com.bradyrussell.uiscoin.address.Wallet;
 import com.bradyrussell.uiscoin.script.ScriptBuilder;
 import com.bradyrussell.uiscoin.script.ScriptExecution;
@@ -93,5 +94,24 @@ public class KeysTest {
         assertNotNull(keypairFromFileWithPassword);
         assertTrue(Arrays.equals(uisCoinKeypair.getBinaryData(), keypairFromFileWithPassword.getBinaryData()));
 
+    }
+
+    @RepeatedTest(100)
+    @DisplayName("MultiKeyWallet Encrypted Keys Save / Load")
+    void TestWalletMultiKeysSaveLoad() {
+        UISCoinWallet wallet = new UISCoinWallet();
+
+        for(int i = 0; i < 10; i++){
+            wallet.GenerateNewKey();
+        }
+
+        assertTrue(wallet.Keypairs.size() > 0);
+
+        Wallet.SaveWalletToFileWithPassword(Path.of("tests/test_wallet.uiscoin"),"boomer",wallet);
+        UISCoinWallet wallet1 = Wallet.LoadWalletFromFileWithPassword(Path.of("tests/test_wallet.uiscoin"), "boomer");
+
+        assertNotNull(wallet1);
+        assertTrue(Arrays.equals(wallet.getBinaryData(),wallet1.getBinaryData()));
+        assertEquals(wallet1.Keypairs.size(), wallet.Keypairs.size());
     }
 }

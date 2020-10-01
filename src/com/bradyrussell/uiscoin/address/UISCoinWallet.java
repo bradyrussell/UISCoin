@@ -58,7 +58,9 @@ public class UISCoinWallet implements IBinaryData {
     @Override
     public int setBinaryData(byte[] Data) {
         ByteBuffer buf = ByteBuffer.wrap(Data);
+        byte MagicValue = buf.get();
         int NumPairs = buf.getInt();
+
         for(int i = 0; i<NumPairs;i++){
             int KeyPairSize = buf.getInt();
             byte[] KeyPair = new byte[KeyPairSize];
@@ -76,9 +78,9 @@ public class UISCoinWallet implements IBinaryData {
     public int getSize() {
         int n = 0;
         for (UISCoinKeypair keypair : Keypairs) {
-            n+= 1+4 + keypair.getSize();
+            n+= 4 + keypair.getSize();
         }
-        return n+4;
+        return n+5;
     }
 
     @Override
