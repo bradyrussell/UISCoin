@@ -62,7 +62,7 @@ public class BlockChain {
             System.arraycopy(transactionOutput, 0, TsxnHash, 0, 64);
             System.arraycopy(transactionOutput, 64, Index, 0, 4);
 
-            System.out.println("Saving UTXO " + Util.Base64Encode(transactionOutput));
+            //System.out.println("Saving UTXO " + Util.Base64Encode(transactionOutput));
             Storage.putUnspentTransactionOutput(TsxnHash, Util.ByteArrayToNumber(Index), Storage.getTransactionOutput(TsxnHash, Util.ByteArrayToNumber(Index)));
         }
     }

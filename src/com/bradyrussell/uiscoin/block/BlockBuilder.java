@@ -73,6 +73,10 @@ public class BlockBuilder {
 
         int size = 0;
         for(Transaction t:mempool){
+            if(!t.VerifyInputsUnspent()) {
+                BlockChain.get().removeFromMempool(t);
+                continue;
+            }
             if((size + t.getSize()) < SizeLimit) {
                 block.Transactions.add(t);
             } else {

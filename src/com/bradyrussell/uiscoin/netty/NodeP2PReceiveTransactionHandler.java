@@ -41,7 +41,10 @@ public class NodeP2PReceiveTransactionHandler extends SimpleChannelInboundHandle
             return;
         }
 
-        if(!transaction.Verify() && transaction.VerifyInputsUnspent()) {
+        boolean inputsUnspent = transaction.VerifyInputsUnspent();
+        System.out.println("Inputs unspent? "+inputsUnspent);
+
+        if(!transaction.Verify() && inputsUnspent) {
             transaction.DebugVerify();
             System.out.println("Invalid transaction! Discarding.");
             return;
