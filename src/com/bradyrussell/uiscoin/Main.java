@@ -1,5 +1,6 @@
 package com.bradyrussell.uiscoin;
 
+import com.bradyrussell.uiscoin.address.UISCoinKeypair;
 import com.bradyrussell.uiscoin.blockchain.BlockChain;
 import com.bradyrussell.uiscoin.blockchain.BlockChainStorageFile;
 import com.bradyrussell.uiscoin.node.BlockRequest;
@@ -24,12 +25,10 @@ public class Main {
         }
 
         node.RequestBlockFromPeers(new BlockRequest(Util.Base64Decode("UIRTCXb5LIKUQMJuU5dM18OoNdlHztGJMRv0KUM3FbzhxHk9_rJyphibpcTT40NfjmE4GN5AZrGDQo1X2c8mJg==")));
-
+        UISCoinKeypair a;
 
         while (!node.peerClients.isEmpty());
 
         node.Stop();
-
-
     }
 }

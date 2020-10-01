@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UISCoinWallet implements IBinaryData {
-    ArrayList<UISCoinKeypair> Keypairs;
+    ArrayList<UISCoinKeypair> Keypairs = new ArrayList<>();
 
     public UISCoinKeypair GenerateNewKey(){
         UISCoinKeypair create = UISCoinKeypair.Create();
