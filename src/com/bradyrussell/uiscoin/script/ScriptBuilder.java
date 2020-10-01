@@ -1,10 +1,21 @@
 package com.bradyrussell.uiscoin.script;
 
+import com.bradyrussell.uiscoin.Hash;
+import com.bradyrussell.uiscoin.Keys;
 import com.bradyrussell.uiscoin.Util;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SignatureException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+
+import static com.bradyrussell.uiscoin.Util.ByteArrayToNumber;
+import static com.bradyrussell.uiscoin.Util.NumberToByteArray;
 
 public class ScriptBuilder {
     ByteBuffer buffer;
@@ -89,6 +100,40 @@ public class ScriptBuilder {
     public ScriptBuilder data(byte[] Data){
         buffer.put(Data);
         return this;
+    }
+
+    // my attempt to decode bytecode into something parsable by fromText()
+    public String toText(){
+        byte[] Script = get();
+        int InstructionCounter = 0;
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("#Decompiled from ").append(Util.Base64Encode(Script)).append("#\n");
+
+        while(InstructionCounter < Script.length){
+            //////////////////////////////////////////////////////////////////////////////////////
+            ScriptOperator scriptOperator = ScriptOperator.getByOpCode(Script[InstructionCounter++]);
+            sb.append(scriptOperator);
+
+            if(scriptOperator == ScriptOperator.PUSH) {
+                byte NumberOfBytesToPush = Script[InstructionCounter++];
+                byte[] bytes = new byte[NumberOfBytesToPush];
+
+                for (int i = 0; i < NumberOfBytesToPush; i++) {
+                    bytes[i] = Script[InstructionCounter++];
+                }
+
+                sb.append(" [");
+                for (int i = 0; i < bytes.length; i++) {
+                    sb.append(bytes[i]).append(i == (bytes.length-1) ? "":", ");
+                }
+                sb.append("]");
+            }
+
+            sb.append("\n");
+            /////////////////////////////////////////////////////////////////////////////////////
+        }
+        return sb.toString();
     }
 
     public ScriptBuilder fromText(String Text){

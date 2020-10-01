@@ -364,4 +364,32 @@ public class ScriptTest {
 
         assertTrue(!lockingScript.bScriptFailed && !unlockingScript.bScriptFailed);
     }
+
+    @RepeatedTest(100)
+    @DisplayName("Script FromText From ToText")
+    void TestScriptFromTextToText() {
+        int A = ThreadLocalRandom.current().nextInt();
+        int B = ThreadLocalRandom.current().nextInt();
+        int C = A + B;
+
+        ScriptBuilder sb = new ScriptBuilder(256);
+        sb.push(Util.NumberToByteArray(A)).push(Util.NumberToByteArray(B)).fromText("sha512 swap sha512 lenequal verify");
+
+        ScriptExecution scriptExecution = new ScriptExecution();
+
+        String toText = sb.toText();
+        System.out.println(toText);
+
+        scriptExecution.Initialize(new ScriptBuilder(1024).fromText(toText).get());
+
+        while (scriptExecution.Step()){
+            scriptExecution.dumpStack();
+        }
+
+        System.out.println("Script returned: "+!scriptExecution.bScriptFailed);
+
+        System.out.println("Finished: "+scriptExecution.InstructionCounter+" / "+scriptExecution.Script.length);
+
+        assertFalse(scriptExecution.bScriptFailed);
+    }
 }
