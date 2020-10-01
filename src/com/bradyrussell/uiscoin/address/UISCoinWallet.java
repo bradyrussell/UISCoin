@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UISCoinWallet implements IBinaryData {
-    ArrayList<UISCoinKeypair> Keypairs = new ArrayList<>();
+    public ArrayList<UISCoinKeypair> Keypairs = new ArrayList<>();
 
     public UISCoinKeypair GenerateNewKey(){
         UISCoinKeypair create = UISCoinKeypair.Create();
@@ -76,7 +76,7 @@ public class UISCoinWallet implements IBinaryData {
     public int getSize() {
         int n = 0;
         for (UISCoinKeypair keypair : Keypairs) {
-            n+= 4 + keypair.getSize();
+            n+= 1+4 + keypair.getSize();
         }
         return n+4;
     }
