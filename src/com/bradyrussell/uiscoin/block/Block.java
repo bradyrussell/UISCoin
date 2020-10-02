@@ -144,7 +144,7 @@ public class Block implements IBinaryData, IVerifiable {
 
     @Override
     public boolean Verify() {
-        return Header.Verify() && VerifyTransactions() && VerifyBlockReward() && Hash.validateHash(getHash(), Header.DifficultyTarget);
+        return Header.Verify() && VerifyTransactions() && VerifyBlockReward() && Hash.validateHash(getHash(), Header.DifficultyTarget) && getSize() < MagicNumbers.MaxBlockSize.Value;
     }
 
     public void DebugVerify(){
@@ -156,6 +156,8 @@ public class Block implements IBinaryData, IVerifiable {
        assert VerifyBlockReward();
         System.out.println("PoW verify: "+ Hash.validateHash(getHash(), Header.DifficultyTarget));
        assert Hash.validateHash(getHash(), Header.DifficultyTarget);
+        System.out.println("Size verify: "+(getSize() < MagicNumbers.MaxBlockSize.Value));
+       assert  getSize() < MagicNumbers.MaxBlockSize.Value;
     }
 
     private boolean VerifyTransactions(){
