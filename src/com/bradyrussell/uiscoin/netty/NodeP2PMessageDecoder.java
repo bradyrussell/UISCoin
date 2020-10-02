@@ -54,7 +54,7 @@ public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
                     node.BroadcastPeerToPeers(((InetSocketAddress)channelHandlerContext.channel().remoteAddress()).getAddress());
 
                     for (InetAddress peer : node.getPeers()) {
-                        channelHandlerContext.write(peer);
+                        if(!peer.equals(((InetSocketAddress )channelHandlerContext.channel().remoteAddress()).getAddress())) channelHandlerContext.write(peer);
                     }
 
                     ByteBuf wrappedBuffer = Unpooled.wrappedBuffer(new PeerPacketBuilder(5).putHandshake(1).get());
