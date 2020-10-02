@@ -73,7 +73,7 @@ public class TransactionInput  implements IBinaryData, IVerifiable {
 
     @Override
     public boolean Verify() {
-        System.out.println("Verifying input "+ Util.Base64Encode(getHash()));
+        //System.out.println("Verifying input "+ Util.Base64Encode(getHash()));
 
         if(UnlockingScript.length > MagicNumbers.MaxUnlockingScriptLength.Value) return false;
 
