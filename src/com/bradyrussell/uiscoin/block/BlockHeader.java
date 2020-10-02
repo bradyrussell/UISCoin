@@ -103,7 +103,12 @@ public class BlockHeader implements IBinaryData, IVerifiable {
             BlockHeader previousBlockHeader = BlockChain.get().getBlockHeader(HashPreviousBlock);
             valid = (BlockHeight == previousBlockHeader.BlockHeight + 1); // we are previous Block Height + 1
             valid &= (DifficultyTarget >= CalculateDifficultyTarget(Time - previousBlockHeader.Time, previousBlockHeader.DifficultyTarget)); // we are using a proper difficulty
+
+            assert (BlockHeight == previousBlockHeader.BlockHeight + 1);
+            assert (DifficultyTarget >= CalculateDifficultyTarget(Time - previousBlockHeader.Time, previousBlockHeader.DifficultyTarget));
         }
+
+        assert Time <= Instant.now().getEpochSecond();
         valid &= Time <= Instant.now().getEpochSecond(); // timestamp is not in the future
 
         return valid;
