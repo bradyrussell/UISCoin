@@ -93,7 +93,7 @@ public class Node {
         nodeClients.writeAndFlush(block);
     }
 
-    public void BroadcastMemPoolSyncRequestToPeers(){
+    public void RequestMemPoolFromPeers(){
         peerClients.writeAndFlush(PeerPacketType.MEMPOOL.Header);
         nodeClients.writeAndFlush(PeerPacketType.MEMPOOL.Header);
     }
