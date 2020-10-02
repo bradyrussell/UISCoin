@@ -80,12 +80,19 @@ public abstract class BlockChainStorageBase {
     public void putBlock(Block block) {
         put(block.getHash(), block.getBinaryData(), BlocksDatabase);
         putBlockHeader(block);
-        for(Transaction transaction:block.Transactions){
-            BlockChain.get().removeFromMempool(transaction); // remove from mempool
+        ArrayList<Transaction> transactions = block.Transactions;
+        for (int TransactionIndex = 0; TransactionIndex < transactions.size(); TransactionIndex++) {
+            Transaction transaction = transactions.get(TransactionIndex);
+
             put(transaction.getHash(), block.getHash(), TransactionToBlockDatabase);
-            for (TransactionInput input : transaction.Inputs) { //spend input UTXOs
-                removeUnspentTransactionOutput(input.InputHash, input.IndexNumber);
+
+            if(TransactionIndex != 0) { // only for non coinbase transactions
+                BlockChain.get().removeFromMempool(transaction); // remove from mempool
+                for (TransactionInput input : transaction.Inputs) { //spend input UTXOs
+                    removeUnspentTransactionOutput(input.InputHash, input.IndexNumber);
+                }
             }
+
             ArrayList<TransactionOutput> outputs = transaction.Outputs;
             for (int i = 0; i < outputs.size(); i++) {
                 putUnspentTransactionOutput(transaction.getHash(), i, outputs.get(i));
