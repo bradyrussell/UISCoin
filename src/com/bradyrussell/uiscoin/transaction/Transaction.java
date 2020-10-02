@@ -201,6 +201,7 @@ public class Transaction implements IBinaryData, IVerifiable {
     public long getInputTotal() {
         long amount = 0;
         for(TransactionInput input:Inputs){
+            if(input.InputHash.length > 0) // in case of coinbase transaction
             amount += BlockChain.get().getTransactionOutput(input.InputHash, input.IndexNumber).Amount;// Blockchain lookup : input.InputHash
         }
         return amount;

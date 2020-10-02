@@ -180,8 +180,8 @@ public class Block implements IBinaryData, IVerifiable {
     }
 
     public boolean VerifyTransactionsUnspent() {
-        for (Transaction transaction : Transactions) {
-            if (!transaction.VerifyInputsUnspent()) return false;
+        for (int i = 0; i < Transactions.size(); i++) {
+            if (i != 0 && !Transactions.get(i).VerifyInputsUnspent()) return false;
         }
         return true;
     }
