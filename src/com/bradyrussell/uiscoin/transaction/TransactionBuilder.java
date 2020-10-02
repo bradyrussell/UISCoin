@@ -1,9 +1,5 @@
 package com.bradyrussell.uiscoin.transaction;
 
-import com.bradyrussell.uiscoin.address.UISCoinAddress;
-
-import java.security.InvalidParameterException;
-
 public class TransactionBuilder {
     Transaction transaction = new Transaction();
 

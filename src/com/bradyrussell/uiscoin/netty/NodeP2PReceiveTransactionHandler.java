@@ -8,9 +8,6 @@ import com.bradyrussell.uiscoin.transaction.TransactionInput;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 public class NodeP2PReceiveTransactionHandler extends SimpleChannelInboundHandler<Transaction> {
     private final Node thisNode;
 

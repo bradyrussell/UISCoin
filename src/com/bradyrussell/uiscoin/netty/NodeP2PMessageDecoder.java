@@ -1,7 +1,6 @@
 package com.bradyrussell.uiscoin.netty;
 
 import com.bradyrussell.uiscoin.MagicBytes;
-import com.bradyrussell.uiscoin.Util;
 import com.bradyrussell.uiscoin.block.Block;
 import com.bradyrussell.uiscoin.block.BlockHeader;
 import com.bradyrussell.uiscoin.blockchain.BlockChain;
