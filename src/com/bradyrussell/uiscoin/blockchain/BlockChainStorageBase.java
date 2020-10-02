@@ -157,7 +157,7 @@ public abstract class BlockChainStorageBase {
 
         List<Block> blockchain = new ArrayList<>();
 
-        System.out.println("GetBlockChainFromHeight: CurrentBlockHash = "+Util.Base64Encode(currentBlockHash));
+       // System.out.println("GetBlockChainFromHeight: CurrentBlockHash = "+Util.Base64Encode(currentBlockHash));
 
         while(getBlockHeader(currentBlockHash) != null && getBlockHeader(currentBlockHash).BlockHeight >= BlockHeight) {
             blockchain.add(getBlock(currentBlockHash));
