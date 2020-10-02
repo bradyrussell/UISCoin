@@ -53,7 +53,7 @@ public class Block implements IBinaryData, IVerifiable {
         return n;
     }
 
-    private List<byte[]> MerkleRootStep(List<byte[]> Nodes) { // my interpretation of https://en.bitcoin.it/wiki/Protocol_documentation Merkle Trees header
+    public static List<byte[]> MerkleRootStep(List<byte[]> Nodes) { // my interpretation of https://en.bitcoin.it/wiki/Protocol_documentation Merkle Trees header
         List<byte[]> ret = new ArrayList<>();
 
         for (int i = 0; i < Nodes.size(); i+=2) {

@@ -168,4 +168,18 @@ public abstract class BlockChainStorageBase {
         return blockchain;
     }
 
+    // merkle root the entire blockchain from BlockHeight
+    public byte[] getBlockChainMerkleRoot(int BlockHeight){
+        List<byte[]> hashes = new ArrayList<>();
+
+        for(Block block:getBlockChainFromHeight(BlockHeight)){
+            hashes.add(block.getHash());
+        }
+
+        while(hashes.size() > 1) {
+            hashes = Block.MerkleRootStep(hashes);
+        }
+
+        return hashes.get(0);
+    }
 }
