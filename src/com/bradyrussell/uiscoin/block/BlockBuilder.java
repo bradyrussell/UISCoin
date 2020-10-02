@@ -77,7 +77,7 @@ public class BlockBuilder {
 
         int size = 0;
         for(Transaction t:mempool){
-            if(!t.VerifyInputsUnspent()) {
+            if(!t.Verify()  || !t.VerifyInputsUnspent()) {
                 BlockChain.get().removeFromMempool(t);
                 continue;
             }
