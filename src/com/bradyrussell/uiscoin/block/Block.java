@@ -2,6 +2,7 @@ package com.bradyrussell.uiscoin.block;
 
 import com.bradyrussell.uiscoin.*;
 import com.bradyrussell.uiscoin.transaction.Transaction;
+import com.bradyrussell.uiscoin.transaction.TransactionInput;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -161,6 +162,8 @@ public class Block implements IBinaryData, IVerifiable {
     }
 
     private boolean VerifyTransactions(){
+        ArrayList<byte[]> TransactionOutputs = new ArrayList<>();
+
         if(Header.BlockHeight != 0 && Transactions.size() < 2) {
             System.out.println("Too few transactions!");
             return false;
@@ -174,6 +177,18 @@ public class Block implements IBinaryData, IVerifiable {
                     return false;
                 }
             } else {
+
+                for (TransactionInput input : transaction.Inputs) {
+                    byte[] inputTXO = Util.ConcatArray(input.InputHash, Util.NumberToByteArray(input.IndexNumber));
+                    for (byte[] transactionOutput : TransactionOutputs) {
+                        if(Arrays.equals(inputTXO,transactionOutput)) {
+                            System.out.println("Block contains duplicate Transaction Outputs! See transaction "+i+".");
+                            return false; // this TXO is already in the block
+                        }
+                    }
+                    TransactionOutputs.add(inputTXO);
+                }
+
                 if (!transaction.Verify()){
                     System.out.println("Transaction verification!");
                     transaction.DebugVerify();

@@ -4,8 +4,12 @@ import com.bradyrussell.uiscoin.Util;
 import com.bradyrussell.uiscoin.blockchain.BlockChain;
 import com.bradyrussell.uiscoin.node.Node;
 import com.bradyrussell.uiscoin.transaction.Transaction;
+import com.bradyrussell.uiscoin.transaction.TransactionInput;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class NodeP2PReceiveTransactionHandler extends SimpleChannelInboundHandler<Transaction> {
     private final Node thisNode;
@@ -47,6 +51,13 @@ public class NodeP2PReceiveTransactionHandler extends SimpleChannelInboundHandle
             transaction.DebugVerify();
             System.out.println("Invalid transaction! Discarding.");
             return;
+        }
+
+        for (TransactionInput input : transaction.Inputs) {
+            if(Util.doTransactionsContainTXO(input.InputHash, input.IndexNumber, BlockChain.get().getMempool())) {
+                System.out.println("Transaction contains outputs that are already in another mempool transaction! Discarding...");
+                return;
+            }
         }
 
         System.out.println("Storing transaction in mempool...");

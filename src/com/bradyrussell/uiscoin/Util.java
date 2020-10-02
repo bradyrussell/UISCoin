@@ -1,6 +1,11 @@
 package com.bradyrussell.uiscoin;
 
+import com.bradyrussell.uiscoin.transaction.Transaction;
+import com.bradyrussell.uiscoin.transaction.TransactionInput;
+
+import java.util.Arrays;
 import java.util.Base64;
+import java.util.List;
 
 public class Util {
     public static void printBytesReadable(byte[] bytes) {
@@ -47,5 +52,14 @@ public class Util {
 
     public static byte[] Base64Decode(String Base64String){
         return Base64.getUrlDecoder().decode(Base64String);
+    }
+
+    public static boolean doTransactionsContainTXO(byte[] TransactionHash, int Index, List<Transaction> Transactions){
+        for (Transaction transaction : Transactions) {
+            for (TransactionInput input : transaction.Inputs) {
+                if(Arrays.equals(input.InputHash, TransactionHash) && input.IndexNumber == Index) return true;
+            }
+        }
+        return false;
     }
 }
