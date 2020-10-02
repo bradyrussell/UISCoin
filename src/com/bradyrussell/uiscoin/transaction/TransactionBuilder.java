@@ -43,6 +43,7 @@ public class TransactionBuilder {
         return this;
     }
 
+/*    @Deprecated
     public TransactionBuilder signTransaction(UISCoinKeypair keypair){
 
         for(TransactionInput input:transaction.Inputs){
@@ -61,7 +62,7 @@ public class TransactionBuilder {
         }
 
         return this;
-    }
+    }*/
 
     public Transaction get() {
         return transaction;

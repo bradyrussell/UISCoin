@@ -5,6 +5,7 @@ import com.bradyrussell.uiscoin.address.UISCoinKeypair;
 import com.bradyrussell.uiscoin.block.Block;
 import com.bradyrussell.uiscoin.block.BlockBuilder;
 import com.bradyrussell.uiscoin.block.BlockHeader;
+import com.bradyrussell.uiscoin.blockchain.BlockChain;
 import com.bradyrussell.uiscoin.transaction.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.RepeatedTest;
@@ -40,13 +41,12 @@ public class BlockTest {
 
         TransactionBuilder tb = new TransactionBuilder();
         Transaction transaction = tb.setVersion(1).setLockTime(-1)
-                .addInput(new TransactionInput(RandomHash1, 0))
+                .addInput(new TransactionInputBuilder().setInputTransaction(RandomHash2,0).setUnlockingScript(Hash.getSHA512Bytes("aaa")).get())
                 .addOutput(new TransactionOutput(Conversions.CoinsToSatoshis(.5), RandomHash2))
-                .signTransaction(uisCoinKeypair).get();
+                .get();
 
-        Block block = new Block(new BlockHeader(1,timeStamp,1, 0));
+        Block block = new BlockBuilder().setBlockHeight(1).addCoinbasePayToPublicKeyHash(RandomHash1).setHashPreviousBlock(RandomHash2).get();
 
-        block.addCoinbaseTransaction(new TransactionBuilder().setVersion(1).setLockTime(0).addOutput(new TransactionOutputBuilder().setAmount(Conversions.CoinsToSatoshis(1)).setPayToPublicKeyHash(Base64.getDecoder().decode("UISxUisdl8E31ksaCZvw3RKR9biwgXPi/m6lUTyN4E9K0n2vI+Xc5QFVtWpPz9+8fr2DwE5T40qLVbEj7QFsEyve3YteiPg=")).get()).get());
         block.addTransaction(transaction);
 
         block.Header.HashPreviousBlock = RandomHash2;
@@ -64,15 +64,17 @@ public class BlockTest {
         }
     }
 
-    @RepeatedTest(1)
+/*    @RepeatedTest(1)
     @DisplayName("Verification")
     void TestBlockVerification() {
+        BlockChain.get().
+
         UISCoinKeypair address1 = UISCoinKeypair.Create();
         byte[] addressBytes = UISCoinAddress.fromPublicKey((ECPublicKey) address1.Keys.getPublic());
 
         BlockBuilder blockBuilder = new BlockBuilder().setVersion(1).setTimestamp(Instant.now().getEpochSecond()).setDifficultyTarget(2).setBlockHeight(0)
                 .setHashPreviousBlock(Hash.getSHA512Bytes("Hello world from UISCoin."))
-                .addCoinbase(new TransactionBuilder().setVersion(1).setLockTime(0).addOutput(new TransactionOutputBuilder().setPayToPublicKeyHash(addressBytes).setAmount(Block.CalculateBlockReward(0)).get()).get())
+                .addCoinbasePayToPublicKeyHash(UISCoinAddress.decodeAddress(addressBytes).PublicKeyHash)
                 .CalculateMerkleRoot();
 
         while(!Hash.validateHash(blockBuilder.get().getHash(), blockBuilder.get().Header.DifficultyTarget)) {
@@ -87,5 +89,5 @@ public class BlockTest {
         assertTrue(finishedBlock.Verify());
         //BlockChain.get().putBlock(finishedBlock);
 
-    }
+    }*/
 }

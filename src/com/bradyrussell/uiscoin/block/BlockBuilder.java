@@ -1,7 +1,11 @@
 package com.bradyrussell.uiscoin.block;
 
+import com.bradyrussell.uiscoin.Hash;
 import com.bradyrussell.uiscoin.blockchain.BlockChain;
 import com.bradyrussell.uiscoin.transaction.Transaction;
+import com.bradyrussell.uiscoin.transaction.TransactionBuilder;
+import com.bradyrussell.uiscoin.transaction.TransactionInputBuilder;
+import com.bradyrussell.uiscoin.transaction.TransactionOutputBuilder;
 
 import java.time.Instant;
 import java.util.Collections;
@@ -87,6 +91,14 @@ public class BlockBuilder {
     }
 
     public BlockBuilder addCoinbase(Transaction transaction){
+        block.addCoinbaseTransaction(transaction);
+        return this;
+    }
+
+    public BlockBuilder addCoinbasePayToPublicKeyHash(byte[] PublicKeyHash){
+        Transaction transaction = new TransactionBuilder().setVersion(1).setLockTime(0)
+                .addInput(new TransactionInputBuilder().setInputTransaction(Hash.getSHA512Bytes("Anything I want"), block.Header.BlockHeight).setUnlockingScript(Hash.getSHA512Bytes("Anything I want")).get())
+                .addOutput(new TransactionOutputBuilder().setPayToPublicKeyHash(PublicKeyHash).setAmount(Block.CalculateBlockReward(0)).get()).get();
         block.addCoinbaseTransaction(transaction);
         return this;
     }
