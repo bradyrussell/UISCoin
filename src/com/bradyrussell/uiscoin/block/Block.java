@@ -161,16 +161,21 @@ public class Block implements IBinaryData, IVerifiable {
     }
 
     private boolean VerifyTransactions(){
-        if(Header.BlockHeight != 0 && Transactions.size() < 2) return false;
+        if(Header.BlockHeight != 0 && Transactions.size() < 2) {
+            System.out.println("Too few transactions!");
+            return false;
+        }
         for (int i = 0; i < Transactions.size(); i++) {
             Transaction transaction = Transactions.get(i);
             if (i == 0)  {
                 if (!transaction.VerifyCoinbase(Header.BlockHeight)) {
+                    System.out.println("Failed coinbase verification!");
                     transaction.DebugVerifyCoinbase(Header.BlockHeight);
                     return false;
                 }
             } else {
                 if (!transaction.Verify()){
+                    System.out.println("Transaction verification!");
                     transaction.DebugVerify();
                     return false;
                 }
