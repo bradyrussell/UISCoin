@@ -8,7 +8,7 @@ public enum MagicNumbers {
     MaxLockingScriptLength(256),
     MaxUnlockingScriptLength(256),
 
-    TargetSecondsPerBlock(60), // difficulty will adjust to meet this
+    TargetSecondsPerBlock(300), // difficulty will adjust to meet this
     ;
 
     public final int Value;
