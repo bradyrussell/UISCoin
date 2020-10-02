@@ -99,7 +99,7 @@ public class BlockChainStorageFile extends BlockChainStorageBase {
     @Override
     public byte[] get(byte[] Key, String Database) {
         if(!Files.exists(Path.of("blockchain/"+Database+"/"+ Util.Base64Encode(Key)))) {
-            System.out.println("Path does not exist! "+"blockchain/"+Database+"/"+ Util.Base64Encode(Key));
+            //System.out.println("Path does not exist! "+"blockchain/"+Database+"/"+ Util.Base64Encode(Key));
             return null;
         }
         try {
@@ -124,7 +124,7 @@ public class BlockChainStorageFile extends BlockChainStorageBase {
     @Override
     public void remove(byte[] Key, String Database) {
         if(!Files.exists(Path.of("blockchain/"+Database+"/"+ Util.Base64Encode(Key)))) {
-            System.out.println("Path does not exist! "+"blockchain/"+Database+"/"+ Util.Base64Encode(Key));
+            //System.out.println("Path does not exist! "+"blockchain/"+Database+"/"+ Util.Base64Encode(Key));
             return;
         }
         try {
