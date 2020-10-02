@@ -94,8 +94,10 @@ public class Node {
     }
 
     public void RequestMemPoolFromPeers(){
-        peerClients.writeAndFlush(PeerPacketType.MEMPOOL.Header);
-        nodeClients.writeAndFlush(PeerPacketType.MEMPOOL.Header);
+        ByteBuf buffer = Unpooled.buffer();
+        buffer.writeByte(PeerPacketType.MEMPOOL.Header);
+        peerClients.writeAndFlush(buffer.copy());
+        nodeClients.writeAndFlush(buffer);
     }
 
     public void BroadcastBlockHeaderToPeers(BlockHeaderResponse blockHeaderResponse){
