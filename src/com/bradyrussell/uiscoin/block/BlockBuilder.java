@@ -3,6 +3,7 @@ package com.bradyrussell.uiscoin.block;
 import com.bradyrussell.uiscoin.Hash;
 import com.bradyrussell.uiscoin.blockchain.BlockChain;
 import com.bradyrussell.uiscoin.script.ScriptBuilder;
+import com.bradyrussell.uiscoin.script.ScriptOperator;
 import com.bradyrussell.uiscoin.transaction.Transaction;
 import com.bradyrussell.uiscoin.transaction.TransactionBuilder;
 import com.bradyrussell.uiscoin.transaction.TransactionInputBuilder;
@@ -102,7 +103,7 @@ public class BlockBuilder {
     }
     public BlockBuilder addCoinbasePayToPublicKeyHash(byte[] PublicKeyHash, String CoinbaseMessage){
         Transaction transaction = new TransactionBuilder().setVersion(1).setLockTime(0)
-                .addInput(new TransactionInputBuilder().setInputTransaction(new byte[64], block.Header.BlockHeight).setUnlockingScript(new ScriptBuilder(66).push(Hash.getSHA512Bytes(CoinbaseMessage)).get()).get())
+                .addInput(new TransactionInputBuilder().setInputTransaction(new byte[64], block.Header.BlockHeight).setUnlockingScript(new ScriptBuilder(68).push(Hash.getSHA512Bytes(CoinbaseMessage)).op(ScriptOperator.TRUE).op(ScriptOperator.VERIFY).get()).get())
                 .addOutput(new TransactionOutputBuilder().setPayToPublicKeyHash(PublicKeyHash).setAmount(Block.CalculateBlockReward(0)).get()).get();
         block.addCoinbaseTransaction(transaction);
         return this;
