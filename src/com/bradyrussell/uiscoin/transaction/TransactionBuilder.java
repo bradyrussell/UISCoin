@@ -33,36 +33,25 @@ public class TransactionBuilder {
         return this;
     }
 
-    public TransactionBuilder addChangeOutput(byte[] Address, long FeeToLeave){
+    @Deprecated // this is not consistent, everything else takes PubKeyHash
+    public TransactionBuilder addChangeOutput(byte[] FullAddress, long FeeToLeave){
         long Amount = (transaction.getInputTotal() - transaction.getOutputTotal()) - FeeToLeave;
 
         assert Amount > 0;
 
-        UISCoinAddress.DecodedAddress decodedAddress = UISCoinAddress.decodeAddress(Address);
+        UISCoinAddress.DecodedAddress decodedAddress = UISCoinAddress.decodeAddress(FullAddress);
         transaction.addOutput(new TransactionOutputBuilder().setPayToPublicKeyHash(decodedAddress.PublicKeyHash).setAmount(Amount).get());
         return this;
     }
 
-/*    @Deprecated
-    public TransactionBuilder signTransaction(UISCoinKeypair keypair){
+    public TransactionBuilder addChangeOutputToPublicKeyHash(byte[] PublicKeyHash, long FeeToLeave){
+        long Amount = (transaction.getInputTotal() - transaction.getOutputTotal()) - FeeToLeave;
 
-        for(TransactionInput input:transaction.Inputs){
-            input.UnlockingScript = keypair.Keys.getPublic().getEncoded();//todo this is meant to be the scriptPubKey or Locking Script of the output to redeem
-            // todo this means on input builder it needs to take that as a param that is retrieved from the blockchain  / utxo set
-        }
+        assert Amount > 0;
 
-        try {
-            Keys.SignedData signedData = Keys.SignData(keypair.Keys, Hash.getSHA512Bytes(transaction.getBinaryData()));
-
-            for(TransactionInput input:transaction.Inputs){
-                input.UnlockingScript = new ScriptBuilder(256).push(signedData.Signature).push(signedData.Pubkey).get();//Util.ConcatArray(signedData.Signature, signedData.Pubkey);
-            }
-        } catch (NoSuchAlgorithmException | InvalidKeyException | SignatureException e) {
-            e.printStackTrace();
-        }
-
+        transaction.addOutput(new TransactionOutputBuilder().setPayToPublicKeyHash(PublicKeyHash).setAmount(Amount).get());
         return this;
-    }*/
+    }
 
     public Transaction get() {
         return transaction;

@@ -143,7 +143,8 @@ public class Transaction implements IBinaryData, IVerifiable {
     public boolean VerifyCoinbase(int BlockHeight) {
         return VerifyCoinbaseInputs() && VerifyOutputs()
                 && Inputs.size() == 1 && Outputs.size() > 0 && TimeStamp < Long.MAX_VALUE
-                && getSize() < MagicNumbers.MaxTransactionSize.Value && Inputs.get(0).IndexNumber == BlockHeight;
+                && getSize() < MagicNumbers.MaxTransactionSize.Value && Inputs.get(0).IndexNumber == BlockHeight
+                && Arrays.equals(Inputs.get(0).InputHash, new byte[64]);
     }
 
     public void DebugVerify(){
@@ -164,6 +165,7 @@ public class Transaction implements IBinaryData, IVerifiable {
         assert Outputs.size() > 0;
         assert TimeStamp < Long.MAX_VALUE;
         assert getSize() < MagicNumbers.MaxTransactionSize.Value;
+        assert Arrays.equals(Inputs.get(0).InputHash, new byte[64]);
     }
 
 
@@ -201,7 +203,7 @@ public class Transaction implements IBinaryData, IVerifiable {
     public long getInputTotal() {
         long amount = 0;
         for(TransactionInput input:Inputs){
-            if(input.InputHash.length > 0) // in case of coinbase transaction
+           if(!Arrays.equals(input.InputHash, new byte[64])) // in case of coinbase transaction
             amount += BlockChain.get().getTransactionOutput(input.InputHash, input.IndexNumber).Amount;// Blockchain lookup : input.InputHash
         }
         return amount;
