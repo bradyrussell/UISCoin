@@ -74,7 +74,7 @@ public class BlockBuilder {
             long ASecondsOld = Instant.now().getEpochSecond() - a.TimeStamp;
             long BSecondsOld = Instant.now().getEpochSecond() - b.TimeStamp;
 
-            return (int) ((a.getFees()*((ASecondsOld/600)+1)) - (b.getFees()*((BSecondsOld/600)+1))); // sort by fee but add a bonus multiplier for every 10 minutes old
+            return (int) ((b.getFees() * ((BSecondsOld / 600) + 1)) - (a.getFees() * ((ASecondsOld / 600) + 1))); // sort by fee but add a bonus multiplier for every 10 minutes old
         });
 
         int size = 0;
