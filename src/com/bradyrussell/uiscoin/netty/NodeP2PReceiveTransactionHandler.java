@@ -2,7 +2,6 @@ package com.bradyrussell.uiscoin.netty;
 
 import com.bradyrussell.uiscoin.Util;
 import com.bradyrussell.uiscoin.blockchain.BlockChain;
-import com.bradyrussell.uiscoin.blockchain.BlockChainStorageBase;
 import com.bradyrussell.uiscoin.node.Node;
 import com.bradyrussell.uiscoin.transaction.Transaction;
 import io.netty.channel.ChannelHandlerContext;

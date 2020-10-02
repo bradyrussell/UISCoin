@@ -2,7 +2,6 @@ package com.bradyrussell.uiscoin.node;
 
 import com.bradyrussell.uiscoin.MagicNumbers;
 import com.bradyrussell.uiscoin.block.Block;
-import com.bradyrussell.uiscoin.blockchain.BlockChain;
 import com.bradyrussell.uiscoin.netty.NodeP2PClientInitializer;
 import com.bradyrussell.uiscoin.netty.NodeP2PServerInitializer;
 import com.bradyrussell.uiscoin.transaction.Transaction;
@@ -57,13 +56,10 @@ public class Node {
 
         // Make a new connection.
         ChannelFuture sync;
-        sync = peerBootstrap.connect(Address, MagicNumbers.NodeP2PPort.Value).addListener(new ChannelFutureListener() {
-            @Override
-            public void operationComplete(ChannelFuture channelFuture) throws Exception {
-                peerClients.add(channelFuture.channel());
-                if(channelFuture.isSuccess())
-                System.out.println("Connection established with peer "+channelFuture.channel().remoteAddress().toString());
-            }
+        sync = peerBootstrap.connect(Address, MagicNumbers.NodeP2PPort.Value).addListener((ChannelFutureListener) channelFuture -> {
+            peerClients.add(channelFuture.channel());
+            if(channelFuture.isSuccess())
+            System.out.println("Connection established with peer "+channelFuture.channel().remoteAddress().toString());
         })/*.sync()*/;
         // ChannelFuture closeFuture = sync.channel().closeFuture();
     }

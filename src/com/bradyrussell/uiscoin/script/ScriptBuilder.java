@@ -1,21 +1,10 @@
 package com.bradyrussell.uiscoin.script;
 
-import com.bradyrussell.uiscoin.Hash;
-import com.bradyrussell.uiscoin.Keys;
 import com.bradyrussell.uiscoin.Util;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SignatureException;
-import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-
-import static com.bradyrussell.uiscoin.Util.ByteArrayToNumber;
-import static com.bradyrussell.uiscoin.Util.NumberToByteArray;
 
 public class ScriptBuilder {
     ByteBuffer buffer;
