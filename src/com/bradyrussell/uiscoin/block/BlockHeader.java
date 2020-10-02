@@ -111,7 +111,7 @@ public class BlockHeader implements IBinaryData, IVerifiable {
 
     public static int CalculateDifficultyTarget(long TimeSinceLastBlock, int LastBlockDifficulty) {
         if(TimeSinceLastBlock < MagicNumbers.TargetSecondsPerBlock.Value) return Math.min(63, LastBlockDifficulty + 1);
-        if(TimeSinceLastBlock > MagicNumbers.TargetSecondsPerBlock.Value) return Math.max(1, LastBlockDifficulty - 1);
+        if(TimeSinceLastBlock > MagicNumbers.TargetSecondsPerBlock.Value) return Math.max(3, LastBlockDifficulty - 1);
         return LastBlockDifficulty;
     }
 }
