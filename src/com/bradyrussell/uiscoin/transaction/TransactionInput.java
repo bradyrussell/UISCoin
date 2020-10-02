@@ -79,14 +79,20 @@ public class TransactionInput  implements IBinaryData, IVerifiable {
 
         //TransactionOutput unspentTransactionOutput = BlockChain.get().getUnspentTransactionOutput(InputHash, IndexNumber);
         TransactionOutput unspentTransactionOutput = BlockChain.get().getTransactionOutput(InputHash, IndexNumber);
-        if(unspentTransactionOutput == null) return false;
+        if(unspentTransactionOutput == null) {
+            System.out.println("Verification failed! No UTXO");
+            return false;
+        }
 
         ScriptExecution UnlockingScriptEx = new ScriptExecution();
         UnlockingScriptEx.Initialize(UnlockingScript);
 
         while(UnlockingScriptEx.Step());
 
-        if(UnlockingScriptEx.bScriptFailed) return false;
+        if(UnlockingScriptEx.bScriptFailed) {
+            System.out.println("Verification failed! Unlocking script failed!");
+            return false;
+        }
 
         ScriptExecution LockingScriptEx = new ScriptExecution();
         LockingScriptEx.setSignatureVerificationMessage(unspentTransactionOutput.getHash());
@@ -94,6 +100,7 @@ public class TransactionInput  implements IBinaryData, IVerifiable {
 
         while(LockingScriptEx.Step());
 
+        if(LockingScriptEx.bScriptFailed) System.out.println("Verification failed! Locking script failed!");
         return !LockingScriptEx.bScriptFailed;
     }
 }

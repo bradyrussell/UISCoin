@@ -29,8 +29,35 @@ public class BlockChainStorageFile extends BlockChainStorageBase {
 
             System.out.println("Loaded blockchain " + (BlockHeight + 1) + " blocks long. Last block: " + Util.Base64Encode(HighestBlockHash));
         }
+
         MemPool = new ArrayList<>();
+        if(exists(Hash.getSHA512Bytes("mempool"), "mempool")) {
+            byte[] bytes = get(Hash.getSHA512Bytes("mempool"), "mempool");
+            ByteBuffer buf = ByteBuffer.wrap(bytes);
+
+            int NumTransactions = buf.getInt();
+
+            for(int i = 0; i < NumTransactions; i++){
+                int TransactionLength = buf.getInt();
+                byte[] TransactionBytes = new byte[TransactionLength];
+                buf.get(TransactionBytes);
+
+                Transaction t = new Transaction();
+                t.setBinaryData(TransactionBytes);
+                if(t.Verify()) MemPool.add(t);
+            }
+            System.out.println("Loaded mempool with "+MemPool.size()+" transactions.");
+        }
+
         return true;
+    }
+
+    private int getMempoolTransactionsSize(){
+        int n = 0;
+        for (Transaction transaction : MemPool) {
+            n+=transaction.getSize();
+        }
+        return n;
     }
 
     @Override
@@ -42,6 +69,15 @@ public class BlockChainStorageFile extends BlockChainStorageBase {
 
             put(Hash.getSHA512Bytes("blockheight"), buf.array(), "blockheight");
         }
+
+        ByteBuffer buf = ByteBuffer.allocate(4+(4*MemPool.size())+getMempoolTransactionsSize());
+
+        buf.putInt(MemPool.size());
+        for (Transaction transaction : MemPool) {
+            buf.putInt(transaction.getSize());
+            buf.put(transaction.getBinaryData());
+        }
+        put(Hash.getSHA512Bytes("mempool"), buf.array(), "mempool");
     }
 
     @Override
