@@ -141,7 +141,7 @@ public class Transaction implements IBinaryData, IVerifiable {
     }
 
     public boolean VerifyCoinbase(int BlockHeight) {
-        return VerifyInputs() && VerifyOutputs()
+        return VerifyCoinbaseInputs() && VerifyOutputs()
                 && Inputs.size() == 1 && Outputs.size() > 0 && TimeStamp < Long.MAX_VALUE
                 && getSize() < MagicNumbers.MaxTransactionSize.Value && Inputs.get(0).IndexNumber == BlockHeight;
     }
@@ -157,6 +157,7 @@ public class Transaction implements IBinaryData, IVerifiable {
     }
 
     public void DebugVerifyCoinbase(int BlockHeight){
+        assert VerifyCoinbaseInputs();
         assert VerifyOutputs();
         assert Inputs.size() == 1;
         assert Inputs.get(0).IndexNumber == BlockHeight;
@@ -176,6 +177,13 @@ public class Transaction implements IBinaryData, IVerifiable {
     private boolean VerifyInputs(){
         for(TransactionInput input:Inputs){
             if(!input.Verify()) return false;
+        }
+        return true;
+    }
+
+    private boolean VerifyCoinbaseInputs(){
+        for(TransactionInput input:Inputs){
+            if(input.UnlockingScript.length > MagicNumbers.MaxUnlockingScriptLength.Value) return false;
         }
         return true;
     }
