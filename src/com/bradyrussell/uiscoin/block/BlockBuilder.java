@@ -10,6 +10,7 @@ import com.bradyrussell.uiscoin.transaction.TransactionInputBuilder;
 import com.bradyrussell.uiscoin.transaction.TransactionOutputBuilder;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -77,10 +78,12 @@ public class BlockBuilder {
             return (int) ((b.getFees() * ((BSecondsOld / 600) + 1)) - (a.getFees() * ((ASecondsOld / 600) + 1))); // sort by fee but add a bonus multiplier for every 10 minutes old
         });
 
+        ArrayList<Transaction> toRemove = new ArrayList<>();
+
         int size = 0;
         for(Transaction t:mempool){
             if(!t.Verify()  || !t.VerifyInputsUnspent()) {
-                BlockChain.get().removeFromMempool(t);
+                toRemove.add(t);
                 continue;
             }
             if((size + t.getSize()) < SizeLimit) {
@@ -89,6 +92,8 @@ public class BlockBuilder {
                 break;
             }
         }
+
+        BlockChain.get().getMempool().removeAll(toRemove);
         return this;
     }
 
