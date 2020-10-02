@@ -2,6 +2,8 @@ package com.bradyrussell.uiscoin.transaction;
 
 import com.bradyrussell.uiscoin.address.UISCoinAddress;
 
+import java.security.InvalidParameterException;
+
 public class TransactionBuilder {
     Transaction transaction = new Transaction();
 
@@ -25,7 +27,7 @@ public class TransactionBuilder {
         return this;
     }
 
-    @Deprecated // this is not consistent, everything else takes PubKeyHash
+/*    @Deprecated // this is not consistent, everything else takes PubKeyHash
     public TransactionBuilder addChangeOutput(byte[] FullAddress, long FeeToLeave){
         long Amount = (transaction.getInputTotal() - transaction.getOutputTotal()) - FeeToLeave;
 
@@ -34,14 +36,14 @@ public class TransactionBuilder {
         UISCoinAddress.DecodedAddress decodedAddress = UISCoinAddress.decodeAddress(FullAddress);
         transaction.addOutput(new TransactionOutputBuilder().setPayToPublicKeyHash(decodedAddress.PublicKeyHash).setAmount(Amount).get());
         return this;
-    }
+    }*/
 
     public TransactionBuilder addChangeOutputToPublicKeyHash(byte[] PublicKeyHash, long FeeToLeave){
         long Amount = (transaction.getInputTotal() - transaction.getOutputTotal()) - FeeToLeave;
 
         assert Amount > 0;
 
-        transaction.addOutput(new TransactionOutputBuilder().setPayToPublicKeyHash(PublicKeyHash).setAmount(Amount).get());
+        transaction.addOutput(new TransactionOutputBuilder().setPayToPublicKeyHash(PublicKeyHash).setAmount(Math.abs(Amount)).get());
         return this;
     }
 

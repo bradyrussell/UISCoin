@@ -135,9 +135,9 @@ public class Transaction implements IBinaryData, IVerifiable {
 
     @Override //https://www.oreilly.com/library/view/mastering-bitcoin/9781491902639/ch08.html
     public boolean Verify() {
-        return VerifyInputs() && VerifyOutputs() && getFees()*MagicNumbers.MinSatPerByte.Value > getSize()
+        return VerifyInputs() && VerifyOutputs() && getFees() > getSize()*MagicNumbers.MinSatPerByte.Value
                 && Inputs.size() > 0 && Outputs.size() > 0 && TimeStamp < Long.MAX_VALUE
-                && getSize() < MagicNumbers.MaxTransactionSize.Value;
+                && getSize() < MagicNumbers.MaxTransactionSize.Value && getFees() > 0 && getInputTotal() > 0 && getOutputTotal() > 0;
     }
 
     public boolean VerifyCoinbase(int BlockHeight) {
@@ -150,11 +150,14 @@ public class Transaction implements IBinaryData, IVerifiable {
     public void DebugVerify(){
         assert VerifyInputs();
         assert VerifyOutputs();
-        assert (getFees()*MagicNumbers.MinSatPerByte.Value) > getSize();
+        assert getFees() > getSize()*MagicNumbers.MinSatPerByte.Value;
         assert Inputs.size() > 0;
         assert Outputs.size() > 0;
         assert TimeStamp < Long.MAX_VALUE;
         assert getSize() < MagicNumbers.MaxTransactionSize.Value;
+        assert getFees() > 0;
+        assert getInputTotal() > 0;
+        assert getOutputTotal() > 0;
     }
 
     public void DebugVerifyCoinbase(int BlockHeight){
