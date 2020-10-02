@@ -28,20 +28,20 @@ public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
 
     @Override
     protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, List<Object> list) throws Exception {
-        System.out.println("1 Decode");
+        //System.out.println("1 Decode");
         PeerPacketType packetType = PeerPacketType.getByHeader(byteBuf.readByte());
-        System.out.println("2 Decoding "+packetType+" packet.");
+        //System.out.println("2 Decoding "+packetType+" packet.");
 
         if (packetType != null) {
             switch (packetType){
                 case DISCONNECT -> {
-                    System.out.println("3 Received disconnect!");
+                    //System.out.println("3 Received disconnect!");
                     channelHandlerContext.writeAndFlush(new PeerPacketBuilder(2).putDisconnect().get());
                     channelHandlerContext.disconnect().addListener((ChannelFutureListener) channelFuture -> System.out.println("Disconnected"));
                     list.add(true);
                 }
                 case GREETING -> {
-                    System.out.println("3 Received greeting!");
+                    //System.out.println("3 Received greeting!");
                     int Version = byteBuf.readInt();
                     if(Version != MagicBytes.ProtocolVersion.Value) {
                         System.out.println("Protocol version mismatch, disconnecting!");
@@ -50,7 +50,7 @@ public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
                         return;
                     }
 
-                    System.out.println("4 Broadcasting new peer");
+                    //System.out.println("4 Broadcasting new peer");
                     node.BroadcastPeerToPeers(((InetSocketAddress)channelHandlerContext.channel().remoteAddress()).getAddress());
 
                     ByteBuf wrappedBuffer = Unpooled.wrappedBuffer(new PeerPacketBuilder(5).putHandshake(1).get());
@@ -64,7 +64,7 @@ public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
                     list.add(true);
                 }
                 case HANDSHAKE -> {
-                    System.out.println("3 Received handshake!");
+                    //System.out.println("3 Received handshake!");
                     int Version = byteBuf.readInt();
                     if(Version != MagicBytes.ProtocolVersion.Value) {
                         System.out.println("Protocol version mismatch, disconnecting!");
@@ -78,7 +78,7 @@ public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
                     list.add(true);
                 }
                 case PING -> {
-                    System.out.println("3 Received ping!");
+                    //System.out.println("3 Received ping!");
                     list.add(true);
                 }
                 case PEER -> {
@@ -86,7 +86,7 @@ public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
                     byte[] Bytes = new byte[Size];
                     byteBuf.readBytes(Bytes);
 
-                    System.out.println("3 Received peer "+Util.Base64Encode(Bytes));
+                    //System.out.println("3 Received peer "+Util.Base64Encode(Bytes));
 
                     InetAddress address = InetAddress.getByAddress(Bytes);
 
@@ -100,7 +100,7 @@ public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
                     Transaction transaction = new Transaction();
                     transaction.setBinaryData(Bytes);
 
-                    System.out.println("3 Received transaction "+Util.Base64Encode(transaction.getHash()));
+                    //System.out.println("3 Received transaction "+Util.Base64Encode(transaction.getHash()));
                     list.add(transaction);
                 }
                 case BLOCK -> {
@@ -111,7 +111,7 @@ public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
                     Block block = new Block();
                     block.setBinaryData(Bytes);
 
-                    System.out.println("3 Received block "+Util.Base64Encode(block.getHash()));
+                    //System.out.println("3 Received block "+Util.Base64Encode(block.getHash()));
                     list.add(block);
                 }
                 case HEADER -> {
@@ -126,16 +126,16 @@ public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
 
                     blockHeader.setBinaryData(Bytes);
 
-                    System.out.println("3 Received block header "+Util.Base64Encode(Hash));
+                    //System.out.println("3 Received block header "+Util.Base64Encode(Hash));
                     list.add(new BlockHeaderResponse(Hash, blockHeader));
                 }
                 case HEIGHT -> {
                     int BlockHeight = byteBuf.readInt();
 
-                    System.out.println("3 Received block height "+BlockHeight);
+                    //System.out.println("3 Received block height "+BlockHeight);
 
                     if(BlockHeight > node.HighestSeenBlockHeight) {
-                        System.out.println("4 This is a longer chain! Syncing...");
+                        //System.out.println("4 This is a longer chain! Syncing...");
                         node.HighestSeenBlockHeight = BlockHeight;
 
                         ByteBuf buffer = Unpooled.buffer();
@@ -151,14 +151,14 @@ public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
                     byte[] Bytes = new byte[64];
                     byteBuf.readBytes(Bytes);
 
-                    System.out.println("3 Received block request "+Util.Base64Encode(Bytes));
+                    //System.out.println("3 Received block request "+Util.Base64Encode(Bytes));
                     list.add(new BlockRequest(Bytes, bOnlyHeader));
                 }
                 case SYNC -> {
                     boolean bOnlyHeader = byteBuf.readBoolean();
                     int BlockHeight = byteBuf.readInt();
 
-                    System.out.println("3 Received sync request "+BlockHeight);
+                    //System.out.println("3 Received sync request "+BlockHeight);
 
                     //if(BlockHeight > BlockChain.get().BlockHeight) BlockHeight = BlockChain.get().BlockHeight;
 
@@ -174,25 +174,25 @@ public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
                         });
                     }
                     channelHandlerContext.flush();
-                    System.out.println("5 Flushing");
+                    //System.out.println("5 Flushing");
                     list.add(true);
                 }
                 case MEMPOOL -> {
-                    System.out.println("3 Received mempool query");
+                    //System.out.println("3 Received mempool query");
                     for (Transaction transaction : BlockChain.get().getMempool()) {
                         channelHandlerContext.write(transaction);
                     }
                     channelHandlerContext.flush();
-                    System.out.println("4 Sent mempool");
+                    //System.out.println("4 Sent mempool");
                     list.add(true);
                 }
                 case HEIGHTQUERY -> {
-                    System.out.println("3 Received blockheight query");
+                    //System.out.println("3 Received blockheight query");
                     ByteBuf buf = Unpooled.buffer();
                     buf.writeByte(PeerPacketType.HEIGHT.Header);
                     buf.writeInt(BlockChain.get().BlockHeight);
 
-                    System.out.println("4 Sending blockheight "+BlockChain.get().BlockHeight);
+                    //System.out.println("4 Sending blockheight "+BlockChain.get().BlockHeight);
 
                     ChannelFuture channelFuture = channelHandlerContext.writeAndFlush(buf);
 
@@ -203,7 +203,7 @@ public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
                     list.add(true);
                 }
                 default -> {
-                    System.out.println("3 Received invalid request, disconnecting.");
+                    //System.out.println("3 Received invalid request, disconnecting.");
                     channelHandlerContext.disconnect();
                     list.add(true);
                 }
