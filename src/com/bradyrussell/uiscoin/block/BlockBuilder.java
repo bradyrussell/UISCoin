@@ -97,7 +97,7 @@ public class BlockBuilder {
 
     public BlockBuilder addCoinbasePayToPublicKeyHash(byte[] PublicKeyHash){
         Transaction transaction = new TransactionBuilder().setVersion(1).setLockTime(0)
-                .addInput(new TransactionInputBuilder().setInputTransaction(new byte[0], block.Header.BlockHeight).setUnlockingScript(Hash.getSHA512Bytes("Anything I want")).get())
+                .addInput(new TransactionInputBuilder().setInputTransaction(new byte[64], block.Header.BlockHeight).setUnlockingScript(Hash.getSHA512Bytes("Anything I want")).get())
                 .addOutput(new TransactionOutputBuilder().setPayToPublicKeyHash(PublicKeyHash).setAmount(Block.CalculateBlockReward(0)).get()).get();
         block.addCoinbaseTransaction(transaction);
         return this;
