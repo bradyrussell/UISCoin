@@ -5,6 +5,10 @@ import com.bradyrussell.uiscoin.block.Block;
 import com.bradyrussell.uiscoin.blockchain.BlockChain;
 import com.bradyrussell.uiscoin.blockchain.BlockChainStorageBase;
 import com.bradyrussell.uiscoin.node.Node;
+import com.bradyrussell.uiscoin.node.PeerPacketType;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
@@ -42,6 +46,13 @@ public class NodeP2PReceiveBlockHandler extends SimpleChannelInboundHandler<Bloc
         }
         if(BlockChain.get().BlockHeight >= block.Header.BlockHeight) {
             System.out.println("Block is on a shorter chain. Discarding...");
+
+            // inform them of our longer chain
+            ByteBuf buf = Unpooled.buffer();
+            buf.writeByte(PeerPacketType.HEIGHT.Header);
+            buf.writeInt(BlockChain.get().BlockHeight);
+            channelHandlerContext.writeAndFlush(buf);
+
             return; // we are on a longer chain!
         }
         if(!block.Verify()) {
