@@ -108,8 +108,13 @@ public class BlockHeader implements IBinaryData, IVerifiable {
             assert (DifficultyTarget >= CalculateDifficultyTarget(Time - previousBlockHeader.Time, previousBlockHeader.DifficultyTarget));
         }
 
-        assert Time <= Instant.now().getEpochSecond();
-        valid &= Time <= Instant.now().getEpochSecond(); // timestamp is not in the future
+        boolean timeValid = (Time - 30) <= Instant.now().getEpochSecond();
+        assert timeValid;
+        valid &= timeValid; // timestamp is not in the future, allow for 30s variance
+
+        if(!timeValid){
+            System.out.println("Error: Block time is in the future! Please check the system time is correct.");
+        }
 
         return valid;
     }
