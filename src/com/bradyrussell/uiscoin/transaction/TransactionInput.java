@@ -1,8 +1,8 @@
 package com.bradyrussell.uiscoin.transaction;
 
-import com.bradyrussell.uiscoin.Hash;
-import com.bradyrussell.uiscoin.IBinaryData;
-import com.bradyrussell.uiscoin.IVerifiable;
+import com.bradyrussell.uiscoin.*;
+import com.bradyrussell.uiscoin.blockchain.BlockChain;
+import com.bradyrussell.uiscoin.script.ScriptExecution;
 
 import java.nio.ByteBuffer;
 
@@ -11,7 +11,7 @@ public class TransactionInput  implements IBinaryData, IVerifiable {
     public int IndexNumber; // 4  // the UTXO index
     //public int SignatureScriptLength; // 4
 
-    public byte[] UnlockingScript; // response script
+    public byte[] UnlockingScript; // response script // aka scriptSig
 
     public int InputSequenceNumber; // 4 // not used, we can make this something else
 
@@ -63,7 +63,7 @@ public class TransactionInput  implements IBinaryData, IVerifiable {
 
     @Override
     public int getSize() {
-        return 64+4+4+4+ UnlockingScript.length;
+        return 64+4+4+4+UnlockingScript.length;
     }
 
     @Override
@@ -73,6 +73,34 @@ public class TransactionInput  implements IBinaryData, IVerifiable {
 
     @Override
     public boolean Verify() {
-        return false;
+        //System.out.println("Verifying input "+ Util.Base64Encode(getHash()));
+
+        if(UnlockingScript.length > MagicNumbers.MaxUnlockingScriptLength.Value) return false;
+
+        //TransactionOutput unspentTransactionOutput = BlockChain.get().getUnspentTransactionOutput(InputHash, IndexNumber);
+        TransactionOutput unspentTransactionOutput = BlockChain.get().getTransactionOutput(InputHash, IndexNumber);
+        if(unspentTransactionOutput == null) {
+            System.out.println("Verification failed! No UTXO");
+            return false;
+        }
+
+        ScriptExecution UnlockingScriptEx = new ScriptExecution();
+        UnlockingScriptEx.Initialize(UnlockingScript);
+
+        while(UnlockingScriptEx.Step());
+
+        if(UnlockingScriptEx.bScriptFailed) {
+            System.out.println("Verification failed! Unlocking script failed!");
+            return false;
+        }
+
+        ScriptExecution LockingScriptEx = new ScriptExecution();
+        LockingScriptEx.setSignatureVerificationMessage(unspentTransactionOutput.getHash());
+        LockingScriptEx.Initialize(unspentTransactionOutput.LockingScript, UnlockingScriptEx.Stack.elements());
+
+        while(LockingScriptEx.Step());
+
+        if(LockingScriptEx.bScriptFailed) System.out.println("Verification failed! Locking script failed!");
+        return !LockingScriptEx.bScriptFailed;
     }
 }

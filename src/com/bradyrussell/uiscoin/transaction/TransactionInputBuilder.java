@@ -21,6 +21,18 @@ public class TransactionInputBuilder {
         return this;
     }
 
+    public TransactionInputBuilder setInputTransaction(byte[] Hash, int Index){
+        input.InputHash = Hash;
+        input.IndexNumber = Index;
+        return this;
+    }
+
+    public TransactionInputBuilder setInputTransaction(TransactionOutput transactionOutput, int Index){
+        input.InputHash = transactionOutput.getHash();
+        input.IndexNumber = Index;
+        return this;
+    }
+
     public TransactionInputBuilder setSequenceNumber(int Sequence){
         input.InputSequenceNumber = Sequence;
         return this;
@@ -36,9 +48,9 @@ public class TransactionInputBuilder {
     }
 
     // https://learnmeabitcoin.com/technical/p2pk
-    public TransactionInputBuilder setUnlockPayToPublicKey(UISCoinKeypair Keypair, byte[] LockingScript){
+    public TransactionInputBuilder setUnlockPayToPublicKey(UISCoinKeypair Keypair, TransactionOutput outputToSpend){
         try {
-            Keys.SignedData signedData = Keys.SignData(Keypair.Keys, LockingScript);
+            Keys.SignedData signedData = Keys.SignData(Keypair.Keys, outputToSpend.getHash());
             input.UnlockingScript = new ScriptBuilder(256).push(signedData.Signature).get();
 
         } catch (NoSuchAlgorithmException | InvalidKeyException | SignatureException e) {
@@ -49,9 +61,9 @@ public class TransactionInputBuilder {
     }
 
     //https://learnmeabitcoin.com/technical/p2pkh
-    public TransactionInputBuilder setUnlockPayToPublicKeyHash(UISCoinKeypair Keypair, byte[] LockingScript) {
+    public TransactionInputBuilder setUnlockPayToPublicKeyHash(UISCoinKeypair Keypair, TransactionOutput outputToSpend) {
         try {
-            Keys.SignedData signedData = Keys.SignData(Keypair.Keys, LockingScript);
+            Keys.SignedData signedData = Keys.SignData(Keypair.Keys, outputToSpend.getHash());
             input.UnlockingScript = new ScriptBuilder(256).push(signedData.Signature).push(Keypair.Keys.getPublic().getEncoded()).get();
 
         } catch (NoSuchAlgorithmException | InvalidKeyException | SignatureException e) {

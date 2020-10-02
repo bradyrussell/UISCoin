@@ -3,15 +3,12 @@ import com.bradyrussell.uiscoin.Hash;
 import com.bradyrussell.uiscoin.address.UISCoinKeypair;
 import com.bradyrussell.uiscoin.block.Block;
 import com.bradyrussell.uiscoin.block.BlockBuilder;
-import com.bradyrussell.uiscoin.block.BlockHeader;
 import com.bradyrussell.uiscoin.transaction.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.RepeatedTest;
-import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static org.junit.jupiter.api.Assertions.fail;
@@ -38,13 +35,12 @@ public class BlockTest {
 
         TransactionBuilder tb = new TransactionBuilder();
         Transaction transaction = tb.setVersion(1).setLockTime(-1)
-                .addInput(new TransactionInput(RandomHash1, 0))
+                .addInput(new TransactionInputBuilder().setInputTransaction(RandomHash2,0).setUnlockingScript(Hash.getSHA512Bytes("aaa")).get())
                 .addOutput(new TransactionOutput(Conversions.CoinsToSatoshis(.5), RandomHash2))
-                .signTransaction(uisCoinKeypair).get();
+                .get();
 
-        Block block = new Block(new BlockHeader(1,timeStamp,1, 0));
+        Block block = new BlockBuilder().setBlockHeight(1).addCoinbasePayToPublicKeyHash(RandomHash1).setHashPreviousBlock(RandomHash2).get();
 
-        block.addCoinbaseTransaction(new CoinbaseTransaction(1,1).addOutput(new TransactionOutput(Conversions.CoinsToSatoshis(1), RandomHash6)));
         block.addTransaction(transaction);
 
         block.Header.HashPreviousBlock = RandomHash2;
@@ -60,18 +56,33 @@ public class BlockTest {
         for (int i = 0, blockBinaryDataLength = blockBinaryData.length; i < blockBinaryDataLength; i++) {
             if(blockBinaryData[i] != deserializedBlockBinaryData[i]) fail("Byte mismatch at position "+i+"\n"+Arrays.toString(blockBinaryData)+"\n"+Arrays.toString(deserializedBlockBinaryData));
         }
-    }
-    @Test
-    @DisplayName("BlockBuilder")
-    void TestBlockBuilder(){
-        UISCoinKeypair MinerKeys = UISCoinKeypair.Create();
 
-            Block b = new BlockBuilder().setVersion(1).setHashPreviousBlock(Hash.getSHA512Bytes("CHANGEME"))
-                    .setTimestamp(Instant.now().getEpochSecond()).setDifficultyTarget(1)
-                    .setCoinbase(new CoinbaseTransaction(1, Instant.now().getEpochSecond()).addOutput(new TransactionOutput(Conversions.CoinsToSatoshis(1),MinerKeys.Keys.getPublic().getEncoded())))
-                    .addTransaction(new TransactionBuilder().setVersion(1).setLockTime(0).addInput(new TransactionInput(new byte[0], 0)).addOutput(new TransactionOutput(Conversions.CoinsToSatoshis(1),MinerKeys.Keys.getPublic().getEncoded())).signTransaction(MinerKeys).get()).CalculateMerkleRoot().get();
-
-            System.out.println(b.getSize());
-            System.out.println(Base64.getEncoder().encodeToString(b.getHash()));
     }
+
+/*    @RepeatedTest(1)
+    @DisplayName("Verification")
+    void TestBlockVerification() {
+        BlockChain.get().
+
+        UISCoinKeypair address1 = UISCoinKeypair.Create();
+        byte[] addressBytes = UISCoinAddress.fromPublicKey((ECPublicKey) address1.Keys.getPublic());
+
+        BlockBuilder blockBuilder = new BlockBuilder().setVersion(1).setTimestamp(Instant.now().getEpochSecond()).setDifficultyTarget(2).setBlockHeight(0)
+                .setHashPreviousBlock(Hash.getSHA512Bytes("Hello world from UISCoin."))
+                .addCoinbasePayToPublicKeyHash(UISCoinAddress.decodeAddress(addressBytes).PublicKeyHash)
+                .CalculateMerkleRoot();
+
+        while(!Hash.validateHash(blockBuilder.get().getHash(), blockBuilder.get().Header.DifficultyTarget)) {
+            blockBuilder.setNonce(ThreadLocalRandom.current().nextInt());
+        }
+
+        Block finishedBlock = blockBuilder.get();
+        System.out.println(Base64.getEncoder().encodeToString(finishedBlock.getHash()));
+
+        finishedBlock.DebugVerify();
+
+        assertTrue(finishedBlock.Verify());
+        //BlockChain.get().putBlock(finishedBlock);
+
+    }*/
 }

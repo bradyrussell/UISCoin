@@ -1,14 +1,11 @@
 package com.bradyrussell.uiscoin.transaction;
 
-import com.bradyrussell.uiscoin.Hash;
-import com.bradyrussell.uiscoin.IBinaryData;
-import com.bradyrussell.uiscoin.IVerifiable;
-import com.bradyrussell.uiscoin.MagicNumbers;
+import com.bradyrussell.uiscoin.*;
 import com.bradyrussell.uiscoin.blockchain.BlockChain;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 public class Transaction implements IBinaryData, IVerifiable {
     public int Version; // 4
@@ -49,7 +46,7 @@ public class Transaction implements IBinaryData, IVerifiable {
     private int getOutputSize(){
         int n = 0;
         for(TransactionOutput output:Outputs){
-            n+=output.getSize();
+            n+=output.getSize()+4;
         }
         return n;
     }
@@ -57,7 +54,7 @@ public class Transaction implements IBinaryData, IVerifiable {
     private int getInputSize(){
         int n = 0;
         for(TransactionInput input:Inputs){
-            n+=input.getSize();
+            n+=input.getSize()+4;
         }
         return n;
     }
@@ -128,7 +125,7 @@ public class Transaction implements IBinaryData, IVerifiable {
 
     @Override
     public int getSize() {
-        return 28 + getOutputSize() + getInputSize();
+        return 20 + getOutputSize() + getInputSize();
     }
 
     @Override
@@ -138,10 +135,42 @@ public class Transaction implements IBinaryData, IVerifiable {
 
     @Override //https://www.oreilly.com/library/view/mastering-bitcoin/9781491902639/ch08.html
     public boolean Verify() {
-        return VerifyInputs() && VerifyOutputs() && getFees()*MagicNumbers.MinSatPerByte.Value > getSize()
+        return VerifyInputs() && VerifyOutputs() && getFees() > getSize()*MagicNumbers.MinSatPerByte.Value
                 && Inputs.size() > 0 && Outputs.size() > 0 && TimeStamp < Long.MAX_VALUE
-                && getSize() < MagicNumbers.MaxTransactionSize.Value;
+                && getSize() < MagicNumbers.MaxTransactionSize.Value && getFees() > 0 && getInputTotal() > 0 && getOutputTotal() > 0;
     }
+
+    public boolean VerifyCoinbase(int BlockHeight) {
+        return VerifyCoinbaseInputs() && VerifyOutputs()
+                && Inputs.size() == 1 && Outputs.size() > 0 && TimeStamp < Long.MAX_VALUE
+                && getSize() < MagicNumbers.MaxTransactionSize.Value && Inputs.get(0).IndexNumber == BlockHeight
+                && Arrays.equals(Inputs.get(0).InputHash, new byte[64]);
+    }
+
+    public void DebugVerify(){
+        assert VerifyInputs();
+        assert VerifyOutputs();
+        assert getFees() > getSize()*MagicNumbers.MinSatPerByte.Value;
+        assert Inputs.size() > 0;
+        assert Outputs.size() > 0;
+        assert TimeStamp < Long.MAX_VALUE;
+        assert getSize() < MagicNumbers.MaxTransactionSize.Value;
+        assert getFees() > 0;
+        assert getInputTotal() > 0;
+        assert getOutputTotal() > 0;
+    }
+
+    public void DebugVerifyCoinbase(int BlockHeight){
+        assert VerifyCoinbaseInputs();
+        assert VerifyOutputs();
+        assert Inputs.size() == 1;
+        assert Inputs.get(0).IndexNumber == BlockHeight;
+        assert Outputs.size() > 0;
+        assert TimeStamp < Long.MAX_VALUE;
+        assert getSize() < MagicNumbers.MaxTransactionSize.Value;
+        assert Arrays.equals(Inputs.get(0).InputHash, new byte[64]);
+    }
+
 
     private boolean VerifyOutputs(){
         for(TransactionOutput output:Outputs){
@@ -157,15 +186,33 @@ public class Transaction implements IBinaryData, IVerifiable {
         return true;
     }
 
-    private long getInputTotal() {
+    private boolean VerifyCoinbaseInputs(){
+        for(TransactionInput input:Inputs){
+            if(input.UnlockingScript.length > MagicNumbers.MaxUnlockingScriptLength.Value) return false;
+        }
+        return true;
+    }
+
+    public boolean VerifyInputsUnspent(){
+        for(TransactionInput input:Inputs){
+            if(BlockChain.get().getUnspentTransactionOutput(input.InputHash, input.IndexNumber) == null) {
+                System.out.println("Could not verify that transaction "+Util.Base64Encode(getHash())+" input "+Util.Base64Encode(input.InputHash)+" "+input.IndexNumber+" was UTXO!");
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public long getInputTotal() {
         long amount = 0;
         for(TransactionInput input:Inputs){
-            amount += BlockChain.get().getTransaction(input.InputHash).Outputs.get(input.IndexNumber).Amount;// Blockchain lookup : input.InputHash
+           if(!Arrays.equals(input.InputHash, new byte[64])) // in case of coinbase transaction
+            amount += BlockChain.get().getTransactionOutput(input.InputHash, input.IndexNumber).Amount;// Blockchain lookup : input.InputHash
         }
         return amount;
     }
 
-    private long getOutputTotal() {
+    public long getOutputTotal() {
         long amount = 0;
         for(TransactionOutput output:Outputs){
             amount += output.Amount;
@@ -173,8 +220,15 @@ public class Transaction implements IBinaryData, IVerifiable {
         return amount;
     }
 
-    private long getFees() {
+    public long getFees() {
         return getInputTotal() - getOutputTotal();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Transaction that = (Transaction) o;
+        return Arrays.equals(getHash(), that.getHash());
+    }
 }

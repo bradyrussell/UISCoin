@@ -3,12 +3,13 @@ package com.bradyrussell.uiscoin.transaction;
 import com.bradyrussell.uiscoin.Hash;
 import com.bradyrussell.uiscoin.IBinaryData;
 import com.bradyrussell.uiscoin.IVerifiable;
+import com.bradyrussell.uiscoin.MagicNumbers;
 
 import java.nio.ByteBuffer;
 
 public class TransactionOutput  implements IBinaryData, IVerifiable {
     public long Amount;
-    public byte[] LockingScript;
+    public byte[] LockingScript; // aka scriptPubkey
 
     public TransactionOutput() {
     }
@@ -50,6 +51,6 @@ public class TransactionOutput  implements IBinaryData, IVerifiable {
 
     @Override
     public boolean Verify() {
-        return false;
+        return LockingScript.length < MagicNumbers.MaxLockingScriptLength.Value && Amount > 0;
     }
 }

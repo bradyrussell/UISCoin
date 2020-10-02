@@ -26,4 +26,23 @@ public class Wallet {
         }
         return null;
     }
+
+    public static void SaveWalletToFileWithPassword(Path File, String Password, UISCoinWallet wallet){
+        try {
+            Files.write(File, Encryption.Encrypt(wallet.getBinaryData(), Hash.getSHA512Bytes(Password)));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static UISCoinWallet LoadWalletFromFileWithPassword(Path File, String Password){
+        try {
+            UISCoinWallet wallet = new UISCoinWallet();
+            wallet.setBinaryData(Encryption.Decrypt(Files.readAllBytes(File), Hash.getSHA512Bytes(Password)));
+            return wallet;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

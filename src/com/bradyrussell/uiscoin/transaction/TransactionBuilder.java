@@ -1,13 +1,8 @@
 package com.bradyrussell.uiscoin.transaction;
 
-import com.bradyrussell.uiscoin.Hash;
-import com.bradyrussell.uiscoin.Keys;
-import com.bradyrussell.uiscoin.address.UISCoinKeypair;
-import com.bradyrussell.uiscoin.script.ScriptBuilder;
+import com.bradyrussell.uiscoin.address.UISCoinAddress;
 
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SignatureException;
+import java.security.InvalidParameterException;
 
 public class TransactionBuilder {
     Transaction transaction = new Transaction();
@@ -32,23 +27,23 @@ public class TransactionBuilder {
         return this;
     }
 
-    public TransactionBuilder signTransaction(UISCoinKeypair keypair){
+/*    @Deprecated // this is not consistent, everything else takes PubKeyHash
+    public TransactionBuilder addChangeOutput(byte[] FullAddress, long FeeToLeave){
+        long Amount = (transaction.getInputTotal() - transaction.getOutputTotal()) - FeeToLeave;
 
-        for(TransactionInput input:transaction.Inputs){
-            input.UnlockingScript = keypair.Keys.getPublic().getEncoded();//todo this is meant to be the scriptPubKey or Locking Script of the output to redeem
-            // todo this means on input builder it needs to take that as a param that is retrieved from the blockchain  / utxo set
-        }
+        assert Amount > 0;
 
-        try {
-            Keys.SignedData signedData = Keys.SignData(keypair.Keys, Hash.getSHA512Bytes(transaction.getBinaryData()));
+        UISCoinAddress.DecodedAddress decodedAddress = UISCoinAddress.decodeAddress(FullAddress);
+        transaction.addOutput(new TransactionOutputBuilder().setPayToPublicKeyHash(decodedAddress.PublicKeyHash).setAmount(Amount).get());
+        return this;
+    }*/
 
-            for(TransactionInput input:transaction.Inputs){
-                input.UnlockingScript = new ScriptBuilder(256).push(signedData.Signature).push(signedData.Pubkey).get();//Util.ConcatArray(signedData.Signature, signedData.Pubkey);
-            }
-        } catch (NoSuchAlgorithmException | InvalidKeyException | SignatureException e) {
-            e.printStackTrace();
-        }
+    public TransactionBuilder addChangeOutputToPublicKeyHash(byte[] PublicKeyHash, long FeeToLeave){
+        long Amount = (transaction.getInputTotal() - transaction.getOutputTotal()) - FeeToLeave;
 
+        assert Amount > 0;
+
+        transaction.addOutput(new TransactionOutputBuilder().setPayToPublicKeyHash(PublicKeyHash).setAmount(Math.abs(Amount)).get());
         return this;
     }
 

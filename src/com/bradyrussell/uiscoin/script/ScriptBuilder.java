@@ -1,5 +1,7 @@
 package com.bradyrussell.uiscoin.script;
 
+import com.bradyrussell.uiscoin.Util;
+
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -46,7 +48,7 @@ public class ScriptBuilder {
     public ScriptBuilder pushInt(int IntToPush){
         buffer.put(ScriptOperator.PUSH.OPCode);
         buffer.put((byte)4);
-        buffer.put(ScriptExecution.NumberToByteArray(IntToPush));
+        buffer.put(Util.NumberToByteArray(IntToPush));
         return this;
     }
 
@@ -89,6 +91,40 @@ public class ScriptBuilder {
         return this;
     }
 
+    // my attempt to decode bytecode into something parsable by fromText()
+    public String toText(){
+        byte[] Script = get();
+        int InstructionCounter = 0;
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("#Decompiled from ").append(Util.Base64Encode(Script)).append("#\n");
+
+        while(InstructionCounter < Script.length){
+            //////////////////////////////////////////////////////////////////////////////////////
+            ScriptOperator scriptOperator = ScriptOperator.getByOpCode(Script[InstructionCounter++]);
+            sb.append(scriptOperator);
+
+            if(scriptOperator == ScriptOperator.PUSH) {
+                byte NumberOfBytesToPush = Script[InstructionCounter++];
+                byte[] bytes = new byte[NumberOfBytesToPush];
+
+                for (int i = 0; i < NumberOfBytesToPush; i++) {
+                    bytes[i] = Script[InstructionCounter++];
+                }
+
+                sb.append(" [");
+                for (int i = 0; i < bytes.length; i++) {
+                    sb.append(bytes[i]).append(i == (bytes.length-1) ? "":", ");
+                }
+                sb.append("]");
+            }
+
+            sb.append("\n");
+            /////////////////////////////////////////////////////////////////////////////////////
+        }
+        return sb.toString();
+    }
+
     public ScriptBuilder fromText(String Text){
         System.out.println("Parsing script from text...");
 
@@ -117,7 +153,7 @@ public class ScriptBuilder {
                 if(number < 128 && number > -128) {
                     buffer.put((byte)number);
                 } else {
-                    buffer.put(ScriptExecution.NumberToByteArray(number));
+                    buffer.put(Util.NumberToByteArray(number));
                 }
 
                 continue;

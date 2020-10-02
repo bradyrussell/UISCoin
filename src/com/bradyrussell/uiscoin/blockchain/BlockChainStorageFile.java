@@ -1,73 +1,109 @@
 package com.bradyrussell.uiscoin.blockchain;
 
-import com.bradyrussell.uiscoin.block.Block;
-import com.bradyrussell.uiscoin.block.BlockHeader;
+import com.bradyrussell.uiscoin.Hash;
+import com.bradyrussell.uiscoin.Util;
 import com.bradyrussell.uiscoin.transaction.Transaction;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.Base64;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class BlockChainStorageFile extends BlockChainStorageBase {
+    //public HashMap<byte[], Transaction> MemPool;
+    public ArrayList<Transaction> MemPool;
+
     @Override
-    public Block getBlock(byte[] BlockHash) {
-        if(!Files.exists(Path.of("blockchain/"+Base64.getUrlEncoder().encodeToString(BlockHash)))) return null;
+    public boolean open() {
+        if(exists(Hash.getSHA512Bytes("blockheight"), "blockheight")) {
+            byte[] bytes = get(Hash.getSHA512Bytes("blockheight"), "blockheight");
+            ByteBuffer buf = ByteBuffer.wrap(bytes);
+            HighestBlockHash = new byte[64];
+            BlockHeight = buf.getInt();
+            buf.get(HighestBlockHash);
 
-        try {
-            byte[] Bytes = Files.readAllBytes(Path.of(Base64.getUrlEncoder().encodeToString(BlockHash)));
-
-            Block block = new Block();
-            block.setBinaryData(Bytes);
-            return block;
-        } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Loaded blockchain " + (BlockHeight + 1) + " blocks long. Last block: " + Util.Base64Encode(HighestBlockHash));
         }
-        return null;
-    }
 
-    @Override
-    public BlockHeader getBlockHeader(byte[] BlockHash) {
-        if(!Files.exists(Path.of("blockchain/"+Base64.getUrlEncoder().encodeToString(BlockHash)))) return null;
+        MemPool = new ArrayList<>();
+        if(exists(Hash.getSHA512Bytes("mempool"), "mempool")) {
+            byte[] bytes = get(Hash.getSHA512Bytes("mempool"), "mempool");
+            ByteBuffer buf = ByteBuffer.wrap(bytes);
 
-        try {
-            byte[] Bytes = Files.readAllBytes(Path.of("blockchain/"+Base64.getUrlEncoder().encodeToString(BlockHash)));
+            int NumTransactions = buf.getInt();
 
-            BlockHeader blockHeader = new BlockHeader();
-            blockHeader.setBinaryData(Bytes);
-            return blockHeader;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
+            for(int i = 0; i < NumTransactions; i++){
+                int TransactionLength = buf.getInt();
+                byte[] TransactionBytes = new byte[TransactionLength];
+                buf.get(TransactionBytes);
 
-    @Override
-    public Transaction getTransaction(byte[] TransactionHash) {
-        if(!Files.exists(Path.of("blockchain/"+Base64.getUrlEncoder().encodeToString(TransactionHash)))) return null;
-
-        try {
-            byte[] Bytes = Files.readAllBytes(Path.of("blockchain/"+Base64.getUrlEncoder().encodeToString(TransactionHash)));
-
-            Transaction transaction = new Transaction();
-            transaction.setBinaryData(Bytes);
-            return transaction;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    @Override
-    public Transaction getTransactionFromIndex(byte[] TransactionHash) {
-        try {
-            byte[] Bytes = Files.readAllBytes(Path.of("blockchain/"+Base64.getUrlEncoder().encodeToString(TransactionHash)));
-
-            Block block = getBlock(Bytes);
-            for(Transaction transaction:block.Transactions){
-                if(Arrays.equals(transaction.getHash(), TransactionHash)) return transaction;
+                Transaction t = new Transaction();
+                t.setBinaryData(TransactionBytes);
+                if(t.Verify()) MemPool.add(t);
             }
+            System.out.println("Loaded mempool with "+MemPool.size()+" transactions.");
+        }
+
+        return true;
+    }
+
+    private int getMempoolTransactionsSize(){
+        int n = 0;
+        for (Transaction transaction : MemPool) {
+            n+=transaction.getSize();
+        }
+        return n;
+    }
+
+    @Override
+    public void close() {
+        if(HighestBlockHash != null && BlockHeight >= 0) {
+            ByteBuffer buf = ByteBuffer.allocate(68);
+            buf.putInt(BlockHeight);
+            buf.put(HighestBlockHash);
+
+            put(Hash.getSHA512Bytes("blockheight"), buf.array(), "blockheight");
+        }
+
+        ByteBuffer buf = ByteBuffer.allocate(4+(4*MemPool.size())+getMempoolTransactionsSize());
+
+        buf.putInt(MemPool.size());
+        for (Transaction transaction : MemPool) {
+            buf.putInt(transaction.getSize());
+            buf.put(transaction.getBinaryData());
+        }
+        put(Hash.getSHA512Bytes("mempool"), buf.array(), "mempool");
+    }
+
+    @Override
+    public void addToMempool(Transaction t) {
+        MemPool.add(t);
+    }
+
+    @Override
+    public void removeFromMempool(Transaction t) {
+        if(!MemPool.contains(t)) System.out.println("Error: Mempool does not contain this transaction");
+        MemPool.remove(t);
+        close(); // just putting this here to store the blockheight more often
+    }
+
+    @Override
+    public List<Transaction> getMempool() {
+        return MemPool;
+    }
+
+    @Override
+    public byte[] get(byte[] Key, String Database) {
+        if(!Files.exists(Path.of("blockchain/"+Database+"/"+ Util.Base64Encode(Key)))) {
+            //System.out.println("Path does not exist! "+"blockchain/"+Database+"/"+ Util.Base64Encode(Key));
+            return null;
+        }
+        try {
+            return Files.readAllBytes(Path.of("blockchain/"+Database+"/"+Util.Base64Encode(Key)));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -75,59 +111,55 @@ public class BlockChainStorageFile extends BlockChainStorageBase {
     }
 
     @Override
-    public void putBlock(Block block) {
+    public void put(byte[] Key, byte[] Value, String Database) {
         try {
             MakeDir("blockchain/");
-            Files.write(Path.of("blockchain/"+Base64.getUrlEncoder().encodeToString(block.getHash())),block.getBinaryData());
+            MakeDir("blockchain/"+Database+"/");
+            Files.write(Path.of("blockchain/"+Database+"/"+Util.Base64Encode(Key)),Value);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public void putBlockAndIndex(Block block) {
-        putBlock(block);
-        for(Transaction transaction:block.Transactions){
-            putTransactionIndex(transaction, block.getHash());
+    public void remove(byte[] Key, String Database) {
+        if(!Files.exists(Path.of("blockchain/"+Database+"/"+ Util.Base64Encode(Key)))) {
+            //System.out.println("Path does not exist! "+"blockchain/"+Database+"/"+ Util.Base64Encode(Key));
+            return;
         }
-    }
-
-    @Override
-    public void putBlockHeader(BlockHeader blockHeader) {
         try {
-            MakeDir("blockchain/");
-            Files.write(Path.of("blockchain/"+Base64.getUrlEncoder().encodeToString(blockHeader.getHash())),blockHeader.getBinaryData());
+            Files.delete(Path.of("blockchain/"+Database+"/"+ Util.Base64Encode(Key)));
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public void putTransaction(Transaction transaction) {
-
-        try {
-            MakeDir("blockchain/");
-            Files.write(Path.of("blockchain/"+Base64.getUrlEncoder().encodeToString(transaction.getHash())),transaction.getBinaryData());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public boolean exists(byte[] Key, String Database) {
+        return Files.exists(Path.of("blockchain/"+Database+"/"+ Util.Base64Encode(Key)));
     }
 
     @Override
-    public void putTransactionIndex(Transaction transaction, byte[] BlockHash) {
-        try {
-            MakeDir("blockchain/");
-            Files.write(Path.of("blockchain/"+Base64.getUrlEncoder().encodeToString(transaction.getHash())),BlockHash);
+    public List<byte[]> keys(String Database){
+        if(!Files.exists(Path.of("blockchain/"+Database+"/"))) return new ArrayList<>();
+        try (Stream<Path> stream = Files.walk(Path.of("blockchain/"+Database+"/"), 1)) {
+            return stream
+                    .filter(file -> !Files.isDirectory(file))
+                    .map(Path::getFileName)
+                    .map(Path::toString)
+                    .map(Util::Base64Decode)
+                    .collect(Collectors.toList());
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return new ArrayList<>();
     }
+
 
     private void MakeDir(String s){
         try {
             Files.createDirectory(Path.of(s));
-        } catch (IOException e) {
-            /*e.printStackTrace();*/
+        } catch (IOException ignored) {
         }
     }
 }

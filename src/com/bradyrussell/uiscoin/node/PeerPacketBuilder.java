@@ -6,6 +6,7 @@ import com.bradyrussell.uiscoin.transaction.Transaction;
 import java.net.InetAddress;
 import java.nio.ByteBuffer;
 
+@Deprecated
 public class PeerPacketBuilder {
     ByteBuffer buffer;
 
@@ -23,14 +24,23 @@ public class PeerPacketBuilder {
         return this;
     }
 
+    public PeerPacketBuilder putSync(boolean bHeadersOnly, int BlockHeight){
+        buffer.put(PeerPacketType.SYNC.Header);
+        buffer.put((byte) (bHeadersOnly ? 1 : 0));
+        buffer.putInt(BlockHeight);
+        return this;
+    }
+
     public PeerPacketBuilder putTransaction(Transaction transaction){
         buffer.put(PeerPacketType.TRANSACTION.Header);
+        buffer.putInt(transaction.getSize());
         buffer.put(transaction.getBinaryData());
         return this;
     }
 
     public PeerPacketBuilder putBlock(Block block){
         buffer.put(PeerPacketType.BLOCK.Header);
+        buffer.putInt(block.getSize());
         buffer.put(block.getBinaryData());
         return this;
     }
@@ -56,7 +66,7 @@ public class PeerPacketBuilder {
 
     public PeerPacketBuilder putPing(int Value){
         buffer.put(PeerPacketType.PING.Header);
-        buffer.putInt(Value);
+        //buffer.putInt(Value);
         return this;
     }
 

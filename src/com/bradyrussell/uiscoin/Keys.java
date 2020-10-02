@@ -1,6 +1,8 @@
 package com.bradyrussell.uiscoin;
 
 import java.security.*;
+import java.security.interfaces.ECPrivateKey;
+import java.security.interfaces.ECPublicKey;
 import java.security.spec.*;
 
 public class Keys {
@@ -37,6 +39,11 @@ public class Keys {
         //PrivateKey privateKey = keyFactory.generatePrivate(new PKCS8EncodedKeySpec(Private));
         PrivateKey privateKey = keyFactory.generatePrivate(new PKCS8EncodedKeySpec(Private));
         return new KeyPair(publicKey, privateKey);
+    }
+
+    public static ECPublicKey getPublicKeyFromPrivateKey(ECPrivateKey PrivateKey) throws NoSuchAlgorithmException {
+            // todo cant get this working yet
+        return null;
     }
 
     public static class SignedData {
