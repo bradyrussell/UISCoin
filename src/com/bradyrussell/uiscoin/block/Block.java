@@ -227,4 +227,8 @@ public class Block implements IBinaryData, IVerifiable {
         return coinbase.getOutputTotal() <= CalculateBlockReward(Header.BlockHeight);
     }
 
+    public boolean VerifyProofOfWork(){
+        return Hash.validateHash(Header.getHash(), Header.DifficultyTarget);
+    }
+
 }
