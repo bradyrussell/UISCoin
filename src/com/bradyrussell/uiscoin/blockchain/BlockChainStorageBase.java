@@ -39,7 +39,7 @@ public abstract class BlockChainStorageBase {
     public abstract List<byte[]> keys(String Database);
 
     public Block getBlock(byte[] BlockHash) {
-        Log.info("BlockHash = " + Arrays.toString(BlockHash));
+        Log.info("BlockHash = " + Util.Base64Encode(BlockHash));
 
         Block block = new Block();
         block.setBinaryData(get(BlockHash, BlocksDatabase));
@@ -47,7 +47,7 @@ public abstract class BlockChainStorageBase {
     }
 
     public BlockHeader getBlockHeader(byte[] BlockHash) {
-        Log.info("BlockHash = " + Arrays.toString(BlockHash));
+        Log.info("BlockHash = " + Util.Base64Encode(BlockHash));
 
         BlockHeader blockHeader = new BlockHeader();
         byte[] data = get(BlockHash, BlockHeadersDatabase);
@@ -57,7 +57,7 @@ public abstract class BlockChainStorageBase {
     }
 
     public Transaction getTransaction(byte[] TransactionHash){
-        Log.info("TransactionHash = " + Arrays.toString(TransactionHash));
+        Log.info("TransactionHash = " + Util.Base64Encode(TransactionHash));
 
         Block block = getBlockWithTransaction(TransactionHash);
         for(Transaction transaction:block.Transactions){
@@ -67,13 +67,13 @@ public abstract class BlockChainStorageBase {
     }
 
     public Block getBlockWithTransaction(byte[] TransactionHash){
-        Log.info("TransactionHash = " + Arrays.toString(TransactionHash));
+        Log.info("TransactionHash = " + Util.Base64Encode(TransactionHash));
 
         return getBlock(get(TransactionHash, TransactionToBlockDatabase));
     }
 
     public TransactionOutput getTransactionOutput(byte[] TransactionHash, int Index){
-        Log.info("TransactionHash = " + Arrays.toString(TransactionHash) + ", Index = " + Index);
+        Log.info("TransactionHash = " + Util.Base64Encode(TransactionHash) + ", Index = " + Index);
 
         TransactionOutput unspentTransactionOutput = getUnspentTransactionOutput(TransactionHash, Index);
         if(unspentTransactionOutput != null) return unspentTransactionOutput;
@@ -81,7 +81,7 @@ public abstract class BlockChainStorageBase {
     }
 
     public TransactionOutput getUnspentTransactionOutput(byte[] TransactionHash, int Index){
-        Log.info("TransactionHash = " + Arrays.toString(TransactionHash) + ", Index = " + Index);
+        Log.info("TransactionHash = " + Util.Base64Encode(TransactionHash) + ", Index = " + Index);
 
         if(TransactionHash == null) return null;
         TransactionOutput transactionOutput = new TransactionOutput();
@@ -93,13 +93,14 @@ public abstract class BlockChainStorageBase {
     }
 
     public void putBlock(Block block) {
-        put(block.Header.getHash(), block.getBinaryData(), BlocksDatabase);
+        byte[] headerHash = block.Header.getHash();
+        put(headerHash, block.getBinaryData(), BlocksDatabase);
         putBlockHeader(block);
         ArrayList<Transaction> transactions = block.Transactions;
         for (int TransactionIndex = 0; TransactionIndex < transactions.size(); TransactionIndex++) {
             Transaction transaction = transactions.get(TransactionIndex);
 
-            put(transaction.getHash(), block.Header.getHash(), TransactionToBlockDatabase);
+            put(transaction.getHash(), headerHash, TransactionToBlockDatabase);
 
             if(TransactionIndex != 0) { // only for non coinbase transactions
                 BlockChain.get().removeFromMempool(transaction); // remove from mempool
@@ -115,12 +116,12 @@ public abstract class BlockChainStorageBase {
         }
     }
 
-    public void putBlockHeader(BlockHeader header, byte[] BlockHash) {
+    public void putBlockHeader(BlockHeader header) {
         if(BlockHeight < header.BlockHeight) {
             BlockHeight = header.BlockHeight;
-            HighestBlockHash = BlockHash;
+            HighestBlockHash = header.getHash();
         }
-        put(BlockHash, header.getBinaryData(), BlockHeadersDatabase);
+        put(header.getHash(), header.getBinaryData(), BlockHeadersDatabase);
     }
 
     public void putBlockHeader(Block block) {

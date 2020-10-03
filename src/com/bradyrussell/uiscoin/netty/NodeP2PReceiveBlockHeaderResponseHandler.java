@@ -52,7 +52,7 @@ public class NodeP2PReceiveBlockHeaderResponseHandler extends SimpleChannelInbou
         }
 
         Log.info("Storing blockheader...");
-        BlockChain.get().putBlockHeader(blockHeaderResponse.blockHeader, blockHeaderResponse.BlockHash);
+        BlockChain.get().putBlockHeader(blockHeaderResponse.blockHeader);
 
     }
 }

@@ -117,7 +117,7 @@ public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
                     Block block = new Block();
                     block.setBinaryData(Bytes);
 
-                    Log.fine("3 Received block "+Util.Base64Encode(block.getHash()));
+                    Log.fine("3 Received block "+Util.Base64Encode(block.Header.getHash()));
                     list.add(block);
                 }
                 case HEADER -> {
