@@ -30,6 +30,8 @@ import java.util.logging.Logger;
 public class Node {
     private static final Logger Log = Logger.getLogger(Node.class.getName());
 
+    public ArrayList<InetAddress> peersEverSeen = new ArrayList<>();
+
     EventLoopGroup bossGroup;
     EventLoopGroup workerGroup;
     Channel serverChannel;
@@ -61,8 +63,10 @@ public class Node {
         ChannelFuture sync;
         sync = peerBootstrap.connect(Address, MagicNumbers.NodeP2PPort.Value).addListener((ChannelFutureListener) channelFuture -> {
             peerClients.add(channelFuture.channel());
-            if(channelFuture.isSuccess())
-                Log.info("Connection established with peer "+channelFuture.channel().remoteAddress().toString());
+            if(channelFuture.isSuccess()) {
+                Log.info("Connection established with peer " + channelFuture.channel().remoteAddress().toString());
+                peersEverSeen.add(Address);
+            }
         })/*.sync()*/;
         // ChannelFuture closeFuture = sync.channel().closeFuture();
     }
