@@ -29,7 +29,7 @@ public class BlockChainStorageFile extends BlockChainStorageBase {
             BlockHeight = buf.getInt();
             buf.get(HighestBlockHash);
 
-            System.out.println("Loaded blockchain " + (BlockHeight + 1) + " blocks long. Last block: " + Util.Base64Encode(HighestBlockHash));
+            Log.info("Loaded blockchain " + (BlockHeight + 1) + " blocks long. Last block: " + Util.Base64Encode(HighestBlockHash));
         }
 
         MemPool = new ArrayList<>();
@@ -48,7 +48,7 @@ public class BlockChainStorageFile extends BlockChainStorageBase {
                 t.setBinaryData(TransactionBytes);
                 if(t.Verify()) MemPool.add(t);
             }
-            System.out.println("Loaded mempool with "+MemPool.size()+" transactions.");
+            Log.info("Loaded mempool with "+MemPool.size()+" transactions.");
         }
 
         return true;
