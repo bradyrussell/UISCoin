@@ -35,13 +35,13 @@ public class NodeP2PReceiveBlockRequestHandler extends SimpleChannelInboundHandl
 
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, BlockRequest blockRequest) throws Exception {
-        System.out.println("Handler Received block request " + Util.Base64Encode(blockRequest.BlockHash));
+        Log.info("Handler Received block request " + Util.Base64Encode(blockRequest.BlockHash));
         if (!BlockChain.get().exists(blockRequest.BlockHash, blockRequest.bOnlyHeader ? BlockChainStorageFile.BlockHeadersDatabase : BlockChainStorageFile.BlocksDatabase)) {
             System.out.println("Not found in database! Discarding.");
             return;
         }
 
-        System.out.println("Sending block" + (blockRequest.bOnlyHeader ? "header" : "") + "...");
+        Log.info("Sending block" + (blockRequest.bOnlyHeader ? "header" : "") + "...");
 
         ChannelFuture channelFuture = channelHandlerContext.writeAndFlush(blockRequest.bOnlyHeader ? new BlockHeaderResponse(blockRequest.BlockHash, BlockChain.get().getBlockHeader(blockRequest.BlockHash)) : BlockChain.get().getBlock(blockRequest.BlockHash));
         channelFuture.addListener((ChannelFutureListener) channelFuture1 -> {

@@ -27,7 +27,6 @@ public class UISCoinAddress {
         decodedAddress.Checksum = new byte[4];
         decodedAddress.PublicKeyHash = new byte[Address.length-7];
 
-        //todo check this isnt off by one
         System.arraycopy(Address, 0, header, 0, 3);
         System.arraycopy(Address, Address.length-4, decodedAddress.Checksum, 0, 4);
         System.arraycopy(Address, 3, decodedAddress.PublicKeyHash, 0, Address.length-7);

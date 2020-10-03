@@ -90,7 +90,7 @@ public class BlockChainStorageFile extends BlockChainStorageBase {
 
     @Override
     public void removeFromMempool(Transaction t) {
-        if(!MemPool.contains(t)) System.out.println("Error: Mempool does not contain this transaction");
+        if(!MemPool.contains(t)) Log.warning("Mempool does not contain this transaction");
         MemPool.remove(t);
         close(); // just putting this here to store the blockheight more often
     }

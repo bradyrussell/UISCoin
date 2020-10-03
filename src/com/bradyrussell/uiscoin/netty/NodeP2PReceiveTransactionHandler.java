@@ -38,28 +38,28 @@ public class NodeP2PReceiveTransactionHandler extends SimpleChannelInboundHandle
 
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, Transaction transaction) throws Exception {
-        System.out.println("Handler Received transaction "+ Util.Base64Encode(transaction.getHash()));
+        Log.info("Handler Received transaction "+ Util.Base64Encode(transaction.getHash()));
 
         if(BlockChain.get().getMempool().contains(transaction)){
-            System.out.println("Already have. Discarding...");
+            Log.info("Already have. Discarding...");
             return;
         }
 
         if(!transaction.VerifyInputsUnspent()) {
             transaction.DebugVerify();
-            System.out.println("Spent input! Discarding.");
+            Log.info("Spent input! Discarding.");
             return;
         }
 
         if(!transaction.Verify()) {
             transaction.DebugVerify();
-            System.out.println("Invalid transaction! Discarding.");
+            Log.info("Invalid transaction! Discarding.");
             return;
         }
 
         for (TransactionInput input : transaction.Inputs) {
             if(Util.doTransactionsContainTXO(input.InputHash, input.IndexNumber, BlockChain.get().getMempool())) {
-                System.out.println("Transaction contains outputs that are already in another mempool transaction! Discarding...");
+                Log.info("Transaction contains outputs that are already in another mempool transaction! Discarding...");
                 return;
             }
         }

@@ -40,19 +40,19 @@ public class NodeP2PReceiveBlockHeaderResponseHandler extends SimpleChannelInbou
 
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, BlockHeaderResponse blockHeaderResponse) throws Exception {
-        System.out.println("Handler Received block header "+ Util.Base64Encode(blockHeaderResponse.BlockHash));
+        Log.info("Handler Received block header "+ Util.Base64Encode(blockHeaderResponse.BlockHash));
 
         if(BlockChain.get().exists(blockHeaderResponse.BlockHash, BlockChainStorageBase.BlockHeadersDatabase)){
-            System.out.println("Already have. Discarding...");
+            Log.info("Already have. Discarding...");
             return;
         }
 
         if(!blockHeaderResponse.blockHeader.Verify()) {
-            System.out.println("Invalid blockheader! Discarding.");
+            Log.info("Invalid blockheader! Discarding.");
             return;
         }
 
-        System.out.println("Storing blockheader...");
+        Log.info("Storing blockheader...");
         BlockChain.get().putBlockHeader(blockHeaderResponse.blockHeader, blockHeaderResponse.BlockHash);
 
     }

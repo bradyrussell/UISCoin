@@ -19,7 +19,7 @@ public class NodeP2PServerHandler extends ChannelInboundHandlerAdapter {
         super.channelActive(ctx);
         if(node != null) {
             node.nodeClients.add(ctx.channel());
-            System.out.println("Added new peer. Peer count: " + node.getPeers().size());
+            Log.info("Added new peer. Peer count: " + node.getPeers().size());
         }
     }
 }

@@ -51,7 +51,7 @@ public class Node {
 
     public void ConnectToPeer(InetAddress Address){
         if(getPeers().contains(Address)) {
-            System.out.println("Already connected to this peer!");
+            Log.info("Already connected to this peer!");
             return;
         }
 
@@ -62,7 +62,7 @@ public class Node {
         sync = peerBootstrap.connect(Address, MagicNumbers.NodeP2PPort.Value).addListener((ChannelFutureListener) channelFuture -> {
             peerClients.add(channelFuture.channel());
             if(channelFuture.isSuccess())
-            System.out.println("Connection established with peer "+channelFuture.channel().remoteAddress().toString());
+                Log.info("Connection established with peer "+channelFuture.channel().remoteAddress().toString());
         })/*.sync()*/;
         // ChannelFuture closeFuture = sync.channel().closeFuture();
     }
@@ -140,18 +140,18 @@ public class Node {
         try {
             if(peerClients != null) peerClients.close().sync();
             if(nodeClients != null) nodeClients.close().sync();
-            System.out.println("Closed peer connections.");
+            Log.info("Closed peer connections.");
 
             if(serverChannel != null) serverChannel.close().sync();
             if(bossGroup != null) bossGroup.shutdownGracefully();
             if(workerGroup != null) workerGroup.shutdownGracefully();
             if(peerGroup != null) peerGroup.shutdownGracefully();
-            System.out.println("Closed channel and shutdown worker event groups.");
+            Log.info("Closed channel and shutdown worker event groups.");
 
 /*            if(bossGroup != null) bossGroup.shutdownNow();
             if(workerGroup != null) workerGroup.shutdownNow();
             if(peerGroup != null) peerGroup.shutdownNow();*/
-            System.out.println("Shutting down...");
+            Log.info("Shutting down...");
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

@@ -11,7 +11,10 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
+import java.util.logging.Logger;
+
 public class NodeP2PReceiveBlockHandler extends SimpleChannelInboundHandler<Block> {
+    private static final Logger Log = Logger.getLogger(NodeP2PReceiveBlockHandler.class.getName());
     Node thisNode;
 
     public NodeP2PReceiveBlockHandler(Node thisNode) {
@@ -37,14 +40,14 @@ public class NodeP2PReceiveBlockHandler extends SimpleChannelInboundHandler<Bloc
 
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, Block block) throws Exception {
-        System.out.println("Handler Received block "+ Util.Base64Encode(block.Header.getHash()));
+        Log.info("Handler Received block "+ Util.Base64Encode(block.Header.getHash()));
 
         if(BlockChain.get().exists(block.Header.getHash(), BlockChainStorageBase.BlocksDatabase)){
-            System.out.println("Already have. Discarding...");
+            Log.info("Already have. Discarding...");
             return;
         }
         if(BlockChain.get().BlockHeight >= block.Header.BlockHeight) {
-            System.out.println("Block is on a shorter chain. Discarding...");
+            Log.info("Block is on a shorter chain. Discarding...");
 
             // inform them of our longer chain
             ByteBuf buf = Unpooled.buffer();
@@ -56,14 +59,14 @@ public class NodeP2PReceiveBlockHandler extends SimpleChannelInboundHandler<Bloc
         }
         if(!block.Verify()) {
             block.DebugVerify();
-            System.out.println("Invalid block! Discarding.");
+            Log.info("Invalid block! Discarding.");
             return;
         }
 
-        System.out.println("Storing block...");
+        Log.info("Storing block...");
         BlockChain.get().putBlock(block);
 
-        System.out.println("Rebroadcasting...");
+        Log.info("Rebroadcasting...");
         thisNode.BroadcastBlockToPeers(block);
     }
 }

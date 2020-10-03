@@ -154,15 +154,15 @@ public class Block implements IBinaryData, IVerifiable {
     }
 
     public void DebugVerify(){
-        System.out.println("Header verify: "+ Header.Verify());
+        Log.warning("Header verify: "+ Header.Verify());
        assert Header.Verify();
-        System.out.println("Transactions verify: "+ VerifyTransactions());
+        Log.warning("Transactions verify: "+ VerifyTransactions());
        assert VerifyTransactions();
-        System.out.println("BlockReward verify: "+ VerifyBlockReward());
+        Log.warning("BlockReward verify: "+ VerifyBlockReward());
        assert VerifyBlockReward();
-        System.out.println("PoW verify: "+ Hash.validateHash(Header.getHash(), Header.DifficultyTarget));
+        Log.warning("PoW verify: "+ Hash.validateHash(Header.getHash(), Header.DifficultyTarget));
        assert Hash.validateHash(Header.getHash(), Header.DifficultyTarget);
-        System.out.println("Size verify: "+(getSize() < MagicNumbers.MaxBlockSize.Value));
+        Log.warning("Size verify: "+(getSize() < MagicNumbers.MaxBlockSize.Value));
        assert  getSize() < MagicNumbers.MaxBlockSize.Value;
     }
 
@@ -170,14 +170,14 @@ public class Block implements IBinaryData, IVerifiable {
         ArrayList<byte[]> TransactionOutputs = new ArrayList<>();
 
         if(Header.BlockHeight != 0 && Transactions.size() < 2) {
-            System.out.println("Too few transactions!");
+            Log.warning("Too few transactions!");
             return false;
         }
         for (int i = 0; i < Transactions.size(); i++) {
             Transaction transaction = Transactions.get(i);
             if (i == 0)  {
                 if (!transaction.VerifyCoinbase(Header.BlockHeight)) {
-                    System.out.println("Failed coinbase verification!");
+                    Log.warning("Failed coinbase verification!");
                     transaction.DebugVerifyCoinbase(Header.BlockHeight);
                     return false;
                 }
@@ -187,7 +187,7 @@ public class Block implements IBinaryData, IVerifiable {
                     byte[] inputTXO = Util.ConcatArray(input.InputHash, Util.NumberToByteArray(input.IndexNumber));
                     for (byte[] transactionOutput : TransactionOutputs) {
                         if(Arrays.equals(inputTXO,transactionOutput)) {
-                            System.out.println("Block contains duplicate Transaction Outputs! See transaction "+i+".");
+                            Log.warning("Block contains duplicate Transaction Outputs! See transaction "+i+".");
                             return false; // this TXO is already in the block
                         }
                     }
@@ -195,7 +195,6 @@ public class Block implements IBinaryData, IVerifiable {
                 }
 
                 if (!transaction.Verify()){
-                    System.out.println("Transaction verification!");
                     transaction.DebugVerify();
                     return false;
                 }

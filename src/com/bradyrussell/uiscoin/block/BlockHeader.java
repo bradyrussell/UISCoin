@@ -116,7 +116,7 @@ public class BlockHeader implements IBinaryData, IVerifiable {
         valid &= timeValid; // timestamp is not in the future, allow for 30s variance
 
         if(!timeValid){
-            System.out.println("Error: Block time is in the future! Please check the system time is correct.");
+            Log.severe("Error: Block time is in the future! Please check the system time is correct.");
         }
 
         return valid;

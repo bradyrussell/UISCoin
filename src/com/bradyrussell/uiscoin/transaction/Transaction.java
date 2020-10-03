@@ -199,7 +199,7 @@ public class Transaction implements IBinaryData, IVerifiable {
     public boolean VerifyInputsUnspent(){
         for(TransactionInput input:Inputs){
             if(BlockChain.get().getUnspentTransactionOutput(input.InputHash, input.IndexNumber) == null) {
-                System.out.println("Could not verify that transaction "+Util.Base64Encode(getHash())+" input "+Util.Base64Encode(input.InputHash)+" "+input.IndexNumber+" was UTXO!");
+                Log.info("Could not verify that transaction "+Util.Base64Encode(getHash())+" input "+Util.Base64Encode(input.InputHash)+" "+input.IndexNumber+" was UTXO!");
                 return false;
             }
         }
