@@ -1,6 +1,5 @@
 package com.bradyrussell.uiscoin.netty;
 
-import com.bradyrussell.uiscoin.block.Block;
 import com.bradyrussell.uiscoin.node.BlockRequest;
 import com.bradyrussell.uiscoin.node.PeerPacketBuilder;
 import io.netty.buffer.ByteBuf;

@@ -3,7 +3,6 @@ package com.bradyrussell.uiscoin.address;
 import com.bradyrussell.uiscoin.Hash;
 import com.bradyrussell.uiscoin.MagicBytes;
 import com.bradyrussell.uiscoin.Util;
-import com.bradyrussell.uiscoin.block.Block;
 
 import java.security.interfaces.ECPublicKey;
 import java.util.logging.Logger;

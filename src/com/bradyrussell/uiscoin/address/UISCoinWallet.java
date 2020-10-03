@@ -3,7 +3,6 @@ package com.bradyrussell.uiscoin.address;
 import com.bradyrussell.uiscoin.Hash;
 import com.bradyrussell.uiscoin.IBinaryData;
 import com.bradyrussell.uiscoin.MagicBytes;
-import com.bradyrussell.uiscoin.block.Block;
 
 import java.nio.ByteBuffer;
 import java.security.interfaces.ECPublicKey;

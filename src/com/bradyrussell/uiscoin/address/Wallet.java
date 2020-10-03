@@ -2,7 +2,6 @@ package com.bradyrussell.uiscoin.address;
 
 import com.bradyrussell.uiscoin.Encryption;
 import com.bradyrussell.uiscoin.Hash;
-import com.bradyrussell.uiscoin.block.Block;
 
 import java.io.IOException;
 import java.nio.file.Files;

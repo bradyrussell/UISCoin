@@ -1,7 +1,6 @@
 package com.bradyrussell.uiscoin.address;
 
 import com.bradyrussell.uiscoin.*;
-import com.bradyrussell.uiscoin.block.Block;
 
 import java.nio.ByteBuffer;
 import java.security.*;

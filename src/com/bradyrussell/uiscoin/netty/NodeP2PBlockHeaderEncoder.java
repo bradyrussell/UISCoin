@@ -1,14 +1,10 @@
 package com.bradyrussell.uiscoin.netty;
 
-import com.bradyrussell.uiscoin.Util;
-import com.bradyrussell.uiscoin.block.Block;
 import com.bradyrussell.uiscoin.node.BlockHeaderResponse;
 import com.bradyrussell.uiscoin.node.PeerPacketType;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
-
-import java.util.logging.Logger;
 
 public class NodeP2PBlockHeaderEncoder extends MessageToByteEncoder<BlockHeaderResponse> {
 

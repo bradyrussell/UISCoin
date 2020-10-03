@@ -1,7 +1,6 @@
 package com.bradyrussell.uiscoin.transaction;
 
 import com.bradyrussell.uiscoin.*;
-import com.bradyrussell.uiscoin.block.Block;
 import com.bradyrussell.uiscoin.blockchain.BlockChain;
 import com.bradyrussell.uiscoin.script.ScriptExecution;
 

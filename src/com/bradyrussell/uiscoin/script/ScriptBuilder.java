@@ -1,7 +1,6 @@
 package com.bradyrussell.uiscoin.script;
 
 import com.bradyrussell.uiscoin.Util;
-import com.bradyrussell.uiscoin.block.Block;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;

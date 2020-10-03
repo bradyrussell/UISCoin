@@ -1,6 +1,5 @@
 package com.bradyrussell.uiscoin;
 
-import com.bradyrussell.uiscoin.block.Block;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.BufferedReader;

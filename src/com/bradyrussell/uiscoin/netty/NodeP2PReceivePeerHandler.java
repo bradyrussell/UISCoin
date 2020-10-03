@@ -1,7 +1,6 @@
 package com.bradyrussell.uiscoin.netty;
 
 import com.bradyrussell.uiscoin.Util;
-import com.bradyrussell.uiscoin.block.Block;
 import com.bradyrussell.uiscoin.node.Node;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;

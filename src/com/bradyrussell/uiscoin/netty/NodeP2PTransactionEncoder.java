@@ -1,6 +1,5 @@
 package com.bradyrussell.uiscoin.netty;
 
-import com.bradyrussell.uiscoin.Util;
 import com.bradyrussell.uiscoin.node.PeerPacketType;
 import com.bradyrussell.uiscoin.transaction.Transaction;
 import io.netty.buffer.ByteBuf;

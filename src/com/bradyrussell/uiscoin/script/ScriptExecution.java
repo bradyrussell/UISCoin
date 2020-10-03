@@ -3,7 +3,6 @@ package com.bradyrussell.uiscoin.script;
 import com.bradyrussell.uiscoin.Hash;
 import com.bradyrussell.uiscoin.Keys;
 import com.bradyrussell.uiscoin.Util;
-import com.bradyrussell.uiscoin.block.Block;
 
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;

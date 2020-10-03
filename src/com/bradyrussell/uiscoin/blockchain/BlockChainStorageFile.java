@@ -2,7 +2,6 @@ package com.bradyrussell.uiscoin.blockchain;
 
 import com.bradyrussell.uiscoin.Hash;
 import com.bradyrussell.uiscoin.Util;
-import com.bradyrussell.uiscoin.block.Block;
 import com.bradyrussell.uiscoin.transaction.Transaction;
 
 import java.io.IOException;
