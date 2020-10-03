@@ -117,11 +117,6 @@ public class Block implements IBinaryData, IVerifiable {
 
         Header.setBinaryData(header);
 
-/*        int coinbaseSize = buffer.getInt();
-        byte[] coinbase = new byte[coinbaseSize];
-        buffer.get(coinbase, 0, coinbaseSize);*/
-
-
         int TransactionsNum = buffer.getInt();
 
         for(int i = 0; i < TransactionsNum; i++){
@@ -141,16 +136,17 @@ public class Block implements IBinaryData, IVerifiable {
         return Header.getSize()+getTransactionsSize()+4+4;
     }
 
-    @Override
+    // for now ill leave this returning the header hash because the previous API used this as the block hash
+    @Override @Deprecated
     public byte[] getHash() {
-
+       // throw new IllegalStateException("Use of block.getHash()");
         return Header.getHash();
         //return Hash.getSHA512Bytes(getBinaryData());
     }
 
     @Override
     public boolean Verify() {
-        return Header.Verify() && VerifyTransactions() && VerifyBlockReward() && Hash.validateHash(Header.getHash(), Header.DifficultyTarget) && getSize() < MagicNumbers.MaxBlockSize.Value;
+        return Header.Verify() && VerifyTransactions() && VerifyBlockReward() && Hash.validateHash(Header.getHash(), Header.DifficultyTarget) && getSize() < MagicNumbers.MaxBlockSize.Value && Arrays.equals(Header.HashMerkleRoot, CalculateMerkleRoot());
     }
 
     public void DebugVerify(){
@@ -164,6 +160,8 @@ public class Block implements IBinaryData, IVerifiable {
        assert Hash.validateHash(Header.getHash(), Header.DifficultyTarget);
         Log.warning("Size verify: "+(getSize() < MagicNumbers.MaxBlockSize.Value));
        assert  getSize() < MagicNumbers.MaxBlockSize.Value;
+       Log.warning("MerkleRoot Verify: "+Arrays.equals(Header.HashMerkleRoot, CalculateMerkleRoot()));
+        assert Arrays.equals(Header.HashMerkleRoot, CalculateMerkleRoot());
     }
 
     private boolean VerifyTransactions(){

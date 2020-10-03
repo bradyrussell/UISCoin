@@ -122,6 +122,7 @@ public class BlockBuilder {
         block.Transactions.remove(0);
         Collections.shuffle(block.Transactions);
         block.Transactions.add(0, coinbase);
+        CalculateMerkleRoot();
         return this;
     }
 

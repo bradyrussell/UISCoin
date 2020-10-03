@@ -8,6 +8,7 @@ import com.bradyrussell.uiscoin.blockchain.BlockChain;
 
 import java.nio.ByteBuffer;
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.logging.Logger;
 
 public class BlockHeader implements IBinaryData, IVerifiable {
@@ -95,6 +96,10 @@ public class BlockHeader implements IBinaryData, IVerifiable {
 
     @Override
     public byte[] getHash() {
+        if(HashMerkleRoot == null || Arrays.equals(HashMerkleRoot, new byte[64])) {
+            Log.severe("Calculated a block header hash with an empty Merkle Root!");
+            return null;
+        }
         return Hash.getSHA512Bytes(getBinaryData());
     }
 
