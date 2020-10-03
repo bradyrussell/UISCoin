@@ -39,12 +39,16 @@ public abstract class BlockChainStorageBase {
     public abstract List<byte[]> keys(String Database);
 
     public Block getBlock(byte[] BlockHash) {
+        Log.info("BlockHash = " + Arrays.toString(BlockHash));
+
         Block block = new Block();
         block.setBinaryData(get(BlockHash, BlocksDatabase));
         return block;
     }
 
     public BlockHeader getBlockHeader(byte[] BlockHash) {
+        Log.info("BlockHash = " + Arrays.toString(BlockHash));
+
         BlockHeader blockHeader = new BlockHeader();
         byte[] data = get(BlockHash, BlockHeadersDatabase);
         if(data == null) return null;
@@ -53,6 +57,8 @@ public abstract class BlockChainStorageBase {
     }
 
     public Transaction getTransaction(byte[] TransactionHash){
+        Log.info("TransactionHash = " + Arrays.toString(TransactionHash));
+
         Block block = getBlockWithTransaction(TransactionHash);
         for(Transaction transaction:block.Transactions){
             if(Arrays.equals(transaction.getHash(), TransactionHash)) return transaction;
@@ -61,16 +67,22 @@ public abstract class BlockChainStorageBase {
     }
 
     public Block getBlockWithTransaction(byte[] TransactionHash){
+        Log.info("TransactionHash = " + Arrays.toString(TransactionHash));
+
         return getBlock(get(TransactionHash, TransactionToBlockDatabase));
     }
 
     public TransactionOutput getTransactionOutput(byte[] TransactionHash, int Index){
+        Log.info("TransactionHash = " + Arrays.toString(TransactionHash) + ", Index = " + Index);
+
         TransactionOutput unspentTransactionOutput = getUnspentTransactionOutput(TransactionHash, Index);
         if(unspentTransactionOutput != null) return unspentTransactionOutput;
         return getTransaction(TransactionHash).Outputs.get(Index);
     }
 
     public TransactionOutput getUnspentTransactionOutput(byte[] TransactionHash, int Index){
+        Log.info("TransactionHash = " + Arrays.toString(TransactionHash) + ", Index = " + Index);
+
         if(TransactionHash == null) return null;
         TransactionOutput transactionOutput = new TransactionOutput();
         byte[] binaryData = get(Util.ConcatArray(TransactionHash, Util.NumberToByteArray(Index)), TransactionOutputDatabase);
