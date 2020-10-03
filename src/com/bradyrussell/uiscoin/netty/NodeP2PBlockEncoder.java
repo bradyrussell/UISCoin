@@ -7,10 +7,13 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
 
+import java.util.logging.Logger;
+
 public class NodeP2PBlockEncoder extends MessageToByteEncoder<Block> {
+
     @Override
     protected void encode(ChannelHandlerContext channelHandlerContext, Block block, ByteBuf byteBuf) throws Exception {
-        System.out.println("Encoding block "+ Util.Base64Encode(block.getHash()));
+        //System.out.println("Encoding block "+ Util.Base64Encode(block.Header.getHash()));
         byteBuf.writeByte(PeerPacketType.BLOCK.Header);
         byteBuf.writeInt(block.getSize());
         byteBuf.writeBytes(block.getBinaryData());

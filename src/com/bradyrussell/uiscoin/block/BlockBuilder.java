@@ -13,8 +13,11 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class BlockBuilder {
+    private static final Logger Log = Logger.getLogger(BlockBuilder.class.getName());
+
     Block block = new Block();
 
     private BlockHeader getOrCreateHeader(){

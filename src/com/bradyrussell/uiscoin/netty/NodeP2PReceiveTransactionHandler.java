@@ -1,6 +1,7 @@
 package com.bradyrussell.uiscoin.netty;
 
 import com.bradyrussell.uiscoin.Util;
+import com.bradyrussell.uiscoin.block.Block;
 import com.bradyrussell.uiscoin.blockchain.BlockChain;
 import com.bradyrussell.uiscoin.node.Node;
 import com.bradyrussell.uiscoin.transaction.Transaction;
@@ -8,7 +9,10 @@ import com.bradyrussell.uiscoin.transaction.TransactionInput;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
+import java.util.logging.Logger;
+
 public class NodeP2PReceiveTransactionHandler extends SimpleChannelInboundHandler<Transaction> {
+    private static final Logger Log = Logger.getLogger(NodeP2PReceiveTransactionHandler.class.getName());
     private final Node thisNode;
 
     public NodeP2PReceiveTransactionHandler(Node thisNode) {

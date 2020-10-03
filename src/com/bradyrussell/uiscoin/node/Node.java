@@ -25,8 +25,11 @@ import io.netty.util.concurrent.GlobalEventExecutor;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.*;
+import java.util.logging.Logger;
 
 public class Node {
+    private static final Logger Log = Logger.getLogger(Node.class.getName());
+
     EventLoopGroup bossGroup;
     EventLoopGroup workerGroup;
     Channel serverChannel;

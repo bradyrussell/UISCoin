@@ -3,10 +3,14 @@ package com.bradyrussell.uiscoin.address;
 import com.bradyrussell.uiscoin.Hash;
 import com.bradyrussell.uiscoin.MagicBytes;
 import com.bradyrussell.uiscoin.Util;
+import com.bradyrussell.uiscoin.block.Block;
 
 import java.security.interfaces.ECPublicKey;
+import java.util.logging.Logger;
 
 public class UISCoinAddress {
+    private static final Logger Log = Logger.getLogger(UISCoinAddress.class.getName());
+
     public static byte[] fromPublicKey(ECPublicKey PubKey){
         byte[] header = {MagicBytes.AddressHeader.Value, MagicBytes.AddressType.Value, MagicBytes.AddressVersion.Value};
 

@@ -9,8 +9,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class BlockChain {
+    private static final Logger Log = Logger.getLogger(BlockChain.class.getName());
+
     public static BlockChainStorageBase Storage = null;
 
     public static <T extends BlockChainStorageBase> void Initialize(Class<T> StorageClass) {
@@ -31,7 +34,7 @@ public class BlockChain {
         for (Block b : blockChain) {
             if (!b.Verify()) {
                 b.DebugVerify();
-                System.out.println("Block " + Util.Base64Encode(b.getHash()) + " at height " + b.Header.BlockHeight + " has failed verification!");
+                System.out.println("Block " + Util.Base64Encode(b.Header.getHash()) + " at height " + b.Header.BlockHeight + " has failed verification!");
                 return false;
             }
         }

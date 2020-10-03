@@ -2,6 +2,7 @@ package com.bradyrussell.uiscoin.blockchain;
 
 import com.bradyrussell.uiscoin.Hash;
 import com.bradyrussell.uiscoin.Util;
+import com.bradyrussell.uiscoin.block.Block;
 import com.bradyrussell.uiscoin.transaction.Transaction;
 
 import java.io.IOException;
@@ -10,10 +11,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class BlockChainStorageFile extends BlockChainStorageBase {
+    private static final Logger Log = Logger.getLogger(BlockChainStorageFile.class.getName());
+
     //public HashMap<byte[], Transaction> MemPool;
     public ArrayList<Transaction> MemPool;
 

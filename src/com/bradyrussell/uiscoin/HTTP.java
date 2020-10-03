@@ -1,5 +1,6 @@
 package com.bradyrussell.uiscoin;
 
+import com.bradyrussell.uiscoin.block.Block;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.BufferedReader;
@@ -8,8 +9,10 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class HTTP {
+    private static final Logger Log = Logger.getLogger(HTTP.class.getName());
     public static boolean LogRequests = true;
     public static boolean LogRequestTimes = true;
 

@@ -8,8 +8,11 @@ import com.bradyrussell.uiscoin.blockchain.BlockChain;
 
 import java.nio.ByteBuffer;
 import java.time.Instant;
+import java.util.logging.Logger;
 
 public class BlockHeader implements IBinaryData, IVerifiable {
+    private static final Logger Log = Logger.getLogger(BlockHeader.class.getName());
+
     public int Version; // 4
     public byte[] HashPreviousBlock; // 64
     public byte[] HashMerkleRoot; // concat and hash all transactions hashes // 64

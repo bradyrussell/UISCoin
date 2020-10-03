@@ -9,8 +9,11 @@ import com.bradyrussell.uiscoin.transaction.TransactionOutput;
 import com.bradyrussell.uiscoin.transaction.TransactionOutputBuilder;
 
 import java.util.*;
+import java.util.logging.Logger;
 
 public abstract class BlockChainStorageBase {
+    private static final Logger Log = Logger.getLogger(BlockChainStorageBase.class.getName());
+
     public static final String BlocksDatabase = "blocks";
     public static final String BlockHeadersDatabase = "headers";
     public static final String TransactionToBlockDatabase = "transaction_to_block";
@@ -78,13 +81,13 @@ public abstract class BlockChainStorageBase {
     }
 
     public void putBlock(Block block) {
-        put(block.getHash(), block.getBinaryData(), BlocksDatabase);
+        put(block.Header.getHash(), block.getBinaryData(), BlocksDatabase);
         putBlockHeader(block);
         ArrayList<Transaction> transactions = block.Transactions;
         for (int TransactionIndex = 0; TransactionIndex < transactions.size(); TransactionIndex++) {
             Transaction transaction = transactions.get(TransactionIndex);
 
-            put(transaction.getHash(), block.getHash(), TransactionToBlockDatabase);
+            put(transaction.getHash(), block.Header.getHash(), TransactionToBlockDatabase);
 
             if(TransactionIndex != 0) { // only for non coinbase transactions
                 BlockChain.get().removeFromMempool(transaction); // remove from mempool
@@ -111,9 +114,9 @@ public abstract class BlockChainStorageBase {
     public void putBlockHeader(Block block) {
         if(BlockHeight < block.Header.BlockHeight) {
             BlockHeight = block.Header.BlockHeight;
-            HighestBlockHash = block.getHash();
+            HighestBlockHash = block.Header.getHash();
         }
-        put(block.getHash(), block.Header.getBinaryData(), BlockHeadersDatabase);
+        put(block.Header.getHash(), block.Header.getBinaryData(), BlockHeadersDatabase);
     }
 
     public void putUnspentTransactionOutput(byte[] TransactionHash, int Index, TransactionOutput transactionOutput){
@@ -173,7 +176,7 @@ public abstract class BlockChainStorageBase {
         List<byte[]> hashes = new ArrayList<>();
 
         for(Block block:getBlockChainFromHeight(BlockHeight)){
-            hashes.add(block.getHash());
+            hashes.add(block.Header.getHash());
         }
 
         while(hashes.size() > 1) {

@@ -1,5 +1,6 @@
 package com.bradyrussell.uiscoin.netty;
 
+import com.bradyrussell.uiscoin.block.Block;
 import com.bradyrussell.uiscoin.node.BlockRequest;
 import com.bradyrussell.uiscoin.node.PeerPacketBuilder;
 import io.netty.buffer.ByteBuf;
@@ -9,7 +10,10 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
+import java.util.logging.Logger;
+
 public class NodeP2PClientHandler extends SimpleChannelInboundHandler<ByteBuf> {
+    private static final Logger Log = Logger.getLogger(NodeP2PClientHandler.class.getName());
     private ChannelHandlerContext ctx;
 
     @Deprecated

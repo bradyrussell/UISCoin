@@ -10,7 +10,7 @@ public class NodeP2PBlockRequestEncoder extends MessageToByteEncoder<BlockReques
 
     @Override
     protected void encode(ChannelHandlerContext channelHandlerContext, BlockRequest blockRequest, ByteBuf byteBuf) throws Exception {
-        System.out.println("Encoding block request");
+        //System.out.println("Encoding block request");
         byteBuf.writeByte(PeerPacketType.REQUEST.Header);
         byteBuf.writeBoolean(blockRequest.bOnlyHeader);
         byteBuf.writeBytes(blockRequest.BlockHash);

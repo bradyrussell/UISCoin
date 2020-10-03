@@ -1,13 +1,16 @@
 package com.bradyrussell.uiscoin.netty;
 
 import com.bradyrussell.uiscoin.Util;
+import com.bradyrussell.uiscoin.block.Block;
 import com.bradyrussell.uiscoin.node.Node;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
 import java.net.InetAddress;
+import java.util.logging.Logger;
 
 public class NodeP2PReceivePeerHandler extends SimpleChannelInboundHandler<InetAddress> {
+    private static final Logger Log = Logger.getLogger(NodeP2PReceivePeerHandler.class.getName());
     private final Node thisNode;
 
     public NodeP2PReceivePeerHandler(Node thisNode) {

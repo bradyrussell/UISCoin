@@ -1,12 +1,15 @@
 package com.bradyrussell.uiscoin.script;
 
 import com.bradyrussell.uiscoin.Util;
+import com.bradyrussell.uiscoin.block.Block;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 public class ScriptBuilder {
+    private static final Logger Log = Logger.getLogger(StringBuilder.class.getName());
     ByteBuffer buffer;
 
     public ScriptBuilder(int BufferLength) {

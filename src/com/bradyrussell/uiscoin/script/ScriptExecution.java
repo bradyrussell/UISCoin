@@ -3,17 +3,20 @@ package com.bradyrussell.uiscoin.script;
 import com.bradyrussell.uiscoin.Hash;
 import com.bradyrussell.uiscoin.Keys;
 import com.bradyrussell.uiscoin.Util;
+import com.bradyrussell.uiscoin.block.Block;
 
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.*;
+import java.util.logging.Logger;
 
 import static com.bradyrussell.uiscoin.Util.ByteArrayToNumber;
 import static com.bradyrussell.uiscoin.Util.NumberToByteArray;
 
 public class ScriptExecution {
+    private static final Logger Log = Logger.getLogger(ScriptExecution.class.getName());
     public int InstructionCounter;
     public Stack<byte[]> Stack;
     public boolean bScriptFailed = false;

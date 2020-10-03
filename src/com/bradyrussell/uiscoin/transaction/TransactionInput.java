@@ -1,12 +1,15 @@
 package com.bradyrussell.uiscoin.transaction;
 
 import com.bradyrussell.uiscoin.*;
+import com.bradyrussell.uiscoin.block.Block;
 import com.bradyrussell.uiscoin.blockchain.BlockChain;
 import com.bradyrussell.uiscoin.script.ScriptExecution;
 
 import java.nio.ByteBuffer;
+import java.util.logging.Logger;
 
 public class TransactionInput  implements IBinaryData, IVerifiable {
+    private static final Logger Log = Logger.getLogger(TransactionInput.class.getName());
     public byte[] InputHash; // 64 // the UTXO hash // also txOutpoint??
     public int IndexNumber; // 4  // the UTXO index
     //public int SignatureScriptLength; // 4

@@ -8,8 +8,11 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class Block implements IBinaryData, IVerifiable {
+    private static final Logger Log = Logger.getLogger(Block.class.getName());
+
     public BlockHeader Header;
     public ArrayList<Transaction> Transactions;
 
@@ -140,12 +143,14 @@ public class Block implements IBinaryData, IVerifiable {
 
     @Override
     public byte[] getHash() {
-        return Hash.getSHA512Bytes(getBinaryData());
+
+        return Header.getHash();
+        //return Hash.getSHA512Bytes(getBinaryData());
     }
 
     @Override
     public boolean Verify() {
-        return Header.Verify() && VerifyTransactions() && VerifyBlockReward() && Hash.validateHash(getHash(), Header.DifficultyTarget) && getSize() < MagicNumbers.MaxBlockSize.Value;
+        return Header.Verify() && VerifyTransactions() && VerifyBlockReward() && Hash.validateHash(Header.getHash(), Header.DifficultyTarget) && getSize() < MagicNumbers.MaxBlockSize.Value;
     }
 
     public void DebugVerify(){
@@ -155,8 +160,8 @@ public class Block implements IBinaryData, IVerifiable {
        assert VerifyTransactions();
         System.out.println("BlockReward verify: "+ VerifyBlockReward());
        assert VerifyBlockReward();
-        System.out.println("PoW verify: "+ Hash.validateHash(getHash(), Header.DifficultyTarget));
-       assert Hash.validateHash(getHash(), Header.DifficultyTarget);
+        System.out.println("PoW verify: "+ Hash.validateHash(Header.getHash(), Header.DifficultyTarget));
+       assert Hash.validateHash(Header.getHash(), Header.DifficultyTarget);
         System.out.println("Size verify: "+(getSize() < MagicNumbers.MaxBlockSize.Value));
        assert  getSize() < MagicNumbers.MaxBlockSize.Value;
     }

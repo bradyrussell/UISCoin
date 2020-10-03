@@ -16,8 +16,10 @@ import io.netty.handler.codec.ReplayingDecoder;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
+    private static final Logger Log = Logger.getLogger(NodeP2PMessageDecoder.class.getName());
 
     Node node;
 
