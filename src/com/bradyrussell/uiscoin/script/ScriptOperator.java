@@ -1,9 +1,18 @@
 package com.bradyrussell.uiscoin.script;
 
 public enum ScriptOperator {
-    NOP(0x00), // push null on the stack
-    PUSH(0x01), // the next byte specifies the number of following bytes to put on the stack
-    INSTRUCTION(0x02), // push the instruction counter value onto the stack
+    /**
+     * push null on the stack
+     */
+    NOP(0x00), //
+    /**
+     *the next byte specifies the number of following bytes to put on the stack
+     */
+    PUSH(0x01), //
+    /**
+     *push the instruction counter value onto the stack
+     */
+    INSTRUCTION(0x02), //
 
     //comparisons
     NUMEQUAL(0x10),
@@ -36,12 +45,30 @@ public enum ScriptOperator {
     BITXOR(0x34),
 
     // byte[] / string functions
-    APPEND(0x40), // combine the top two stack items
-    LIMIT(0x41), // top stack item is a byte number of elements to trim the second-to-top stack array to
-    REVERSE(0x42), // reverse the order of the top stack element
-    SPLIT(0x43), // split top most stack
-    COMBINE(0x44), // combine N (top of the stack) elements into one array. use depth before combine to do all
-    LEN(0x45), // push the length of the top stack element on top of the stack WITHOUT removing it
+    /**
+     *combine the top two stack items
+     */
+    APPEND(0x40), //
+    /**
+     * top stack item is a byte number of elements to trim the second-to-top stack array to
+     */
+    LIMIT(0x41), //
+    /**
+     *reverse the order of the top stack element
+     */
+    REVERSE(0x42), //
+    /**
+     *split top most stack
+     */
+    SPLIT(0x43), //
+    /**
+     *combine N (top of the stack) elements into one array. use depth before combine to do all
+     */
+    COMBINE(0x44), //
+    /**
+     * push the length of the top stack element on top of the stack WITHOUT removing it
+     */
+    LEN(0x45), //
 
     // boolean logic
     NOT(0x50),
@@ -50,21 +77,60 @@ public enum ScriptOperator {
     XOR(0x53),
 
     // push constants
-    NULL(0x81), // push null onto the stack
-    FALSE(0x82), // push 0 on the stack
-    TRUE(0x83), // push 1 on the stack
+    /**
+     *push null onto the stack
+     */
+    NULL(0x81), //
+    /**
+     *push 0 on the stack
+     */
+    FALSE(0x82), //
+    /**
+     *push 1 on the stack
+     */
+    TRUE(0x83), //
 
     //stack operations
-    DEPTH(0x90), // number of elements in stack
-    DROP(0x91), // drop the top stack element
-    DUP(0x92),// duplicate the top stack element
-    SWAP(0x93), // swap the top 2 stack elements
-    CLEAR(0x94),// clear the stack
-    CLONE(0x95), // duplicate the entire stack
-    FLIP(0x96), // reverse the entire stack
-    SHIFTUP(0x97), // shift the entire stack, so the top element becomes last, second becomes first etc
-    SHIFTDOWN(0x98), // shift the entire stack, so the top element becomes second, last becomes first etc
-    PICK(0x99), // copy the Nth (top of the stack) element on the stack and push it onto the stack
+    /**
+     * number of elements in stack
+     */
+    DEPTH(0x90), //
+    /**
+     *drop the top stack element
+     */
+    DROP(0x91), //
+    /**
+     *duplicate the top stack element
+     */
+    DUP(0x92),//
+    /**
+     *swap the top 2 stack elements
+     */
+    SWAP(0x93), //
+    /**
+     * clear the stack
+     */
+    CLEAR(0x94),//
+    /**
+     *duplicate the entire stack
+     */
+    CLONE(0x95), //
+    /**
+     *reverse the entire stack
+     */
+    FLIP(0x96), //
+    /**
+     * shift the entire stack, so the top element becomes last, second becomes first etc
+     */
+    SHIFTUP(0x97), //
+    /**
+     *shift the entire stack, so the top element becomes second, last becomes first etc
+     */
+    SHIFTDOWN(0x98), //
+    /**
+     *copy the Nth (top of the stack) element on the stack and push it onto the stack
+     */
+    PICK(0x99), //
 
     // returns
     VERIFY(0xa0),
@@ -75,7 +141,10 @@ public enum ScriptOperator {
     SHA512(0xb0),
 
     // signature
-    VERIFYSIG(0xc0), // gets the public key (top of stack) and the signature (second to top) and stops the script, failing if necessary//pushes true if verified
+    /**
+     * gets the public key (top of stack) and the signature (second to top) and stops the script, failing if necessary//pushes true if verified
+     */
+    VERIFYSIG(0xc0), //
 
     // code
     CODESEPARATOR(0xc0),
