@@ -20,3 +20,43 @@ While it was largely inspired by Bitcoin, there are some intentional differences
 - The unlocking script signature message is the hash of the transaction output you are trying to spend. This allows you to combine multiple unrelated inputs into one transasction. (Not sure how this works in BTC)
 - The difficulty algorithm is much simpler, basically if the last block was over five minutes ago, the difficulty is lastBlockDifficulty - 1. If it was before 5 minutes ago it is lastBlockDifficulty + 1. This is not as robust as Bitcoin's but works well enough.
 - As alluded to in the previous bullet point, the target block time is five minutes rather than BTC's ten.
+
+# API
+
+For a demonstration of the API, here is how I created the Genesis Block.
+`    public static void CreateGenesisBlock() {
+        BlockChain.Initialize(BlockChainStorageFile.class);
+        BlockChain.get().open();
+
+        UISCoinKeypair genesisCoins = UISCoinKeypair.Create();
+        Wallet.SaveKeypairToFileWithPassword(Path.of("WALLET.uisw"), "PASSWORD", genesisCoins);
+
+        byte[] address = UISCoinAddress.fromPublicKey((ECPublicKey) genesisCoins.Keys.getPublic());
+        UISCoinAddress.DecodedAddress decodedAddress = UISCoinAddress.decodeAddress(address);
+
+        long timestamp = Instant.now().getEpochSecond();
+        
+        BlockBuilder blockBuilder = new BlockBuilder().setVersion(1)
+                .setTimestamp(timestamp)
+                .setDifficultyTarget(3)
+                .setBlockHeight(0)
+                .setHashPreviousBlock(Hash.getSHA512Bytes("UISCoin 1.0 written by Brady Russell. Thanks to https://learnmeabitcoin.com/ and https://www.oreilly.com/library/view/mastering-bitcoin/9781491902639/ for the knowledge."))
+                .addCoinbasePayToPublicKeyHash(decodedAddress.PublicKeyHash, "https://www.bbc.com/news - Trump and Melania test positive for coronavirus: The US president and Melania Trump were tested after his close aide was confirmed to have Covid-19. 8m minutes ago US & Canada") /* reference to Satoshi's The Times 03/Jan/2009 Chancellor on brink of second bailout for banks*/
+                .CalculateMerkleRoot();
+        
+        System.out.println("Begin mining genesis block...");
+
+        int i = Integer.MIN_VALUE;
+        while (bIsRunning && !blockBuilder.get().Verify()) {
+            blockBuilder.setNonce(i++);
+        }
+
+        Block finalBlock = blockBuilder.get();
+
+        System.out.println(Util.Base64Encode(finalBlock.Header.getHash()));
+
+        BlockChain.get().putBlock(finalBlock);
+        node.BroadcastBlockToPeers(finalBlock);
+        System.out.println("Genesis block broadcast!");
+        BlockChain.get().close();
+    }`
