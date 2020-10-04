@@ -161,6 +161,16 @@ public class Node {
         }
     }
 
+    public void RetryPeers(){
+        ArrayList<InetAddress> peersToRetry = new ArrayList<>(peersEverSeen);
+
+        peersToRetry.removeAll(getPeers());
+
+        for (InetAddress inetAddress : peersToRetry) {
+            ConnectToPeer(inetAddress);
+        }
+    }
+
     public List<InetAddress> getPeers(){
         List<InetAddress> addresses = new ArrayList<>();
 
