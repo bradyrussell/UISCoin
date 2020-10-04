@@ -11,4 +11,6 @@ While it was largely inspired by Bitcoin, there are some intentional differences
 - Instead of base58 encoding used by Bitcoin we use Base64 URL Encoded from Java's Base64.getUrlEncoder().
 - The PoW difficulty is based on the block hash beginning with N characters of a repeating series U, I, S, U, I, S ... rather than having a certain number of preceding zeroes (or being below a target value). It is limited at a minimum of 3 and a maximum of 63. An example of a valid block hash at difficulty 3 is:
 `UISalWjd9-_4YTMOTVOQhthSwE4x-qUcXsZXT5zhjd3ic3bZaHj-Afjr1V0VpTZKZteYce-Zj5W-afEbsveh7w==`
-
+- Java uses signed bytes, so I do not think the binary data produced can be used in languages with unsigned bytes without conversion.
+- The block height is stored in the Index of the Coinbase transaction input rather than the script.
+- The unlocking script signature message is the hash of the transaction output you are trying to spend. This allows you to combine multiple unrelated inputs into one transasction. (Not sure how this works in BTC)
