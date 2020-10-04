@@ -1,9 +1,6 @@
 package com.bradyrussell.uiscoin.script;
 
 public enum ScriptOperator {
-    /**
-     * push null on the stack
-     */
     NOP(0x00), //
     /**
      *the next byte specifies the number of following bytes to put on the stack
