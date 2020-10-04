@@ -25,6 +25,7 @@ public class TransactionBuilder {
 
     public TransactionBuilder addOutput(TransactionOutput transactionOutput){
         transaction.addOutput(transactionOutput);
+        Log.info("Added output to transaction for "+transactionOutput.Amount+" satoshis.");
         return this;
     }
 
@@ -49,9 +50,10 @@ public class TransactionBuilder {
             Log.info("There is no extra change for this transaction.");
             return this;
         }
-        assert Amount >= 0;
+        assert Amount > 0;
 
-        transaction.addOutput(new TransactionOutputBuilder().setPayToPublicKeyHash(PublicKeyHash).setAmount(Math.abs(Amount)).get());
+        transaction.addOutput(new TransactionOutputBuilder().setPayToPublicKeyHash(PublicKeyHash).setAmount(Amount).get());
+        Log.info("Added change output to transaction for "+Amount+" satoshis.");
         return this;
     }
 

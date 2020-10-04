@@ -150,25 +150,25 @@ public class Transaction implements IBinaryData, IVerifiable {
     }
 
     public void DebugVerify(){
-        Log.warning("VerifyInputs"+ VerifyInputs());
+        Log.warning("VerifyInputs "+ VerifyInputs());
         assert VerifyInputs();
-        Log.warning("VerifyOutputs"+ VerifyOutputs());
+        Log.warning("VerifyOutputs "+ VerifyOutputs());
         assert VerifyOutputs();
-        Log.warning("VerifyFees"+( getFees() > getSize()*MagicNumbers.MinSatPerByte.Value));
+        Log.warning("VerifyFees "+( getFees() > getSize()*MagicNumbers.MinSatPerByte.Value));
         assert getFees() > getSize()*MagicNumbers.MinSatPerByte.Value;
-        Log.warning("VerifyInputsSize"+( Inputs.size() > 0));
+        Log.warning("VerifyInputsSize "+( Inputs.size() > 0));
         assert Inputs.size() > 0;
-        Log.warning("VerifyOutputsSize"+( Outputs.size() > 0));
+        Log.warning("VerifyOutputsSize "+( Outputs.size() > 0));
         assert Outputs.size() > 0;
-        Log.warning("VerifyTimestamp"+ (TimeStamp < Long.MAX_VALUE));
+        Log.warning("VerifyTimestamp "+ (TimeStamp < Long.MAX_VALUE));
         assert TimeStamp < Long.MAX_VALUE;
-        Log.warning("VerifySize"+ (getSize() < MagicNumbers.MaxTransactionSize.Value));
+        Log.warning("VerifySize "+ (getSize() < MagicNumbers.MaxTransactionSize.Value));
         assert getSize() < MagicNumbers.MaxTransactionSize.Value;
-        Log.warning("VerifyInputsFees>0"+ (getFees() > 0));
+        Log.warning("VerifyInputsFees>0 "+ (getFees() > 0));
         assert getFees() > 0;
-        Log.warning("VerifyInputs>0"+ (getInputTotal() > 0));
+        Log.warning("VerifyInputs>0 "+ (getInputTotal() > 0));
         assert getInputTotal() > 0;
-        Log.warning("VerifyOutputs>0"+ (getOutputTotal() > 0));
+        Log.warning("VerifyOutputs>0 "+ (getOutputTotal() > 0));
         assert getOutputTotal() > 0;
     }
 
