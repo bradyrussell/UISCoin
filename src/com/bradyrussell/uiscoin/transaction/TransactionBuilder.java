@@ -43,7 +43,7 @@ public class TransactionBuilder {
         long Amount = (transaction.getInputTotal() - transaction.getOutputTotal()) - FeeToLeave;
 
         if(Amount < 0) {
-            Log.warning("Insufficient inputs for this transaction!");
+            Log.warning("Insufficient inputs for this transaction! Input: "+transaction.getInputTotal()+" Output: "+transaction.getOutputTotal()+" Fee: "+FeeToLeave);
         }
         if(Amount == 0) {
             Log.info("There is no extra change for this transaction.");
