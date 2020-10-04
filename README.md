@@ -23,6 +23,7 @@ While it was largely inspired by Bitcoin, there are some intentional differences
 
 # API
 JavaDoc is available here: https://bradyrussell.github.io/UISCoin/
+
 For a demonstration of the API, here is how I created the Genesis Block.
 
         public static void CreateGenesisBlock() {
