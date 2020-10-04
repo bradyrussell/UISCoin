@@ -12,9 +12,21 @@ public enum ScriptOperator {
     INSTRUCTION(0x02), //
 
     //comparisons
+    /**
+     * are the top two values numerically equal when interpreted as 4 byte integers
+     */
     NUMEQUAL(0x10),
+    /**
+     * are the top two values equal byte arrays
+     */
     BYTESEQUAL(0x11),
+    /**
+     * does the top stack value == sha512(second value)
+     */
     SHA512EQUAL(0x12), // does A == sha512(b)
+    /**
+     * are the top two values equal in length
+     */
     LENEQUAL(0x13),
     LESSTHAN(0x14),
     LESSTHANEQUAL(0x15),
@@ -24,21 +36,63 @@ public enum ScriptOperator {
     NOTZERO(0x19),
 
     // math
+    /**
+     * numeric
+     */
     ADD(0x20),
+    /**
+     * numeric
+     */
     SUBTRACT(0x21),
+    /**
+     * numeric
+     */
     MULTIPLY(0x22),
+    /**
+     * numeric
+     */
     DIVIDE(0x23),
+    /**
+     *  a[i] + b[i] = c[i]
+     */
     ADDBYTES(0x24), // a[i] + b[i] = c[i]
+    /**
+     *  a[i] - b[i] = c[i]
+     */
     SUBTRACTBYTES(0x25),
+    /**
+     *  a[i] * b[i] = c[i]
+     */
     MULTIPLYBYTES(0x26),
+    /**
+     *  a[i] / b[i] = c[i]
+     */
     DIVIDEBYTES(0x27),
+    /**
+     *  -x
+     */
     NEGATE(0x28), // -x
+    /**
+     * 1/x
+     */
     INVERT(0x29), //1/x
 
     // bit operations
+    /**
+     * bitwise operation
+     */
     BITNOT(0x31),
+    /**
+     * bitwise operation
+     */
     BITOR(0x32),
+    /**
+     * bitwise operation
+     */
     BITAND(0x33),
+    /**
+     * bitwise operation
+     */
     BITXOR(0x34),
 
     // byte[] / string functions
@@ -68,9 +122,21 @@ public enum ScriptOperator {
     LEN(0x45), //
 
     // boolean logic
+    /**
+     * boolean logic (byte either 1 or 0)
+     */
     NOT(0x50),
+    /**
+     * boolean logic (byte either 1 or 0)
+     */
     OR(0x51),
+    /**
+     * boolean logic (byte either 1 or 0)
+     */
     AND(0x52),
+    /**
+     * boolean logic (byte either 1 or 0)
+     */
     XOR(0x53),
 
     // push constants
@@ -130,8 +196,15 @@ public enum ScriptOperator {
     PICK(0x99), //
 
     // returns
+    /**
+     * script execution continues if there is a 1 on the stack, else fail
+     */
     VERIFY(0xa0),
+    /**
+     * script fails
+     */
     RETURN(0xa1),
+
     LOCKTIMEVERIFY(0xa2),
 
     //hashes
