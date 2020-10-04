@@ -62,3 +62,23 @@ For a demonstration of the API, here is how I created the Genesis Block.
         System.out.println("Genesis block broadcast!");
         BlockChain.get().close();
     }
+    
+    
+    # Scripting Language
+    The UISCoin scripting language is executed in bytecode format. Scripts can be converted back and forth between bytecode and script using ScriptBuilder.fromText() and ScriptBuilder.toText(). Scripts can also be created using the Builder pattern as seen below:
+                byte[] a  = new ScriptBuilder(128)
+                .op(ScriptOperator.DUP) // dup the public key
+                .op(ScriptOperator.SHA512) // hash it
+                .push(A) // push the address
+                .op(ScriptOperator.LEN) // take its length
+                .pushInt(4) // push 4
+                .op(ScriptOperator.SWAP) // make length the top stack element, then 4
+                .op(ScriptOperator.SUBTRACT) // do length - 4
+                .op(ScriptOperator.LIMIT) // limit the address to length - 4 (remove checksum)
+                .op(ScriptOperator.BYTESEQUAL) // equal to pubkey hash?
+                .op(ScriptOperator.VERIFY)
+                .op(ScriptOperator.VERIFYSIG)
+                .get();
+
+                byte[] b= new ScriptBuilder(128).fromText("dup sha512").push(A).fromText("len push 4 swap subtract limit bytesequal verify verifysig").get();
+                assertTrue(Arrays.equals(a,b));// true
