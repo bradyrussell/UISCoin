@@ -65,7 +65,7 @@ public class Node {
             peerClients.add(channelFuture.channel());
             if(channelFuture.isSuccess()) {
                 Log.info("Connection established with peer " + channelFuture.channel().remoteAddress().toString());
-                peersEverSeen.add(Address);
+                if(!peersEverSeen.contains(Address)) peersEverSeen.add(Address);
             }
         })/*.sync()*/;
         // ChannelFuture closeFuture = sync.channel().closeFuture();
