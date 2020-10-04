@@ -6,8 +6,11 @@ import com.bradyrussell.uiscoin.Hash;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.logging.Logger;
 
 public class Wallet {
+    private static final Logger Log = Logger.getLogger(Wallet.class.getName());
+
     public static void SaveKeypairToFileWithPassword(Path File, String Password, UISCoinKeypair Keypair){
         try {
             Files.write(File, Encryption.Encrypt(Keypair.getBinaryData(), Hash.getSHA512Bytes(Password)));

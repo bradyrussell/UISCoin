@@ -8,8 +8,11 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class Block implements IBinaryData, IVerifiable {
+    private static final Logger Log = Logger.getLogger(Block.class.getName());
+
     public BlockHeader Header;
     public ArrayList<Transaction> Transactions;
 
@@ -114,11 +117,6 @@ public class Block implements IBinaryData, IVerifiable {
 
         Header.setBinaryData(header);
 
-/*        int coinbaseSize = buffer.getInt();
-        byte[] coinbase = new byte[coinbaseSize];
-        buffer.get(coinbase, 0, coinbaseSize);*/
-
-
         int TransactionsNum = buffer.getInt();
 
         for(int i = 0; i < TransactionsNum; i++){
@@ -138,41 +136,46 @@ public class Block implements IBinaryData, IVerifiable {
         return Header.getSize()+getTransactionsSize()+4+4;
     }
 
-    @Override
+    // for now ill leave this returning the header hash because the previous API used this as the block hash
+    @Override @Deprecated
     public byte[] getHash() {
-        return Hash.getSHA512Bytes(getBinaryData());
+       // throw new IllegalStateException("Use of block.getHash()");
+        return Header.getHash();
+        //return Hash.getSHA512Bytes(getBinaryData());
     }
 
     @Override
     public boolean Verify() {
-        return Header.Verify() && VerifyTransactions() && VerifyBlockReward() && Hash.validateHash(getHash(), Header.DifficultyTarget) && getSize() < MagicNumbers.MaxBlockSize.Value;
+        return Header.Verify() && VerifyTransactions() && VerifyBlockReward() && Hash.validateHash(Header.getHash(), Header.DifficultyTarget) && getSize() < MagicNumbers.MaxBlockSize.Value && Arrays.equals(Header.HashMerkleRoot, CalculateMerkleRoot());
     }
 
     public void DebugVerify(){
-        System.out.println("Header verify: "+ Header.Verify());
+        Log.warning("Header verify: "+ Header.Verify());
        assert Header.Verify();
-        System.out.println("Transactions verify: "+ VerifyTransactions());
+        Log.warning("Transactions verify: "+ VerifyTransactions());
        assert VerifyTransactions();
-        System.out.println("BlockReward verify: "+ VerifyBlockReward());
+        Log.warning("BlockReward verify: "+ VerifyBlockReward());
        assert VerifyBlockReward();
-        System.out.println("PoW verify: "+ Hash.validateHash(getHash(), Header.DifficultyTarget));
-       assert Hash.validateHash(getHash(), Header.DifficultyTarget);
-        System.out.println("Size verify: "+(getSize() < MagicNumbers.MaxBlockSize.Value));
+        Log.warning("PoW verify: "+ Hash.validateHash(Header.getHash(), Header.DifficultyTarget));
+       assert Hash.validateHash(Header.getHash(), Header.DifficultyTarget);
+        Log.warning("Size verify: "+(getSize() < MagicNumbers.MaxBlockSize.Value));
        assert  getSize() < MagicNumbers.MaxBlockSize.Value;
+       Log.warning("MerkleRoot Verify: "+Arrays.equals(Header.HashMerkleRoot, CalculateMerkleRoot()));
+        assert Arrays.equals(Header.HashMerkleRoot, CalculateMerkleRoot());
     }
 
     private boolean VerifyTransactions(){
         ArrayList<byte[]> TransactionOutputs = new ArrayList<>();
 
         if(Header.BlockHeight != 0 && Transactions.size() < 2) {
-            System.out.println("Too few transactions!");
+            Log.warning("Too few transactions!");
             return false;
         }
         for (int i = 0; i < Transactions.size(); i++) {
             Transaction transaction = Transactions.get(i);
             if (i == 0)  {
                 if (!transaction.VerifyCoinbase(Header.BlockHeight)) {
-                    System.out.println("Failed coinbase verification!");
+                    Log.warning("Failed coinbase verification!");
                     transaction.DebugVerifyCoinbase(Header.BlockHeight);
                     return false;
                 }
@@ -182,7 +185,7 @@ public class Block implements IBinaryData, IVerifiable {
                     byte[] inputTXO = Util.ConcatArray(input.InputHash, Util.NumberToByteArray(input.IndexNumber));
                     for (byte[] transactionOutput : TransactionOutputs) {
                         if(Arrays.equals(inputTXO,transactionOutput)) {
-                            System.out.println("Block contains duplicate Transaction Outputs! See transaction "+i+".");
+                            Log.warning("Block contains duplicate Transaction Outputs! See transaction "+i+".");
                             return false; // this TXO is already in the block
                         }
                     }
@@ -190,7 +193,6 @@ public class Block implements IBinaryData, IVerifiable {
                 }
 
                 if (!transaction.Verify()){
-                    System.out.println("Transaction verification!");
                     transaction.DebugVerify();
                     return false;
                 }
@@ -223,6 +225,10 @@ public class Block implements IBinaryData, IVerifiable {
         Transaction coinbase = Transactions.get(0);
         if(coinbase == null) return false;
         return coinbase.getOutputTotal() <= CalculateBlockReward(Header.BlockHeight);
+    }
+
+    public boolean VerifyProofOfWork(){
+        return Hash.validateHash(Header.getHash(), Header.DifficultyTarget);
     }
 
 }

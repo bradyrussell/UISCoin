@@ -8,8 +8,11 @@ import java.nio.ByteBuffer;
 import java.security.interfaces.ECPublicKey;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class UISCoinWallet implements IBinaryData {
+    private static final Logger Log = Logger.getLogger(UISCoinWallet.class.getName());
+
     public ArrayList<UISCoinKeypair> Keypairs = new ArrayList<>();
 
     public UISCoinKeypair GenerateNewKey(){

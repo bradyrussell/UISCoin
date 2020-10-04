@@ -25,8 +25,13 @@ import io.netty.util.concurrent.GlobalEventExecutor;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.*;
+import java.util.logging.Logger;
 
 public class Node {
+    private static final Logger Log = Logger.getLogger(Node.class.getName());
+
+    public ArrayList<InetAddress> peersEverSeen = new ArrayList<>();
+
     EventLoopGroup bossGroup;
     EventLoopGroup workerGroup;
     Channel serverChannel;
@@ -48,7 +53,7 @@ public class Node {
 
     public void ConnectToPeer(InetAddress Address){
         if(getPeers().contains(Address)) {
-            System.out.println("Already connected to this peer!");
+            Log.info("Already connected to this peer!");
             return;
         }
 
@@ -58,8 +63,10 @@ public class Node {
         ChannelFuture sync;
         sync = peerBootstrap.connect(Address, MagicNumbers.NodeP2PPort.Value).addListener((ChannelFutureListener) channelFuture -> {
             peerClients.add(channelFuture.channel());
-            if(channelFuture.isSuccess())
-            System.out.println("Connection established with peer "+channelFuture.channel().remoteAddress().toString());
+            if(channelFuture.isSuccess()) {
+                Log.info("Connection established with peer " + channelFuture.channel().remoteAddress().toString());
+                if(!peersEverSeen.contains(Address)) peersEverSeen.add(Address);
+            }
         })/*.sync()*/;
         // ChannelFuture closeFuture = sync.channel().closeFuture();
     }
@@ -137,20 +144,30 @@ public class Node {
         try {
             if(peerClients != null) peerClients.close().sync();
             if(nodeClients != null) nodeClients.close().sync();
-            System.out.println("Closed peer connections.");
+            Log.info("Closed peer connections.");
 
             if(serverChannel != null) serverChannel.close().sync();
             if(bossGroup != null) bossGroup.shutdownGracefully();
             if(workerGroup != null) workerGroup.shutdownGracefully();
             if(peerGroup != null) peerGroup.shutdownGracefully();
-            System.out.println("Closed channel and shutdown worker event groups.");
+            Log.info("Closed channel and shutdown worker event groups.");
 
 /*            if(bossGroup != null) bossGroup.shutdownNow();
             if(workerGroup != null) workerGroup.shutdownNow();
             if(peerGroup != null) peerGroup.shutdownNow();*/
-            System.out.println("Shutting down...");
+            Log.info("Shutting down...");
         } catch (InterruptedException e) {
             e.printStackTrace();
+        }
+    }
+
+    public void RetryPeers(){
+        ArrayList<InetAddress> peersToRetry = new ArrayList<>(peersEverSeen);
+
+        peersToRetry.removeAll(getPeers());
+
+        for (InetAddress inetAddress : peersToRetry) {
+            ConnectToPeer(inetAddress);
         }
     }
 

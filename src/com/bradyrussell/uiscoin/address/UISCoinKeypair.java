@@ -6,8 +6,11 @@ import java.nio.ByteBuffer;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.logging.Logger;
 
 public class UISCoinKeypair implements IBinaryData {
+    private static final Logger Log = Logger.getLogger(UISCoinKeypair.class.getName());
+
     public KeyPair Keys;
     public byte[] Seed; // todo this is a property of wallet not keypair
 

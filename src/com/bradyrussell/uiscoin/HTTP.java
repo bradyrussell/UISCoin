@@ -8,8 +8,10 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class HTTP {
+    private static final Logger Log = Logger.getLogger(HTTP.class.getName());
     public static boolean LogRequests = true;
     public static boolean LogRequestTimes = true;
 
@@ -18,7 +20,7 @@ public class HTTP {
         long StartMs = System.currentTimeMillis();
 
         if (LogRequests)
-            System.out.println("[LogRequests] " + Method + " " + URL + " " + (Content != null ? Content : ""));
+            Log.info("[LogRequests] " + Method + " " + URL + " " + (Content != null ? Content : ""));
 
         try {
 
@@ -59,9 +61,9 @@ public class HTTP {
             conn.disconnect();
 
             if (LogRequests)
-                System.out.println("[LogRequests] " + conn.getResponseCode() + " " + conn.getResponseMessage());
+                Log.info("[LogRequests] " + conn.getResponseCode() + " " + conn.getResponseMessage());
             if (LogRequestTimes)
-                System.out.println("[LogRequestTime] Request completed in " + (System.currentTimeMillis() - StartMs) + " ms.");
+                Log.info("[LogRequestTime] Request completed in " + (System.currentTimeMillis() - StartMs) + " ms.");
             return output;
 
         } catch (Exception e) {

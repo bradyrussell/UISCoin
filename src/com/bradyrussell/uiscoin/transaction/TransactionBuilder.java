@@ -1,6 +1,11 @@
 package com.bradyrussell.uiscoin.transaction;
 
+import com.bradyrussell.uiscoin.node.Node;
+
+import java.util.logging.Logger;
+
 public class TransactionBuilder {
+    private static final Logger Log = Logger.getLogger(TransactionBuilder.class.getName());
     Transaction transaction = new Transaction();
 
     public TransactionBuilder setVersion(int Version){
@@ -20,6 +25,7 @@ public class TransactionBuilder {
 
     public TransactionBuilder addOutput(TransactionOutput transactionOutput){
         transaction.addOutput(transactionOutput);
+        Log.info("Added output to transaction for "+transactionOutput.Amount+" satoshis.");
         return this;
     }
 
@@ -37,9 +43,17 @@ public class TransactionBuilder {
     public TransactionBuilder addChangeOutputToPublicKeyHash(byte[] PublicKeyHash, long FeeToLeave){
         long Amount = (transaction.getInputTotal() - transaction.getOutputTotal()) - FeeToLeave;
 
+        if(Amount < 0) {
+            Log.warning("Insufficient inputs for this transaction! Input: "+transaction.getInputTotal()+" Output: "+transaction.getOutputTotal()+" Fee: "+FeeToLeave);
+        }
+        if(Amount == 0) {
+            Log.info("There is no extra change for this transaction.");
+            return this;
+        }
         assert Amount > 0;
 
-        transaction.addOutput(new TransactionOutputBuilder().setPayToPublicKeyHash(PublicKeyHash).setAmount(Math.abs(Amount)).get());
+        transaction.addOutput(new TransactionOutputBuilder().setPayToPublicKeyHash(PublicKeyHash).setAmount(Amount).get());
+        Log.info("Added change output to transaction for "+Amount+" satoshis.");
         return this;
     }
 

@@ -9,8 +9,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class BlockChain {
+    private static final Logger Log = Logger.getLogger(BlockChain.class.getName());
+
     public static BlockChainStorageBase Storage = null;
 
     public static <T extends BlockChainStorageBase> void Initialize(Class<T> StorageClass) {
@@ -22,7 +25,10 @@ public class BlockChain {
     }
 
     public static BlockChainStorageBase get() {
-        if (Storage == null) throw new IllegalStateException("BlockChainStorage singleton has not been initialized!");
+        if (Storage == null) {
+            Log.severe("The BlockChain singleton has not been initialized!");
+            throw new IllegalStateException("The BlockChain singleton has not been initialized!");
+        }
         return Storage;
     }
 
@@ -31,7 +37,7 @@ public class BlockChain {
         for (Block b : blockChain) {
             if (!b.Verify()) {
                 b.DebugVerify();
-                System.out.println("Block " + Util.Base64Encode(b.getHash()) + " at height " + b.Header.BlockHeight + " has failed verification!");
+                Log.warning("Block " + Util.Base64Encode(b.Header.getHash()) + " at height " + b.Header.BlockHeight + " has failed verification!");
                 return false;
             }
         }

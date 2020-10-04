@@ -8,8 +8,12 @@ import com.bradyrussell.uiscoin.blockchain.BlockChain;
 
 import java.nio.ByteBuffer;
 import java.time.Instant;
+import java.util.Arrays;
+import java.util.logging.Logger;
 
 public class BlockHeader implements IBinaryData, IVerifiable {
+    private static final Logger Log = Logger.getLogger(BlockHeader.class.getName());
+
     public int Version; // 4
     public byte[] HashPreviousBlock; // 64
     public byte[] HashMerkleRoot; // concat and hash all transactions hashes // 64
@@ -92,6 +96,10 @@ public class BlockHeader implements IBinaryData, IVerifiable {
 
     @Override
     public byte[] getHash() {
+        if(HashMerkleRoot == null || Arrays.equals(HashMerkleRoot, new byte[64])) {
+            Log.severe("Calculated a block header hash with an empty Merkle Root!");
+            return null;
+        }
         return Hash.getSHA512Bytes(getBinaryData());
     }
 
@@ -113,7 +121,7 @@ public class BlockHeader implements IBinaryData, IVerifiable {
         valid &= timeValid; // timestamp is not in the future, allow for 30s variance
 
         if(!timeValid){
-            System.out.println("Error: Block time is in the future! Please check the system time is correct.");
+            Log.severe("Error: Block time is in the future! Please check the system time is correct.");
         }
 
         return valid;

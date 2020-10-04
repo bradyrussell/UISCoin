@@ -5,8 +5,10 @@ import com.bradyrussell.uiscoin.Util;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 public class ScriptBuilder {
+    private static final Logger Log = Logger.getLogger(StringBuilder.class.getName());
     ByteBuffer buffer;
 
     public ScriptBuilder(int BufferLength) {
@@ -126,29 +128,29 @@ public class ScriptBuilder {
     }
 
     public ScriptBuilder fromText(String Text){
-        System.out.println("Parsing script from text...");
+        Log.info("Parsing script from text...");
 
         String[] parts = Text.replace("\n", " ").replace(";", " ").replace("  ", " ").replace("\r", "").split(" ");
 
         for (int i = 0; i < parts.length; i++) {
             if(parts[i].startsWith("#")) {
                 String substring = parts[i].substring(1);
-                System.out.println("Interpreting Token "+i+" as a comment: "+substring);
+                Log.fine("Interpreting Token "+i+" as a comment: "+substring);
 
-                System.out.println("Token "+i+": Begin comment # ");
+                Log.fine("Token "+i+": Begin comment # ");
                 do { // single byte
                     /*I = */
-                    System.out.println("Token "+i+": comment Element "+parts[i].replace("#", "").replace("#", "") + " from comment part "+parts[i]);
+                    Log.fine("Token "+i+": comment Element "+parts[i].replace("#", "").replace("#", "") + " from comment part "+parts[i]);
                 }while(!parts[i++].endsWith("#"));
             }
             if(parts[i].startsWith("0x")) {
                 String substring = parts[i].substring(2);
-                System.out.println("Interpreting Token "+i+" as hex data: "+substring);
+                Log.fine("Interpreting Token "+i+" as hex data: "+substring);
                 fromHexString(substring);
                 continue;
             }
             if(parts[i].charAt(0) >= 48 && parts[i].charAt(0) <= 57) {
-                System.out.println("Interpreting Token "+i+" as numeric data: "+parts[i]);
+                Log.fine("Interpreting Token "+i+" as numeric data: "+parts[i]);
                 int number = Integer.parseInt(parts[i]);
                 if(number < 128 && number > -128) {
                     buffer.put((byte)number);
@@ -159,10 +161,10 @@ public class ScriptBuilder {
                 continue;
             }
 
-            System.out.println("Interpreting Token "+i+" as operator.");
+            Log.fine("Interpreting Token "+i+" as operator.");
             ScriptOperator scriptOperator = ScriptOperator.valueOf(parts[i].toUpperCase());
 
-            System.out.println("Token "+i+": OP "+scriptOperator);
+            Log.fine("Token "+i+": OP "+scriptOperator);
 
             if(scriptOperator == ScriptOperator.PUSH) {
                 // PUSH 2576
@@ -171,12 +173,12 @@ public class ScriptBuilder {
                 //int I = ++i;
                 if(parts[++i].startsWith("'")) { // interp as ascii string
                     StringBuilder sb = new StringBuilder();
-                    System.out.println("Token "+i+": Begin String ' ");
+                    Log.fine("Token "+i+": Begin String ' ");
                     do { // single byte
                         /*I = */
                         sb.append(parts[i].replace("'", "")/*.replace("'", "")*/);
                         if(!parts[i].endsWith("'")) sb.append(" ");
-                        System.out.println("Token "+i+": String Element "+parts[i].replace("'", "").replace("'", "") + " from string part "+parts[i]);
+                        Log.fine("Token "+i+": String Element "+parts[i].replace("'", "").replace("'", "") + " from string part "+parts[i]);
                     }while(!parts[i++].endsWith("'"));
 
                     i--; // todo fix the above loop making this necessary
@@ -184,12 +186,12 @@ public class ScriptBuilder {
                     pushASCIIString(sb.toString());
                 } else if(parts[i].startsWith("[")) { // interp as byte array
                     ArrayList<Byte> bytes = new ArrayList<>();
-                    System.out.println("Token "+i+": Begin Byte Array [  ");
+                    Log.fine("Token "+i+": Begin Byte Array [  ");
                     do { // single byte
                         /*I = */
                         byte parseByte = Byte.parseByte(parts[i].replace("[", "").replace("]", "").replace(",", ""));
                         bytes.add(parseByte);
-                        System.out.println("Token "+i+": Byte Array Element "+parseByte + " from string part "+parts[i]);
+                        Log.fine("Token "+i+": Byte Array Element "+parseByte + " from string part "+parts[i]);
                     }while(!parts[i++].endsWith("]"));
 
                     i--; // todo fix the above loop making this necessary
@@ -203,18 +205,18 @@ public class ScriptBuilder {
                     String hex = parts[i].substring(2);
                     pushHexString(hex);
 
-                    System.out.println("Token "+i+": Hex Data "+parts[i]);
+                    Log.fine("Token "+i+": Hex Data "+parts[i]);
                 }
                 else { // interp as number
                     pushInt(Integer.parseInt(parts[i]));
-                    System.out.println("Token "+i+": Number "+Integer.parseInt(parts[i]));
+                    Log.fine("Token "+i+": Number "+Integer.parseInt(parts[i]));
                 }
             }
             else {
                 op(scriptOperator);
             }
         }
-        System.out.println("Script compiled into bytecode.");
+        Log.info("Script compiled into bytecode.");
         return this;
     }
 

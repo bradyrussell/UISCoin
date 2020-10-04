@@ -6,8 +6,10 @@ import com.bradyrussell.uiscoin.blockchain.BlockChain;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.logging.Logger;
 
 public class Transaction implements IBinaryData, IVerifiable {
+    private static final Logger Log = Logger.getLogger(Transaction.class.getName());
     public int Version; // 4
     public ArrayList<TransactionInput> Inputs;
     public ArrayList<TransactionOutput> Outputs;
@@ -148,15 +150,25 @@ public class Transaction implements IBinaryData, IVerifiable {
     }
 
     public void DebugVerify(){
+        Log.warning("VerifyInputs "+ VerifyInputs());
         assert VerifyInputs();
+        Log.warning("VerifyOutputs "+ VerifyOutputs());
         assert VerifyOutputs();
+        Log.warning("VerifyFees "+( getFees() > getSize()*MagicNumbers.MinSatPerByte.Value));
         assert getFees() > getSize()*MagicNumbers.MinSatPerByte.Value;
+        Log.warning("VerifyInputsSize "+( Inputs.size() > 0));
         assert Inputs.size() > 0;
+        Log.warning("VerifyOutputsSize "+( Outputs.size() > 0));
         assert Outputs.size() > 0;
+        Log.warning("VerifyTimestamp "+ (TimeStamp < Long.MAX_VALUE));
         assert TimeStamp < Long.MAX_VALUE;
+        Log.warning("VerifySize "+ (getSize() < MagicNumbers.MaxTransactionSize.Value));
         assert getSize() < MagicNumbers.MaxTransactionSize.Value;
+        Log.warning("VerifyInputsFees>0 "+ (getFees() > 0));
         assert getFees() > 0;
+        Log.warning("VerifyInputs>0 "+ (getInputTotal() > 0));
         assert getInputTotal() > 0;
+        Log.warning("VerifyOutputs>0 "+ (getOutputTotal() > 0));
         assert getOutputTotal() > 0;
     }
 
@@ -196,7 +208,7 @@ public class Transaction implements IBinaryData, IVerifiable {
     public boolean VerifyInputsUnspent(){
         for(TransactionInput input:Inputs){
             if(BlockChain.get().getUnspentTransactionOutput(input.InputHash, input.IndexNumber) == null) {
-                System.out.println("Could not verify that transaction "+Util.Base64Encode(getHash())+" input "+Util.Base64Encode(input.InputHash)+" "+input.IndexNumber+" was UTXO!");
+                Log.info("Could not verify that transaction "+Util.Base64Encode(getHash())+" input "+Util.Base64Encode(input.InputHash)+" "+input.IndexNumber+" was UTXO!");
                 return false;
             }
         }

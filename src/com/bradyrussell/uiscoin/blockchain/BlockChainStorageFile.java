@@ -10,10 +10,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class BlockChainStorageFile extends BlockChainStorageBase {
+    private static final Logger Log = Logger.getLogger(BlockChainStorageFile.class.getName());
+
     //public HashMap<byte[], Transaction> MemPool;
     public ArrayList<Transaction> MemPool;
 
@@ -26,7 +29,7 @@ public class BlockChainStorageFile extends BlockChainStorageBase {
             BlockHeight = buf.getInt();
             buf.get(HighestBlockHash);
 
-            System.out.println("Loaded blockchain " + (BlockHeight + 1) + " blocks long. Last block: " + Util.Base64Encode(HighestBlockHash));
+            Log.info("Loaded blockchain " + (BlockHeight + 1) + " blocks long. Last block: " + Util.Base64Encode(HighestBlockHash));
         }
 
         MemPool = new ArrayList<>();
@@ -45,7 +48,7 @@ public class BlockChainStorageFile extends BlockChainStorageBase {
                 t.setBinaryData(TransactionBytes);
                 if(t.Verify()) MemPool.add(t);
             }
-            System.out.println("Loaded mempool with "+MemPool.size()+" transactions.");
+            Log.info("Loaded mempool with "+MemPool.size()+" transactions.");
         }
 
         return true;
@@ -86,7 +89,7 @@ public class BlockChainStorageFile extends BlockChainStorageBase {
 
     @Override
     public void removeFromMempool(Transaction t) {
-        if(!MemPool.contains(t)) System.out.println("Error: Mempool does not contain this transaction");
+        if(!MemPool.contains(t)) Log.warning("Mempool does not contain this transaction");
         MemPool.remove(t);
         close(); // just putting this here to store the blockheight more often
     }

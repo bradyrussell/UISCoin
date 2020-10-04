@@ -6,8 +6,10 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
 import java.net.InetAddress;
+import java.util.logging.Logger;
 
 public class NodeP2PReceivePeerHandler extends SimpleChannelInboundHandler<InetAddress> {
+    private static final Logger Log = Logger.getLogger(NodeP2PReceivePeerHandler.class.getName());
     private final Node thisNode;
 
     public NodeP2PReceivePeerHandler(Node thisNode) {
@@ -32,16 +34,16 @@ public class NodeP2PReceivePeerHandler extends SimpleChannelInboundHandler<InetA
 
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, InetAddress inetAddress) throws Exception {
-        System.out.println("Handler Received peer "+ Util.Base64Encode(inetAddress.getAddress()));
+        Log.info("Handler Received peer "+ Util.Base64Encode(inetAddress.getAddress()));
 
         if(thisNode.getPeers().contains(inetAddress)) {
-            System.out.println("4 Already known, discarding...");
+            Log.info("4 Already known, discarding...");
             return;
         }
 
         thisNode.ConnectToPeer(inetAddress);
 
-        System.out.println("Rebroadcasting...");
+        Log.info("Rebroadcasting...");
         thisNode.BroadcastPeerToPeers(inetAddress);
     }
 }

@@ -5,8 +5,11 @@ import com.bradyrussell.uiscoin.MagicBytes;
 import com.bradyrussell.uiscoin.Util;
 
 import java.security.interfaces.ECPublicKey;
+import java.util.logging.Logger;
 
 public class UISCoinAddress {
+    private static final Logger Log = Logger.getLogger(UISCoinAddress.class.getName());
+
     public static byte[] fromPublicKey(ECPublicKey PubKey){
         byte[] header = {MagicBytes.AddressHeader.Value, MagicBytes.AddressType.Value, MagicBytes.AddressVersion.Value};
 
@@ -23,7 +26,6 @@ public class UISCoinAddress {
         decodedAddress.Checksum = new byte[4];
         decodedAddress.PublicKeyHash = new byte[Address.length-7];
 
-        //todo check this isnt off by one
         System.arraycopy(Address, 0, header, 0, 3);
         System.arraycopy(Address, Address.length-4, decodedAddress.Checksum, 0, 4);
         System.arraycopy(Address, 3, decodedAddress.PublicKeyHash, 0, Address.length-7);
