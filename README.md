@@ -1,6 +1,8 @@
 # UISCoin
 
-UISCoin is my attempt at making a cryptocurrency in Java. It is a SHA512 coin that uses a PoW algorithm based on the number of repeated characters in the set {U, I, S ...}  at the beginning of the block hash. UISCoin uses a stack based scripting language much like Bitcoin. Currently standard transactions in UISCoin use P2PKH (pay to public key hash) scripts. 
+UISCoin is my attempt at making a cryptocurrency in Java. It is a SHA512 coin that uses a PoW algorithm based on the number of repeated characters in the set {U, I, S ...}  at the beginning of the block hash. UISCoin uses a stack based scripting language much like Bitcoin. Currently standard transactions in UISCoin use P2PKH (pay to public key hash) scripts. All addresses take the form of UIS(v)PUBKEYHASH(checksum) where (v) is a version identifier and (checksum) is a check to ensure the address was not mistyped.
+
+Much like Bitcoin, we are using secp256k1 EC, but we sign messages with SHA512withECDSA.
 
 
 # Differences from Bitcoin
