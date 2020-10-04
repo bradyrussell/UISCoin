@@ -64,8 +64,8 @@ For a demonstration of the API, here is how I created the Genesis Block.
     }
     
     
-    # Scripting Language
-    The UISCoin scripting language is executed in bytecode format. Scripts can be converted back and forth between bytecode and script using ScriptBuilder.fromText() and ScriptBuilder.toText(). Scripts can also be created using the Builder pattern as seen below:
+# Scripting Language
+The UISCoin scripting language is executed in bytecode format. Scripts can be converted back and forth between bytecode and script using ScriptBuilder.fromText() and ScriptBuilder.toText(). Scripts can also be created using the Builder pattern as seen below:
                 byte[] a  = new ScriptBuilder(128)
                 .op(ScriptOperator.DUP) // dup the public key
                 .op(ScriptOperator.SHA512) // hash it
