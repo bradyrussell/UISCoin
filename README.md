@@ -24,7 +24,8 @@ While it was largely inspired by Bitcoin, there are some intentional differences
 # API
 
 For a demonstration of the API, here is how I created the Genesis Block.
-`    public static void CreateGenesisBlock() {
+`    
+public static void CreateGenesisBlock() {
         BlockChain.Initialize(BlockChainStorageFile.class);
         BlockChain.get().open();
 
