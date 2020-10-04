@@ -1,6 +1,6 @@
 # UISCoin
 
-UISCoin is my attempt at making a cryptocurrency in Java. It is a SHA512 coin that uses a PoW algorithm based on the number of repeated characters in the set {U, I, S ...}  at the beginning of the block hash. UISCoin uses a stack based scripting language much like Bitcoin. Currently standard transactions in UISCoin use P2PKH (pay to public key hash) scripts. All addresses take the form of `UIS(v)PUBKEYHASH(checksum)` where (v) is a version identifier and (checksum) is a check to ensure the address was not mistyped.
+UISCoin is my attempt at making a cryptocurrency in Java. It is a SHA512 coin that uses a PoW algorithm based on the number of repeated characters in the set {U, I, S ...}  at the beginning of the block hash. UISCoin uses a [stack based scripting language](https://bradyrussell.github.io/UISCoin/com/bradyrussell/uiscoin/script/ScriptOperator.html) much like Bitcoin. Currently standard transactions in UISCoin use [P2PKH (pay to public key hash) scripts](https://github.com/bradyrussell/UISCoin/blob/fe920e8572bb361a8b3a035d3639f4988b70406e/src/com/bradyrussell/uiscoin/transaction/TransactionOutputBuilder.java#L21). All addresses take the form of `UIS(v)PUBKEYHASH(checksum)` where (v) is a version identifier and (checksum) is a check to ensure the address was not mistyped.
 
 An example address is `UISxBraDYN4U4BN4bAKRLenuj1K37xr9zlhAfRFnKu-KLVf89uu3pBBSdBsF45cCAZwLhoK7Litdd4w8GxmkvHgBnFoqXis=`
 
@@ -13,15 +13,16 @@ While it was largely inspired by Bitcoin, there are some intentional differences
 
 - For one, we use SHA512 as a hash algorithm rather than SHA256 & RIPEMD160. This makes all hashes in UISCoin 64 bytes long rather than 32. We also only hash a single time.
 - Instead of base58 encoding used by Bitcoin we use Base64 URL Encoded from Java's Base64.getUrlEncoder().
-- The PoW difficulty is based on the block hash beginning with N characters of a repeating series U, I, S, U, I, S ... rather than having a certain number of preceding zeroes (or being below a target value). It is limited at a minimum of 3 and a maximum of 63. An example of a valid block hash at difficulty 3 is:
+- The PoW difficulty is based on the [block hash beginning with N characters of a repeating series U, I, S, U, I, S ...](https://github.com/bradyrussell/UISCoin/blob/40b0327f5efbbfb06a320874aa1ac41bbeaa6344/src/com/bradyrussell/uiscoin/Hash.java#L58) rather than having a certain number of preceding zeroes (or being below a target value). It is limited at a minimum of 3 and a maximum of 63. An example of a valid block hash at difficulty 3 is:
 `UISalWjd9-_4YTMOTVOQhthSwE4x-qUcXsZXT5zhjd3ic3bZaHj-Afjr1V0VpTZKZteYce-Zj5W-afEbsveh7w==`
 - Java uses signed bytes, so I do not think the binary data produced can be used in languages with unsigned bytes without conversion.
 - The block height is stored in the Index of the Coinbase transaction input rather than the script.
 - The unlocking script signature message is the hash of the transaction output you are trying to spend. This allows you to combine multiple unrelated inputs into one transasction. (Not sure how this works in BTC)
-- The difficulty algorithm is much simpler, basically if the last block was over five minutes ago, the difficulty is lastBlockDifficulty - 1. If it was before 5 minutes ago it is lastBlockDifficulty + 1. This is not as robust as Bitcoin's but works well enough.
+- The [difficulty algorithm](https://github.com/bradyrussell/UISCoin/blob/40b0327f5efbbfb06a320874aa1ac41bbeaa6344/src/com/bradyrussell/uiscoin/block/BlockHeader.java#L130) is much simpler, basically if the last block was over five minutes ago, the difficulty is lastBlockDifficulty - 1. If it was before 5 minutes ago it is lastBlockDifficulty + 1. This is not as robust as Bitcoin's but works well enough.
 - As alluded to in the previous bullet point, the target block time is five minutes rather than BTC's ten.
 
 # API
+JavaDoc is available here: https://bradyrussell.github.io/UISCoin/
 
 For a demonstration of the API, here is how I created the Genesis Block.
 
@@ -61,3 +62,24 @@ For a demonstration of the API, here is how I created the Genesis Block.
         System.out.println("Genesis block broadcast!");
         BlockChain.get().close();
     }
+    
+    
+# Scripting Language
+The UISCoin scripting language is executed in bytecode format. [See the available OPCodes.](https://bradyrussell.github.io/UISCoin/com/bradyrussell/uiscoin/script/ScriptOperator.html) Scripts can be converted back and forth between bytecode and script using ScriptBuilder.fromText() and ScriptBuilder.toText(). Scripts can also be created using the Builder pattern as seen below:
+                
+                byte[] a  = new ScriptBuilder(128)
+                .op(ScriptOperator.DUP) // dup the public key
+                .op(ScriptOperator.SHA512) // hash it
+                .push(A) // push the address
+                .op(ScriptOperator.LEN) // take its length
+                .pushInt(4) // push 4
+                .op(ScriptOperator.SWAP) // make length the top stack element, then 4
+                .op(ScriptOperator.SUBTRACT) // do length - 4
+                .op(ScriptOperator.LIMIT) // limit the address to length - 4 (remove checksum)
+                .op(ScriptOperator.BYTESEQUAL) // equal to pubkey hash?
+                .op(ScriptOperator.VERIFY)
+                .op(ScriptOperator.VERIFYSIG)
+                .get();
+
+                byte[] b= new ScriptBuilder(128).fromText("dup sha512").push(A).fromText("len push 4 swap subtract limit bytesequal verify verifysig").get();
+                assertTrue(Arrays.equals(a,b));// true
