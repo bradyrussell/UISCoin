@@ -22,7 +22,7 @@ While it was largely inspired by Bitcoin, there are some intentional differences
 - As alluded to in the previous bullet point, the target block time is five minutes rather than BTC's ten.
 
 # API
-
+JavaDoc is available here: https://bradyrussell.github.io/UISCoin/
 For a demonstration of the API, here is how I created the Genesis Block.
 
         public static void CreateGenesisBlock() {
