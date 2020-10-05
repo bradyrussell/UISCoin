@@ -62,6 +62,12 @@ public class BlockBuilder {
         return this;
     }
 
+    public BlockBuilder CalculateDifficultyTarget(){
+        Block lastBlock = BlockChain.get().getBlock(BlockChain.get().HighestBlockHash);
+        setDifficultyTarget(BlockHeader.CalculateDifficultyTarget(block.Header.Time - lastBlock.Header.Time, lastBlock.Header.DifficultyTarget));
+        return this;
+    }
+
     public BlockBuilder setCoinbase(Transaction coinbase){
         block.setCoinbaseTransaction(coinbase);
         return this;
