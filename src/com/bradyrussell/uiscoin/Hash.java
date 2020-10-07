@@ -65,4 +65,18 @@ public class Hash {
         }
         return true;
     }
+
+    public static int getHashDifficulty(byte[] Hash){
+        //final byte[] Prefix = {74, 97, 99, 107}; // Jack
+        //final byte[] Prefix = {85, 73, 83}; // UIS
+        final byte[] Prefix = {0x50, (byte) 0x84, (byte) 0x9a}; // UISa in base64
+
+        int n = 0;
+
+        for(int i = 0; i < Hash.length; i++){
+            if(Hash[i] != Prefix[i % Prefix.length]) return n;
+            n++;
+        }
+        return n;
+    }
 }

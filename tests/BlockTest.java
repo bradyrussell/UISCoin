@@ -1,5 +1,6 @@
 import com.bradyrussell.uiscoin.Conversions;
 import com.bradyrussell.uiscoin.Hash;
+import com.bradyrussell.uiscoin.Util;
 import com.bradyrussell.uiscoin.address.UISCoinKeypair;
 import com.bradyrussell.uiscoin.block.Block;
 import com.bradyrussell.uiscoin.block.BlockBuilder;
@@ -11,7 +12,7 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.concurrent.ThreadLocalRandom;
 
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class BlockTest {
     @RepeatedTest(10)
@@ -56,6 +57,15 @@ public class BlockTest {
         for (int i = 0, blockBinaryDataLength = blockBinaryData.length; i < blockBinaryDataLength; i++) {
             if(blockBinaryData[i] != deserializedBlockBinaryData[i]) fail("Byte mismatch at position "+i+"\n"+Arrays.toString(blockBinaryData)+"\n"+Arrays.toString(deserializedBlockBinaryData));
         }
+
+    }
+
+    @RepeatedTest(100)
+    @DisplayName("Hash GetDifficulty")
+    void TestHashGetDifficulty() {
+
+        byte[] hash = Util.Base64Decode("UISa1foAACU7v1siyHul3StuvEJx5rebFgMkP_Sgiz60NoOSV00SP-yD_MO7JoHr7mmixKvj28QECDeaXQfzIQ==");
+        assertEquals(Hash.validateHash(hash,3),Hash.getHashDifficulty(hash)==3);
 
     }
 
