@@ -24,6 +24,10 @@ While it was largely inspired by Bitcoin, there are some intentional differences
 # API
 JavaDoc is available here: https://bradyrussell.github.io/UISCoin/
 
+I recommend looking at this extension as well: [UISCoin_BlockChainStorageLevelDB_Extension](https://github.com/bradyrussell/UISCoin_BlockChainStorageLevelDB_Extension/releases/tag/1.0)
+
+It adds another BlockChainStorage class, this one using a LevelDB database which is much faster than flatfiles. 
+
 For a demonstration of the API, here is how I created the Genesis Block.
 
         public static void CreateGenesisBlock() {
