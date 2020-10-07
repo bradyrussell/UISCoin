@@ -6,6 +6,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class Hash {
+    final static byte[] Prefix = {0x50, (byte) 0x84, (byte) 0x94, 0x21, 0x25, 0x08, 0x49, 0x42, 0x12};
+
     public static String getSHA512String(String Input) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-512");
@@ -55,26 +57,26 @@ public class Hash {
 
     }
 
-    public static boolean validateHash(byte[] Hash, int Difficulty){
+    public static boolean validateHash(byte[] Hash, int Difficulty) {
         //final byte[] Prefix = {74, 97, 99, 107}; // Jack
         //final byte[] Prefix = {85, 73, 83}; // UIS
-        final byte[] Prefix = {0x50, (byte) 0x84, (byte) 0x9a}; // UISa in base64
+       // final byte[] Prefix = {0x50, (byte) 0x84, (byte) 0x9a}; // UISa in base64
 
-        for(int i = 0; i < Difficulty; i++){
-            if(Hash[i] != Prefix[i % Prefix.length]) return false;
+        for (int i = 0; i < Difficulty; i++) {
+            if (Hash[i] != Prefix[i % Prefix.length]) return false;
         }
         return true;
     }
 
-    public static int getHashDifficulty(byte[] Hash){
+    public static int getHashDifficulty(byte[] Hash) {
         //final byte[] Prefix = {74, 97, 99, 107}; // Jack
         //final byte[] Prefix = {85, 73, 83}; // UIS
-        final byte[] Prefix = {0x50, (byte) 0x84, (byte) 0x9a}; // UISa in base64
+        //final byte[] Prefix = {0x50, (byte) 0x84, (byte) 0x9a}; // UISa in base64
 
         int n = 0;
 
-        for(int i = 0; i < Hash.length; i++){
-            if(Hash[i] != Prefix[i % Prefix.length]) return n;
+        for (int i = 0; i < Hash.length; i++) {
+            if (Hash[i] != Prefix[i % Prefix.length]) return n;
             n++;
         }
         return n;
