@@ -4,7 +4,7 @@ UISCoin is my attempt at making a cryptocurrency in Java. It is a SHA512 coin th
 
 An example address is `UISxBraDYN4U4BN4bAKRLenuj1K37xr9zlhAfRFnKu-KLVf89uu3pBBSdBsF45cCAZwLhoK7Litdd4w8GxmkvHgBnFoqXis=`
 
-Much like Bitcoin, we are using secp256k1 EC, but we sign messages with SHA512withECDSA.
+Much like Bitcoin, we are using secp256k1 EC, but we sign messages with SHA512withECDSA. I believe the secp256k1 implementation used was removed in Java 15 so only 14 is supported.
 
 
 # Differences from Bitcoin
