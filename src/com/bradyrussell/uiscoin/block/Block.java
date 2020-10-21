@@ -1,6 +1,8 @@
 package com.bradyrussell.uiscoin.block;
 
 import com.bradyrussell.uiscoin.*;
+import com.bradyrussell.uiscoin.blockchain.exception.NoSuchBlockException;
+import com.bradyrussell.uiscoin.blockchain.exception.NoSuchTransactionException;
 import com.bradyrussell.uiscoin.transaction.Transaction;
 import com.bradyrussell.uiscoin.transaction.TransactionInput;
 
@@ -193,7 +195,11 @@ public class Block implements IBinaryData, IVerifiable {
                 }
 
                 if (!transaction.Verify()){
-                    transaction.DebugVerify();
+                    try {
+                        transaction.DebugVerify();
+                    } catch (NoSuchTransactionException | NoSuchBlockException e) {
+                        e.printStackTrace();
+                    }
                     return false;
                 }
             }
@@ -203,7 +209,12 @@ public class Block implements IBinaryData, IVerifiable {
 
     public boolean VerifyTransactionsUnspent() {
         for (int i = 0; i < Transactions.size(); i++) {
-            if (i != 0 && !Transactions.get(i).VerifyInputsUnspent()) return false;
+            try {
+                if (i != 0 && !Transactions.get(i).VerifyInputsUnspent()) return false;
+            } catch (NoSuchTransactionException e) {
+                e.printStackTrace();
+                return false;
+            }
         }
         return true;
     }

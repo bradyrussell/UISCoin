@@ -2,6 +2,8 @@ package com.bradyrussell.uiscoin.block;
 
 import com.bradyrussell.uiscoin.Hash;
 import com.bradyrussell.uiscoin.blockchain.BlockChain;
+import com.bradyrussell.uiscoin.blockchain.exception.NoSuchBlockException;
+import com.bradyrussell.uiscoin.blockchain.exception.NoSuchTransactionException;
 import com.bradyrussell.uiscoin.script.ScriptBuilder;
 import com.bradyrussell.uiscoin.script.ScriptOperator;
 import com.bradyrussell.uiscoin.transaction.Transaction;
@@ -42,8 +44,8 @@ public class BlockBuilder {
         return this;
     }
 
-    public BlockBuilder setBlockHeight(int BlockHeigth){
-        getOrCreateHeader().BlockHeight = BlockHeigth;
+    public BlockBuilder setBlockHeight(int BlockHeight){
+        getOrCreateHeader().BlockHeight = BlockHeight;
         return this;
     }
 
@@ -62,7 +64,7 @@ public class BlockBuilder {
         return this;
     }
 
-    public BlockBuilder CalculateDifficultyTarget(){
+    public BlockBuilder CalculateDifficultyTarget() throws NoSuchBlockException {
         Block lastBlock = BlockChain.get().getBlock(BlockChain.get().HighestBlockHash);
         setDifficultyTarget(BlockHeader.CalculateDifficultyTarget(block.Header.Time - lastBlock.Header.Time, lastBlock.Header.DifficultyTarget));
         return this;
@@ -84,17 +86,27 @@ public class BlockBuilder {
             long ASecondsOld = Instant.now().getEpochSecond() - a.TimeStamp;
             long BSecondsOld = Instant.now().getEpochSecond() - b.TimeStamp;
 
-            return (int) ((b.getFees() * ((BSecondsOld / 600) + 1)) - (a.getFees() * ((ASecondsOld / 600) + 1))); // sort by fee but add a bonus multiplier for every 10 minutes old
+            try {
+                return (int) ((b.getFees() * ((BSecondsOld / 600) + 1)) - (a.getFees() * ((ASecondsOld / 600) + 1))); // sort by fee but add a bonus multiplier for every 10 minutes old
+            } catch (NoSuchTransactionException | NoSuchBlockException e) {
+                e.printStackTrace();
+                return 0;
+            }
         });
 
         ArrayList<Transaction> toRemove = new ArrayList<>();
 
         int size = 0;
         for(Transaction t:mempool){
-            if(!t.Verify()  || !t.VerifyInputsUnspent()) {
-                toRemove.add(t);
-                continue;
+            try {
+                if(!t.Verify()  || !t.VerifyInputsUnspent()) {
+                    toRemove.add(t);
+                    continue;
+                }
+            } catch (NoSuchTransactionException e) {
+                e.printStackTrace();
             }
+
             if((size + t.getSize()) < SizeLimit) {
                 block.Transactions.add(t);
             } else {

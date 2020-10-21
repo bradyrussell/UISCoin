@@ -2,6 +2,8 @@ package com.bradyrussell.uiscoin.transaction;
 
 import com.bradyrussell.uiscoin.*;
 import com.bradyrussell.uiscoin.blockchain.BlockChain;
+import com.bradyrussell.uiscoin.blockchain.exception.NoSuchBlockException;
+import com.bradyrussell.uiscoin.blockchain.exception.NoSuchTransactionException;
 import com.bradyrussell.uiscoin.script.ScriptExecution;
 
 import java.nio.ByteBuffer;
@@ -80,8 +82,11 @@ public class TransactionInput  implements IBinaryData, IVerifiable {
         if(UnlockingScript.length > MagicNumbers.MaxUnlockingScriptLength.Value) return false;
 
         //TransactionOutput unspentTransactionOutput = BlockChain.get().getUnspentTransactionOutput(InputHash, IndexNumber);
-        TransactionOutput unspentTransactionOutput = BlockChain.get().getTransactionOutput(InputHash, IndexNumber);
-        if(unspentTransactionOutput == null) {
+        TransactionOutput unspentTransactionOutput = null;
+        try {
+            unspentTransactionOutput = BlockChain.get().getTransactionOutput(InputHash, IndexNumber);
+        } catch (NoSuchTransactionException | NoSuchBlockException e) {
+            e.printStackTrace();
             Log.info("Verification failed! No UTXO");
             return false;
         }

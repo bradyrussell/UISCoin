@@ -5,6 +5,7 @@ import com.bradyrussell.uiscoin.IBinaryData;
 import com.bradyrussell.uiscoin.IVerifiable;
 import com.bradyrussell.uiscoin.MagicNumbers;
 import com.bradyrussell.uiscoin.blockchain.BlockChain;
+import com.bradyrussell.uiscoin.blockchain.exception.NoSuchBlockException;
 
 import java.nio.ByteBuffer;
 import java.time.Instant;
@@ -105,26 +106,35 @@ public class BlockHeader implements IBinaryData, IVerifiable {
 
     @Override
     public boolean Verify() {
-        boolean valid = true;
-
         if(BlockHeight > 0) {
-            BlockHeader previousBlockHeader = BlockChain.get().getBlockHeader(HashPreviousBlock);
-            valid = (BlockHeight == previousBlockHeader.BlockHeight + 1); // we are previous Block Height + 1
-            valid &= (DifficultyTarget >= CalculateDifficultyTarget(Time - previousBlockHeader.Time, previousBlockHeader.DifficultyTarget)); // we are using a proper difficulty
+            BlockHeader previousBlockHeader = null;
+            try {
+                previousBlockHeader = BlockChain.get().getBlockHeader(HashPreviousBlock);
+            } catch (NoSuchBlockException e) {
+                e.printStackTrace();
+                return false;
+            }
 
-            assert (BlockHeight == previousBlockHeader.BlockHeight + 1);
-            assert (DifficultyTarget >= CalculateDifficultyTarget(Time - previousBlockHeader.Time, previousBlockHeader.DifficultyTarget));
+            if(BlockHeight != previousBlockHeader.BlockHeight + 1) {
+                assert (BlockHeight == previousBlockHeader.BlockHeight + 1);
+                return false; // we are previous Block Height + 1
+            }
+            if(DifficultyTarget < CalculateDifficultyTarget(Time - previousBlockHeader.Time, previousBlockHeader.DifficultyTarget)){
+                assert (DifficultyTarget >= CalculateDifficultyTarget(Time - previousBlockHeader.Time, previousBlockHeader.DifficultyTarget));
+                return false;
+            }
+
         }
 
         boolean timeValid = (Time - 30) <= Instant.now().getEpochSecond();
-        assert timeValid;
-        valid &= timeValid; // timestamp is not in the future, allow for 30s variance
 
         if(!timeValid){
             Log.severe("Error: Block time is in the future! Please check the system time is correct.");
+            assert timeValid;
+            return false;
         }
 
-        return valid;
+        return true;
     }
 
     public static int CalculateDifficultyTarget(long TimeSinceLastBlock, int LastBlockDifficulty) {

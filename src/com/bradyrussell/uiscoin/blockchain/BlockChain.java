@@ -2,6 +2,9 @@ package com.bradyrussell.uiscoin.blockchain;
 
 import com.bradyrussell.uiscoin.Util;
 import com.bradyrussell.uiscoin.block.Block;
+import com.bradyrussell.uiscoin.blockchain.exception.InvalidBlockException;
+import com.bradyrussell.uiscoin.blockchain.exception.NoSuchBlockException;
+import com.bradyrussell.uiscoin.blockchain.exception.NoSuchTransactionException;
 import com.bradyrussell.uiscoin.transaction.Transaction;
 import com.bradyrussell.uiscoin.transaction.TransactionInput;
 
@@ -32,19 +35,19 @@ public class BlockChain {
         return Storage;
     }
 
-    public static boolean Verify(int StartBlockHeight) {
+    public static boolean Verify(int StartBlockHeight) throws NoSuchBlockException, InvalidBlockException {
         List<Block> blockChain = get().getBlockChainFromHeight(StartBlockHeight);
         for (Block b : blockChain) {
             if (!b.Verify()) {
                 b.DebugVerify();
                 Log.warning("Block " + Util.Base64Encode(b.Header.getHash()) + " at height " + b.Header.BlockHeight + " has failed verification!");
-                return false;
+                throw new InvalidBlockException("Block " + Util.Base64Encode(b.Header.getHash()) + " at height " + b.Header.BlockHeight + " has failed verification!");
             }
         }
         return true;
     }
 
-    public static void BuildUTXOSet(int StartBlockHeight) {
+    public static void BuildUTXOSet(int StartBlockHeight) throws NoSuchBlockException, NoSuchTransactionException {
         List<Block> blockChain = get().getBlockChainFromHeight(StartBlockHeight);
 
         ArrayList<byte[]> TransactionOutputs = new ArrayList<>();
