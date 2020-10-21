@@ -201,7 +201,9 @@ public abstract class BlockChainStorageBase {
        // System.out.println("GetBlockChainFromHeight: CurrentBlockHash = "+Util.Base64Encode(currentBlockHash));
 
         while(getBlockHeader(currentBlockHash) != null && getBlockHeader(currentBlockHash).BlockHeight >= BlockHeight) {
-            blockchain.add(getBlock(currentBlockHash));
+            Block block = getBlock(currentBlockHash);
+            blockchain.add(block);
+            if(block.Header.BlockHeight == 0) break;
             currentBlockHash = getBlockHeader(currentBlockHash).HashPreviousBlock;
         }
 
