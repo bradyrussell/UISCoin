@@ -146,7 +146,10 @@ public class Node {
             if(nodeClients != null) nodeClients.close().sync();
             Log.info("Closed peer connections.");
 
-            if(serverChannel != null) serverChannel.close().sync();
+            if(serverChannel != null) {
+                serverChannel.close().sync();
+                serverChannel.eventLoop().shutdownGracefully().sync();
+            }
             if(bossGroup != null) bossGroup.shutdownGracefully();
             if(workerGroup != null) workerGroup.shutdownGracefully();
             if(peerGroup != null) peerGroup.shutdownGracefully();
