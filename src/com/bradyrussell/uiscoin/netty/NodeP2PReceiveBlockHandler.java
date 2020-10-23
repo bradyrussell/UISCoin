@@ -42,7 +42,7 @@ public class NodeP2PReceiveBlockHandler extends SimpleChannelInboundHandler<Bloc
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, Block block) throws Exception {
         Log.info("Handler Received block "+ Util.Base64Encode(block.Header.getHash()));
 
-        if(BlockChain.get().exists(block.Header.getHash(), BlockChainStorageBase.BlocksDatabase)){
+        if(BlockChain.get().BlockHeight >= block.Header.BlockHeight && BlockChain.get().exists(block.Header.getHash(), BlockChainStorageBase.BlocksDatabase)){
             Log.info("Already have. Discarding...");
             return;
         }
