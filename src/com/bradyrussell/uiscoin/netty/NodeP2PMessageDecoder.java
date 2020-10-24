@@ -38,7 +38,7 @@ public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
             switch (packetType){
                 case DISCONNECT -> {
                     Log.fine("3 Received disconnect!");
-                    channelHandlerContext.writeAndFlush(new PeerPacketBuilder(2).putDisconnect().get());
+                    channelHandlerContext.writeAndFlush(Unpooled.wrappedBuffer(new byte[]{PeerPacketType.DISCONNECT.Header}));
                     channelHandlerContext.disconnect().addListener((ChannelFutureListener) channelFuture -> Log.info("Disconnected from peer "+channelFuture.channel().remoteAddress().toString()+" at their request."));
                     list.add(true);
                 }
@@ -59,7 +59,9 @@ public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
                         if(!peer.equals(((InetSocketAddress )channelHandlerContext.channel().remoteAddress()).getAddress())) channelHandlerContext.write(peer);
                     }
 
-                    ByteBuf wrappedBuffer = Unpooled.wrappedBuffer(new PeerPacketBuilder(5).putHandshake(1).get());
+                    ByteBuf wrappedBuffer = Unpooled.buffer();
+                    wrappedBuffer.writeByte(PeerPacketType.HANDSHAKE.Header);
+                    wrappedBuffer.writeInt(MagicBytes.ProtocolVersion.Value);
                     ChannelFuture channelFuture = channelHandlerContext.writeAndFlush(wrappedBuffer);
                     //wrappedBuffer.release();
                     channelFuture.addListener((ChannelFutureListener) channelFuture1 -> {

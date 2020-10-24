@@ -1,7 +1,8 @@
 package com.bradyrussell.uiscoin.netty;
 
+import com.bradyrussell.uiscoin.MagicBytes;
 import com.bradyrussell.uiscoin.node.BlockRequest;
-import com.bradyrussell.uiscoin.node.PeerPacketBuilder;
+import com.bradyrussell.uiscoin.node.PeerPacketType;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
@@ -30,7 +31,10 @@ public class NodeP2PClientHandler extends SimpleChannelInboundHandler<ByteBuf> {
         this.ctx = ctx;
         super.channelActive(ctx);
         Log.info("Client connection active.");
-        ByteBuf wrappedBuffer = Unpooled.wrappedBuffer(new PeerPacketBuilder(5).putGreeting(1).get());
+        ByteBuf wrappedBuffer = Unpooled.buffer();
+        wrappedBuffer.writeByte(PeerPacketType.GREETING.Header);
+        wrappedBuffer.writeInt(MagicBytes.ProtocolVersion.Value);
+
         ChannelFuture channelFuture = ctx.writeAndFlush(wrappedBuffer);
         // wrappedBuffer.release();
         channelFuture.addListener((ChannelFutureListener) channelFuture1 -> {
