@@ -57,10 +57,18 @@ public class NodeP2PReceiveBlockHandler extends SimpleChannelInboundHandler<Bloc
 
             return; // we are on a longer chain!
         }
+
         if(!block.Verify()) {
             block.DebugVerify();
             Log.info("Invalid block! Discarding.");
             return;
+        }
+
+        if (BlockChain.get().BlockHeight < block.Header.BlockHeight) {
+            if(!block.VerifyTransactionsUnspent()) {
+                Log.warning("Block contains spent transactions! Discarding!");
+                return;
+            }
         }
 
         Log.info("Storing block...");
