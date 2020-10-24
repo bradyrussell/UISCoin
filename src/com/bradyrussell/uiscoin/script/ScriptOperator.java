@@ -205,10 +205,21 @@ public enum ScriptOperator {
      */
     RETURN(0xa1),
 
-    LOCKTIMEVERIFY(0xa2),
+//    LOCKTIMEVERIFY(0xa2),
 
     //hashes
     SHA512(0xb0),
+
+    //encryption
+    /**
+     * Encrypts a message (top of stack) using the key (second to top) using Cipher.getInstance("AES/ECB/PKCS5Padding").
+     */
+    ENCRYPTAES(0xb5),
+
+    /**
+     * Decrypts a message (top of stack) using the key (second to top) using Cipher.getInstance("AES/ECB/PKCS5Padding"). Could be used to password protect a transaction output.
+     */
+    DECRYPTAES(0xb6),
 
     // signature
     /**

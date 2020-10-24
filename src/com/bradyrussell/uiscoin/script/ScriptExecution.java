@@ -1,9 +1,13 @@
 package com.bradyrussell.uiscoin.script;
 
+import com.bradyrussell.uiscoin.Encryption;
 import com.bradyrussell.uiscoin.Hash;
 import com.bradyrussell.uiscoin.Keys;
 import com.bradyrussell.uiscoin.Util;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
@@ -671,11 +675,46 @@ public class ScriptExecution {
                     bScriptFailed = true;
                     return false;
                 }
-                case LOCKTIMEVERIFY -> {
-
-                }
                 case SHA512 -> {
                     Stack.push(Hash.getSHA512Bytes(Stack.pop()));
+                    return true;
+                }
+                case ENCRYPTAES -> {
+                    if (Stack.size() < 2) {
+                        Log.info("Too few items in stack");
+                        bScriptFailed = true;
+                        return false;
+                    }
+                    byte[] Message = Stack.pop();
+                    byte[] Key = Stack.pop();
+
+                    try {
+                        Stack.push(Encryption.Encrypt(Message,Key));
+                    } catch (NoSuchPaddingException | NoSuchAlgorithmException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {
+                        e.printStackTrace();
+                        bScriptFailed = true;
+                        return false;
+                    }
+
+                    return true;
+                }
+                case DECRYPTAES -> {
+                    if (Stack.size() < 2) {
+                        Log.info("Too few items in stack");
+                        bScriptFailed = true;
+                        return false;
+                    }
+                    byte[] Message = Stack.pop();
+                    byte[] Key = Stack.pop();
+
+                    try {
+                        Stack.push(Encryption.Decrypt(Message,Key));
+                    } catch (NoSuchPaddingException | NoSuchAlgorithmException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {
+                        e.printStackTrace();
+                        bScriptFailed = true;
+                        return false;
+                    }
+
                     return true;
                 }
                 case VERIFYSIG -> {
