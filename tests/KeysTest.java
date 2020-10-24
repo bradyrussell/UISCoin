@@ -8,6 +8,7 @@ import com.bradyrussell.uiscoin.script.ScriptOperator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.RepeatedTest;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
@@ -88,8 +89,19 @@ public class KeysTest {
     @DisplayName("Wallet Encrypted Keys Save / Load")
     void TestWalletKeysSaveLoad() {
         UISCoinKeypair uisCoinKeypair = UISCoinKeypair.Create();
-        Wallet.SaveKeypairToFileWithPassword(Path.of("tests/test_wallet.uisw"),"boomer", uisCoinKeypair);
-        UISCoinKeypair keypairFromFileWithPassword = Wallet.LoadKeypairFromFileWithPassword(Path.of("tests/test_wallet.uisw"), "boomer");
+        try {
+            Wallet.SaveKeypairToFileWithPassword(Path.of("tests/test_wallet.uisw"),"boomer", uisCoinKeypair);
+        } catch (IOException e) {
+            e.printStackTrace();
+            fail();
+        }
+        UISCoinKeypair keypairFromFileWithPassword = null;
+        try {
+            keypairFromFileWithPassword = Wallet.LoadKeypairFromFileWithPassword(Path.of("tests/test_wallet.uisw"), "boomer");
+        } catch (IOException e) {
+            e.printStackTrace();
+            fail();
+        }
 
         assertNotNull(keypairFromFileWithPassword);
         assertTrue(Arrays.equals(uisCoinKeypair.getBinaryData(), keypairFromFileWithPassword.getBinaryData()));
@@ -107,8 +119,19 @@ public class KeysTest {
 
         assertTrue(wallet.Keypairs.size() > 0);
 
-        Wallet.SaveWalletToFileWithPassword(Path.of("tests/test_wallet.uiscoin"),"boomer",wallet);
-        UISCoinWallet wallet1 = Wallet.LoadWalletFromFileWithPassword(Path.of("tests/test_wallet.uiscoin"), "boomer");
+        try {
+            Wallet.SaveWalletToFileWithPassword(Path.of("tests/test_wallet.uiscoin"),"boomer",wallet);
+        } catch (IOException e) {
+            e.printStackTrace();
+            fail();
+        }
+        UISCoinWallet wallet1 = null;
+        try {
+            wallet1 = Wallet.LoadWalletFromFileWithPassword(Path.of("tests/test_wallet.uiscoin"), "boomer");
+        } catch (IOException e) {
+            e.printStackTrace();
+            fail();
+        }
 
         assertNotNull(wallet1);
         assertTrue(Arrays.equals(wallet.getBinaryData(),wallet1.getBinaryData()));
