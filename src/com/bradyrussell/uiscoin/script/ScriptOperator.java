@@ -217,7 +217,7 @@ public enum ScriptOperator {
     ENCRYPTAES(0xb5),
 
     /**
-     * Decrypts a message (top of stack) using the key (second to top) using Cipher.getInstance("AES/ECB/PKCS5Padding"). Could be used to password protect a transaction output.
+     * Decrypts a message (top of stack) using the key (second to top) using Cipher.getInstance("AES/ECB/PKCS5Padding").
      */
     DECRYPTAES(0xb6),
 

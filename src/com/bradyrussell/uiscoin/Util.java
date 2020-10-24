@@ -62,4 +62,8 @@ public class Util {
         }
         return false;
     }
+
+    public static String getConstantSalt(){
+        return "_UISCoin1.0_salted_password";
+    }
 }

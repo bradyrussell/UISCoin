@@ -31,10 +31,7 @@ public abstract class BlockChainStorageBase {
     public abstract void removeFromMempool(Transaction t);
     public abstract List<Transaction> getMempool();
 
-   // public abstract byte[] get(byte[] Key);
     public abstract byte[] get(byte[] Key, String Database);
-    // public abstract void get(byte[] Key, byte[] Value);
-    //public abstract void put(byte[] Key, byte[] Value);
     public abstract void put(byte[] Key, byte[] Value, String Database);
     public abstract void remove(byte[] Key, String Database);
     public abstract boolean exists(byte[] Key, String Database);

@@ -1,5 +1,7 @@
 package com.bradyrussell.uiscoin.transaction;
 
+import com.bradyrussell.uiscoin.Hash;
+import com.bradyrussell.uiscoin.Util;
 import com.bradyrussell.uiscoin.script.ScriptBuilder;
 import com.bradyrussell.uiscoin.script.ScriptOperator;
 
@@ -47,6 +49,17 @@ public class TransactionOutputBuilder {
                 .get();
 
         //new ScriptBuilder(128).fromText("dup sha512").push(PublicKeyHash).fromText("len push 4 swap subtract limit bytesequal verify verifysig").get();
+        return this;
+    }
+
+    public TransactionOutputBuilder setPayToPassword(String Password){
+        output.LockingScript = new ScriptBuilder(128)
+                .op(ScriptOperator.SHA512) // hash plaintext input password
+                .push(Hash.getSHA512Bytes(Password + Util.getConstantSalt())) // push the hashed known Password
+                .op(ScriptOperator.BYTESEQUAL) // equal to provided input password hash?
+                .op(ScriptOperator.VERIFY)
+                .op(ScriptOperator.VERIFYSIG)
+                .get();
         return this;
     }
 

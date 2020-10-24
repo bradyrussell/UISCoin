@@ -1,9 +1,11 @@
 package com.bradyrussell.uiscoin.transaction;
 
 import com.bradyrussell.uiscoin.Keys;
+import com.bradyrussell.uiscoin.Util;
 import com.bradyrussell.uiscoin.address.UISCoinKeypair;
 import com.bradyrussell.uiscoin.script.ScriptBuilder;
 
+import java.nio.charset.Charset;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
@@ -72,4 +74,11 @@ public class TransactionInputBuilder {
 
         return this;
     }
+
+    public TransactionInputBuilder setUnlockPayToPassword(String Password) {
+        byte[] dataToPush = (Password + Util.getConstantSalt()).getBytes(Charset.defaultCharset());
+        input.UnlockingScript = new ScriptBuilder(dataToPush.length+2).push(dataToPush).get();
+        return this;
+    }
+    //
 }
