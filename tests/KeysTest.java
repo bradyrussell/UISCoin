@@ -8,9 +8,14 @@ import com.bradyrussell.uiscoin.script.ScriptOperator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.RepeatedTest;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.security.*;
+import java.security.interfaces.ECPrivateKey;
+import java.security.interfaces.ECPublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Arrays;
 import java.util.concurrent.ThreadLocalRandom;
@@ -86,19 +91,37 @@ public class KeysTest {
     }
 
     @RepeatedTest(100)
+    @DisplayName("Keys Generate Pubkey from Privkey")
+    void TestKeysPubFromPriv() {
+        try {
+            byte[] Randomseed = new byte[64];
+
+            ThreadLocalRandom.current().nextBytes(Randomseed);
+
+            KeyPair keyPair = Keys.makeKeyPair(Randomseed);
+
+            ECPublicKey publicKey = Keys.getPublicKeyFromPrivateKey((ECPrivateKey) keyPair.getPrivate());
+
+            assertTrue(Arrays.equals(keyPair.getPublic().getEncoded(), publicKey.getEncoded()));
+        } catch (GeneralSecurityException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @RepeatedTest(100)
     @DisplayName("Wallet Encrypted Keys Save / Load")
     void TestWalletKeysSaveLoad() {
         UISCoinKeypair uisCoinKeypair = UISCoinKeypair.Create();
         try {
             Wallet.SaveKeypairToFileWithPassword(Path.of("tests/test_wallet.uisw"),"boomer", uisCoinKeypair);
-        } catch (IOException e) {
+        } catch (IOException | IllegalBlockSizeException | InvalidKeyException | BadPaddingException | NoSuchAlgorithmException | NoSuchPaddingException e) {
             e.printStackTrace();
             fail();
         }
         UISCoinKeypair keypairFromFileWithPassword = null;
         try {
             keypairFromFileWithPassword = Wallet.LoadKeypairFromFileWithPassword(Path.of("tests/test_wallet.uisw"), "boomer");
-        } catch (IOException e) {
+        } catch (IOException | IllegalBlockSizeException | InvalidKeyException | BadPaddingException | NoSuchAlgorithmException | NoSuchPaddingException e) {
             e.printStackTrace();
             fail();
         }
@@ -121,14 +144,14 @@ public class KeysTest {
 
         try {
             Wallet.SaveWalletToFileWithPassword(Path.of("tests/test_wallet.uiscoin"),"boomer",wallet);
-        } catch (IOException e) {
+        } catch (IOException | IllegalBlockSizeException | InvalidKeyException | BadPaddingException | NoSuchAlgorithmException | NoSuchPaddingException e) {
             e.printStackTrace();
             fail();
         }
         UISCoinWallet wallet1 = null;
         try {
             wallet1 = Wallet.LoadWalletFromFileWithPassword(Path.of("tests/test_wallet.uiscoin"), "boomer");
-        } catch (IOException e) {
+        } catch (IOException | IllegalBlockSizeException | InvalidKeyException | BadPaddingException | NoSuchAlgorithmException | NoSuchPaddingException e) {
             e.printStackTrace();
             fail();
         }

@@ -1,4 +1,5 @@
 import com.bradyrussell.uiscoin.Conversions;
+import com.bradyrussell.uiscoin.Encryption;
 import com.bradyrussell.uiscoin.Hash;
 import com.bradyrussell.uiscoin.Util;
 import com.bradyrussell.uiscoin.address.UISCoinAddress;
@@ -13,6 +14,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.ECPublicKey;
 import java.util.Arrays;
 import java.util.concurrent.ThreadLocalRandom;
@@ -60,6 +66,81 @@ public class ScriptTest {
         System.out.println(Arrays.toString(sb.get()));
 
         ScriptExecution scriptExecution = new ScriptExecution();
+
+        scriptExecution.Initialize(sb.get());
+
+        while (scriptExecution.Step()){
+            scriptExecution.dumpStack();
+        }
+
+        System.out.println("Script returned: "+!scriptExecution.bScriptFailed);
+
+        System.out.println("Finished: "+scriptExecution.InstructionCounter+" / "+scriptExecution.Script.length);
+
+        assertFalse(scriptExecution.bScriptFailed);
+    }
+
+    @RepeatedTest(100)
+    @DisplayName("Script Enc/Dec AES")
+    void TestScriptAES() {
+        byte[] A = new byte[ThreadLocalRandom.current().nextInt(16,127)];
+        byte[] B = new byte[ThreadLocalRandom.current().nextInt(16,127)];
+
+        ThreadLocalRandom.current().nextBytes(A);
+        ThreadLocalRandom.current().nextBytes(B);
+
+        ScriptBuilder sb = new ScriptBuilder(4096);
+        sb
+                .push(B)
+                .push(A)
+                .op(ScriptOperator.ENCRYPTAES)
+                .push(B)
+                .op(ScriptOperator.SWAP)
+                .op(ScriptOperator.DECRYPTAES)
+                .push(A)
+                .op(ScriptOperator.BYTESEQUAL)
+                .op(ScriptOperator.VERIFY);
+
+        System.out.println(Arrays.toString(sb.get()));
+
+        ScriptExecution scriptExecution = new ScriptExecution();
+        scriptExecution.LogScriptExecution = true;
+
+        scriptExecution.Initialize(sb.get());
+
+        while (scriptExecution.Step()){
+            scriptExecution.dumpStack();
+        }
+
+        System.out.println("Script returned: "+!scriptExecution.bScriptFailed);
+
+        System.out.println("Finished: "+scriptExecution.InstructionCounter+" / "+scriptExecution.Script.length);
+
+        assertFalse(scriptExecution.bScriptFailed);
+    }
+
+    @RepeatedTest(100)
+    @DisplayName("Script AES Parity")
+    void TestScriptAESParity() throws IllegalBlockSizeException, InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException {
+        byte[] A = new byte[ThreadLocalRandom.current().nextInt(16,64)];
+        byte[] B = new byte[ThreadLocalRandom.current().nextInt(16,64)];
+
+        ThreadLocalRandom.current().nextBytes(A);
+        ThreadLocalRandom.current().nextBytes(B);
+
+        ScriptBuilder sb = new ScriptBuilder(4096);
+        sb
+                .push(B)
+                .push(A)
+                .op(ScriptOperator.ENCRYPTAES)
+                .push(Encryption.Encrypt(A,B))
+                .op(ScriptOperator.BYTESEQUAL)
+                .op(ScriptOperator.VERIFY);
+
+        System.out.println(Arrays.toString(sb.get()));
+
+        ScriptExecution scriptExecution = new ScriptExecution();
+        scriptExecution.LogScriptExecution = true;
 
         scriptExecution.Initialize(sb.get());
 
