@@ -1,12 +1,14 @@
 package com.bradyrussell.uiscoin.transaction;
 
 import com.bradyrussell.uiscoin.*;
+import com.bradyrussell.uiscoin.block.Block;
 import com.bradyrussell.uiscoin.blockchain.BlockChain;
 import com.bradyrussell.uiscoin.blockchain.exception.NoSuchBlockException;
 import com.bradyrussell.uiscoin.blockchain.exception.NoSuchTransactionException;
 import com.bradyrussell.uiscoin.script.ScriptExecution;
 
 import java.nio.ByteBuffer;
+import java.time.Instant;
 import java.util.logging.Logger;
 
 public class TransactionInput  implements IBinaryData, IVerifiable {
@@ -77,19 +79,25 @@ public class TransactionInput  implements IBinaryData, IVerifiable {
 
     @Override
     public boolean Verify() {
-        //System.out.println("Verifying input "+ Util.Base64Encode(getHash()));
-
-        if(UnlockingScript.length > MagicNumbers.MaxUnlockingScriptLength.Value) return false;
-
-        //TransactionOutput unspentTransactionOutput = BlockChain.get().getUnspentTransactionOutput(InputHash, IndexNumber);
-        TransactionOutput unspentTransactionOutput = null;
-        try {
-            unspentTransactionOutput = BlockChain.get().getTransactionOutput(InputHash, IndexNumber);
-        } catch (NoSuchTransactionException | NoSuchBlockException e) {
-            e.printStackTrace();
-            Log.info("Verification failed! No UTXO");
+        if(UnlockingScript.length > MagicNumbers.MaxUnlockingScriptLength.Value) {
+            Log.info("Verification failed! Unlocking script is too long! Maximum length is "+MagicNumbers.MaxUnlockingScriptLength.Value+" bytes.");
             return false;
         }
+
+        Transaction transaction = null;
+        try {
+            transaction = BlockChain.get().getTransaction(InputHash);
+            if(Instant.now().getEpochSecond() < transaction.TimeStamp) {
+                Log.info("Verification failed! Input is locked until "+transaction.TimeStamp+" ("+(transaction.TimeStamp-Instant.now().getEpochSecond())+" seconds from now)!");
+                return false;
+            }
+        } catch (NoSuchTransactionException | NoSuchBlockException e) {
+            e.printStackTrace();
+            Log.info("Verification failed! No input transaction!");
+            return false;
+        }
+
+        TransactionOutput transactionOutput = transaction.Outputs.get(IndexNumber);
 
         ScriptExecution UnlockingScriptEx = new ScriptExecution();
         UnlockingScriptEx.Initialize(UnlockingScript);
@@ -102,8 +110,8 @@ public class TransactionInput  implements IBinaryData, IVerifiable {
         }
 
         ScriptExecution LockingScriptEx = new ScriptExecution();
-        LockingScriptEx.setSignatureVerificationMessage(unspentTransactionOutput.getHash());
-        LockingScriptEx.Initialize(unspentTransactionOutput.LockingScript, UnlockingScriptEx.Stack.elements());
+        LockingScriptEx.setSignatureVerificationMessage(transactionOutput.getHash());
+        LockingScriptEx.Initialize(transactionOutput.LockingScript, UnlockingScriptEx.Stack.elements());
 
         while(LockingScriptEx.Step());
 
