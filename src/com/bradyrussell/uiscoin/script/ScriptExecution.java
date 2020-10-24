@@ -660,6 +660,11 @@ public class ScriptExecution {
                     return true;
                 }
                 case VERIFY -> {
+                    if (Stack.size() < 1) {
+                        Log.info("Too few items in stack");
+                        bScriptFailed = true;
+                        return false;
+                    }
                     byte[] bytes = Stack.pop();
                     if(LogScriptExecution)        Log.fine("Verify " + Arrays.toString(bytes) + " == true: " + (bytes.length == 1 && bytes[0] == 1));
 

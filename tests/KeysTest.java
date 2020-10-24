@@ -112,15 +112,18 @@ public class KeysTest {
     @DisplayName("Wallet Encrypted Keys Save / Load")
     void TestWalletKeysSaveLoad() {
         UISCoinKeypair uisCoinKeypair = UISCoinKeypair.Create();
+
+        String tempPass = "password"+ThreadLocalRandom.current().nextInt();
+
         try {
-            Wallet.SaveKeypairToFileWithPassword(Path.of("tests/test_wallet.uisw"),"boomer", uisCoinKeypair);
+            Wallet.SaveKeypairToFileWithPassword(Path.of("tests/test_wallet.uisw"),tempPass, uisCoinKeypair);
         } catch (IOException | IllegalBlockSizeException | InvalidKeyException | BadPaddingException | NoSuchAlgorithmException | NoSuchPaddingException e) {
             e.printStackTrace();
             fail();
         }
         UISCoinKeypair keypairFromFileWithPassword = null;
         try {
-            keypairFromFileWithPassword = Wallet.LoadKeypairFromFileWithPassword(Path.of("tests/test_wallet.uisw"), "boomer");
+            keypairFromFileWithPassword = Wallet.LoadKeypairFromFileWithPassword(Path.of("tests/test_wallet.uisw"), tempPass);
         } catch (IOException | IllegalBlockSizeException | InvalidKeyException | BadPaddingException | NoSuchAlgorithmException | NoSuchPaddingException e) {
             e.printStackTrace();
             fail();
@@ -136,6 +139,8 @@ public class KeysTest {
     void TestWalletMultiKeysSaveLoad() {
         UISCoinWallet wallet = new UISCoinWallet();
 
+        String tempPass = "password"+ThreadLocalRandom.current().nextInt();
+
         for(int i = 0; i < 10; i++){
             wallet.GenerateNewKey();
         }
@@ -143,14 +148,14 @@ public class KeysTest {
         assertTrue(wallet.Keypairs.size() > 0);
 
         try {
-            Wallet.SaveWalletToFileWithPassword(Path.of("tests/test_wallet.uiscoin"),"boomer",wallet);
+            Wallet.SaveWalletToFileWithPassword(Path.of("tests/test_wallet.uiscoin"),tempPass,wallet);
         } catch (IOException | IllegalBlockSizeException | InvalidKeyException | BadPaddingException | NoSuchAlgorithmException | NoSuchPaddingException e) {
             e.printStackTrace();
             fail();
         }
         UISCoinWallet wallet1 = null;
         try {
-            wallet1 = Wallet.LoadWalletFromFileWithPassword(Path.of("tests/test_wallet.uiscoin"), "boomer");
+            wallet1 = Wallet.LoadWalletFromFileWithPassword(Path.of("tests/test_wallet.uiscoin"), tempPass);
         } catch (IOException | IllegalBlockSizeException | InvalidKeyException | BadPaddingException | NoSuchAlgorithmException | NoSuchPaddingException e) {
             e.printStackTrace();
             fail();

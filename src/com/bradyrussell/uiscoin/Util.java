@@ -10,10 +10,10 @@ import java.util.List;
 public class Util {
     public static void printBytesReadable(byte[] bytes) {
         System.out.print("[");
-        for(byte b: bytes){
+        for (byte b : bytes) {
 
-            if(b >= 32 && b <= 126) {
-                System.out.print((char)b);
+            if (b >= 32 && b <= 126) {
+                System.out.print((char) b);
             } else {
                 System.out.print("0x");
                 System.out.printf("%02X", b);
@@ -23,10 +23,20 @@ public class Util {
         System.out.println("]");
     }
 
-    public static byte[] ConcatArray(byte[] A, byte[] B){
-        byte[] C = new byte[A.length+B.length];
-        for(int i = 0; i < A.length+B.length; i++){
-            C[i] = (i < A.length) ? A[i] : B[i-A.length];
+    public static void printBytesHex(byte[] bytes) {
+        System.out.print("[");
+        for (byte b : bytes) {
+            System.out.print("0x");
+            System.out.printf("%02X", b);
+            System.out.print(" ");
+        }
+        System.out.println("]");
+    }
+
+    public static byte[] ConcatArray(byte[] A, byte[] B) {
+        byte[] C = new byte[A.length + B.length];
+        for (int i = 0; i < A.length + B.length; i++) {
+            C[i] = (i < A.length) ? A[i] : B[i - A.length];
         }
         return C;
     }
@@ -46,24 +56,24 @@ public class Util {
         return new byte[]{(byte) (Number >> 24), (byte) (Number >> 16), (byte) (Number >> 8), (byte) Number};
     }
 
-    public static String Base64Encode(byte[] Data){
+    public static String Base64Encode(byte[] Data) {
         return Base64.getUrlEncoder().encodeToString(Data);
     }
 
-    public static byte[] Base64Decode(String Base64String){
+    public static byte[] Base64Decode(String Base64String) {
         return Base64.getUrlDecoder().decode(Base64String);
     }
 
-    public static boolean doTransactionsContainTXO(byte[] TransactionHash, int Index, List<Transaction> Transactions){
+    public static boolean doTransactionsContainTXO(byte[] TransactionHash, int Index, List<Transaction> Transactions) {
         for (Transaction transaction : Transactions) {
             for (TransactionInput input : transaction.Inputs) {
-                if(Arrays.equals(input.InputHash, TransactionHash) && input.IndexNumber == Index) return true;
+                if (Arrays.equals(input.InputHash, TransactionHash) && input.IndexNumber == Index) return true;
             }
         }
         return false;
     }
 
-    public static String getConstantSalt(){
+    public static String getConstantSalt() {
         return "_UISCoin1.0_salted_password";
     }
 }
