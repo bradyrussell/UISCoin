@@ -130,6 +130,7 @@ public class ScriptBuilder {
     public ScriptBuilder fromText(String Text){
         Log.info("Parsing script from text...");
 
+        //clean up any extraneous characters and format the script in a single line like TRUE FALSE PUSH [1, 3, 6, 7] RETURN
         String[] parts = Text.replace("\n", " ").replace(";", " ").replace("  ", " ").replace("\r", "").split(" ");
 
         for (int i = 0; i < parts.length; i++) {
