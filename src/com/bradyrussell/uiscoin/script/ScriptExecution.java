@@ -1040,7 +1040,7 @@ public class ScriptExecution {
                     byte[] C = new byte[A.length];
 
                     for (int i = 0; i < A.length; i++) {
-                        C[(i-1)%A.length] = A[i];
+                        C[(i+(A.length-1))%A.length] = A[i];
                     }
 
                     Stack.push(C);

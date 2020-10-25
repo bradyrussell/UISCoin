@@ -147,6 +147,28 @@ public class ScriptTest {
     }
 
     @Test
+    @DisplayName("Script Shift Array Back")
+    void TestScriptRotate2() {
+        ScriptBuilder sb = new ScriptBuilder(64);
+        sb.fromText("push [4, 1, 2, 3] shiftelementsleft push [1, 2, 3, 4] bytesequal verify");
+        System.out.println(Arrays.toString(sb.get()));
+
+        ScriptExecution scriptExecution = new ScriptExecution();
+
+        scriptExecution.Initialize(sb.get());
+
+        while (scriptExecution.Step()){
+            System.out.println("Stack: \n"+scriptExecution.getStackContents());
+        }
+
+        System.out.println("Script returned: "+!scriptExecution.bScriptFailed);
+
+        System.out.println("Finished: "+scriptExecution.InstructionCounter+" / "+scriptExecution.Script.length);
+
+        assertFalse(scriptExecution.bScriptFailed);
+    }
+
+    @Test
     @DisplayName("Script Zip Unzip")
     void TestScriptZip() {
         ScriptBuilder sb = new ScriptBuilder(64);
