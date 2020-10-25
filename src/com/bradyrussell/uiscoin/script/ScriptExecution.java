@@ -600,6 +600,11 @@ public class ScriptExecution {
                     return true;
                 }
                 case DUP -> {
+                    if (Stack.size() < 1) {
+                        Log.info("Too few items in stack");
+                        bScriptFailed = true;
+                        return false;
+                    }
                     byte[] bytes = Stack.pop();
                     Stack.push(bytes);
                     Stack.push(bytes);
