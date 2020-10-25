@@ -148,7 +148,7 @@ public class ScriptBuilder {
             ScriptOperator scriptOperator = ScriptOperator.getByOpCode(Script[InstructionCounter++]);
             sb.append(scriptOperator);
 
-            if(scriptOperator == ScriptOperator.PUSH) {
+            if(scriptOperator == ScriptOperator.PUSH || scriptOperator == ScriptOperator.BIGPUSH) {
                 byte NumberOfBytesToPush = Script[InstructionCounter++];
                 byte[] bytes = new byte[NumberOfBytesToPush];
 
@@ -209,7 +209,65 @@ public class ScriptBuilder {
 
             Log.fine("Token "+i+": OP "+scriptOperator);
 
-            if(scriptOperator == ScriptOperator.PUSH) {
+            if(scriptOperator == ScriptOperator.FLAG) {
+                if(parts[++i].startsWith("0x")){
+                    String hex = parts[i].substring(2);
+                    flag(getBytesFromHexString(hex)[0]);
+
+                    Log.fine("Token "+i+": Hex Data "+parts[i]);
+                }
+                else { // interp as byte
+                    flag(Byte.parseByte(parts[i]));
+                    Log.fine("Token "+i+": Number "+Integer.parseInt(parts[i]));
+                }
+            }
+
+            /////////////////////////////
+            else if(scriptOperator == ScriptOperator.FLAGDATA) {
+                if(parts[++i].startsWith("'")) { // interp as ascii string
+                    StringBuilder sb = new StringBuilder();
+                    Log.fine("Token "+i+": Begin String ' ");
+                    do { // single byte
+                        /*I = */
+                        sb.append(parts[i].replace("'", "")/*.replace("'", "")*/);
+                        if(!parts[i].endsWith("'")) sb.append(" ");
+                        Log.fine("Token "+i+": String Element "+parts[i].replace("'", "").replace("'", "") + " from string part "+parts[i]);
+                    }while(!parts[i++].endsWith("'"));
+
+                    i--; // todo fix the above loop making this necessary
+
+                    flagData(sb.toString().getBytes(StandardCharsets.US_ASCII));
+                } else if(parts[i].startsWith("[")) { // interp as byte array
+                    ArrayList<Byte> bytes = new ArrayList<>();
+                    Log.fine("Token "+i+": Begin Byte Array [  ");
+                    do { // single byte
+                        /*I = */
+                        byte parseByte = Byte.parseByte(parts[i].replace("[", "").replace("]", "").replace(",", ""));
+                        bytes.add(parseByte);
+                        Log.fine("Token "+i+": Byte Array Element "+parseByte + " from string part "+parts[i]);
+                    }while(!parts[i++].endsWith("]"));
+
+                    i--; // todo fix the above loop making this necessary
+
+                    byte[] byteArray = new byte[bytes.size()];
+                    for (int j = 0; j < bytes.size(); j++) {
+                        byteArray[j] = bytes.get(j);
+                    }
+                    flagData(byteArray);
+                } else if(parts[i].startsWith("0x")){
+                    String hex = parts[i].substring(2);
+                    flagData(getBytesFromHexString(hex));
+
+                    Log.fine("Token "+i+": Hex Data "+parts[i]);
+                }
+                else { // interp as number
+                    flagData(Util.NumberToByteArray(Integer.parseInt(parts[i])));
+                    Log.fine("Token "+i+": Number "+Integer.parseInt(parts[i]));
+                }
+            }
+            //////////////////
+
+            else if(scriptOperator == ScriptOperator.PUSH || scriptOperator == ScriptOperator.BIGPUSH) {
                 // PUSH 2576
                 // PUSH 'ascii text'
                 // PUSH [4,5,6,7]

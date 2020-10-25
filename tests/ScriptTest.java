@@ -625,6 +625,25 @@ public class ScriptTest {
         assertFalse(scriptExecution.bScriptFailed);
     }
 
+    @Test @DisplayName("Script Builder & Text Parser Parity2")
+    void TestBuilderAndTextParity2(){
+        byte[] A = new byte[64];
+
+        ThreadLocalRandom.current().nextBytes(A);
+
+        byte[] a  = new ScriptBuilder(128)
+                .flag((byte)2)
+                .flagData(Util.NumberToByteArray(123))
+                .get();
+
+        byte[] b= new ScriptBuilder(128).fromText("flag 2 flagdata 123").get();
+
+        Util.printBytesReadable(a);
+        Util.printBytesReadable(b);
+
+        assertTrue(Arrays.equals(a,b));
+    }
+
     @Test @DisplayName("Script Builder & Text Parser Parity")
     void TestBuilderAndTextParity(){
         byte[] A = new byte[64];
@@ -632,6 +651,8 @@ public class ScriptTest {
         ThreadLocalRandom.current().nextBytes(A);
 
         byte[] a  = new ScriptBuilder(128)
+                //.flag((byte)2)
+                //.flagData(Util.NumberToByteArray(123))
                 .op(ScriptOperator.DUP) // dup the public key
                 .op(ScriptOperator.SHA512) // hash it
                 .push(A) // push the address
@@ -645,7 +666,7 @@ public class ScriptTest {
                 .op(ScriptOperator.VERIFYSIG)
                 .get();
 
-        byte[] b= new ScriptBuilder(128).fromText("dup sha512").push(A).fromText("len push 4 swap subtract limit bytesequal verify verifysig").get();
+        byte[] b= new ScriptBuilder(128).fromText(/*"flag 2 flagdata 123*/ "dup sha512").push(A).fromText("len push 4 swap subtract limit bytesequal verify verifysig").get();
 
         Util.printBytesReadable(a);
         Util.printBytesReadable(b);
