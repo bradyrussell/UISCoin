@@ -5,6 +5,8 @@ import com.bradyrussell.uiscoin.Util;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.logging.Logger;
 
 public class ScriptBuilder {
@@ -26,9 +28,41 @@ public class ScriptBuilder {
         return this;
     }
 
-    public ScriptBuilder push(byte[] DataToPush){
-        buffer.put(ScriptOperator.PUSH.OPCode);
+    public ScriptBuilder virtualScript(byte[] Script){
+        return virtualScript(Script, null);
+    }
+
+    public ScriptBuilder virtualScript(byte[] Script, Enumeration<byte[]> InitialStack){
+        if(InitialStack != null) {
+            ArrayList<byte[]> list = Collections.list(InitialStack);
+            for (byte[] bytes : list) {
+                push(bytes);
+            }
+            pushByte(list.size());
+        } else {
+            pushByte(0);
+        }
+        push(Script);
+        op(ScriptOperator.VIRTUALSCRIPT);
+        return this;
+    }
+
+    public ScriptBuilder flag(byte Flag){
+        buffer.put(ScriptOperator.FLAG.OPCode);
+        buffer.put(Flag);
+        return this;
+    }
+
+    public ScriptBuilder flagData(byte[] DataToPush){
+        buffer.put(ScriptOperator.FLAGDATA.OPCode);
         buffer.put((byte)DataToPush.length);
+        buffer.put(DataToPush);
+        return this;
+    }
+
+    public ScriptBuilder push(byte[] DataToPush){
+        buffer.put(DataToPush.length > 127 ? ScriptOperator.BIGPUSH.OPCode : ScriptOperator.PUSH.OPCode);
+        buffer.put(DataToPush.length > 127 ? Util.NumberToByteArray(DataToPush.length):new byte[]{(byte)DataToPush.length});
         buffer.put(DataToPush);
         return this;
     }
@@ -54,11 +88,23 @@ public class ScriptBuilder {
         return this;
     }
 
+    public ScriptBuilder pushInt64(long IntToPush){
+        buffer.put(ScriptOperator.PUSH.OPCode);
+        buffer.put((byte)8);
+        buffer.put(Util.NumberToByteArray64(IntToPush));
+        return this;
+    }
+
+    public ScriptBuilder pushFloat(float FloatToPush){
+        buffer.put(ScriptOperator.PUSH.OPCode);
+        buffer.put((byte)4);
+        buffer.put(Util.FloatToByteArray(FloatToPush));
+        return this;
+    }
+
     public ScriptBuilder pushHexString(String Hex){ // https://stackoverflow.com/questions/140131/convert-a-string-representation-of-a-hex-dump-to-a-byte-array-using-java
         byte[] data = getBytesFromHexString(Hex);
-        buffer.put(ScriptOperator.PUSH.OPCode);
-        buffer.put((byte)data.length);
-        buffer.put(data);
+        push(data);
         return this;
     }
 
@@ -79,12 +125,8 @@ public class ScriptBuilder {
     }
 
     public ScriptBuilder pushASCIIString(String Str){
-        buffer.put(ScriptOperator.PUSH.OPCode);
-
         byte[] strBytes = Str.getBytes(StandardCharsets.US_ASCII);
-
-        buffer.put((byte)strBytes.length);
-        buffer.put(strBytes);
+        push(strBytes);
         return this;
     }
 

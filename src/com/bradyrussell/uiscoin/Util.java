@@ -3,9 +3,15 @@ package com.bradyrussell.uiscoin;
 import com.bradyrussell.uiscoin.transaction.Transaction;
 import com.bradyrussell.uiscoin.transaction.TransactionInput;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 public class Util {
     public static void printBytesReadable(byte[] bytes) {
@@ -80,11 +86,43 @@ public class Util {
                 (byte) (Number >> 56)};
     }
 
+    //https://stackoverflow.com/questions/14777800/gzip-compression-to-a-byte-array/44922240
+    public static byte[] ZipBytes(byte[] uncompressedData) {
+        byte[] result = new byte[]{};
+        try (ByteArrayOutputStream bos = new ByteArrayOutputStream(uncompressedData.length);
+             GZIPOutputStream gzipOS = new GZIPOutputStream(bos)) {
+            gzipOS.write(uncompressedData);
+            // You need to close it before using bos
+            gzipOS.close();
+            result = bos.toByteArray();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    public static byte[] UnzipBytes(byte[] compressedData) {
+        byte[] result = new byte[]{};
+        try (ByteArrayInputStream bis = new ByteArrayInputStream(compressedData);
+             ByteArrayOutputStream bos = new ByteArrayOutputStream();
+             GZIPInputStream gzipIS = new GZIPInputStream(bis)) {
+            byte[] buffer = new byte[1024];
+            int len;
+            while ((len = gzipIS.read(buffer)) != -1) {
+                bos.write(buffer, 0, len);
+            }
+            result = bos.toByteArray();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
     //https://www.baeldung.com/java-convert-float-to-byte-array
     public static byte[] FloatToByteArray(float Number) {
-        int intBits =  Float.floatToIntBits(Number);
-        return new byte[] {
-                (byte) (intBits >> 24), (byte) (intBits >> 16), (byte) (intBits >> 8), (byte) (intBits) };
+        int intBits = Float.floatToIntBits(Number);
+        return new byte[]{
+                (byte) (intBits >> 24), (byte) (intBits >> 16), (byte) (intBits >> 8), (byte) (intBits)};
     }
 
     public static float ByteArrayToFloat(byte[] Bytes) {
@@ -101,7 +139,8 @@ public class Util {
         return Base64.getUrlDecoder().decode(Base64String);
     }
 
-    public static boolean doTransactionsContainTXO(byte[] TransactionHash, int Index, List<Transaction> Transactions) {
+    public static boolean doTransactionsContainTXO(byte[] TransactionHash, int Index, List<
+            Transaction> Transactions) {
         for (Transaction transaction : Transactions) {
             for (TransactionInput input : transaction.Inputs) {
                 if (Arrays.equals(input.InputHash, TransactionHash) && input.IndexNumber == Index) return true;

@@ -295,6 +295,10 @@ public enum ScriptOperator {
     //hashes
     SHA512(0xb0),
 
+    //compression
+    ZIP(0xb1),
+    UNZIP(0xb2),
+
     //encryption
     /**
      * Encrypts a message (top of stack) using the key (second to top) using Cipher.getInstance("AES/ECB/PKCS5Padding").
