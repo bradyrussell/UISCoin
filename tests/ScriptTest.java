@@ -20,12 +20,27 @@ import javax.crypto.NoSuchPaddingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.ECPublicKey;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ScriptTest {
+    @Test
+    @DisplayName("Script No Duplicate OpCode Values")
+    void TestScriptNoDupOps() {
+        ArrayList<Byte> values = new ArrayList<>();
+        for (ScriptOperator value : ScriptOperator.values()) {
+            if(values.contains(value.OPCode)) {
+                System.out.println("Duplicate opcode values: ");
+                Util.printBytesHex(new byte[]{value.OPCode});
+                fail();
+            }
+            values.add(value.OPCode);
+        }
+    }
+
     @Test
     @DisplayName("Script Append")
     void TestScriptAppend() {

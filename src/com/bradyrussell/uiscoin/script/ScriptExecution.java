@@ -12,11 +12,11 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
+import java.time.Instant;
 import java.util.*;
 import java.util.logging.Logger;
 
-import static com.bradyrussell.uiscoin.Util.ByteArrayToNumber;
-import static com.bradyrussell.uiscoin.Util.NumberToByteArray;
+import static com.bradyrussell.uiscoin.Util.*;
 
 public class ScriptExecution {
     private static final Logger Log = Logger.getLogger(ScriptExecution.class.getName());
@@ -139,6 +139,46 @@ public class ScriptExecution {
                 case INSTRUCTION -> {
                     Stack.push(NumberToByteArray(InstructionCounter));
                     if(LogScriptExecution) Log.fine("Push instruction counter onto the stack: " + InstructionCounter);
+                    return true;
+                }
+                case FLAG -> {
+                    // flags are ignored by the code
+                    int FlagValue = Script[InstructionCounter++];
+                    if(LogScriptExecution) Log.fine("Flag: "+FlagValue);
+                    return true;
+                }
+                case BIGPUSH -> {
+                    byte[] int32bytes = new byte[4];
+                    for (int i = 0; i < 4; i++) {
+                        int32bytes[i] = Script[InstructionCounter++];
+                    }
+
+                    int NumberOfBytesToPush = Util.ByteArrayToNumber(int32bytes);
+
+                    byte[] bytes = new byte[NumberOfBytesToPush];
+
+                    for (int i = 0; i < NumberOfBytesToPush; i++) {
+                        bytes[i] = Script[InstructionCounter++];
+                    }
+                    if(LogScriptExecution) Log.fine("BigPush " + NumberOfBytesToPush + " bytes onto the stack: " + Arrays.toString(bytes));
+                    Stack.push(bytes);
+                    return true;
+                }
+                case FLAGDATA -> {
+                    // flags are ignored by code
+                    int NumberOfBytesForFlag = Script[InstructionCounter++];
+                    byte[] bytes = new byte[NumberOfBytesForFlag];
+
+                    for (int i = 0; i < NumberOfBytesForFlag; i++) {
+                        bytes[i] = Script[InstructionCounter++];
+                    }
+                    if(LogScriptExecution) Log.fine("FlagData " + NumberOfBytesForFlag + " bytes: " + Arrays.toString(bytes));
+                    return true;
+                }
+                case TIME -> {
+                    long epochSecond = Instant.now().getEpochSecond();
+                    if(LogScriptExecution) Log.fine("Push Time: " + epochSecond);
+                    Stack.push(Util.NumberToByteArray64(epochSecond));
                     return true;
                 }
                 case NUMEQUAL -> {
@@ -402,11 +442,65 @@ public class ScriptExecution {
                     Stack.push(NumberToByteArray(-ByteArrayToNumber(A)));
                     return true;
                 }
-                case INVERT -> {
+                case INVERTFLOAT -> {
                     if (CheckInsufficientStackSize(1)) return false;
                     byte[] A = Stack.pop();
 
                     Stack.push(NumberToByteArray((int) (1.0/(double) ByteArrayToNumber(A))));
+                    return true;
+                }
+                case CONVERT8TO32 -> {
+                    if (CheckInsufficientStackSize(1)) return false;
+                    byte[] A = Stack.pop();
+
+                    if (CheckInsufficientBytes(A,1)) return false;
+
+                    Stack.push(Util.NumberToByteArray(A[0]));
+                    return true;
+                }
+                case CONVERT32TO8 -> {
+                    if (CheckInsufficientStackSize(1)) return false;
+                    byte[] A = Stack.pop();
+
+                    if (CheckInsufficientBytes(A,4)) return false;
+
+                    Stack.push(new byte[]{(byte)Util.ByteArrayToNumber(A)});
+                    return true;
+                }
+                case CONVERT64TO32 -> {
+                    if (CheckInsufficientStackSize(1)) return false;
+                    byte[] A = Stack.pop();
+
+                    if (CheckInsufficientBytes(A,8)) return false;
+
+                    Stack.push(Util.NumberToByteArray((int) Util.ByteArrayToNumber64(A)));
+                    return true;
+                }
+                case CONVERT32TO64 -> {
+                    if (CheckInsufficientStackSize(1)) return false;
+                    byte[] A = Stack.pop();
+
+                    if (CheckInsufficientBytes(A,4)) return false;
+
+                    Stack.push(Util.NumberToByteArray64(Util.ByteArrayToNumber(A)));
+                    return true;
+                }
+                case CONVERTFLOATTO32 -> {
+                    if (CheckInsufficientStackSize(1)) return false;
+                    byte[] A = Stack.pop();
+
+                    if (CheckInsufficientBytes(A,4)) return false;
+
+                    Stack.push(Util.NumberToByteArray((int) Util.ByteArrayToFloat(A)));
+                    return true;
+                }
+                case CONVERT32TOFLOAT -> {
+                    if (CheckInsufficientStackSize(1)) return false;
+                    byte[] A = Stack.pop();
+
+                    if (CheckInsufficientBytes(A,4)) return false;
+
+                    Stack.push(Util.FloatToByteArray((float) Util.ByteArrayToNumber(A)));
                     return true;
                 }
                 case BITNOT -> {
@@ -544,11 +638,7 @@ public class ScriptExecution {
 
                     byte[] A = Stack.pop();
 
-                    if (A.length != 1) {
-                        Log.info("Expected a single byte on top of the stack");
-                        bScriptFailed = true;
-                        return false;
-                    }
+                    if (CheckIncorrectNumberBytes(A,1)) return false;
 
                     Stack.push(Stack.elementAt(A[0]));
                     return true;
@@ -637,11 +727,7 @@ public class ScriptExecution {
                     byte[] B = Stack.pop();
                     byte[] A = Stack.pop();
 
-                    if (B.length != 1) {
-                        Log.info("Expected a single byte on top of the stack");
-                        bScriptFailed = true;
-                        return false;
-                    }
+                    if (CheckIncorrectNumberBytes(B,1)) return false;
 
                     int NumberOfBytesToPush = B[0];
                     byte[] bytes = new byte[NumberOfBytesToPush];
@@ -667,11 +753,7 @@ public class ScriptExecution {
 
                     byte[] B = Stack.pop();
 
-                    if (B.length != 1) {
-                        Log.info("Expected a single byte on top of the stack");
-                        bScriptFailed = true;
-                        return false;
-                    }
+                    if (CheckIncorrectNumberBytes(B,1)) return false;
 
                     byte NumberOfItemsToCombine = B[0];
 
@@ -725,6 +807,10 @@ public class ScriptExecution {
                     byte[] C = new byte[A.length];
 
                     for (int i = 0; i < A.length; i++) {
+                        if(B.length <= i) { // leave alone if not long enough
+                            C[i] = A[i];
+                            continue;
+                        }
                         C[i] = (byte) ((A[i] == 1 || B[i] == 1) ? 1 : 0);
                     }
 
@@ -739,6 +825,10 @@ public class ScriptExecution {
                     byte[] C = new byte[A.length];
 
                     for (int i = 0; i < A.length; i++) {
+                        if(B.length <= i) { // 0 if not long enough
+                            C[i] = 0;
+                            continue;
+                        }
                         C[i] = (byte) ((A[i] == 1 && B[i] == 1) ? 1 : 0);
                     }
 
@@ -753,12 +843,122 @@ public class ScriptExecution {
                     byte[] C = new byte[A.length];
 
                     for (int i = 0; i < A.length; i++) {
+                        if(B.length <= i) { // leave alone if not long enough
+                            C[i] = A[i];
+                            continue;
+                        }
                         C[i] = (byte) (((A[i] == 1 || B[i] == 1) && (!(A[i] == 1 && B[i] == 1))) ? 1 : 0);
                     }
 
                     Stack.push(C);
 
                     return true;
+                }
+                case NEGATEFLOAT -> {
+                    if (CheckInsufficientStackSize(1)) return false;
+                    byte[] A = Stack.pop();
+
+                    if (!areBytesValidNumber(A)) {
+                        Log.info("Invalid inputs");
+                        return false;
+                    }
+
+                    float v = ByteArrayToFloat(A);
+                    if(LogScriptExecution) Log.fine("Push -" + v + " onto the stack: " + (-v));
+                    Stack.push(FloatToByteArray(-v ));
+                    return true;
+                }
+                case ADDFLOAT -> {
+                    if (CheckInsufficientStackSize(2)) return false;
+                    byte[] B = Stack.pop();
+                    byte[] A = Stack.pop();
+
+                    if (!areBytesValidNumber(A) || !areBytesValidNumber(B)) {
+                        Log.info("Invalid inputs");
+                        return false;
+                    }
+
+                    float v = ByteArrayToFloat(A);
+                    if(LogScriptExecution) Log.fine("Push " + v + " + " + ByteArrayToFloat(B) + " onto the stack: " + (v + ByteArrayToFloat(B)));
+                    Stack.push(FloatToByteArray(v + ByteArrayToFloat(B)));
+                    return true;
+                }
+                case SUBTRACTFLOAT -> {
+                    if (CheckInsufficientStackSize(2)) return false;
+                    byte[] B = Stack.pop();
+                    byte[] A = Stack.pop();
+
+                    if (!areBytesValidNumber(A) || !areBytesValidNumber(B)) {
+                        Log.info("Invalid inputs");
+                        return false;
+                    }
+
+                    float v = ByteArrayToFloat(A);
+                    if(LogScriptExecution) Log.fine("Push " + v + " - " + ByteArrayToFloat(B) + " onto the stack: " + (v - ByteArrayToFloat(B)));
+                    Stack.push(FloatToByteArray(v - ByteArrayToFloat(B)));
+                    return true;
+                }
+                case MULTIPLYFLOAT -> {
+                    if (CheckInsufficientStackSize(2)) return false;
+                    byte[] B = Stack.pop();
+                    byte[] A = Stack.pop();
+
+                    if (!areBytesValidNumber(A) || !areBytesValidNumber(B)) {
+                        Log.info("Invalid inputs");
+                        return false;
+                    }
+
+                    float v = ByteArrayToFloat(A);
+                    if(LogScriptExecution) Log.fine("Push " + v + " * " + ByteArrayToFloat(B) + " onto the stack: " + (v * ByteArrayToFloat(B)));
+                    Stack.push(FloatToByteArray(v * ByteArrayToFloat(B)));
+                    return true;
+                }
+                case DIVIDEFLOAT -> {
+                    if (CheckInsufficientStackSize(2)) return false;
+                    byte[] B = Stack.pop();
+                    byte[] A = Stack.pop();
+
+                    float v = ByteArrayToFloat(B);
+                    if (!areBytesValidNumber(A) || !areBytesValidNumber(B) || v == 0.f || !Float.isFinite(v)) {
+                        Log.info("Invalid inputs");
+                        return false;
+                    }
+
+                    if(LogScriptExecution) Log.fine("Push " + ByteArrayToFloat(A) + " / " + v + " onto the stack: " + (ByteArrayToFloat(A) / v));
+                    Stack.push(FloatToByteArray(ByteArrayToFloat(A) / v));
+                    return true;
+                }
+                case SHIFTELEMENTSRIGHT -> {
+                    if (CheckInsufficientStackSize(1)) return false;
+
+                    byte[] A = Stack.pop();
+                    byte[] C = new byte[A.length];
+
+                    for (int i = 0; i < A.length; i++) {
+                        C[(i+1)%A.length] = A[i];
+                    }
+
+                    Stack.push(C);
+
+                    return true;
+                }
+                case SHIFTELEMENTSLEFT -> {
+                    if (CheckInsufficientStackSize(1)) return false;
+
+                    byte[] A = Stack.pop();
+                    byte[] C = new byte[A.length];
+
+                    for (int i = 0; i < A.length; i++) {
+                        C[(i-1)%A.length] = A[i];
+                    }
+
+                    Stack.push(C);
+
+                    return true;
+                }
+                case VIRTUALSCRIPT -> {
+                }
+                case RESERVED -> {
                 }
             }
         }
@@ -771,6 +971,24 @@ public class ScriptExecution {
         if (Stack.size() < MinimumSize) {
             bScriptFailed = true;
             Log.info("Too few items in stack: "+Stack.size()+" / "+MinimumSize);
+            return true;
+        }
+        return false;
+    }
+
+    private boolean CheckInsufficientBytes(byte[] Bytes, int MinimumSize) {
+        if (Bytes.length < MinimumSize) {
+            bScriptFailed = true;
+            Log.info("Too few bytes in element on top of the stack: "+Bytes.length+" / "+MinimumSize);
+            return true;
+        }
+        return false;
+    }
+
+    private boolean CheckIncorrectNumberBytes(byte[] Bytes, int Size) {
+        if (Bytes.length == Size) {
+            bScriptFailed = true;
+            Log.info("Expected "+Size+" bytes for top stack element: "+Bytes.length+" != "+Size);
             return true;
         }
         return false;

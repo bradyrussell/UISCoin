@@ -4,6 +4,7 @@ public enum ScriptOperator {
     NOP(0x00), //
     /**
      *the next byte specifies the number of following bytes to put on the stack
+     * MULTI BYTE OPERATION (Consumes the following byte as well as N bytes after)
      */
     PUSH(0x01), //
     /**
@@ -11,6 +12,29 @@ public enum ScriptOperator {
      */
     INSTRUCTION(0x02), //
 
+    /**
+     * Enables a specific metadata byte flag for the script. Has no effect on execution.
+     * MULTI BYTE OPERATION (Consumes the following byte)
+     */
+    FLAG(0x03), //
+
+    /**
+     *the next 4 bytes specify the number of following bytes to put on the stack
+     * MULTI BYTE OPERATION (Consumes the following 4 bytes as well as N bytes after)
+     */
+    BIGPUSH(0x04), //
+
+    /**
+     *the next byte specifies the number of following bytes to interpret as metadata
+     * MULTI BYTE OPERATION (Consumes the following byte as well as N bytes after)
+     */
+    FLAGDATA(0x05), //
+
+
+    /**
+     *push the time in unix epoch seconds
+     */
+    TIME(0x06), //
     //comparisons
     /**
      * are the top two values numerically equal when interpreted as 4 byte integers
@@ -28,6 +52,7 @@ public enum ScriptOperator {
      * are the top two values equal in length
      */
     LENEQUAL(0x13),
+
     LESSTHAN(0x14),
     LESSTHANEQUAL(0x15),
     GREATERTHAN(0x16),
@@ -72,11 +97,36 @@ public enum ScriptOperator {
      *  -x
      */
     NEGATE(0x28), // -x
-    /**
-     * 1/x
-     */
-    INVERT(0x29), //1/x
 
+    /**
+     *  Converts an 8 bit integer to a 32 bit integer
+     */
+    CONVERT8TO32(0x2a),
+
+    /**
+     *  Converts a 32 bit integer to an 8 bit integer
+     */
+    CONVERT32TO8(0x2b),
+
+    /**
+     *  Converts a 64 bit integer to a 32 bit integer
+     */
+    CONVERT64TO32(0x2c),
+
+    /**
+     *  Converts a 32 bit integer to a 64 bit integer
+     */
+    CONVERT32TO64(0x2d),
+
+    /**
+     *  Converts a 32 bit float to a 32 bit integer
+     */
+    CONVERTFLOATTO32(0x2e),
+
+    /**
+     *  Converts a 32 bit integer to a 32 bit float
+     */
+    CONVERT32TOFLOAT(0x2f),
     // bit operations
     /**
      * bitwise operation
@@ -139,6 +189,32 @@ public enum ScriptOperator {
      */
     XOR(0x53),
 
+    /**
+     * 1/x
+     */
+    INVERTFLOAT(0x60), //1/x
+
+    /**
+     *  -x
+     */
+    NEGATEFLOAT(0x61), // -x
+    /**
+     * numeric
+     */
+    ADDFLOAT(0x62),
+    /**
+     * numeric
+     */
+    SUBTRACTFLOAT(0x63),
+    /**
+     * numeric
+     */
+    MULTIPLYFLOAT(0x64),
+    /**
+     * numeric
+     */
+    DIVIDEFLOAT(0x65),
+
     // push constants
     /**
      *push null onto the stack
@@ -195,6 +271,15 @@ public enum ScriptOperator {
      */
     PICK(0x99), //
 
+    /**
+     * shift the top stack element's elements to the right, so the first element becomes the second, last becomes first
+     */
+    SHIFTELEMENTSRIGHT(0x9a), //
+    /**
+     * shift the top stack element's elements to the left, so the first element becomes the last, second becomes first
+     */
+    SHIFTELEMENTSLEFT(0x9b), //
+
     // returns
     /**
      * script execution continues if there is a 1 on the stack, else fail
@@ -228,7 +313,16 @@ public enum ScriptOperator {
     VERIFYSIG(0xc0), //
 
     // code
-    CODESEPARATOR(0xc0),
+    CODESEPARATOR(0xc1),
+
+    /**
+     * Executes script bytecode from the stack. Stack elements are [virtual script bytecode] [byte number of stack items to take] then N byte arrays
+     * Pushes the resulting stack and then a true or false based on whether the execution was successful
+     */
+    VIRTUALSCRIPT(0xd0),
+
+
+    RESERVED(0xf0),
     ;
 
     public final byte OPCode;
