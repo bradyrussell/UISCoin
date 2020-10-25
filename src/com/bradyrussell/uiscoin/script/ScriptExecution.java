@@ -109,11 +109,7 @@ public class ScriptExecution {
         if (scriptOperator != null) {
             switch (scriptOperator) {
                 case REVERSE -> {
-                    if (Stack.size() < 1) {
-                        bScriptFailed = true;
-                        Log.info("Too few items in stack");
-                        return false;
-                    }
+                    if (CheckInsufficientStackSize(1)) return false;
                     byte[] A = Stack.pop();
                     byte[] B = new byte[A.length];
 
@@ -146,11 +142,7 @@ public class ScriptExecution {
                     return true;
                 }
                 case NUMEQUAL -> {
-                    if (Stack.size() < 2) {
-                        Log.info("Too few items in stack");
-                        bScriptFailed = true;
-                        return false;
-                    }
+                    if (CheckInsufficientStackSize(2)) return false;
                     byte[] B = Stack.pop();
                     byte[] A = Stack.pop();
 
@@ -159,11 +151,7 @@ public class ScriptExecution {
                     return true;
                 }
                 case BYTESEQUAL -> {
-                    if (Stack.size() < 2) {
-                        bScriptFailed = true;
-                        Log.info("Too few items in stack");
-                        return false;
-                    }
+                    if (CheckInsufficientStackSize(2)) return false;
                     byte[] B = Stack.pop();
                     byte[] A = Stack.pop();
 
@@ -184,11 +172,7 @@ public class ScriptExecution {
                     return true;
                 }
                 case SHA512EQUAL -> {
-                    if (Stack.size() < 2) {
-                        bScriptFailed = true;
-                        Log.info("Too few items in stack");
-                        return false;
-                    }
+                    if (CheckInsufficientStackSize(2)) return false;
                     byte[] B = Stack.pop();
                     byte[] A = Stack.pop();
                     byte[] HashedB = Hash.getSHA512Bytes(B);
@@ -210,11 +194,7 @@ public class ScriptExecution {
                     return true;
                 }
                 case LENEQUAL -> {
-                    if (Stack.size() < 2) {
-                        bScriptFailed = true;
-                        Log.info("Too few items in stack");
-                        return false;
-                    }
+                    if (CheckInsufficientStackSize(2)) return false;
                     byte[] B = Stack.pop();
                     byte[] A = Stack.pop();
                     boolean equal = A.length == B.length;
@@ -225,11 +205,7 @@ public class ScriptExecution {
                     return true;
                 }
                 case LESSTHAN -> {
-                    if (Stack.size() < 2) {
-                        Log.info("Too few items in stack");
-                        bScriptFailed = true;
-                        return false;
-                    }
+                    if (CheckInsufficientStackSize(2)) return false;
                     byte[] B = Stack.pop();
                     byte[] A = Stack.pop();
 
@@ -238,11 +214,7 @@ public class ScriptExecution {
                     return true;
                 }
                 case LESSTHANEQUAL -> {
-                    if (Stack.size() < 2) {
-                        Log.info("Too few items in stack");
-                        bScriptFailed = true;
-                        return false;
-                    }
+                    if (CheckInsufficientStackSize(2)) return false;
                     byte[] B = Stack.pop();
                     byte[] A = Stack.pop();
 
@@ -251,11 +223,7 @@ public class ScriptExecution {
                     return true;
                 }
                 case GREATERTHAN -> {
-                    if (Stack.size() < 2) {
-                        Log.info("Too few items in stack");
-                        bScriptFailed = true;
-                        return false;
-                    }
+                    if (CheckInsufficientStackSize(2)) return false;
                     byte[] B = Stack.pop();
                     byte[] A = Stack.pop();
 
@@ -264,11 +232,7 @@ public class ScriptExecution {
                     return true;
                 }
                 case GREATERTHANEQUAL -> {
-                    if (Stack.size() < 2) {
-                        Log.info("Too few items in stack");
-                        bScriptFailed = true;
-                        return false;
-                    }
+                    if (CheckInsufficientStackSize(2)) return false;
                     byte[] B = Stack.pop();
                     byte[] A = Stack.pop();
 
@@ -277,11 +241,7 @@ public class ScriptExecution {
                     return true;
                 }
                 case NOTEQUAL -> {
-                    if (Stack.size() < 2) {
-                        bScriptFailed = true;
-                        Log.info("Too few items in stack");
-                        return false;
-                    }
+                    if (CheckInsufficientStackSize(2)) return false;
                     byte[] B = Stack.pop();
                     byte[] A = Stack.pop();
 
@@ -302,11 +262,7 @@ public class ScriptExecution {
                     return true;
                 }
                 case NOTZERO -> {
-                    if (Stack.size() < 1) {
-                        bScriptFailed = true;
-                        Log.info("Too few items in stack");
-                        return false;
-                    }
+                    if (CheckInsufficientStackSize(1)) return false;
                     byte[] A = Stack.pop();
 
                     for (byte b : A) {
@@ -321,11 +277,7 @@ public class ScriptExecution {
                     return true;
                 }
                 case ADD -> {
-                    if (Stack.size() < 2) {
-                        bScriptFailed = true;
-                        Log.info("Too few items in stack");
-                        return false;
-                    }
+                    if (CheckInsufficientStackSize(2)) return false;
                     byte[] B = Stack.pop();
                     byte[] A = Stack.pop();
 
@@ -339,11 +291,7 @@ public class ScriptExecution {
                     return true;
                 }
                 case SUBTRACT -> {
-                    if (Stack.size() < 2) {
-                        bScriptFailed = true;
-                        Log.info("Too few items in stack");
-                        return false;
-                    }
+                    if (CheckInsufficientStackSize(2)) return false;
                     byte[] B = Stack.pop();
                     byte[] A = Stack.pop();
 
@@ -357,11 +305,7 @@ public class ScriptExecution {
                     return true;
                 }
                 case MULTIPLY -> {
-                    if (Stack.size() < 2) {
-                        bScriptFailed = true;
-                        Log.info("Too few items in stack");
-                        return false;
-                    }
+                    if (CheckInsufficientStackSize(2)) return false;
                     byte[] B = Stack.pop();
                     byte[] A = Stack.pop();
 
@@ -374,11 +318,7 @@ public class ScriptExecution {
                     return true;
                 }
                 case DIVIDE -> {
-                    if (Stack.size() < 2) {
-                        bScriptFailed = true;
-                        Log.info("Too few items in stack");
-                        return false;
-                    }
+                    if (CheckInsufficientStackSize(2)) return false;
                     byte[] B = Stack.pop();
                     byte[] A = Stack.pop();
 
@@ -391,16 +331,13 @@ public class ScriptExecution {
                     return true;
                 }
                 case ADDBYTES -> {
-                    if (Stack.size() < 2) {
-                        bScriptFailed = true;
-                        Log.info("Too few items in stack");
-                        return false;
-                    }
+                    if (CheckInsufficientStackSize(2)) return false;
                     byte[] B = Stack.pop();
                     byte[] A = Stack.pop();
                     byte[] C = new byte[A.length];
 
                     for (int i = 0; i < A.length; i++) {
+                        if(B.length <= i) C[i] = A[i]; // treat overrun as if it was all 0s
                         C[i] = (byte) (A[i] + B[i]);
                     }
 
@@ -409,16 +346,13 @@ public class ScriptExecution {
                     return true;
                 }
                 case SUBTRACTBYTES -> {
-                    if (Stack.size() < 2) {
-                        bScriptFailed = true;
-                        Log.info("Too few items in stack");
-                        return false;
-                    }
+                    if (CheckInsufficientStackSize(2)) return false;
                     byte[] B = Stack.pop();
                     byte[] A = Stack.pop();
                     byte[] C = new byte[A.length];
 
                     for (int i = 0; i < A.length; i++) {
+                        if(B.length <= i) C[i] = A[i]; // treat overrun as if it was all 0s
                         C[i] = (byte) (A[i] - B[i]);
                     }
 
@@ -427,16 +361,13 @@ public class ScriptExecution {
                     return true;
                 }
                 case MULTIPLYBYTES -> {
-                    if (Stack.size() < 2) {
-                        bScriptFailed = true;
-                        Log.info("Too few items in stack");
-                        return false;
-                    }
+                    if (CheckInsufficientStackSize(2)) return false;
                     byte[] B = Stack.pop();
                     byte[] A = Stack.pop();
                     byte[] C = new byte[A.length];
 
                     for (int i = 0; i < A.length; i++) {
+                        if(B.length <= i) C[i] = A[i]; // treat overrun as if it was all 1s
                         C[i] = (byte) (A[i] * B[i]);
                     }
 
@@ -445,16 +376,13 @@ public class ScriptExecution {
                     return true;
                 }
                 case DIVIDEBYTES -> {
-                    if (Stack.size() < 2) {
-                        bScriptFailed = true;
-                        Log.info("Too few items in stack");
-                        return false;
-                    }
+                    if (CheckInsufficientStackSize(2)) return false;
                     byte[] B = Stack.pop();
                     byte[] A = Stack.pop();
                     byte[] C = new byte[A.length];
 
                     for (int i = 0; i < A.length; i++) {
+                        if(B.length <= i) C[i] = A[i]; // treat overrun as if it was all 1s
                         if (B[i] == 0) {
                             bScriptFailed = true;
                             Log.info("Divide by zero");
@@ -468,33 +396,21 @@ public class ScriptExecution {
                     return true;
                 }
                 case NEGATE -> {
-                    if (Stack.size() < 1) {
-                        bScriptFailed = true;
-                        Log.info("Too few items in stack");
-                        return false;
-                    }
+                    if (CheckInsufficientStackSize(1)) return false;
                     byte[] A = Stack.pop();
 
                     Stack.push(NumberToByteArray(-ByteArrayToNumber(A)));
                     return true;
                 }
                 case INVERT -> {
-                    if (Stack.size() < 1) {
-                        bScriptFailed = true;
-                        Log.info("Too few items in stack");
-                        return false;
-                    }
+                    if (CheckInsufficientStackSize(1)) return false;
                     byte[] A = Stack.pop();
 
                     Stack.push(NumberToByteArray((int) (1.0/(double) ByteArrayToNumber(A))));
                     return true;
                 }
                 case BITNOT -> {
-                    if (Stack.size() < 1) {
-                        bScriptFailed = true;
-                        Log.info("Too few items in stack");
-                        return false;
-                    }
+                    if (CheckInsufficientStackSize(1)) return false;
                     byte[] A = Stack.pop();
                     byte[] C = new byte[A.length];
 
@@ -506,11 +422,7 @@ public class ScriptExecution {
                     return true;
                 }
                 case BITOR -> {
-                    if (Stack.size() < 2) {
-                        bScriptFailed = true;
-                        Log.info("Too few items in stack");
-                        return false;
-                    }
+                    if (CheckInsufficientStackSize(2)) return false;
                     byte[] B = Stack.pop();
                     byte[] A = Stack.pop();
                     byte[] C = new byte[A.length];
@@ -525,11 +437,7 @@ public class ScriptExecution {
                     return true;
                 }
                 case BITAND -> {
-                    if (Stack.size() < 2) {
-                        bScriptFailed = true;
-                        Log.info("Too few items in stack");
-                        return false;
-                    }
+                    if (CheckInsufficientStackSize(2)) return false;
                     byte[] B = Stack.pop();
                     byte[] A = Stack.pop();
                     byte[] C = new byte[A.length];
@@ -544,11 +452,7 @@ public class ScriptExecution {
                     return true;
                 }
                 case BITXOR -> {
-                    if (Stack.size() < 2) {
-                        bScriptFailed = true;
-                        Log.info("Too few items in stack");
-                        return false;
-                    }
+                    if (CheckInsufficientStackSize(2)) return false;
                     byte[] B = Stack.pop();
                     byte[] A = Stack.pop();
                     byte[] C = new byte[A.length];
@@ -563,11 +467,7 @@ public class ScriptExecution {
                     return true;
                 }
                 case APPEND -> {
-                    if (Stack.size() < 2) {
-                        bScriptFailed = true;
-                        Log.info("Too few items in stack");
-                        return false;
-                    }
+                    if (CheckInsufficientStackSize(2)) return false;
                     byte[] B = Stack.pop();
                     byte[] A = Stack.pop();
                     byte[] C = new byte[A.length + B.length];
@@ -596,26 +496,19 @@ public class ScriptExecution {
                     return true;
                 }
                 case DROP -> {
+                    if (CheckInsufficientStackSize(1)) return false;
                     Stack.pop();
                     return true;
                 }
                 case DUP -> {
-                    if (Stack.size() < 1) {
-                        Log.info("Too few items in stack");
-                        bScriptFailed = true;
-                        return false;
-                    }
+                    if (CheckInsufficientStackSize(1)) return false;
                     byte[] bytes = Stack.pop();
                     Stack.push(bytes);
                     Stack.push(bytes);
                     return true;
                 }
                 case SWAP -> {
-                    if (Stack.size() < 2) {
-                        Log.info("Too few items in stack");
-                        bScriptFailed = true;
-                        return false;
-                    }
+                    if (CheckInsufficientStackSize(2)) return false;
 
                     byte[] B = Stack.pop();
                     byte[] A = Stack.pop();
@@ -647,11 +540,7 @@ public class ScriptExecution {
                     return true;
                 }
                 case PICK -> {
-                    if (Stack.size() < 2) {
-                        Log.info("Too few items in stack");
-                        bScriptFailed = true;
-                        return false;
-                    }
+                    if (CheckInsufficientStackSize(2)) return false;
 
                     byte[] A = Stack.pop();
 
@@ -665,11 +554,7 @@ public class ScriptExecution {
                     return true;
                 }
                 case VERIFY -> {
-                    if (Stack.size() < 1) {
-                        Log.info("Too few items in stack");
-                        bScriptFailed = true;
-                        return false;
-                    }
+                    if (CheckInsufficientStackSize(1)) return false;
                     byte[] bytes = Stack.pop();
                     if(LogScriptExecution)        Log.fine("Verify " + Arrays.toString(bytes) + " == true: " + (bytes.length == 1 && bytes[0] == 1));
 
@@ -686,15 +571,12 @@ public class ScriptExecution {
                     return false;
                 }
                 case SHA512 -> {
+                    if (CheckInsufficientStackSize(1)) return false;
                     Stack.push(Hash.getSHA512Bytes(Stack.pop()));
                     return true;
                 }
                 case ENCRYPTAES -> {
-                    if (Stack.size() < 2) {
-                        Log.info("Too few items in stack");
-                        bScriptFailed = true;
-                        return false;
-                    }
+                    if (CheckInsufficientStackSize(2)) return false;
                     byte[] Message = Stack.pop();
                     byte[] Key = Stack.pop();
 
@@ -709,11 +591,7 @@ public class ScriptExecution {
                     return true;
                 }
                 case DECRYPTAES -> {
-                    if (Stack.size() < 2) {
-                        Log.info("Too few items in stack");
-                        bScriptFailed = true;
-                        return false;
-                    }
+                    if (CheckInsufficientStackSize(2)) return false;
                     byte[] Message = Stack.pop();
                     byte[] Key = Stack.pop();
 
@@ -729,15 +607,11 @@ public class ScriptExecution {
                 }
                 case VERIFYSIG -> {
                     if(SignatureVerificationMessage == null) {
-                        Log.warning("SignatureVerificationMessage has not been set");
+                        Log.warning("SignatureVerificationMessage has not been set!");
                         bScriptFailed = true;
                         return false;
                     }
-                    if (Stack.size() < 2) {
-                        Log.info("Too few items in stack");
-                        bScriptFailed = true;
-                        return false;
-                    }
+                    if (CheckInsufficientStackSize(2)) return false;
 
                     byte[] PublicKey = Stack.pop();
                     byte[] Signature = Stack.pop();
@@ -758,11 +632,7 @@ public class ScriptExecution {
 
                 }
                 case LIMIT -> {
-                    if (Stack.size() < 2) {
-                        Log.info("Too few items in stack");
-                        bScriptFailed = true;
-                        return false;
-                    }
+                    if (CheckInsufficientStackSize(2)) return false;
 
                     byte[] B = Stack.pop();
                     byte[] A = Stack.pop();
@@ -782,11 +652,7 @@ public class ScriptExecution {
                     return true;
                 }
                 case SPLIT -> {
-                    if (Stack.size() < 1) {
-                        Log.info("Too few items in stack");
-                        bScriptFailed = true;
-                        return false;
-                    }
+                    if (CheckInsufficientStackSize(1)) return false;
 
                     byte[] A = Stack.pop();
 
@@ -797,11 +663,7 @@ public class ScriptExecution {
                     return true;
                 }
                 case COMBINE -> {
-                    if (Stack.size() < 2) {
-                        Log.info("Too few items in stack");
-                        bScriptFailed = true;
-                        return false;
-                    }
+                    if (CheckInsufficientStackSize(2)) return false;
 
                     byte[] B = Stack.pop();
 
@@ -835,11 +697,7 @@ public class ScriptExecution {
                     return true;
                 }
                 case LEN -> {
-                    if (Stack.size() < 1) {
-                        bScriptFailed = true;
-                        Log.info("Too few items in stack");
-                        return false;
-                    }
+                    if (CheckInsufficientStackSize(1)) return false;
                     byte[] A = Stack.peek();
                     Stack.push(NumberToByteArray(A.length));
 
@@ -847,11 +705,7 @@ public class ScriptExecution {
 
                 }
                 case NOT -> {
-                    if (Stack.size() < 1) {
-                        bScriptFailed = true;
-                        Log.info("Too few items in stack");
-                        return false;
-                    }
+                    if (CheckInsufficientStackSize(1)) return false;
 
                     byte[] A = Stack.pop();
                     byte[] C = new byte[A.length];
@@ -865,11 +719,7 @@ public class ScriptExecution {
                     return true;
                 }
                 case OR -> {
-                    if (Stack.size() < 1) {
-                        bScriptFailed = true;
-                        Log.info("Too few items in stack");
-                        return false;
-                    }
+                    if (CheckInsufficientStackSize(1)) return false;
                     byte[] B = Stack.pop();
                     byte[] A = Stack.pop();
                     byte[] C = new byte[A.length];
@@ -883,11 +733,7 @@ public class ScriptExecution {
                     return true;
                 }
                 case AND -> {
-                    if (Stack.size() < 1) {
-                        bScriptFailed = true;
-                        Log.info("Too few items in stack");
-                        return false;
-                    }
+                    if (CheckInsufficientStackSize(1)) return false;
                     byte[] B = Stack.pop();
                     byte[] A = Stack.pop();
                     byte[] C = new byte[A.length];
@@ -901,11 +747,7 @@ public class ScriptExecution {
                     return true;
                 }
                 case XOR -> {
-                    if (Stack.size() < 1) {
-                        bScriptFailed = true;
-                        Log.info("Too few items in stack");
-                        return false;
-                    }
+                    if (CheckInsufficientStackSize(1)) return false;
                     byte[] B = Stack.pop();
                     byte[] A = Stack.pop();
                     byte[] C = new byte[A.length];
@@ -922,6 +764,15 @@ public class ScriptExecution {
         }
         Log.fine("Not handled!");
         bScriptFailed = true;
+        return false;
+    }
+
+    private boolean CheckInsufficientStackSize(int MinimumSize) {
+        if (Stack.size() < MinimumSize) {
+            bScriptFailed = true;
+            Log.info("Too few items in stack: "+Stack.size()+" / "+MinimumSize);
+            return true;
+        }
         return false;
     }
 
