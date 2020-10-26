@@ -27,6 +27,7 @@ public class ScriptExecution {
     public boolean LogScriptExecution = false;
 
     private byte[] SignatureVerificationMessage = null; // we need a way to pass in the data for verifysig. i dont like this but...
+    //private long BlockTime = 0; // need a way to pass in blocktime for TIME operator
 
     public byte[] Script;
 
