@@ -218,7 +218,7 @@ public class ScriptTest {
 
         System.out.println("Finished: "+scriptExecution.InstructionCounter+" / "+scriptExecution.Script.length);
 
-        assertFalse(scriptExecution.bScriptFailed);
+        assertTrue(scriptExecution.bScriptFailed);
     }
 
     @Test
@@ -253,7 +253,7 @@ public class ScriptTest {
         assertFalse(scriptExecution.bScriptFailed);
     }
 
-    @RepeatedTest(50000)
+    @RepeatedTest(5000)
     @DisplayName("Invalid Script Terminates Cleanly")
     void TestInvalidScript() {
         try {
