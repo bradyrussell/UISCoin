@@ -5,6 +5,8 @@ import com.bradyrussell.uiscoin.Util;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.logging.Logger;
 
 public class ScriptBuilder {
@@ -26,9 +28,41 @@ public class ScriptBuilder {
         return this;
     }
 
-    public ScriptBuilder push(byte[] DataToPush){
-        buffer.put(ScriptOperator.PUSH.OPCode);
+    public ScriptBuilder virtualScript(byte[] Script){
+        return virtualScript(Script, null);
+    }
+
+    public ScriptBuilder virtualScript(byte[] Script, Enumeration<byte[]> InitialStack){
+        if(InitialStack != null) {
+            ArrayList<byte[]> list = Collections.list(InitialStack);
+            for (byte[] bytes : list) {
+                push(bytes);
+            }
+            pushByte(list.size());
+        } else {
+            pushByte(0);
+        }
+        push(Script);
+        op(ScriptOperator.VIRTUALSCRIPT);
+        return this;
+    }
+
+    public ScriptBuilder flag(byte Flag){
+        buffer.put(ScriptOperator.FLAG.OPCode);
+        buffer.put(Flag);
+        return this;
+    }
+
+    public ScriptBuilder flagData(byte[] DataToPush){
+        buffer.put(ScriptOperator.FLAGDATA.OPCode);
         buffer.put((byte)DataToPush.length);
+        buffer.put(DataToPush);
+        return this;
+    }
+
+    public ScriptBuilder push(byte[] DataToPush){
+        buffer.put(DataToPush.length > 127 ? ScriptOperator.BIGPUSH.OPCode : ScriptOperator.PUSH.OPCode);
+        buffer.put(DataToPush.length > 127 ? Util.NumberToByteArray32(DataToPush.length):new byte[]{(byte)DataToPush.length});
         buffer.put(DataToPush);
         return this;
     }
@@ -50,15 +84,27 @@ public class ScriptBuilder {
     public ScriptBuilder pushInt(int IntToPush){
         buffer.put(ScriptOperator.PUSH.OPCode);
         buffer.put((byte)4);
-        buffer.put(Util.NumberToByteArray(IntToPush));
+        buffer.put(Util.NumberToByteArray32(IntToPush));
+        return this;
+    }
+
+    public ScriptBuilder pushInt64(long IntToPush){
+        buffer.put(ScriptOperator.PUSH.OPCode);
+        buffer.put((byte)8);
+        buffer.put(Util.NumberToByteArray64(IntToPush));
+        return this;
+    }
+
+    public ScriptBuilder pushFloat(float FloatToPush){
+        buffer.put(ScriptOperator.PUSH.OPCode);
+        buffer.put((byte)4);
+        buffer.put(Util.FloatToByteArray(FloatToPush));
         return this;
     }
 
     public ScriptBuilder pushHexString(String Hex){ // https://stackoverflow.com/questions/140131/convert-a-string-representation-of-a-hex-dump-to-a-byte-array-using-java
         byte[] data = getBytesFromHexString(Hex);
-        buffer.put(ScriptOperator.PUSH.OPCode);
-        buffer.put((byte)data.length);
-        buffer.put(data);
+        push(data);
         return this;
     }
 
@@ -79,12 +125,8 @@ public class ScriptBuilder {
     }
 
     public ScriptBuilder pushASCIIString(String Str){
-        buffer.put(ScriptOperator.PUSH.OPCode);
-
         byte[] strBytes = Str.getBytes(StandardCharsets.US_ASCII);
-
-        buffer.put((byte)strBytes.length);
-        buffer.put(strBytes);
+        push(strBytes);
         return this;
     }
 
@@ -106,7 +148,7 @@ public class ScriptBuilder {
             ScriptOperator scriptOperator = ScriptOperator.getByOpCode(Script[InstructionCounter++]);
             sb.append(scriptOperator);
 
-            if(scriptOperator == ScriptOperator.PUSH) {
+            if(scriptOperator == ScriptOperator.PUSH || scriptOperator == ScriptOperator.BIGPUSH) {
                 byte NumberOfBytesToPush = Script[InstructionCounter++];
                 byte[] bytes = new byte[NumberOfBytesToPush];
 
@@ -156,7 +198,7 @@ public class ScriptBuilder {
                 if(number < 128 && number > -128) {
                     buffer.put((byte)number);
                 } else {
-                    buffer.put(Util.NumberToByteArray(number));
+                    buffer.put(Util.NumberToByteArray32(number));
                 }
 
                 continue;
@@ -167,7 +209,65 @@ public class ScriptBuilder {
 
             Log.fine("Token "+i+": OP "+scriptOperator);
 
-            if(scriptOperator == ScriptOperator.PUSH) {
+            if(scriptOperator == ScriptOperator.FLAG) {
+                if(parts[++i].startsWith("0x")){
+                    String hex = parts[i].substring(2);
+                    flag(getBytesFromHexString(hex)[0]);
+
+                    Log.fine("Token "+i+": Hex Data "+parts[i]);
+                }
+                else { // interp as byte
+                    flag(Byte.parseByte(parts[i]));
+                    Log.fine("Token "+i+": Number "+Integer.parseInt(parts[i]));
+                }
+            }
+
+            /////////////////////////////
+            else if(scriptOperator == ScriptOperator.FLAGDATA) {
+                if(parts[++i].startsWith("'")) { // interp as ascii string
+                    StringBuilder sb = new StringBuilder();
+                    Log.fine("Token "+i+": Begin String ' ");
+                    do { // single byte
+                        /*I = */
+                        sb.append(parts[i].replace("'", "")/*.replace("'", "")*/);
+                        if(!parts[i].endsWith("'")) sb.append(" ");
+                        Log.fine("Token "+i+": String Element "+parts[i].replace("'", "").replace("'", "") + " from string part "+parts[i]);
+                    }while(!parts[i++].endsWith("'"));
+
+                    i--; // todo fix the above loop making this necessary
+
+                    flagData(sb.toString().getBytes(StandardCharsets.US_ASCII));
+                } else if(parts[i].startsWith("[")) { // interp as byte array
+                    ArrayList<Byte> bytes = new ArrayList<>();
+                    Log.fine("Token "+i+": Begin Byte Array [  ");
+                    do { // single byte
+                        /*I = */
+                        byte parseByte = Byte.parseByte(parts[i].replace("[", "").replace("]", "").replace(",", ""));
+                        bytes.add(parseByte);
+                        Log.fine("Token "+i+": Byte Array Element "+parseByte + " from string part "+parts[i]);
+                    }while(!parts[i++].endsWith("]"));
+
+                    i--; // todo fix the above loop making this necessary
+
+                    byte[] byteArray = new byte[bytes.size()];
+                    for (int j = 0; j < bytes.size(); j++) {
+                        byteArray[j] = bytes.get(j);
+                    }
+                    flagData(byteArray);
+                } else if(parts[i].startsWith("0x")){
+                    String hex = parts[i].substring(2);
+                    flagData(getBytesFromHexString(hex));
+
+                    Log.fine("Token "+i+": Hex Data "+parts[i]);
+                }
+                else { // interp as number
+                    flagData(Util.NumberToByteArray32(Integer.parseInt(parts[i])));
+                    Log.fine("Token "+i+": Number "+Integer.parseInt(parts[i]));
+                }
+            }
+            //////////////////
+
+            else if(scriptOperator == ScriptOperator.PUSH || scriptOperator == ScriptOperator.BIGPUSH) {
                 // PUSH 2576
                 // PUSH 'ascii text'
                 // PUSH [4,5,6,7]
@@ -209,8 +309,13 @@ public class ScriptBuilder {
                     Log.fine("Token "+i+": Hex Data "+parts[i]);
                 }
                 else { // interp as number
-                    pushInt(Integer.parseInt(parts[i]));
-                    Log.fine("Token "+i+": Number "+Integer.parseInt(parts[i]));
+                    try{
+                        pushInt(Integer.parseInt(parts[i]));
+                        Log.fine("Token "+i+": Number "+Integer.parseInt(parts[i]));
+                    } catch (NumberFormatException ignored){
+                        pushInt64(Long.parseLong(parts[i]));
+                        Log.fine("Token "+i+": 64 Bit Number "+Long.parseLong(parts[i]));
+                    }
                 }
             }
             else {

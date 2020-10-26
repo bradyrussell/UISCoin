@@ -184,7 +184,7 @@ public class Block implements IBinaryData, IVerifiable {
             } else {
 
                 for (TransactionInput input : transaction.Inputs) {
-                    byte[] inputTXO = Util.ConcatArray(input.InputHash, Util.NumberToByteArray(input.IndexNumber));
+                    byte[] inputTXO = Util.ConcatArray(input.InputHash, Util.NumberToByteArray32(input.IndexNumber));
                     for (byte[] transactionOutput : TransactionOutputs) {
                         if(Arrays.equals(inputTXO,transactionOutput)) {
                             Log.warning("Block contains duplicate Transaction Outputs! See transaction "+i+".");

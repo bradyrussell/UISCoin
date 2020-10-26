@@ -89,7 +89,7 @@ public abstract class BlockChainStorageBase {
 
         byte[] bytes = get(Util.ConcatArray(TransactionHash, new byte[]{'I'}), TransactionToBlockDatabase);
         if(bytes == null) throw new NoSuchTransactionException("There was no Transaction Index with the hash: "+Util.Base64Encode(TransactionHash));
-        return Util.ByteArrayToNumber(bytes);
+        return Util.ByteArrayToNumber32(bytes);
     }
 
     public TransactionOutput getTransactionOutput(byte[] TransactionHash, int Index) throws NoSuchTransactionException, NoSuchBlockException {
@@ -105,7 +105,7 @@ public abstract class BlockChainStorageBase {
 
         if(TransactionHash == null) throw new NoSuchTransactionException("There was no Transaction with the hash: null");
         TransactionOutput transactionOutput = new TransactionOutput();
-        byte[] binaryData = get(Util.ConcatArray(TransactionHash, Util.NumberToByteArray(Index)), TransactionOutputDatabase);
+        byte[] binaryData = get(Util.ConcatArray(TransactionHash, Util.NumberToByteArray32(Index)), TransactionOutputDatabase);
 
         if(binaryData == null) return null; // should we keep using this or use an exception? i dont want to use exceptions for business logic but it would be more clear
         transactionOutput.setBinaryData(binaryData);
@@ -120,9 +120,9 @@ public abstract class BlockChainStorageBase {
         ArrayList<Transaction> transactions = block.Transactions;
         for (int TransactionIndex = 0; TransactionIndex < transactions.size(); TransactionIndex++) {
             Transaction transaction = transactions.get(TransactionIndex);
-
+//gonna break blocks need to do other way
             put(transaction.getHash(), headerHash, TransactionToBlockDatabase);
-            put(Util.ConcatArray(transaction.getHash(), new byte[]{'I'}), Util.NumberToByteArray(TransactionIndex), TransactionToBlockDatabase); // making second row for semi backwards compat. if this row doesnt exist then default to linear search
+            put(Util.ConcatArray(transaction.getHash(), new byte[]{'I'}), Util.NumberToByteArray32(TransactionIndex), TransactionToBlockDatabase); // making second row for semi backwards compat. if this row doesnt exist then default to linear search
 
             if(TransactionIndex != 0) { // only for non coinbase transactions
                 BlockChain.get().removeFromMempool(transaction); // remove from mempool
@@ -155,11 +155,11 @@ public abstract class BlockChainStorageBase {
     }
 
     public void putUnspentTransactionOutput(byte[] TransactionHash, int Index, TransactionOutput transactionOutput){
-        put(Util.ConcatArray(TransactionHash,Util.NumberToByteArray(Index)), transactionOutput.getBinaryData(), TransactionOutputDatabase);
+        put(Util.ConcatArray(TransactionHash,Util.NumberToByteArray32(Index)), transactionOutput.getBinaryData(), TransactionOutputDatabase);
     }
 
     public void removeUnspentTransactionOutput(byte[] TransactionHash, int Index){
-        remove(Util.ConcatArray(TransactionHash,Util.NumberToByteArray(Index)), TransactionOutputDatabase);
+        remove(Util.ConcatArray(TransactionHash,Util.NumberToByteArray32(Index)), TransactionOutputDatabase);
     }
 
     //this returns UTXO, which are 64 bytes TransactionHash, 4 bytes Index

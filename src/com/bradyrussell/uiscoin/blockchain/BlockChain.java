@@ -55,11 +55,11 @@ public class BlockChain {
         for (Block b : blockChain) {
             for (Transaction transaction : b.Transactions) {
                 for (TransactionInput input : transaction.Inputs) {
-                    final byte[] concatArray = Util.ConcatArray(input.InputHash, Util.NumberToByteArray(input.IndexNumber));
+                    final byte[] concatArray = Util.ConcatArray(input.InputHash, Util.NumberToByteArray32(input.IndexNumber));
                     TransactionOutputs.removeIf(bytes -> Arrays.equals(bytes,concatArray)); // this has been spent, remove it
                 }
                 for (int i = 0; i < transaction.Outputs.size(); i++) {
-                    TransactionOutputs.add(Util.ConcatArray(transaction.getHash(), Util.NumberToByteArray(i)));
+                    TransactionOutputs.add(Util.ConcatArray(transaction.getHash(), Util.NumberToByteArray32(i)));
                 }
             }
         }
@@ -72,7 +72,7 @@ public class BlockChain {
             System.arraycopy(transactionOutput, 64, Index, 0, 4);
 
             //System.out.println("Saving UTXO " + Util.Base64Encode(transactionOutput));
-            Storage.putUnspentTransactionOutput(TsxnHash, Util.ByteArrayToNumber(Index), Storage.getTransactionOutput(TsxnHash, Util.ByteArrayToNumber(Index)));
+            Storage.putUnspentTransactionOutput(TsxnHash, Util.ByteArrayToNumber32(Index), Storage.getTransactionOutput(TsxnHash, Util.ByteArrayToNumber32(Index)));
         }
     }
 }
