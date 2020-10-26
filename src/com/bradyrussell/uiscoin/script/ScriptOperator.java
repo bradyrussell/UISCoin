@@ -282,13 +282,19 @@ public enum ScriptOperator {
 
     // returns
     /**
-     * script execution continues if there is a 1 on the stack, else fail
+     * script execution continues if there is a 1 on the stack, else fails
      */
     VERIFY(0xa0),
     /**
-     * script fails
+     * script fails unconditionally
      */
     RETURN(0xa1),
+
+    /**
+     * script fails IF there is a 1 on top of the stack
+     */
+    RETURNIF(0xa2),
+
 
 //    LOCKTIMEVERIFY(0xa2),
 

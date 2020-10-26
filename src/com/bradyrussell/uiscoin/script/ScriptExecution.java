@@ -870,6 +870,19 @@ public class ScriptExecution {
                     bScriptFailed = true;
                     return false;
                 }
+                case RETURNIF -> {
+                    if (CheckInsufficientStackSize(1)) return false;
+                    byte[] bytes = Stack.pop();
+                    if(LogScriptExecution)        Log.fine("ReturnIf " + Arrays.toString(bytes) + " == true: " + (bytes.length == 1 && bytes[0] == 1));
+
+                    if(bytes.length == 1 && bytes[0] == 1) {
+                        bScriptFailed = true;
+                        return false;
+                    }
+
+                    if(LogScriptExecution)        Log.fine("ReturnIf passed, continuing...");
+                    return true;
+                }
                 case SHA512 -> {
                     if (CheckInsufficientStackSize(1)) return false;
                     Stack.push(Hash.getSHA512Bytes(Stack.pop()));
