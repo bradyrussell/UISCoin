@@ -1,7 +1,4 @@
-import com.bradyrussell.uiscoin.Conversions;
-import com.bradyrussell.uiscoin.Encryption;
-import com.bradyrussell.uiscoin.Hash;
-import com.bradyrussell.uiscoin.Util;
+import com.bradyrussell.uiscoin.*;
 import com.bradyrussell.uiscoin.address.UISCoinAddress;
 import com.bradyrussell.uiscoin.address.UISCoinKeypair;
 import com.bradyrussell.uiscoin.script.ScriptBuilder;
@@ -23,6 +20,7 @@ import java.security.interfaces.ECPublicKey;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -221,6 +219,73 @@ public class ScriptTest {
         System.out.println("Finished: "+scriptExecution.InstructionCounter+" / "+scriptExecution.Script.length);
 
         assertFalse(scriptExecution.bScriptFailed);
+    }
+
+    @Test
+    @DisplayName("Script BigPush")
+    void TestScriptBigPush() {
+        byte[] C = new byte[2048];
+        ThreadLocalRandom.current().nextBytes(C);
+
+        ScriptBuilder sb = new ScriptBuilder(4098);
+        sb
+                .push(C)
+                .pushInt64(1)
+                .pushByte(1)
+                .op(ScriptOperator.CONVERT8TO32)
+                .op(ScriptOperator.NUMEQUAL)
+                .op(ScriptOperator.VERIFY);
+
+        System.out.println(Arrays.toString(sb.get()));
+
+        ScriptExecution scriptExecution = new ScriptExecution();
+
+        scriptExecution.Initialize(sb.get());
+
+        while (scriptExecution.Step()){
+            System.out.println("Stack: \n"+scriptExecution.getStackContents());
+        }
+
+        System.out.println("Script returned: "+!scriptExecution.bScriptFailed);
+
+        System.out.println("Finished: "+scriptExecution.InstructionCounter+" / "+scriptExecution.Script.length);
+
+        assertFalse(scriptExecution.bScriptFailed);
+    }
+
+    @RepeatedTest(5000)
+    @DisplayName("Invalid Script Terminates Cleanly")
+    void TestInvalidScript() {
+        try {
+            byte[] A = new byte[ThreadLocalRandom.current().nextInt(0, 33)];
+            byte[] B = new byte[ThreadLocalRandom.current().nextInt(2048, 2049)];
+            byte[] C = new byte[ThreadLocalRandom.current().nextInt(2048, 2049)];
+            ThreadLocalRandom.current().nextBytes(A);
+            ThreadLocalRandom.current().nextBytes(B);
+            ThreadLocalRandom.current().nextBytes(C);
+
+            ScriptExecution scriptExecution = new ScriptExecution();
+            scriptExecution.LogScriptExecution = true;
+
+            ArrayList<byte[]> fakeStack = new ArrayList<>();
+            fakeStack.add(B);
+            fakeStack.add(C);
+            //fakeStack.add(A);
+
+            scriptExecution.Initialize(A, Collections.enumeration(fakeStack));
+
+            while (scriptExecution.Step()) {
+                scriptExecution.dumpStack();
+            }
+
+            System.out.println("Script returned: " + !scriptExecution.bScriptFailed);
+
+            System.out.println("Finished: " + scriptExecution.InstructionCounter + " / " + scriptExecution.Script.length);
+            //assertTrue(scriptExecution.bScriptFailed);
+        }catch (Exception e){
+            fail(e);
+        }
+
     }
 
     @RepeatedTest(1000)
@@ -696,7 +761,7 @@ public class ScriptTest {
         assertTrue(Arrays.equals(a,b));
     }
 
-    @Test @DisplayName("Pay to Public Key Lock & Unlock")
+    @RepeatedTest(100) @DisplayName("Pay to Public Key Lock & Unlock")
     void TestPayToPublicKey(){
         UISCoinKeypair coinKeypairRecipient = UISCoinKeypair.Create();
 

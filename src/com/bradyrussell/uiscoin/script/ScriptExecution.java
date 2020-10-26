@@ -126,8 +126,19 @@ public class ScriptExecution {
                     return true;
                 }
                 case PUSH -> {
+                    if(CheckScriptEndsBefore(1)) return false;
+
                     int NumberOfBytesToPush = Script[InstructionCounter++];
+
+                    if(NumberOfBytesToPush <= 0) {
+                        Log.warning("Invalid PUSH amount specified: "+NumberOfBytesToPush);
+                        bScriptFailed = true;
+                        return false;
+                    }
+
                     byte[] bytes = new byte[NumberOfBytesToPush];
+
+                    if(CheckScriptEndsBefore(NumberOfBytesToPush)) return false;
 
                     for (int i = 0; i < NumberOfBytesToPush; i++) {
                         bytes[i] = Script[InstructionCounter++];
@@ -143,17 +154,29 @@ public class ScriptExecution {
                 }
                 case FLAG -> {
                     // flags are ignored by the code
+                    if(CheckScriptEndsBefore(1)) return false;
+
                     int FlagValue = Script[InstructionCounter++];
                     if(LogScriptExecution) Log.fine("Flag: "+FlagValue);
                     return true;
                 }
                 case BIGPUSH -> {
+                    if(CheckScriptEndsBefore(4)) return false;
+
                     byte[] int32bytes = new byte[4];
                     for (int i = 0; i < 4; i++) {
                         int32bytes[i] = Script[InstructionCounter++];
                     }
 
                     int NumberOfBytesToPush = Util.ByteArrayToNumber(int32bytes);
+
+                    if(NumberOfBytesToPush <= 0) {
+                        Log.warning("Invalid BIGPUSH amount specified: "+NumberOfBytesToPush);
+                        bScriptFailed = true;
+                        return false;
+                    }
+
+                    if(CheckScriptEndsBefore(NumberOfBytesToPush)) return false;
 
                     byte[] bytes = new byte[NumberOfBytesToPush];
 
@@ -166,8 +189,19 @@ public class ScriptExecution {
                 }
                 case FLAGDATA -> {
                     // flags are ignored by code
+                    if(CheckScriptEndsBefore(1)) return false;
+
                     int NumberOfBytesForFlag = Script[InstructionCounter++];
+
+                    if(NumberOfBytesForFlag <= 0) {
+                        Log.warning("Invalid FLAGDATA amount specified: "+NumberOfBytesForFlag);
+                        bScriptFailed = true;
+                        return false;
+                    }
+
                     byte[] bytes = new byte[NumberOfBytesForFlag];
+
+                    if(CheckScriptEndsBefore(NumberOfBytesForFlag)) return false;
 
                     for (int i = 0; i < NumberOfBytesForFlag; i++) {
                         bytes[i] = Script[InstructionCounter++];
@@ -459,7 +493,7 @@ public class ScriptExecution {
 
                     for (int i = 0; i < A.length; i++) {
                         if(B.length <= i) C[i] = A[i]; // treat overrun as if it was all 0s
-                        C[i] = (byte) (A[i] + B[i]);
+                        else C[i] = (byte) (A[i] + B[i]);
                     }
 
                     Stack.push(C);
@@ -474,7 +508,7 @@ public class ScriptExecution {
 
                     for (int i = 0; i < A.length; i++) {
                         if(B.length <= i) C[i] = A[i]; // treat overrun as if it was all 0s
-                        C[i] = (byte) (A[i] - B[i]);
+                        else C[i] = (byte) (A[i] - B[i]);
                     }
 
                     Stack.push(C);
@@ -489,7 +523,7 @@ public class ScriptExecution {
 
                     for (int i = 0; i < A.length; i++) {
                         if(B.length <= i) C[i] = A[i]; // treat overrun as if it was all 1s
-                        C[i] = (byte) (A[i] * B[i]);
+                        else C[i] = (byte) (A[i] * B[i]);
                     }
 
                     Stack.push(C);
@@ -504,12 +538,12 @@ public class ScriptExecution {
 
                     for (int i = 0; i < A.length; i++) {
                         if(B.length <= i) C[i] = A[i]; // treat overrun as if it was all 1s
-                        if (B[i] == 0) {
+                        else if (B[i] == 0) {
                             bScriptFailed = true;
                             Log.info("Divide by zero");
                             return false;
                         }
-                        C[i] = (byte) (A[i] / B[i]);
+                        else C[i] = (byte) (A[i] / B[i]);
                     }
 
                     Stack.push(C);
@@ -721,6 +755,14 @@ public class ScriptExecution {
 
                     if (CheckIncorrectNumberBytes(A,1)) return false;
 
+                    if(CheckInsufficientStackSize(A[0]+1)) return false;
+
+                    if(A[0] < 0) {
+                        Log.info("Negative index for pick");
+                        bScriptFailed = true;
+                        return false;
+                    }
+
                     Stack.push(Stack.elementAt(A[0]));
                     return true;
                 }
@@ -805,6 +847,7 @@ public class ScriptExecution {
                         return false;
                     } catch (NoSuchAlgorithmException | InvalidKeySpecException | InvalidKeyException | SignatureException e) {
                         e.printStackTrace();
+                        bScriptFailed = true;
                         return false;
                     }
 
@@ -821,9 +864,13 @@ public class ScriptExecution {
                     if (CheckIncorrectNumberBytes(B,1)) return false;
 
                     int NumberOfBytesToPush = B[0];
+
+                    if(NumberOfBytesToPush < 0) NumberOfBytesToPush = 0;
+                    if(NumberOfBytesToPush > A.length) NumberOfBytesToPush = A.length;
+
                     byte[] bytes = new byte[NumberOfBytesToPush];
 
-                    if (NumberOfBytesToPush >= 0) System.arraycopy(A, 0, bytes, 0, NumberOfBytesToPush);
+                    if (NumberOfBytesToPush >= 1) System.arraycopy(A, 0, bytes, 0, NumberOfBytesToPush);
 
                     Stack.push(bytes);
                     return true;
@@ -847,6 +894,8 @@ public class ScriptExecution {
                     if (CheckIncorrectNumberBytes(B,1)) return false;
 
                     byte NumberOfItemsToCombine = B[0];
+
+                    if (CheckInsufficientStackSize(NumberOfItemsToCombine)) return false;
 
                     ArrayList<Byte> bytes = new ArrayList<>();
 
@@ -892,7 +941,7 @@ public class ScriptExecution {
                     return true;
                 }
                 case OR -> {
-                    if (CheckInsufficientStackSize(1)) return false;
+                    if (CheckInsufficientStackSize(2)) return false;
                     byte[] B = Stack.pop();
                     byte[] A = Stack.pop();
                     byte[] C = new byte[A.length];
@@ -910,7 +959,7 @@ public class ScriptExecution {
                     return true;
                 }
                 case AND -> {
-                    if (CheckInsufficientStackSize(1)) return false;
+                    if (CheckInsufficientStackSize(2)) return false;
                     byte[] B = Stack.pop();
                     byte[] A = Stack.pop();
                     byte[] C = new byte[A.length];
@@ -928,7 +977,7 @@ public class ScriptExecution {
                     return true;
                 }
                 case XOR -> {
-                    if (CheckInsufficientStackSize(1)) return false;
+                    if (CheckInsufficientStackSize(2)) return false;
                     byte[] B = Stack.pop();
                     byte[] A = Stack.pop();
                     byte[] C = new byte[A.length];
@@ -949,10 +998,7 @@ public class ScriptExecution {
                     if (CheckInsufficientStackSize(1)) return false;
                     byte[] A = Stack.pop();
 
-                    if (!areBytesValidNumber(A)) {
-                        Log.info("Invalid inputs");
-                        return false;
-                    }
+                    if (CheckIncorrectNumberBytes(A, 4)) return false;
 
                     float v = ByteArrayToFloat(A);
                     if(LogScriptExecution) Log.fine("Push -" + v + " onto the stack: " + (-v));
@@ -964,10 +1010,7 @@ public class ScriptExecution {
                     byte[] B = Stack.pop();
                     byte[] A = Stack.pop();
 
-                    if (!areBytesValidNumber(A) || !areBytesValidNumber(B)) {
-                        Log.info("Invalid inputs");
-                        return false;
-                    }
+                    if (CheckIncorrectNumberBytes(A, 4) || CheckIncorrectNumberBytes(B, 4)) return false;
 
                     float v = ByteArrayToFloat(A);
                     if(LogScriptExecution) Log.fine("Push " + v + " + " + ByteArrayToFloat(B) + " onto the stack: " + (v + ByteArrayToFloat(B)));
@@ -979,10 +1022,7 @@ public class ScriptExecution {
                     byte[] B = Stack.pop();
                     byte[] A = Stack.pop();
 
-                    if (!areBytesValidNumber(A) || !areBytesValidNumber(B)) {
-                        Log.info("Invalid inputs");
-                        return false;
-                    }
+                    if (CheckIncorrectNumberBytes(A, 4) || CheckIncorrectNumberBytes(B, 4)) return false;
 
                     float v = ByteArrayToFloat(A);
                     if(LogScriptExecution) Log.fine("Push " + v + " - " + ByteArrayToFloat(B) + " onto the stack: " + (v - ByteArrayToFloat(B)));
@@ -994,10 +1034,9 @@ public class ScriptExecution {
                     byte[] B = Stack.pop();
                     byte[] A = Stack.pop();
 
-                    if (!areBytesValidNumber(A) || !areBytesValidNumber(B)) {
-                        Log.info("Invalid inputs");
-                        return false;
-                    }
+                    if (CheckIncorrectNumberBytes(A, 4) || CheckIncorrectNumberBytes(B, 4)) return false;
+
+                    if(CheckIncorrectNumberBytes(A, 4) || CheckIncorrectNumberBytes(B, 4)) return false;
 
                     float v = ByteArrayToFloat(A);
                     if(LogScriptExecution) Log.fine("Push " + v + " * " + ByteArrayToFloat(B) + " onto the stack: " + (v * ByteArrayToFloat(B)));
@@ -1009,9 +1048,12 @@ public class ScriptExecution {
                     byte[] B = Stack.pop();
                     byte[] A = Stack.pop();
 
+                    if (CheckIncorrectNumberBytes(A, 4) || CheckIncorrectNumberBytes(B, 4)) return false;
+
                     float v = ByteArrayToFloat(B);
-                    if (!areBytesValidNumber(A) || !areBytesValidNumber(B) || v == 0.f || !Float.isFinite(v)) {
+                    if (v == 0.f || !Float.isFinite(v)) {
                         Log.info("Invalid inputs");
+                        bScriptFailed = true;
                         return false;
                     }
 
@@ -1096,10 +1138,19 @@ public class ScriptExecution {
         return false;
     }
 
+    private boolean CheckScriptEndsBefore(int MinimumRemainingBytes) {
+        if (Script.length < InstructionCounter+MinimumRemainingBytes) {
+            bScriptFailed = true;
+            Log.info("CheckScriptHasMoreBytes Too few bytes in script: "+InstructionCounter+MinimumRemainingBytes+" / "+Script.length);
+            return true;
+        }
+        return false;
+    }
+
     private boolean CheckInsufficientStackSize(int MinimumSize) {
         if (Stack.size() < MinimumSize) {
             bScriptFailed = true;
-            Log.info("CheckInsufficientStack Too few items in stack: "+Stack.size()+" / "+MinimumSize);
+            Log.info("CheckInsufficientStack Too few items in stack: "+MinimumSize+" / "+Stack.size());
             return true;
         }
         return false;
