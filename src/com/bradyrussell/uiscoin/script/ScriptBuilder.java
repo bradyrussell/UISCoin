@@ -4,10 +4,7 @@ import com.bradyrussell.uiscoin.Util;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Enumeration;
+import java.util.*;
 import java.util.logging.Logger;
 
 public class ScriptBuilder {
@@ -33,13 +30,12 @@ public class ScriptBuilder {
         return virtualScript(Script, null);
     }
 
-    public ScriptBuilder virtualScript(byte[] Script, Enumeration<byte[]> InitialStack){
+    public ScriptBuilder virtualScript(byte[] Script, List<byte[]> InitialStack){
         if(InitialStack != null) {
-            ArrayList<byte[]> list = Collections.list(InitialStack);
-            for (byte[] bytes : list) {
+            for (byte[] bytes : InitialStack) {
                 push(bytes);
             }
-            pushByte(list.size());
+            pushByte(InitialStack.size());
         } else {
             pushByte(0);
         }

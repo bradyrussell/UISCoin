@@ -74,7 +74,7 @@ public enum ScriptOperator {
      */
     MULTIPLY(0x22),
     /**
-     * numeric
+     * numeric Second To Top Stack Element / Top Stack Element
      */
     DIVIDE(0x23),
     /**
@@ -98,6 +98,10 @@ public enum ScriptOperator {
      */
     NEGATE(0x28), // -x
 
+    /**
+     *  Second To Top Stack Element % Top Stack Element
+     */
+    MODULO(0x29),
     /**
      *  Converts an 8 bit integer to a 32 bit integer
      */

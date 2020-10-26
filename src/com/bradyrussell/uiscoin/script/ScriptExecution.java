@@ -557,6 +557,40 @@ public class ScriptExecution {
                     Stack.push(bReturnLong ? NumberToByteArray64(iA/iB) : NumberToByteArray32((int) (iA/iB)));
                     return true;
                 }
+                case MODULO -> {
+                    if (CheckInsufficientStackSize(2)) return false;
+                    byte[] B = Stack.pop();
+                    byte[] A = Stack.pop();
+
+                    if (CheckInsufficientBytes(A, 4) || CheckInsufficientBytes(B, 4)) return false;
+
+                    long iA,iB;
+                    boolean bReturnLong = false;
+
+                    if(A.length < 8) {
+                        iA = ByteArrayToNumber32(A);
+                    } else {
+                        iA = ByteArrayToNumber64(A);
+                        bReturnLong = true;
+                    }
+
+                    if(B.length < 8) {
+                        iB = ByteArrayToNumber32(B);
+                    } else {
+                        iB = ByteArrayToNumber64(B);
+                        bReturnLong = true;
+                    }
+
+                    if(iB == 0){
+                        bScriptFailed = true;
+                        Log.info("Divide by zero");
+                        return false;
+                    }
+
+                    if(LogScriptExecution) Log.fine("Push " + iA + " % " + iB + " onto the stack: " + (iA%iB));
+                    Stack.push(bReturnLong ? NumberToByteArray64(iA%iB) : NumberToByteArray32((int) (iA%iB)));
+                    return true;
+                }
                 case ADDBYTES -> {
                     if (CheckInsufficientStackSize(2)) return false;
                     byte[] B = Stack.pop();
