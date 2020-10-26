@@ -62,7 +62,7 @@ public class ScriptBuilder {
 
     public ScriptBuilder push(byte[] DataToPush){
         buffer.put(DataToPush.length > 127 ? ScriptOperator.BIGPUSH.OPCode : ScriptOperator.PUSH.OPCode);
-        buffer.put(DataToPush.length > 127 ? Util.NumberToByteArray(DataToPush.length):new byte[]{(byte)DataToPush.length});
+        buffer.put(DataToPush.length > 127 ? Util.NumberToByteArray32(DataToPush.length):new byte[]{(byte)DataToPush.length});
         buffer.put(DataToPush);
         return this;
     }
@@ -84,7 +84,7 @@ public class ScriptBuilder {
     public ScriptBuilder pushInt(int IntToPush){
         buffer.put(ScriptOperator.PUSH.OPCode);
         buffer.put((byte)4);
-        buffer.put(Util.NumberToByteArray(IntToPush));
+        buffer.put(Util.NumberToByteArray32(IntToPush));
         return this;
     }
 
@@ -198,7 +198,7 @@ public class ScriptBuilder {
                 if(number < 128 && number > -128) {
                     buffer.put((byte)number);
                 } else {
-                    buffer.put(Util.NumberToByteArray(number));
+                    buffer.put(Util.NumberToByteArray32(number));
                 }
 
                 continue;
@@ -261,7 +261,7 @@ public class ScriptBuilder {
                     Log.fine("Token "+i+": Hex Data "+parts[i]);
                 }
                 else { // interp as number
-                    flagData(Util.NumberToByteArray(Integer.parseInt(parts[i])));
+                    flagData(Util.NumberToByteArray32(Integer.parseInt(parts[i])));
                     Log.fine("Token "+i+": Number "+Integer.parseInt(parts[i]));
                 }
             }

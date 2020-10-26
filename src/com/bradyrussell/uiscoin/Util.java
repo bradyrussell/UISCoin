@@ -39,6 +39,15 @@ public class Util {
         System.out.println("]");
     }
 
+    public static void printBytesHexDump(byte[] bytes) {
+        System.out.print("[");
+        System.out.print("0x");
+        for (byte b : bytes) {
+            System.out.printf("%02X", b);
+        }
+        System.out.println("]");
+    }
+
     public static byte[] ConcatArray(byte[] A, byte[] B) {
         byte[] C = new byte[A.length + B.length];
         for (int i = 0; i < A.length + B.length; i++) {
@@ -47,43 +56,45 @@ public class Util {
         return C;
     }
 
-    public static int ByteArrayToNumber(byte[] Bytes) {
-        int n = 0;
-
-        if (Bytes.length > 0) n |= Bytes[0] << 24;
-        if (Bytes.length > 1) n |= (Bytes[1] & 0xFF) << 16;
-        if (Bytes.length > 2) n |= (Bytes[2] & 0xFF) << 8;
-        if (Bytes.length > 3) n |= (Bytes[3] & 0xFF);
-
-        return n;
+    public static int ByteArrayToNumber32(byte[] Bytes) {
+        return ((int) Bytes[0] & 0xFF) << 24
+                | ((int) Bytes[1] & 0xFF) << 16
+                | ((int) Bytes[2] & 0xFF) << 8
+                | ((int) Bytes[3] & 0xFF);
     }
 
-    public static byte[] NumberToByteArray(int Number) {
-        return new byte[]{(byte) (Number >> 24), (byte) (Number >> 16), (byte) (Number >> 8), (byte) Number};
+    public static byte[] NumberToByteArray32(int Number) {
+        return new byte[]{
+                (byte) (Number >> 24),
+                (byte) (Number >> 16),
+                (byte) (Number >> 8),
+                (byte) Number
+                };
     }
 
     //https://stackoverflow.com/questions/4485128/how-do-i-convert-long-to-byte-and-back-in-java
     public static long ByteArrayToNumber64(byte[] Bytes) {
-        return ((long) Bytes[7] << 56)
-                | ((long) Bytes[6] & 0xFF) << 48
-                | ((long) Bytes[5] & 0xFF) << 40
-                | ((long) Bytes[4] & 0xFF) << 32
-                | ((long) Bytes[3] & 0xFF) << 24
-                | ((long) Bytes[2] & 0xFF) << 16
-                | ((long) Bytes[1] & 0xFF) << 8
-                | ((long) Bytes[0] & 0xFF);
+        return ((long) Bytes[0] << 56)
+                | ((long) Bytes[1] & 0xFF) << 48
+                | ((long) Bytes[2] & 0xFF) << 40
+                | ((long) Bytes[3] & 0xFF) << 32
+                | ((long) Bytes[4] & 0xFF) << 24
+                | ((long) Bytes[5] & 0xFF) << 16
+                | ((long) Bytes[6] & 0xFF) << 8
+                | ((long) Bytes[7] & 0xFF);
     }
 
     public static byte[] NumberToByteArray64(long Number) {
         return new byte[]{
-                (byte) Number,
-                (byte) (Number >> 8),
-                (byte) (Number >> 16),
-                (byte) (Number >> 24),
-                (byte) (Number >> 32),
-                (byte) (Number >> 40),
+                (byte) (Number >> 56),
                 (byte) (Number >> 48),
-                (byte) (Number >> 56)};
+                (byte) (Number >> 40),
+                (byte) (Number >> 32),
+                (byte) (Number >> 24),
+                (byte) (Number >> 16),
+                (byte) (Number >> 8),
+                (byte) Number
+                };
     }
 
     //https://stackoverflow.com/questions/14777800/gzip-compression-to-a-byte-array/44922240

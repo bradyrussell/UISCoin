@@ -148,7 +148,7 @@ public class ScriptExecution {
                     return true;
                 }
                 case INSTRUCTION -> {
-                    Stack.push(NumberToByteArray(InstructionCounter));
+                    Stack.push(NumberToByteArray32(InstructionCounter));
                     if(LogScriptExecution) Log.fine("Push instruction counter onto the stack: " + InstructionCounter);
                     return true;
                 }
@@ -168,7 +168,7 @@ public class ScriptExecution {
                         int32bytes[i] = Script[InstructionCounter++];
                     }
 
-                    int NumberOfBytesToPush = Util.ByteArrayToNumber(int32bytes);
+                    int NumberOfBytesToPush = Util.ByteArrayToNumber32(int32bytes);
 
                     if(NumberOfBytesToPush <= 0) {
                         Log.warning("Invalid BIGPUSH amount specified: "+NumberOfBytesToPush);
@@ -210,28 +210,31 @@ public class ScriptExecution {
                     return true;
                 }
                 case TIME -> {
-                    long epochSecond = Instant.now().getEpochSecond();
+                   /* long epochSecond = Instant.now().getEpochSecond();
                     if(LogScriptExecution) Log.fine("Push Time: " + epochSecond);
-                    Stack.push(Util.NumberToByteArray64(epochSecond));
-                    return true;
+                    Stack.push(Util.NumberToByteArray64(epochSecond));*/
+                    // time can conditionally break scripts. for this to work it needs to return block time once included in block
+                    Log.warning("Time operator is disabled");
+                    bScriptFailed = true;
+                    return false;
                 }
                 case NUMEQUAL -> {
                     if (CheckInsufficientStackSize(2)) return false;
                     byte[] B = Stack.pop();
                     byte[] A = Stack.pop();
 
-                    if (CheckInsufficientBytes(A, 4) || CheckInsufficientBytes(A, 4)) return false;
+                    if (CheckInsufficientBytes(A, 4) || CheckInsufficientBytes(B, 4)) return false;
 
                     long iA,iB;
 
                     if(A.length < 8) {
-                        iA = ByteArrayToNumber(A);
+                        iA = ByteArrayToNumber32(A);
                     } else {
                         iA = ByteArrayToNumber64(A);
                     }
 
                     if(B.length < 8) {
-                        iB = ByteArrayToNumber(B);
+                        iB = ByteArrayToNumber32(B);
                     } else {
                         iB = ByteArrayToNumber64(B);
                     }
@@ -300,8 +303,25 @@ public class ScriptExecution {
                     byte[] B = Stack.pop();
                     byte[] A = Stack.pop();
 
-                    if(LogScriptExecution) Log.fine("Push " + ByteArrayToNumber(A) + " < " + ByteArrayToNumber(B) + " onto the stack: " + (ByteArrayToNumber(A) < ByteArrayToNumber(B)));
-                    Stack.push(new byte[]{ByteArrayToNumber(A) < ByteArrayToNumber(B) ? (byte) 1 : (byte) 0});
+                    if (CheckInsufficientBytes(A, 4) || CheckInsufficientBytes(B, 4)) return false;
+
+                    long iA,iB;
+
+                    if(A.length < 8) {
+                        iA = ByteArrayToNumber32(A);
+                    } else {
+                        iA = ByteArrayToNumber64(A);
+                    }
+
+                    if(B.length < 8) {
+                        iB = ByteArrayToNumber32(B);
+                    } else {
+                        iB = ByteArrayToNumber64(B);
+                    }
+
+                    if(LogScriptExecution) Log.fine("Push " + iA + " < " + iB + " onto the stack: " + (iA<iB));
+                    Stack.push(new byte[]{iA < iB?(byte)1:(byte)0});
+
                     return true;
                 }
                 case LESSTHANEQUAL -> {
@@ -309,8 +329,25 @@ public class ScriptExecution {
                     byte[] B = Stack.pop();
                     byte[] A = Stack.pop();
 
-                    if(LogScriptExecution) Log.fine("Push " + ByteArrayToNumber(A) + " <= " + ByteArrayToNumber(B) + " onto the stack: " + (ByteArrayToNumber(A) <= ByteArrayToNumber(B)));
-                    Stack.push(new byte[]{ByteArrayToNumber(A) <= ByteArrayToNumber(B) ? (byte) 1 : (byte) 0});
+                    if (CheckInsufficientBytes(A, 4) || CheckInsufficientBytes(B, 4)) return false;
+
+                    long iA,iB;
+
+                    if(A.length < 8) {
+                        iA = ByteArrayToNumber32(A);
+                    } else {
+                        iA = ByteArrayToNumber64(A);
+                    }
+
+                    if(B.length < 8) {
+                        iB = ByteArrayToNumber32(B);
+                    } else {
+                        iB = ByteArrayToNumber64(B);
+                    }
+
+                    if(LogScriptExecution) Log.fine("Push " + iA + " <= " + iB + " onto the stack: " + (iA<=iB));
+                    Stack.push(new byte[]{iA <= iB?(byte)1:(byte)0});
+
                     return true;
                 }
                 case GREATERTHAN -> {
@@ -318,8 +355,25 @@ public class ScriptExecution {
                     byte[] B = Stack.pop();
                     byte[] A = Stack.pop();
 
-                    if(LogScriptExecution) Log.fine("Push " + ByteArrayToNumber(A) + " > " + ByteArrayToNumber(B) + " onto the stack: " + (ByteArrayToNumber(A) > ByteArrayToNumber(B)));
-                    Stack.push(new byte[]{ByteArrayToNumber(A) > ByteArrayToNumber(B) ? (byte) 1 : (byte) 0});
+                    if (CheckInsufficientBytes(A, 4) || CheckInsufficientBytes(B, 4)) return false;
+
+                    long iA,iB;
+
+                    if(A.length < 8) {
+                        iA = ByteArrayToNumber32(A);
+                    } else {
+                        iA = ByteArrayToNumber64(A);
+                    }
+
+                    if(B.length < 8) {
+                        iB = ByteArrayToNumber32(B);
+                    } else {
+                        iB = ByteArrayToNumber64(B);
+                    }
+
+                    if(LogScriptExecution) Log.fine("Push " + iA + " > " + iB + " onto the stack: " + (iA>iB));
+                    Stack.push(new byte[]{iA > iB?(byte)1:(byte)0});
+
                     return true;
                 }
                 case GREATERTHANEQUAL -> {
@@ -327,8 +381,25 @@ public class ScriptExecution {
                     byte[] B = Stack.pop();
                     byte[] A = Stack.pop();
 
-                    if(LogScriptExecution) Log.fine("Push " + ByteArrayToNumber(A) + " >= " + ByteArrayToNumber(B) + " onto the stack: " + (ByteArrayToNumber(A) >= ByteArrayToNumber(B)));
-                    Stack.push(new byte[]{ByteArrayToNumber(A) >= ByteArrayToNumber(B) ? (byte) 1 : (byte) 0});
+                    if (CheckInsufficientBytes(A, 4) || CheckInsufficientBytes(B, 4)) return false;
+
+                    long iA,iB;
+
+                    if(A.length < 8) {
+                        iA = ByteArrayToNumber32(A);
+                    } else {
+                        iA = ByteArrayToNumber64(A);
+                    }
+
+                    if(B.length < 8) {
+                        iB = ByteArrayToNumber32(B);
+                    } else {
+                        iB = ByteArrayToNumber64(B);
+                    }
+
+                    if(LogScriptExecution) Log.fine("Push " + iA + " >= " + iB + " onto the stack: " + (iA>=iB));
+                    Stack.push(new byte[]{iA >= iB?(byte)1:(byte)0});
+
                     return true;
                 }
                 case NOTEQUAL -> {
@@ -372,27 +443,27 @@ public class ScriptExecution {
                     byte[] B = Stack.pop();
                     byte[] A = Stack.pop();
 
-                    if (CheckInsufficientBytes(A, 4) || CheckInsufficientBytes(A, 4)) return false;
+                    if (CheckInsufficientBytes(A, 4) || CheckInsufficientBytes(B, 4)) return false;
 
                     long iA,iB;
                     boolean bReturnLong = false;
 
                     if(A.length < 8) {
-                        iA = ByteArrayToNumber(A);
+                        iA = ByteArrayToNumber32(A);
                     } else {
                         iA = ByteArrayToNumber64(A);
                         bReturnLong = true;
                     }
 
                     if(B.length < 8) {
-                        iB = ByteArrayToNumber(B);
+                        iB = ByteArrayToNumber32(B);
                     } else {
                         iB = ByteArrayToNumber64(B);
                         bReturnLong = true;
                     }
 
                     if(LogScriptExecution) Log.fine("Push " + iA + " + " + iB + " onto the stack: " + (iA+iB));
-                    Stack.push(bReturnLong ? NumberToByteArray64(iA+iB) : NumberToByteArray((int) (iA+iB)));
+                    Stack.push(bReturnLong ? NumberToByteArray64(iA+iB) : NumberToByteArray32((int) (iA+iB)));
                     return true;
                 }
                 case SUBTRACT -> {
@@ -400,27 +471,27 @@ public class ScriptExecution {
                     byte[] B = Stack.pop();
                     byte[] A = Stack.pop();
 
-                    if (CheckInsufficientBytes(A, 4) || CheckInsufficientBytes(A, 4)) return false;
+                    if (CheckInsufficientBytes(A, 4) || CheckInsufficientBytes(B, 4)) return false;
 
                     long iA,iB;
                     boolean bReturnLong = false;
 
                     if(A.length < 8) {
-                        iA = ByteArrayToNumber(A);
+                        iA = ByteArrayToNumber32(A);
                     } else {
                         iA = ByteArrayToNumber64(A);
                         bReturnLong = true;
                     }
 
                     if(B.length < 8) {
-                        iB = ByteArrayToNumber(B);
+                        iB = ByteArrayToNumber32(B);
                     } else {
                         iB = ByteArrayToNumber64(B);
                         bReturnLong = true;
                     }
 
                     if(LogScriptExecution) Log.fine("Push " + iA + " - " + iB + " onto the stack: " + (iA-iB));
-                    Stack.push(bReturnLong ? NumberToByteArray64(iA-iB) : NumberToByteArray((int) (iA-iB)));
+                    Stack.push(bReturnLong ? NumberToByteArray64(iA-iB) : NumberToByteArray32((int) (iA-iB)));
                     return true;
                 }
                 case MULTIPLY -> {
@@ -428,27 +499,27 @@ public class ScriptExecution {
                     byte[] B = Stack.pop();
                     byte[] A = Stack.pop();
 
-                    if (CheckInsufficientBytes(A, 4) || CheckInsufficientBytes(A, 4)) return false;
+                    if (CheckInsufficientBytes(A, 4) || CheckInsufficientBytes(B, 4)) return false;
 
                     long iA,iB;
                     boolean bReturnLong = false;
 
                     if(A.length < 8) {
-                        iA = ByteArrayToNumber(A);
+                        iA = ByteArrayToNumber32(A);
                     } else {
                         iA = ByteArrayToNumber64(A);
                         bReturnLong = true;
                     }
 
                     if(B.length < 8) {
-                        iB = ByteArrayToNumber(B);
+                        iB = ByteArrayToNumber32(B);
                     } else {
                         iB = ByteArrayToNumber64(B);
                         bReturnLong = true;
                     }
 
                     if(LogScriptExecution) Log.fine("Push " + iA + " * " + iB + " onto the stack: " + (iA*iB));
-                    Stack.push(bReturnLong ? NumberToByteArray64(iA*iB) : NumberToByteArray((int) (iA*iB)));
+                    Stack.push(bReturnLong ? NumberToByteArray64(iA*iB) : NumberToByteArray32((int) (iA*iB)));
                     return true;
                 }
                 case DIVIDE -> {
@@ -456,20 +527,20 @@ public class ScriptExecution {
                     byte[] B = Stack.pop();
                     byte[] A = Stack.pop();
 
-                    if (CheckInsufficientBytes(A, 4) || CheckInsufficientBytes(A, 4)) return false;
+                    if (CheckInsufficientBytes(A, 4) || CheckInsufficientBytes(B, 4)) return false;
 
                     long iA,iB;
                     boolean bReturnLong = false;
 
                     if(A.length < 8) {
-                        iA = ByteArrayToNumber(A);
+                        iA = ByteArrayToNumber32(A);
                     } else {
                         iA = ByteArrayToNumber64(A);
                         bReturnLong = true;
                     }
 
                     if(B.length < 8) {
-                        iB = ByteArrayToNumber(B);
+                        iB = ByteArrayToNumber32(B);
                     } else {
                         iB = ByteArrayToNumber64(B);
                         bReturnLong = true;
@@ -482,7 +553,7 @@ public class ScriptExecution {
                     }
 
                     if(LogScriptExecution) Log.fine("Push " + iA + " / " + iB + " onto the stack: " + (iA/iB));
-                    Stack.push(bReturnLong ? NumberToByteArray64(iA/iB) : NumberToByteArray((int) (iA/iB)));
+                    Stack.push(bReturnLong ? NumberToByteArray64(iA/iB) : NumberToByteArray32((int) (iA/iB)));
                     return true;
                 }
                 case ADDBYTES -> {
@@ -554,14 +625,29 @@ public class ScriptExecution {
                     if (CheckInsufficientStackSize(1)) return false;
                     byte[] A = Stack.pop();
 
-                    Stack.push(NumberToByteArray(-ByteArrayToNumber(A)));
+                    if (CheckInsufficientBytes(A, 4)) return false;
+
+                    long iA;
+                    boolean bReturnLong = false;
+
+                    if(A.length < 8) {
+                        iA = ByteArrayToNumber32(A);
+                    } else {
+                        iA = ByteArrayToNumber64(A);
+                        bReturnLong = true;
+                    }
+
+                    if(LogScriptExecution) Log.fine("Push -(" + iA + ")"+ " onto the stack: " + -(iA));
+                    Stack.push(bReturnLong ? NumberToByteArray64(-iA) : NumberToByteArray32((int) (-iA)));
                     return true;
                 }
                 case INVERTFLOAT -> {
                     if (CheckInsufficientStackSize(1)) return false;
                     byte[] A = Stack.pop();
 
-                    Stack.push(NumberToByteArray((int) (1.0/(double) ByteArrayToNumber(A))));
+                    if (CheckInsufficientBytes(A,4)) return false;
+
+                    Stack.push(FloatToByteArray(1.f/ByteArrayToFloat(A)));
                     return true;
                 }
                 case CONVERT8TO32 -> {
@@ -570,7 +656,7 @@ public class ScriptExecution {
 
                     if (CheckInsufficientBytes(A,1)) return false;
 
-                    Stack.push(Util.NumberToByteArray(A[0]));
+                    Stack.push(Util.NumberToByteArray32(A[0]));
                     return true;
                 }
                 case CONVERT32TO8 -> {
@@ -579,7 +665,7 @@ public class ScriptExecution {
 
                     if (CheckInsufficientBytes(A,4)) return false;
 
-                    Stack.push(new byte[]{(byte)Util.ByteArrayToNumber(A)});
+                    Stack.push(new byte[]{(byte)Util.ByteArrayToNumber32(A)});
                     return true;
                 }
                 case CONVERT64TO32 -> {
@@ -588,7 +674,7 @@ public class ScriptExecution {
 
                     if (CheckInsufficientBytes(A,8)) return false;
 
-                    Stack.push(Util.NumberToByteArray((int) Util.ByteArrayToNumber64(A)));
+                    Stack.push(Util.NumberToByteArray32((int) Util.ByteArrayToNumber64(A)));
                     return true;
                 }
                 case CONVERT32TO64 -> {
@@ -597,7 +683,7 @@ public class ScriptExecution {
 
                     if (CheckInsufficientBytes(A,4)) return false;
 
-                    Stack.push(Util.NumberToByteArray64(Util.ByteArrayToNumber(A)));
+                    Stack.push(Util.NumberToByteArray64(Util.ByteArrayToNumber32(A)));
                     return true;
                 }
                 case CONVERTFLOATTO32 -> {
@@ -606,7 +692,7 @@ public class ScriptExecution {
 
                     if (CheckInsufficientBytes(A,4)) return false;
 
-                    Stack.push(Util.NumberToByteArray((int) Util.ByteArrayToFloat(A)));
+                    Stack.push(Util.NumberToByteArray32((int) Util.ByteArrayToFloat(A)));
                     return true;
                 }
                 case CONVERT32TOFLOAT -> {
@@ -615,7 +701,7 @@ public class ScriptExecution {
 
                     if (CheckInsufficientBytes(A,4)) return false;
 
-                    Stack.push(Util.FloatToByteArray((float) Util.ByteArrayToNumber(A)));
+                    Stack.push(Util.FloatToByteArray((float) Util.ByteArrayToNumber32(A)));
                     return true;
                 }
                 case BITNOT -> {
@@ -921,7 +1007,7 @@ public class ScriptExecution {
                 case LEN -> {
                     if (CheckInsufficientStackSize(1)) return false;
                     byte[] A = Stack.peek();
-                    Stack.push(NumberToByteArray(A.length));
+                    Stack.push(NumberToByteArray32(A.length));
 
                     return true;
 

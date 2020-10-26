@@ -253,11 +253,11 @@ public class ScriptTest {
         assertFalse(scriptExecution.bScriptFailed);
     }
 
-    @RepeatedTest(5000)
+    @RepeatedTest(50000)
     @DisplayName("Invalid Script Terminates Cleanly")
     void TestInvalidScript() {
         try {
-            byte[] A = new byte[ThreadLocalRandom.current().nextInt(0, 33)];
+            byte[] A = new byte[ThreadLocalRandom.current().nextInt(16, 33)];
             byte[] B = new byte[ThreadLocalRandom.current().nextInt(2048, 2049)];
             byte[] C = new byte[ThreadLocalRandom.current().nextInt(2048, 2049)];
             ThreadLocalRandom.current().nextBytes(A);
@@ -720,7 +720,7 @@ public class ScriptTest {
 
         byte[] a  = new ScriptBuilder(128)
                 .flag((byte)2)
-                .flagData(Util.NumberToByteArray(123))
+                .flagData(Util.NumberToByteArray32(123))
                 .get();
 
         byte[] b= new ScriptBuilder(128).fromText("flag 2 flagdata 123").get();
@@ -869,7 +869,7 @@ public class ScriptTest {
         int C = A + B;
 
         ScriptBuilder sb = new ScriptBuilder(256);
-        sb.push(Util.NumberToByteArray(A)).push(Util.NumberToByteArray(B)).fromText("sha512 swap sha512 lenequal verify");
+        sb.push(Util.NumberToByteArray32(A)).push(Util.NumberToByteArray32(B)).fromText("sha512 swap sha512 lenequal verify");
 
         ScriptExecution scriptExecution = new ScriptExecution();
 
