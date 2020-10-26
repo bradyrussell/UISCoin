@@ -90,7 +90,7 @@ public class ScriptTest {
         scriptExecution.Initialize(sb.get());
 
         while (scriptExecution.Step()){
-            scriptExecution.dumpStack();
+            System.out.println("Stack: \n"+scriptExecution.getStackContents());
         }
 
         System.out.println("Script returned: "+!scriptExecution.bScriptFailed);
@@ -112,7 +112,7 @@ public class ScriptTest {
         scriptExecution.Initialize(sb.get());
 
         while (scriptExecution.Step()){
-            scriptExecution.dumpStack();
+            System.out.println("Stack: \n"+scriptExecution.getStackContents());
         }
 
         System.out.println("Script returned: "+!scriptExecution.bScriptFailed);
@@ -134,7 +134,7 @@ public class ScriptTest {
         scriptExecution.Initialize(sb.get());
 
         while (scriptExecution.Step()){
-            scriptExecution.dumpStack();
+            System.out.println("Stack: \n"+scriptExecution.getStackContents());
         }
 
         System.out.println("Script returned: "+!scriptExecution.bScriptFailed);
@@ -275,7 +275,7 @@ public class ScriptTest {
             scriptExecution.Initialize(A, Collections.enumeration(fakeStack));
 
             while (scriptExecution.Step()) {
-                scriptExecution.dumpStack();
+                System.out.println("Stack: \n"+scriptExecution.getStackContents());
             }
 
             System.out.println("Script returned: " + !scriptExecution.bScriptFailed);
@@ -324,7 +324,7 @@ public class ScriptTest {
         scriptExecution.Initialize(sb.get());
 
         while (scriptExecution.Step()){
-            scriptExecution.dumpStack();
+            System.out.println("Stack: \n"+scriptExecution.getStackContents());
         }
 
         System.out.println("Script returned: "+!scriptExecution.bScriptFailed);
@@ -370,7 +370,7 @@ public class ScriptTest {
         scriptExecution.Initialize(sb.get());
 
         while (scriptExecution.Step()){
-            scriptExecution.dumpStack();
+            System.out.println("Stack: \n"+scriptExecution.getStackContents());
         }
 
         System.out.println("Script returned: "+!scriptExecution.bScriptFailed);
@@ -503,7 +503,7 @@ public class ScriptTest {
         scriptExecution.Initialize(sb.get());
 
         while (scriptExecution.Step()){
-            scriptExecution.dumpStack();
+            System.out.println("Stack: \n"+scriptExecution.getStackContents());
         }
 
         System.out.println("Script returned: "+!scriptExecution.bScriptFailed);
@@ -539,7 +539,7 @@ public class ScriptTest {
         scriptExecution.Initialize(sb.get());
 
         while (scriptExecution.Step()){
-            scriptExecution.dumpStack();
+            System.out.println("Stack: \n"+scriptExecution.getStackContents());
         }
 
         System.out.println("Script returned: "+!scriptExecution.bScriptFailed);
@@ -572,7 +572,7 @@ public class ScriptTest {
         scriptExecution.Initialize(sb.get());
 
         while (scriptExecution.Step()){
-            scriptExecution.dumpStack();
+            System.out.println("Stack: \n"+scriptExecution.getStackContents());
         }
 
         System.out.println("Script returned: "+!scriptExecution.bScriptFailed);
@@ -605,7 +605,7 @@ public class ScriptTest {
         scriptExecution.Initialize(sb.get());
 
         while (scriptExecution.Step()){
-            scriptExecution.dumpStack();
+            System.out.println("Stack: \n"+scriptExecution.getStackContents());
         }
 
         System.out.println("Script returned: "+!scriptExecution.bScriptFailed);
@@ -638,7 +638,7 @@ public class ScriptTest {
         scriptExecution.Initialize(sb.get());
 
         while (scriptExecution.Step()){
-            scriptExecution.dumpStack();
+            System.out.println("Stack: \n"+scriptExecution.getStackContents());
         }
 
         System.out.println("Script returned: "+!scriptExecution.bScriptFailed);
@@ -671,7 +671,7 @@ public class ScriptTest {
         scriptExecution.Initialize(sb.get());
 
         while (scriptExecution.Step()){
-            scriptExecution.dumpStack();
+            System.out.println("Stack: \n"+scriptExecution.getStackContents());
         }
 
         System.out.println("Script returned: "+!scriptExecution.bScriptFailed);
@@ -702,7 +702,7 @@ public class ScriptTest {
         scriptExecution.Initialize(sb.get());
 
         while (scriptExecution.Step()){
-            scriptExecution.dumpStack();
+            System.out.println("Stack: \n"+scriptExecution.getStackContents());
         }
 
         System.out.println("Script returned: "+!scriptExecution.bScriptFailed);
@@ -729,6 +729,48 @@ public class ScriptTest {
         Util.printBytesReadable(b);
 
         assertTrue(Arrays.equals(a,b));
+    }
+
+    @Test @DisplayName("Script Code Block")
+    void TestScriptCodeBlock(){
+        ScriptBuilder sb = new ScriptBuilder(128).fromText("push 0x00 push {push 0x01020304 return} virtualscript drop push 0x01020304 bytesequal verify");
+
+        System.out.println(Arrays.toString(sb.get()));
+
+        ScriptExecution scriptExecution = new ScriptExecution();
+
+        scriptExecution.Initialize(sb.get());
+
+        while (scriptExecution.Step()){
+            System.out.println("Stack: \n"+scriptExecution.getStackContents());
+        }
+
+        System.out.println("Script returned: "+!scriptExecution.bScriptFailed);
+
+        System.out.println("Finished: "+scriptExecution.InstructionCounter+" / "+scriptExecution.Script.length);
+
+        assertFalse(scriptExecution.bScriptFailed);
+    }
+
+    @Test @DisplayName("Script Code If Block")
+    void TestScriptCodeIfBlock(){
+        ScriptBuilder sb = new ScriptBuilder(128).fromText("push {push 'Hello world!' true push 0x02 push {verify sha512} virtualscript drop push 'Hello world!' sha512 bytesequal verify}");
+
+        System.out.println(Arrays.toString(sb.get()));
+
+        ScriptExecution scriptExecution = new ScriptExecution();
+
+        scriptExecution.Initialize(sb.get());
+
+        while (scriptExecution.Step()){
+            System.out.println("Stack: \n"+scriptExecution.getStackContents());
+        }
+
+        System.out.println("Script returned: "+!scriptExecution.bScriptFailed);
+
+        System.out.println("Finished: "+scriptExecution.InstructionCounter+" / "+scriptExecution.Script.length);
+
+        assertFalse(scriptExecution.bScriptFailed);
     }
 
     @Test @DisplayName("Script Text Parser Push 64 Bit Integer")
@@ -895,7 +937,7 @@ public class ScriptTest {
         scriptExecution.Initialize(new ScriptBuilder(1024).fromText(toText).get());
 
         while (scriptExecution.Step()){
-            scriptExecution.dumpStack();
+            System.out.println("Stack: \n"+scriptExecution.getStackContents());
         }
 
         System.out.println("Script returned: "+!scriptExecution.bScriptFailed);
@@ -1064,7 +1106,7 @@ public class ScriptTest {
         scriptExecution.Initialize(sb.get());
 
         while (scriptExecution.Step()){
-            scriptExecution.dumpStack();
+            System.out.println("Stack: \n"+scriptExecution.getStackContents());
         }
 
         System.out.println("Script returned: "+!scriptExecution.bScriptFailed);
@@ -1097,7 +1139,7 @@ public class ScriptTest {
         scriptExecution.Initialize(sb.get());
 
         while (scriptExecution.Step()){
-            scriptExecution.dumpStack();
+            System.out.println("Stack: \n"+scriptExecution.getStackContents());
         }
 
         System.out.println("Script returned: "+!scriptExecution.bScriptFailed);
@@ -1130,7 +1172,7 @@ public class ScriptTest {
         scriptExecution.Initialize(sb.get());
 
         while (scriptExecution.Step()){
-            scriptExecution.dumpStack();
+            System.out.println("Stack: \n"+scriptExecution.getStackContents());
         }
 
         System.out.println("Script returned: "+!scriptExecution.bScriptFailed);
@@ -1163,7 +1205,7 @@ public class ScriptTest {
         scriptExecution.Initialize(sb.get());
 
         while (scriptExecution.Step()){
-            scriptExecution.dumpStack();
+            System.out.println("Stack: \n"+scriptExecution.getStackContents());
         }
 
         System.out.println("Script returned: "+!scriptExecution.bScriptFailed);

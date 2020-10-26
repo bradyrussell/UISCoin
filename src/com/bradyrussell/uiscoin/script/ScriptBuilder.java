@@ -285,6 +285,21 @@ public class ScriptBuilder {
                     i--; // todo fix the above loop making this necessary
 
                     pushASCIIString(sb.toString());
+                }
+                else if(parts[i].startsWith("{")) { // interp as code block
+                    StringBuilder sb = new StringBuilder();
+                    Log.fine("Token "+i+": Begin Code Block { ");
+                    do { // single byte
+                        /*I = */
+                        sb.append(parts[i].replace("{", "").replace("}", ""));
+                        if(!parts[i].endsWith("}")) sb.append(" ");
+                        Log.fine("Token "+i+": Code Block Element "+parts[i].replace("{", "").replace("}", "") + " from code block part "+parts[i]);
+                    }while(!parts[i++].endsWith("}"));
+
+                    i--; // todo fix the above loop making this necessary
+
+                    String codeBlockScript = sb.toString();
+                    push(new ScriptBuilder(codeBlockScript.length()).fromText(codeBlockScript).get());
                 } else if(parts[i].startsWith("[")) { // interp as byte array
                     ArrayList<Byte> bytes = new ArrayList<>();
                     Log.fine("Token "+i+": Begin Byte Array [  ");
