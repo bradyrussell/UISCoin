@@ -5,6 +5,7 @@ import com.bradyrussell.uiscoin.Util;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.logging.Logger;
@@ -175,6 +176,8 @@ public class ScriptBuilder {
         //clean up any extraneous characters and format the script in a single line like TRUE FALSE PUSH [1, 3, 6, 7] RETURN
         String[] parts = Text.replace("\n", " ").replace(";", " ").replace("  ", " ").replace("\r", "").split(" ");
 
+        Log.info(Arrays.toString(parts));
+
         for (int i = 0; i < parts.length; i++) {
             if(parts[i].startsWith("#")) {
                 String substring = parts[i].substring(1);
@@ -289,12 +292,34 @@ public class ScriptBuilder {
                 else if(parts[i].startsWith("{")) { // interp as code block
                     StringBuilder sb = new StringBuilder();
                     Log.fine("Token "+i+": Begin Code Block { ");
+
+                    int NumberOfBrackets = 0;
+
                     do { // single byte
                         /*I = */
-                        sb.append(parts[i].replace("{", "").replace("}", ""));
-                        if(!parts[i].endsWith("}")) sb.append(" ");
+
+                        String part = parts[i];
+
+                        if(parts[i].startsWith("{")) {
+                            if(NumberOfBrackets == 0) {
+                                part = parts[i].replace("{","");
+                            }
+                            NumberOfBrackets++;
+                        }
+
+                        if(parts[i].endsWith("}")) {
+                            NumberOfBrackets--;
+                            if(NumberOfBrackets == 0) {
+                                part = parts[i].replace("}","");
+                            }
+                        }
+
+                        sb.append(part);
+
+                        if(!(parts[i].endsWith("}") && NumberOfBrackets == 0)) sb.append(" ");
+
                         Log.fine("Token "+i+": Code Block Element "+parts[i].replace("{", "").replace("}", "") + " from code block part "+parts[i]);
-                    }while(!parts[i++].endsWith("}"));
+                    }while(!(parts[i++].endsWith("}") && NumberOfBrackets == 0));
 
                     i--; // todo fix the above loop making this necessary
 
