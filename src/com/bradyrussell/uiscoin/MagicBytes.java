@@ -3,10 +3,12 @@ package com.bradyrussell.uiscoin;
 public enum MagicBytes {
     BlockHeader(0x01),
     AddressHeader(0x50),
-    AddressType(0x84),
+    AddressHeader2(0x84),
     AddressVersion(0xb1),
     AddressVersion2(0xb2),
     AddressVersion3(0xb3),
+    //...
+    AddressVersionP2SH(0xbf),
     ProtocolVersion(0x01),
     ;
 

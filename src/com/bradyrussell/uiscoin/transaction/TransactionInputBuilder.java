@@ -1,6 +1,7 @@
 package com.bradyrussell.uiscoin.transaction;
 
 import com.bradyrussell.uiscoin.Keys;
+import com.bradyrussell.uiscoin.MagicNumbers;
 import com.bradyrussell.uiscoin.Util;
 import com.bradyrussell.uiscoin.address.UISCoinKeypair;
 import com.bradyrussell.uiscoin.script.ScriptBuilder;
@@ -9,6 +10,7 @@ import java.nio.charset.Charset;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
+import java.util.List;
 
 public class TransactionInputBuilder {
     TransactionInput input = new TransactionInput();
@@ -78,6 +80,16 @@ public class TransactionInputBuilder {
     public TransactionInputBuilder setUnlockPayToPassword(String Password) {
         byte[] dataToPush = (Password + Util.getConstantSalt()).getBytes(Charset.defaultCharset());
         input.UnlockingScript = new ScriptBuilder(dataToPush.length+2).push(dataToPush).get();
+        return this;
+    }
+
+    public TransactionInputBuilder setUnlockPayToScriptHash(byte[] RedeemScript, byte[] RedeemUnlockScript) {
+        ScriptBuilder unlockingScript = new ScriptBuilder(MagicNumbers.MaxUnlockingScriptLength.Value);
+
+        unlockingScript.push(RedeemUnlockScript); //todo order
+        unlockingScript.push(RedeemScript);
+
+        input.UnlockingScript = unlockingScript.get();
         return this;
     }
     //

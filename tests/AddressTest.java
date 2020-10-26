@@ -33,9 +33,8 @@ public class AddressTest {
 
             UISCoinAddress.DecodedAddress decodedAddress = UISCoinAddress.decodeAddress(address);
             System.out.println("Address Type: "+decodedAddress.Type);
-            System.out.println("Address Version: "+decodedAddress.Version);
             System.out.print("Address PubKeyHash: ");
-            Util.printBytesReadable(decodedAddress.PublicKeyHash);
+            Util.printBytesReadable(decodedAddress.HashData);
             System.out.print("Address Checksum: ");
             Util.printBytesReadable(decodedAddress.Checksum);
 
@@ -44,5 +43,30 @@ public class AddressTest {
         } catch (NoSuchAlgorithmException | InvalidAlgorithmParameterException e) {
             e.printStackTrace();
         }
+    }
+
+    @RepeatedTest(1000)
+    @DisplayName("Script Hash Address Checksum")
+    void TestSHAddressChecksum() {
+        byte[] Randomseed = new byte[64];
+
+        ThreadLocalRandom.current().nextBytes(Randomseed);
+
+        byte[] address = UISCoinAddress.fromScriptHash(Randomseed);
+
+        System.out.println(UISCoinAddress.verifyAddressChecksum(address));
+
+        System.out.println(Base64.getEncoder().encodeToString(address));
+        System.out.println(address.length);
+
+        UISCoinAddress.DecodedAddress decodedAddress = UISCoinAddress.decodeAddress(address);
+        System.out.println("Address Type: "+decodedAddress.Type);
+        System.out.print("Address HashData: ");
+        Util.printBytesReadable(decodedAddress.HashData);
+        System.out.print("Address Checksum: ");
+        Util.printBytesReadable(decodedAddress.Checksum);
+
+        assertTrue(UISCoinAddress.verifyAddressChecksum(address));
+
     }
 }

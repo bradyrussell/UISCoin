@@ -833,7 +833,7 @@ public class ScriptTest {
         System.out.println("Running unlocking script...");
 
         while(unlockingScript.Step()) {
-            unlockingScript.dumpStackReadable();
+            System.out.println("Stack: \n"+unlockingScript.getStackContents());
         }
 
         System.out.println("Unlocking script has ended.");
@@ -850,7 +850,7 @@ public class ScriptTest {
         System.out.println("Running locking script...");
 
         while(lockingScript.Step()) {
-            lockingScript.dumpStackReadable();
+            System.out.println("Stack: \n"+lockingScript.getStackContents());
         }
 
         System.out.println("Locking script has ended.");
@@ -875,11 +875,11 @@ public class ScriptTest {
 
         byte[] pubkey_sha512Bytes = Hash.getSHA512Bytes(coinKeypairRecipient.Keys.getPublic().getEncoded());
 
-        Util.printBytesReadable(decodedAddress.PublicKeyHash);
+        Util.printBytesReadable(decodedAddress.HashData);
         Util.printBytesReadable(pubkey_sha512Bytes);
-        assertTrue(Arrays.equals(decodedAddress.PublicKeyHash, pubkey_sha512Bytes));
+        assertTrue(Arrays.equals(decodedAddress.HashData, pubkey_sha512Bytes));
 
-        TransactionOutput transactionOutput = new TransactionOutputBuilder().setAmount(Conversions.CoinsToSatoshis(1.0)).setPayToPublicKeyHash(decodedAddress.PublicKeyHash).get();
+        TransactionOutput transactionOutput = new TransactionOutputBuilder().setAmount(Conversions.CoinsToSatoshis(1.0)).setPayToPublicKeyHash(decodedAddress.HashData).get();
         byte[] lockingScriptBytes = transactionOutput.LockingScript;
         byte[] unlockingScriptBytes = new TransactionInputBuilder().setUnlockPayToPublicKeyHash(coinKeypairRecipient, transactionOutput).get().UnlockingScript;
 
@@ -889,7 +889,7 @@ public class ScriptTest {
         System.out.println("Running unlocking script...");
 
         while(unlockingScript.Step()) {
-            unlockingScript.dumpStackReadable();
+            System.out.println("Stack: \n"+unlockingScript.getStackContents());
         }
 
         System.out.println("Unlocking script has ended.");
@@ -906,7 +906,178 @@ public class ScriptTest {
         System.out.println("Running locking script...");
 
         while(lockingScript.Step()) {
-            lockingScript.dumpStackReadable();
+            System.out.println("Stack: \n"+lockingScript.getStackContents());
+        }
+
+        System.out.println("Locking script has ended.");
+
+        if(lockingScript.bScriptFailed) {
+            System.out.println("Locking script failed! Terminating...");
+
+        }
+
+        assertTrue(!lockingScript.bScriptFailed && !unlockingScript.bScriptFailed);
+    }
+
+    @RepeatedTest(100) @DisplayName("Pay to Password Lock & Unlock")
+    void TestPayToPassword(){
+
+        byte[] randomPassword = new byte[64];
+        ThreadLocalRandom.current().nextBytes(randomPassword);
+
+        String password = Util.Base64Encode(randomPassword);
+
+        TransactionOutput transactionOutput = new TransactionOutputBuilder().setAmount(Conversions.CoinsToSatoshis(1.0)).setPayToPassword(password).get();
+        byte[] lockingScriptBytes = transactionOutput.LockingScript;
+        byte[] unlockingScriptBytes = new TransactionInputBuilder().setUnlockPayToPassword(password).get().UnlockingScript;
+
+        ScriptExecution unlockingScript = new ScriptExecution();
+        unlockingScript.LogScriptExecution  =true;
+        unlockingScript.Initialize(unlockingScriptBytes);
+
+        System.out.println("Running unlocking script...");
+
+        while(unlockingScript.Step()) {
+            System.out.println("Stack: \n"+unlockingScript.getStackContents());
+        }
+
+        System.out.println("Unlocking script has ended.");
+
+        if(unlockingScript.bScriptFailed) {
+            System.out.println("Unlocking script failed! Terminating...");
+            fail("Unlocking script failed!");
+        }
+
+        ScriptExecution lockingScript = new ScriptExecution();
+        lockingScript.Initialize(lockingScriptBytes, unlockingScript.Stack.elements());
+        lockingScript.LogScriptExecution  =true;
+        lockingScript.setSignatureVerificationMessage(transactionOutput.getHash());
+
+        System.out.println("Running locking script...");
+
+        while(lockingScript.Step()) {
+            System.out.println("Stack: \n"+lockingScript.getStackContents());
+        }
+
+        System.out.println("Locking script has ended.");
+
+        if(lockingScript.bScriptFailed) {
+            System.out.println("Locking script failed! Terminating...");
+
+        }
+
+        assertTrue(!lockingScript.bScriptFailed && !unlockingScript.bScriptFailed);
+    }
+
+    @RepeatedTest(100) @DisplayName("Pay to Script Hash Lock & Unlock")
+    void TestPayToScriptHash(){
+
+        byte[] randomPassword = new byte[64];
+        ThreadLocalRandom.current().nextBytes(randomPassword);
+
+        String password = Util.Base64Encode(randomPassword);
+
+        byte[] CustomScript = new TransactionOutputBuilder().setPayToPassword(password).get().LockingScript;
+        byte[] CustomScriptUnlock = new TransactionInputBuilder().setUnlockPayToPassword(password).get().UnlockingScript;
+
+        /////////////////////////////////////////////////////////////
+        byte[] scriptHashAddress = UISCoinAddress.fromScriptHash(Hash.getSHA512Bytes(CustomScript));
+
+        System.out.println("Pays to address: "+Util.Base64Encode(scriptHashAddress));
+
+        TransactionOutput transactionOutput = new TransactionOutputBuilder().setAmount(Conversions.CoinsToSatoshis(1.0)).setPayToAddress(scriptHashAddress).get();
+        byte[] lockingScriptBytes = transactionOutput.LockingScript;
+
+        byte[] unlockingScriptBytes = new TransactionInputBuilder().setUnlockPayToScriptHash(CustomScript, CustomScriptUnlock).get().UnlockingScript;
+
+        ScriptExecution unlockingScript = new ScriptExecution();
+        unlockingScript.LogScriptExecution  =true;
+        unlockingScript.Initialize(unlockingScriptBytes);
+
+        System.out.println("Running unlocking script...");
+
+        while(unlockingScript.Step()) {
+            System.out.println("Stack: \n"+unlockingScript.getStackContents());
+        }
+
+        System.out.println("Unlocking script has ended.");
+
+        if(unlockingScript.bScriptFailed) {
+            System.out.println("Unlocking script failed! Terminating...");
+            fail("Unlocking script failed!");
+        }
+
+        ScriptExecution lockingScript = new ScriptExecution();
+        lockingScript.Initialize(lockingScriptBytes, unlockingScript.Stack.elements());
+        lockingScript.LogScriptExecution  =true;
+        lockingScript.setSignatureVerificationMessage(transactionOutput.getHash());
+
+        System.out.println("Running locking script...");
+
+        while(lockingScript.Step()) {
+            System.out.println("Stack: \n"+lockingScript.getStackContents());
+        }
+
+        System.out.println("Locking script has ended.");
+
+        if(lockingScript.bScriptFailed) {
+            System.out.println("Locking script failed! Terminating...");
+
+        }
+
+        assertTrue(!lockingScript.bScriptFailed && !unlockingScript.bScriptFailed);
+    }
+
+    @RepeatedTest(100) @DisplayName("Pay to Script Hash Signature Verification Lock & Unlock")
+    void TestPayToScriptHashMultiStack(){
+        UISCoinKeypair coinKeypairRecipient = UISCoinKeypair.Create();
+
+        byte[] addressv1 = UISCoinAddress.fromPublicKey((ECPublicKey) coinKeypairRecipient.Keys.getPublic());
+
+        UISCoinAddress.DecodedAddress decodedAddress = UISCoinAddress.decodeAddress(addressv1);
+
+        assertTrue(UISCoinAddress.verifyAddressChecksum(addressv1));
+
+        byte[] pubkey_sha512Bytes = Hash.getSHA512Bytes(coinKeypairRecipient.Keys.getPublic().getEncoded());
+
+        assertTrue(Arrays.equals(decodedAddress.HashData, pubkey_sha512Bytes));
+
+        TransactionOutput transactionOutput1 = new TransactionOutputBuilder().setAmount(Conversions.CoinsToSatoshis(1.0)).setPayToPublicKeyHash(decodedAddress.HashData).get();
+        byte[] CustomScript = transactionOutput1.LockingScript;
+        byte[] CustomScriptUnlock = new TransactionInputBuilder().setUnlockPayToPublicKeyHash(coinKeypairRecipient, transactionOutput1).get().UnlockingScript;
+
+        /////////////////////////////////////////////////////////////
+
+        TransactionOutput transactionOutput = new TransactionOutputBuilder().setAmount(Conversions.CoinsToSatoshis(1.0)).setPayToScriptHash(Hash.getSHA512Bytes(CustomScript)).get();
+        byte[] lockingScriptBytes = transactionOutput.LockingScript;
+        byte[] unlockingScriptBytes = new TransactionInputBuilder().setUnlockPayToScriptHash(CustomScript, CustomScriptUnlock).get().UnlockingScript;
+
+        ScriptExecution unlockingScript = new ScriptExecution();
+        unlockingScript.LogScriptExecution  =true;
+        unlockingScript.Initialize(unlockingScriptBytes);
+
+        System.out.println("Running unlocking script...");
+
+        while(unlockingScript.Step()) {
+            System.out.println("Stack: \n"+unlockingScript.getStackContents());
+        }
+
+        System.out.println("Unlocking script has ended.");
+
+        if(unlockingScript.bScriptFailed) {
+            System.out.println("Unlocking script failed! Terminating...");
+            fail("Unlocking script failed!");
+        }
+
+        ScriptExecution lockingScript = new ScriptExecution();
+        lockingScript.Initialize(lockingScriptBytes, unlockingScript.Stack.elements());
+        lockingScript.LogScriptExecution  =true;
+        lockingScript.setSignatureVerificationMessage(transactionOutput1.getHash());
+
+        System.out.println("Running locking script...");
+
+        while(lockingScript.Step()) {
+            System.out.println("Stack: \n"+lockingScript.getStackContents());
         }
 
         System.out.println("Locking script has ended.");

@@ -1247,6 +1247,7 @@ public class ScriptExecution {
                     ScriptExecution virtualScriptExecution = new ScriptExecution();
                     virtualScriptExecution.Initialize(VirtualScriptBytes, Collections.enumeration(VirtualStack));
                     virtualScriptExecution.setSignatureVerificationMessage(SignatureVerificationMessage); // inherit from parent
+                    virtualScriptExecution.LogScriptExecution = LogScriptExecution;  // inherit from parent
 
                     if(LogScriptExecution) Log.info("Begin virtual script execution: "+Util.Base64Encode(VirtualScriptBytes));
 
