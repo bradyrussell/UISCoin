@@ -731,6 +731,22 @@ public class ScriptTest {
         assertTrue(Arrays.equals(a,b));
     }
 
+    @Test @DisplayName("Script Text Parser Push 64 Bit Integer")
+    void TestText64Bit(){
+        long A = ThreadLocalRandom.current().nextLong(((long)(Integer.MAX_VALUE))+1, Long.MAX_VALUE);
+
+        byte[] a  = new ScriptBuilder(128)
+                .pushInt64(A)
+                .get();
+
+        byte[] b= new ScriptBuilder(128).fromText("push "+A).get();
+
+        Util.printBytesReadable(a);
+        Util.printBytesReadable(b);
+
+        assertTrue(Arrays.equals(a,b));
+    }
+
     @Test @DisplayName("Script Builder & Text Parser Parity")
     void TestBuilderAndTextParity(){
         byte[] A = new byte[64];

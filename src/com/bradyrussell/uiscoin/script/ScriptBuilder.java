@@ -309,8 +309,13 @@ public class ScriptBuilder {
                     Log.fine("Token "+i+": Hex Data "+parts[i]);
                 }
                 else { // interp as number
-                    pushInt(Integer.parseInt(parts[i]));
-                    Log.fine("Token "+i+": Number "+Integer.parseInt(parts[i]));
+                    try{
+                        pushInt(Integer.parseInt(parts[i]));
+                        Log.fine("Token "+i+": Number "+Integer.parseInt(parts[i]));
+                    } catch (NumberFormatException ignored){
+                        pushInt64(Long.parseLong(parts[i]));
+                        Log.fine("Token "+i+": 64 Bit Number "+Long.parseLong(parts[i]));
+                    }
                 }
             }
             else {
