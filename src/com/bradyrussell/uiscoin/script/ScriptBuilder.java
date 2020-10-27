@@ -175,6 +175,8 @@ public class ScriptBuilder {
         Log.info(Arrays.toString(parts));
 
         for (int i = 0; i < parts.length; i++) {
+            boolean bIsFunctionSyntax = false;
+
             if(parts[i].startsWith("#")) {
                 String substring = parts[i].substring(1);
                 Log.fine("Interpreting Token "+i+" as a comment: "+substring);
@@ -202,9 +204,24 @@ public class ScriptBuilder {
 
                 continue;
             }
+            if(parts[i].startsWith("(")) {
+                String substring = parts[i].substring(1); // 1){code}
+                String parameterCount = substring.substring(0,substring.indexOf(")"));
+
+                if(parameterCount.equalsIgnoreCase("*")){
+                    // stack depth -1
+                    op(ScriptOperator.DEPTH);
+/*                    pushByte(1);
+                    op(ScriptOperator.SUBTRACTBYTES);*/
+                } else {
+                    pushByte(Byte.parseByte(parameterCount));
+                }
+                bIsFunctionSyntax = true; // drop down to push the code block
+            }
 
             Log.fine("Interpreting Token "+i+" as operator.");
-            ScriptOperator scriptOperator = ScriptOperator.valueOf(parts[i].toUpperCase());
+            ScriptOperator scriptOperator = bIsFunctionSyntax ? ScriptOperator.PUSH : ScriptOperator.valueOf(parts[i].toUpperCase());
+
 
             Log.fine("Token "+i+": OP "+scriptOperator);
 

@@ -22,6 +22,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -789,6 +792,34 @@ public class ScriptTest {
         assertTrue(Arrays.equals(a,b));
     }
 
+    @RepeatedTest(10) @DisplayName("Script Text Function Syntax")
+    void TestTextFxnSyntax(){
+        byte[] a  = new ScriptBuilder(128).fromText("push 2 push 1 (*) {push 3 add} virtualscript swap push 4 numequal verify verify").get();
+
+        byte[] b= new ScriptBuilder(128).fromText(new ScriptBuilder(128).data(a).toText()).get();
+
+        ScriptExecution scriptExecution = new ScriptExecution();
+
+        scriptExecution.Initialize(a);
+
+        while (scriptExecution.Step()){
+            System.out.println("Stack: \n"+scriptExecution.getStackContents());
+        }
+
+        System.out.println("Script returned: "+!scriptExecution.bScriptFailed);
+
+        System.out.println("Finished: "+scriptExecution.InstructionCounter+" / "+scriptExecution.Script.length);
+
+        assertFalse(scriptExecution.bScriptFailed);
+
+        System.out.println();
+
+        Util.printBytesReadable(a);
+        Util.printBytesReadable(b);
+
+        assertTrue(Arrays.equals(a,b));
+    }
+
     @Test @DisplayName("Script Builder & Text Parser Parity")
     void TestBuilderAndTextParity(){
         byte[] A = new byte[64];
@@ -1093,6 +1124,12 @@ public class ScriptTest {
     @RepeatedTest(100)
     @DisplayName("Script FromText From ToText")
     void TestScriptFromTextToText() {
+        Logger root = Logger.getLogger("");
+        //root.setLevel(targetLevel);
+        for (Handler handler : root.getHandlers()) {
+            handler.setLevel(Level.FINEST);
+        }
+
         int A = ThreadLocalRandom.current().nextInt();
         int B = ThreadLocalRandom.current().nextInt();
         int C = A + B;
