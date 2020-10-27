@@ -284,6 +284,15 @@ public enum ScriptOperator {
      */
     SHIFTELEMENTSLEFT(0x9b), //
 
+    /**
+     *duplicate the top 2 stack elements
+     */
+    DUP2(0x9c),//
+
+    /**
+     * pops the top stack item as a byte N, then duplicate the next top N stack elements
+     */
+    DUPN(0x9d),//
     // returns
     /**
      * script execution continues if there is a 1 on the stack, else fails

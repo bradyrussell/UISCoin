@@ -104,6 +104,30 @@ public class ScriptTest {
     }
 
     @Test
+    @DisplayName("Script DupN")
+    void TestScriptDUPN() {
+        ScriptBuilder sb = new ScriptBuilder(64);
+        sb
+                .fromText("push 0 push 1 push 2 push 3 push 4 push 0x04 dupn");
+
+        System.out.println(Arrays.toString(sb.get()));
+
+        ScriptExecution scriptExecution = new ScriptExecution();
+
+        scriptExecution.Initialize(sb.get());
+
+        while (scriptExecution.Step()){
+            System.out.println("Stack: \n"+scriptExecution.getStackContents());
+        }
+
+        System.out.println("Script returned: "+!scriptExecution.bScriptFailed);
+
+        System.out.println("Finished: "+scriptExecution.InstructionCounter+" / "+scriptExecution.Script.length);
+
+        assertFalse(scriptExecution.bScriptFailed);
+    }
+
+    @Test
     @DisplayName("Script Boolean Logic")
     void TestScriptBoolLogic() {
         ScriptBuilder sb = new ScriptBuilder(64);

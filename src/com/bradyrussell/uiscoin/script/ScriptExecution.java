@@ -1195,6 +1195,38 @@ public class ScriptExecution {
                     Stack.push(FloatToByteArray(ByteArrayToFloat(A) / v));
                     return true;
                 }
+                case DUP2 -> {
+                    if (CheckInsufficientStackSize(2)) return false;
+                    byte[] A = Stack.pop();
+                    byte[] B = Stack.pop();
+                    Stack.push(B);
+                    Stack.push(A);
+                    Stack.push(B);
+                    Stack.push(A);
+                    return true;
+                }
+                case DUPN -> {
+                    if (CheckInsufficientStackSize(1)) return false;
+
+                    byte[] Amount = Stack.pop();
+                    if(CheckIncorrectNumberBytes(Amount, 1)) return false;
+
+                    int NumberOfElements = Amount[0];
+
+                    if (CheckInsufficientStackSize(NumberOfElements)) return false;
+
+                    ArrayList<byte[]> stackElements = new ArrayList<>();
+
+                    for(int i = 0; i < NumberOfElements; i++){
+                        stackElements.add(Stack.pop());
+                    }
+
+                    for(int i = 0; i < NumberOfElements*2; i++){
+                        Stack.push(stackElements.get(NumberOfElements - (1+(i % NumberOfElements))));
+                    }
+
+                    return true;
+                }
                 case SHIFTELEMENTSRIGHT -> {
                     if (CheckInsufficientStackSize(1)) return false;
 
