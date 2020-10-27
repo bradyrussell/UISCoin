@@ -88,3 +88,6 @@ The UISCoin scripting language is executed in bytecode format. [See the availabl
 
                 byte[] b= new ScriptBuilder(128).fromText("dup sha512").push(A).fromText("len push 4 swap subtract limit bytesequal verify verifysig").get();
                 assertTrue(Arrays.equals(a,b));// true
+                
+I am working on an IDE for scripts which can be seen here:
+![Image of Script Editor](https://raw.githubusercontent.com/bradyrussell/UISCoin/master/script_ide.png)
