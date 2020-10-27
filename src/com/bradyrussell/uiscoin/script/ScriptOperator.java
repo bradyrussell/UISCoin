@@ -293,6 +293,11 @@ public enum ScriptOperator {
      * pops the top stack item as a byte N, then duplicate the next top N stack elements
      */
     DUPN(0x9d),//
+
+    /**
+     * pops the top stack item as a byte N, then drops the next top N stack elements
+     */
+    DROPN(0x9e), //
     // returns
     /**
      * script execution continues if there is a 1 on the stack, else fails

@@ -1227,6 +1227,22 @@ public class ScriptExecution {
 
                     return true;
                 }
+                case DROPN -> {
+                    if (CheckInsufficientStackSize(1)) return false;
+
+                    byte[] Amount = Stack.pop();
+                    if(CheckIncorrectNumberBytes(Amount, 1)) return false;
+
+                    int NumberOfElements = Amount[0];
+
+                    if (CheckInsufficientStackSize(NumberOfElements)) return false;
+
+                    for(int i = 0; i < NumberOfElements; i++){
+                        Stack.pop();
+                    }
+
+                    return true;
+                }
                 case SHIFTELEMENTSRIGHT -> {
                     if (CheckInsufficientStackSize(1)) return false;
 
