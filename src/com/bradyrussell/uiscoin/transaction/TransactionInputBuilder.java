@@ -86,7 +86,7 @@ public class TransactionInputBuilder {
     public TransactionInputBuilder setUnlockPayToScriptHash(byte[] RedeemScript, byte[] RedeemUnlockScript) {
         ScriptBuilder unlockingScript = new ScriptBuilder(MagicNumbers.MaxUnlockingScriptLength.Value);
 
-        unlockingScript.push(RedeemUnlockScript); //todo order
+        unlockingScript.push(RedeemUnlockScript);
         unlockingScript.push(RedeemScript);
 
         input.UnlockingScript = unlockingScript.get();
