@@ -1127,8 +1127,7 @@ public class ScriptTest {
 
         ScriptBuilder sb = new ScriptBuilder(32);
         sb
-                .pushFloat(A)
-                .pushFloat(B)
+                .fromText("push "+A+" push "+B)
                 .op(ScriptOperator.ADDFLOAT)
                 .pushFloat(C)
                 .op(ScriptOperator.NUMEQUAL)
