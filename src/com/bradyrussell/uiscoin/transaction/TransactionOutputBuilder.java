@@ -93,7 +93,8 @@ public class TransactionOutputBuilder {
     public TransactionOutputBuilder setPayToPassword(String Password){
         output.LockingScript = new ScriptBuilder(128)
                 .op(ScriptOperator.SHA512) // hash plaintext input password
-                .push(Hash.getSHA512Bytes(Password + Util.getConstantSalt())) // push the hashed known Password
+                .op(ScriptOperator.SHA512) // double hash plaintext input password
+                .push(Hash.getSHA512Bytes(Hash.getSHA512Bytes(Password + Util.getConstantSalt()))) // push the double hashed known Password
                 .op(ScriptOperator.BYTESEQUAL) // equal to provided input password hash?
                 .op(ScriptOperator.VERIFY)
                 .get();
