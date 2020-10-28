@@ -1,6 +1,8 @@
 package com.bradyrussell.uiscoin.blockchain.exception;
 
-public class NoSuchBlockException extends Exception{
+import com.bradyrussell.uiscoin.UISCoinException;
+
+public class NoSuchBlockException extends UISCoinException {
     public NoSuchBlockException(String message) {
         super(message);
     }

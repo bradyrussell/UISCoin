@@ -5,6 +5,9 @@ import com.bradyrussell.uiscoin.address.Wallet;
 import com.bradyrussell.uiscoin.script.ScriptBuilder;
 import com.bradyrussell.uiscoin.script.ScriptExecution;
 import com.bradyrussell.uiscoin.script.ScriptOperator;
+import com.bradyrussell.uiscoin.script.exception.ScriptEmptyStackException;
+import com.bradyrussell.uiscoin.script.exception.ScriptInvalidException;
+import com.bradyrussell.uiscoin.script.exception.ScriptInvalidParameterException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.RepeatedTest;
 
@@ -25,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class KeysTest {
     @RepeatedTest(100)
     @DisplayName("Data Signing / Verification")
-    void TestDataSigning() {
+    void TestDataSigning() throws ScriptInvalidException, ScriptEmptyStackException, ScriptInvalidParameterException {
         try {
             byte[] Randomseed = new byte[64];
 
