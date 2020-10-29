@@ -16,7 +16,6 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
-import java.time.Instant;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -224,7 +223,9 @@ public class ScriptExecution {
                     // time can conditionally break scripts. for this to work it needs to return block time once included in block
                     Log.warning("Time operator is disabled");
                     bScriptFailed = true;
-                    throw new ScriptUnsupportedOperationException("The operator "+scriptOperator+" is disabled.");
+                    throw new ScriptUnsupportedOperationException("The operator "+scriptOperator+" is disabled."+
+                            "\n" + ScriptUtil.PrintScriptOpCodesSurroundingHighlight(Script, InstructionCounter - 1, 5, "Exception occurred here!") +
+                            "\n" + ScriptUtil.PrintStack(Stack.elements(), null));
                 }
                 case NUMEQUAL -> {
                     CheckInsufficientStackSize(2);
@@ -1340,19 +1341,64 @@ public class ScriptExecution {
                     /////////////////////////////////////////////////////
                     return true;
                 }
-                case RESERVED -> {
+                case JUMP -> {
+                    CheckInsufficientStackSize(1);
+                    byte[] DestinationBytes = Stack.pop();
+                    CheckIncorrectNumberBytes(DestinationBytes, 1);
+
+                    byte Destination = DestinationBytes[0];
+
+                    CheckScriptEndsBefore(Destination);
+
+                    if(Destination <= 0) {
+                        bScriptFailed = true;
+                        throw new ScriptUnsupportedOperationException("Jumping backwards is not supported."+
+                                "\n" + ScriptUtil.PrintScriptOpCodesSurroundingHighlight(Script, InstructionCounter - 1, 5, "Exception occurred here!") +
+                                "\n" + ScriptUtil.PrintStack(Stack.elements(), null));
+                    }
+
+                    int oldInstructionConter = InstructionCounter;
+                    InstructionCounter += Destination-1;
+                    Log.info("Jumped from "+oldInstructionConter+" to "+InstructionCounter+".");
+                    return true;
+                }
+                case JUMPIF -> {
+                    CheckInsufficientStackSize(2);
+                    byte[] DestinationBytes = Stack.pop();
+                    CheckIncorrectNumberBytes(DestinationBytes, 1);
+                    byte[] ConditionalBooleanBytes = Stack.pop();
+                    CheckIncorrectNumberBytes(ConditionalBooleanBytes, 1);
+
+                    if(ConditionalBooleanBytes[0] == 0) return true;
+
+                    byte Destination = DestinationBytes[0];
+
+                    CheckScriptEndsBefore(Destination);
+
+                    if(Destination <= 0) {
+                        bScriptFailed = true;
+                        throw new ScriptUnsupportedOperationException("Jumping backwards is not supported."+
+                                "\n" + ScriptUtil.PrintScriptOpCodesSurroundingHighlight(Script, InstructionCounter - 1, 5, "Exception occurred here!") +
+                                "\n" + ScriptUtil.PrintStack(Stack.elements(), null));
+                    }
+                    int oldInstructionConter = InstructionCounter;
+                    InstructionCounter += Destination-1;
+                    Log.info("Jumped from "+oldInstructionConter+" to "+InstructionCounter+".");
+                    return true;
                 }
             }
         }
         Log.fine("Not handled!");
         bScriptFailed = true;
-        throw new ScriptUnsupportedOperationException("The operation "+scriptOperator+" was not handled.");
+        throw new ScriptUnsupportedOperationException("The operation "+scriptOperator+" was not handled."+
+                "\n" + ScriptUtil.PrintScriptOpCodesSurroundingHighlight(Script, InstructionCounter - 1, 5, "Exception occurred here!") +
+                "\n" + ScriptUtil.PrintStack(Stack.elements(), null));
     }
 
     private void CheckScriptEndsBefore(int MinimumRemainingBytes) throws ScriptInvalidException {
         if (Script.length < InstructionCounter + MinimumRemainingBytes) {
             bScriptFailed = true;
-            throw new ScriptInvalidException("CheckScriptHasMoreBytes Too few bytes in script: " + InstructionCounter + MinimumRemainingBytes + " / " + Script.length +
+            throw new ScriptInvalidException("CheckScriptHasMoreBytes Too few bytes in script: " + InstructionCounter +" + "+ MinimumRemainingBytes + " / " + Script.length +
                     "\n" + ScriptUtil.PrintScriptOpCodesSurroundingHighlight(Script, InstructionCounter - 1, 5, "Exception occurred here!") +
                     "\n" + ScriptUtil.PrintStack(Stack.elements(), null));
         }

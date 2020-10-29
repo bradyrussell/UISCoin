@@ -349,8 +349,19 @@ public enum ScriptOperator {
      */
     VIRTUALSCRIPT(0xd0),
 
+    /**
+     * Jumps to the specified instruction. This is relative to the current location.
+     * In standard transaction scripts you cannot jump backwards.
+     * Expects a byte on top of the stack to be ADDED TO the instruction counter.
+     */
+    JUMP(0xf0),
 
-    RESERVED(0xf0),
+    /**
+     * Jumps to the specified instruction. This is relative to the current location.
+     * In standard transaction scripts you cannot jump backwards.
+     * Expects a byte on top of the stack to be ADDED TO the instruction counter conditionally followed by a byte as boolean.
+     */
+    JUMPIF(0xf1),
     ;
 
     public final byte OPCode;
