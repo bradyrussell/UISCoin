@@ -4,6 +4,7 @@ import com.bradyrussell.uiscoin.address.UISCoinKeypair;
 import com.bradyrussell.uiscoin.script.ScriptBuilder;
 import com.bradyrussell.uiscoin.script.ScriptExecution;
 import com.bradyrussell.uiscoin.script.ScriptOperator;
+import com.bradyrussell.uiscoin.script.ScriptParser;
 import com.bradyrussell.uiscoin.script.exception.ScriptEmptyStackException;
 import com.bradyrussell.uiscoin.script.exception.ScriptInvalidException;
 import com.bradyrussell.uiscoin.script.exception.ScriptInvalidParameterException;
@@ -421,6 +422,48 @@ public class ScriptTest {
         System.out.println("Finished: "+scriptExecution.InstructionCounter+" / "+scriptExecution.Script.length);
 
         assertFalse(scriptExecution.bScriptFailed);
+    }
+
+    @RepeatedTest(10)
+    @DisplayName("Script Tokenizer and fromText Parity")
+    void TestTokenizerAndfromTextParity(){
+        int bufferLength = 1024;
+        ScriptBuilder sb = new ScriptBuilder(bufferLength);
+        String OriginalString = "push 'Hello world.'\n" +
+                "len\n" +
+                "convert32to8\n" +
+                "push 0x06\n" +
+                "swap\n" +
+                "#Begin Loaded script as function#\n" +
+                "(3) {#function substring(string, startIndex, endIndex)#\n" +
+                "shiftup\n" +
+                "shiftup\n" +
+                "swap\n" +
+                "limit\n" +
+                "reverse\n" +
+                "len\n" +
+                "convert32to8\n" +
+                "shiftdown\n" +
+                "subtractbytes\n" +
+                "limit\n" +
+                "reverse }\n" +
+                "#End Loaded script as function#\n" +
+                "virtualscript\n" +
+                "verify";
+        sb.fromText(OriginalString);
+
+        byte[] Original = sb.get();
+        byte[] Upgrade = ScriptParser.CompileScriptTokensToBytecode(ScriptParser.GetTokensFromString(OriginalString.replace("#", "//"), true));
+
+        assertTrue(Arrays.equals(Original, Upgrade));
+
+        ScriptBuilder sb2 = new ScriptBuilder(bufferLength);
+
+        String decompiledUpgrade = sb2.data(Upgrade).toText();
+
+        sb2 = new ScriptBuilder(bufferLength).fromText(decompiledUpgrade);
+
+        assertTrue(Arrays.equals(Original, sb2.get()));
     }
 
     @RepeatedTest(1000)
