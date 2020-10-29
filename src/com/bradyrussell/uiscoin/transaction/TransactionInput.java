@@ -9,6 +9,7 @@ import com.bradyrussell.uiscoin.script.ScriptExecution;
 import com.bradyrussell.uiscoin.script.exception.ScriptEmptyStackException;
 import com.bradyrussell.uiscoin.script.exception.ScriptInvalidException;
 import com.bradyrussell.uiscoin.script.exception.ScriptInvalidParameterException;
+import com.bradyrussell.uiscoin.script.exception.ScriptUnsupportedOperationException;
 
 import java.nio.ByteBuffer;
 import java.time.Instant;
@@ -107,7 +108,7 @@ public class TransactionInput  implements IBinaryData, IVerifiable {
 
         try{
             while(UnlockingScriptEx.Step());
-        } catch (ScriptInvalidException | ScriptEmptyStackException | ScriptInvalidParameterException e) {
+        } catch (ScriptInvalidException | ScriptEmptyStackException | ScriptInvalidParameterException | ScriptUnsupportedOperationException e) {
             e.printStackTrace();
         }
 
@@ -122,7 +123,7 @@ public class TransactionInput  implements IBinaryData, IVerifiable {
 
         try{
             while(LockingScriptEx.Step());
-        } catch (ScriptInvalidException | ScriptEmptyStackException | ScriptInvalidParameterException e) {
+        } catch (ScriptInvalidException | ScriptEmptyStackException | ScriptInvalidParameterException | ScriptUnsupportedOperationException e) {
             e.printStackTrace();
         }
 

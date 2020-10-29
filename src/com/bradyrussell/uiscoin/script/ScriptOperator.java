@@ -271,7 +271,7 @@ public enum ScriptOperator {
      */
     SHIFTDOWN(0x98), //
     /**
-     *copy the Nth (top of the stack) element on the stack and push it onto the stack
+     *copy the Nth (from BOTTOM of the stack) element on the stack and push it onto the stack
      */
     PICK(0x99), //
 
@@ -298,6 +298,11 @@ public enum ScriptOperator {
      * pops the top stack item as a byte N, then drops the next top N stack elements
      */
     DROPN(0x9e), //
+
+    /**
+     * Pop the top stack element and put it into the Nth from the BOTTOM elements location
+     */
+    REPLACE(0x9f), //
     // returns
     /**
      * script execution continues if there is a 1 on the stack, else fails
@@ -349,8 +354,19 @@ public enum ScriptOperator {
      */
     VIRTUALSCRIPT(0xd0),
 
+    /**
+     * Jumps to the specified instruction. This is relative to the current location.
+     * In standard transaction scripts you cannot jump backwards.
+     * Expects a byte on top of the stack to be ADDED TO the instruction counter.
+     */
+    JUMP(0xf0),
 
-    RESERVED(0xf0),
+    /**
+     * Jumps to the specified instruction. This is relative to the current location.
+     * In standard transaction scripts you cannot jump backwards.
+     * Expects a byte on top of the stack to be ADDED TO the instruction counter conditionally followed by a byte as boolean.
+     */
+    JUMPIF(0xf1),
     ;
 
     public final byte OPCode;

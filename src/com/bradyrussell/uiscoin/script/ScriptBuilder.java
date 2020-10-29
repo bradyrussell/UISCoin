@@ -145,7 +145,7 @@ public class ScriptBuilder {
             ScriptOperator scriptOperator = ScriptOperator.getByOpCode(Script[InstructionCounter++]);
             sb.append(scriptOperator);
 
-            if(scriptOperator == ScriptOperator.PUSH || scriptOperator == ScriptOperator.BIGPUSH) {
+            if(scriptOperator == ScriptOperator.PUSH || scriptOperator == ScriptOperator.BIGPUSH || scriptOperator == ScriptOperator.FLAGDATA) {
                 byte NumberOfBytesToPush = Script[InstructionCounter++];
                 byte[] bytes = new byte[NumberOfBytesToPush];
 
@@ -158,6 +158,9 @@ public class ScriptBuilder {
                     sb.append(bytes[i]).append(i == (bytes.length-1) ? "":", ");
                 }
                 sb.append("]");
+            } else if(scriptOperator == ScriptOperator.FLAG){
+                sb.append(" 0x");
+                sb.append(String.format("%02X", Script[InstructionCounter++]));
             }
 
             sb.append("\n");
