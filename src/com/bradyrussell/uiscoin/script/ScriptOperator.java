@@ -271,7 +271,7 @@ public enum ScriptOperator {
      */
     SHIFTDOWN(0x98), //
     /**
-     *copy the Nth (top of the stack) element on the stack and push it onto the stack
+     *copy the Nth (from BOTTOM of the stack) element on the stack and push it onto the stack
      */
     PICK(0x99), //
 
@@ -298,6 +298,11 @@ public enum ScriptOperator {
      * pops the top stack item as a byte N, then drops the next top N stack elements
      */
     DROPN(0x9e), //
+
+    /**
+     * Pop the top stack element and put it into the Nth from the BOTTOM elements location
+     */
+    REPLACE(0x9f), //
     // returns
     /**
      * script execution continues if there is a 1 on the stack, else fails

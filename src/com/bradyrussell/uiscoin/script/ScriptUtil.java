@@ -1,9 +1,9 @@
 package com.bradyrussell.uiscoin.script;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.List;
+import com.bradyrussell.uiscoin.Util;
+
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 
 public class ScriptUtil {
     public static String PrintStack(Enumeration<byte[]> StackValues, byte[] PoppedElement){

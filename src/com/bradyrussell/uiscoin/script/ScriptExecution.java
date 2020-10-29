@@ -905,6 +905,29 @@ public class ScriptExecution {
                     Stack.push(Stack.elementAt(A[0]));
                     return true;
                 }
+                case REPLACE -> {
+                    CheckInsufficientStackSize(2);
+
+                    byte[] A = Stack.pop();
+
+                    CheckIncorrectNumberBytes(A, 1);
+
+                    byte[] B = Stack.pop();
+
+                    CheckInsufficientStackSize(A[0] + 1);
+
+                    if (A[0] < 0) {
+                        Log.info("Negative index for replace");
+                        bScriptFailed = true;
+                        return false;
+                    }
+
+                    Stack.ensureCapacity(A[0]+1);
+                    Stack.insertElementAt(B, A[0]);
+                    Stack.remove(A[0]+1);
+
+                    return true;
+                }
                 case VERIFY -> {
                     CheckInsufficientStackSize(1);
                     byte[] bytes = Stack.pop();
