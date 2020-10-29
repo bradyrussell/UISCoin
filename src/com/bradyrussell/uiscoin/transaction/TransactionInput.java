@@ -6,6 +6,9 @@ import com.bradyrussell.uiscoin.blockchain.BlockChain;
 import com.bradyrussell.uiscoin.blockchain.exception.NoSuchBlockException;
 import com.bradyrussell.uiscoin.blockchain.exception.NoSuchTransactionException;
 import com.bradyrussell.uiscoin.script.ScriptExecution;
+import com.bradyrussell.uiscoin.script.exception.ScriptEmptyStackException;
+import com.bradyrussell.uiscoin.script.exception.ScriptInvalidException;
+import com.bradyrussell.uiscoin.script.exception.ScriptInvalidParameterException;
 
 import java.nio.ByteBuffer;
 import java.time.Instant;
@@ -102,7 +105,11 @@ public class TransactionInput  implements IBinaryData, IVerifiable {
         ScriptExecution UnlockingScriptEx = new ScriptExecution();
         UnlockingScriptEx.Initialize(UnlockingScript);
 
-        while(UnlockingScriptEx.Step());
+        try{
+            while(UnlockingScriptEx.Step());
+        } catch (ScriptInvalidException | ScriptEmptyStackException | ScriptInvalidParameterException e) {
+            e.printStackTrace();
+        }
 
         if(UnlockingScriptEx.bScriptFailed) {
             Log.info("Verification failed! Unlocking script failed!");
@@ -113,7 +120,11 @@ public class TransactionInput  implements IBinaryData, IVerifiable {
         LockingScriptEx.setSignatureVerificationMessage(transactionOutput.getHash());
         LockingScriptEx.Initialize(transactionOutput.LockingScript, UnlockingScriptEx.Stack.elements());
 
-        while(LockingScriptEx.Step());
+        try{
+            while(LockingScriptEx.Step());
+        } catch (ScriptInvalidException | ScriptEmptyStackException | ScriptInvalidParameterException e) {
+            e.printStackTrace();
+        }
 
         if(LockingScriptEx.bScriptFailed) Log.info("Verification failed! Locking script failed!");
         return !LockingScriptEx.bScriptFailed;

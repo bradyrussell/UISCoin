@@ -1,6 +1,8 @@
 package com.bradyrussell.uiscoin.blockchain.exception;
 
-public class NoSuchTransactionException extends Exception{
+import com.bradyrussell.uiscoin.UISCoinException;
+
+public class NoSuchTransactionException extends UISCoinException {
 
     public NoSuchTransactionException(String message) {
         super(message);

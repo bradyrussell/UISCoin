@@ -1,5 +1,7 @@
 package com.bradyrussell.uiscoin.blockchain.exception;
 
-public class InvalidTransactionException extends Exception{
+import com.bradyrussell.uiscoin.UISCoinException;
+
+public class InvalidTransactionException extends UISCoinException {
 
 }
