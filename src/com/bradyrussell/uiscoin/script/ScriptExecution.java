@@ -7,6 +7,7 @@ import com.bradyrussell.uiscoin.Util;
 import com.bradyrussell.uiscoin.script.exception.ScriptEmptyStackException;
 import com.bradyrussell.uiscoin.script.exception.ScriptInvalidException;
 import com.bradyrussell.uiscoin.script.exception.ScriptInvalidParameterException;
+import com.bradyrussell.uiscoin.script.exception.ScriptUnsupportedOperationException;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -103,7 +104,7 @@ public class ScriptExecution {
     }
 
     // returns whether the script should continue
-    public boolean Step() throws ScriptEmptyStackException, ScriptInvalidParameterException, ScriptInvalidException {
+    public boolean Step() throws ScriptEmptyStackException, ScriptInvalidParameterException, ScriptInvalidException, ScriptUnsupportedOperationException {
         if (InstructionCounter >= Script.length) return false;
 
         ScriptOperator scriptOperator = ScriptOperator.getByOpCode(Script[InstructionCounter++]);
@@ -223,7 +224,7 @@ public class ScriptExecution {
                     // time can conditionally break scripts. for this to work it needs to return block time once included in block
                     Log.warning("Time operator is disabled");
                     bScriptFailed = true;
-                    return false;
+                    throw new ScriptUnsupportedOperationException("The operator "+scriptOperator+" is disabled.");
                 }
                 case NUMEQUAL -> {
                     CheckInsufficientStackSize(2);
@@ -1345,7 +1346,7 @@ public class ScriptExecution {
         }
         Log.fine("Not handled!");
         bScriptFailed = true;
-        return false;
+        throw new ScriptUnsupportedOperationException("The operation "+scriptOperator+" was not handled.");
     }
 
     private void CheckScriptEndsBefore(int MinimumRemainingBytes) throws ScriptInvalidException {
