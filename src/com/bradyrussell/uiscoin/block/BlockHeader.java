@@ -107,7 +107,7 @@ public class BlockHeader implements IBinaryData, IVerifiable {
     @Override
     public boolean Verify() {
         if(BlockHeight > 0) {
-            BlockHeader previousBlockHeader = null;
+            BlockHeader previousBlockHeader;
             try {
                 previousBlockHeader = BlockChain.get().getBlockHeader(HashPreviousBlock);
             } catch (NoSuchBlockException e) {

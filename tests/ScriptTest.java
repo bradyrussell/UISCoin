@@ -22,7 +22,6 @@ import javax.crypto.NoSuchPaddingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.ECPublicKey;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -1054,13 +1053,7 @@ public class ScriptTest {
         while(true) {
             try {
                 if (!unlockingScript.Step()) break;
-            } catch (ScriptEmptyStackException e) {
-                e.printStackTrace();
-            } catch (ScriptInvalidParameterException e) {
-                e.printStackTrace();
-            } catch (ScriptInvalidException e) {
-                e.printStackTrace();
-            } catch (ScriptUnsupportedOperationException e) {
+            } catch (ScriptEmptyStackException | ScriptInvalidParameterException | ScriptUnsupportedOperationException | ScriptInvalidException e) {
                 e.printStackTrace();
             }
             System.out.println("Stack: \n"+unlockingScript.getStackContents());
@@ -1083,13 +1076,7 @@ public class ScriptTest {
         while(true) {
             try {
                 if (!lockingScript.Step()) break;
-            } catch (ScriptEmptyStackException e) {
-                e.printStackTrace();
-            } catch (ScriptInvalidParameterException e) {
-                e.printStackTrace();
-            } catch (ScriptInvalidException e) {
-                e.printStackTrace();
-            } catch (ScriptUnsupportedOperationException e) {
+            } catch (ScriptEmptyStackException | ScriptUnsupportedOperationException | ScriptInvalidException | ScriptInvalidParameterException e) {
                 e.printStackTrace();
             }
             System.out.println("Stack: \n"+lockingScript.getStackContents());
@@ -1215,13 +1202,7 @@ public class ScriptTest {
         while(true) {
             try {
                 if (!lockingScript.Step()) break;
-            } catch (ScriptEmptyStackException e) {
-                e.printStackTrace();
-            } catch (ScriptInvalidParameterException e) {
-                e.printStackTrace();
-            } catch (ScriptInvalidException e) {
-                e.printStackTrace();
-            } catch (ScriptUnsupportedOperationException e) {
+            } catch (ScriptEmptyStackException | ScriptUnsupportedOperationException | ScriptInvalidException | ScriptInvalidParameterException e) {
                 e.printStackTrace();
             }
             System.out.println("Stack: \n"+lockingScript.getStackContents());

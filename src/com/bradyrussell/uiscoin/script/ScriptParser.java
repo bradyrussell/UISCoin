@@ -2,22 +2,10 @@ package com.bradyrussell.uiscoin.script;
 
 import com.bradyrussell.uiscoin.Util;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class ScriptParser {
-    public static boolean TestParity(byte[] Script){
-        String decompiledScript = new ScriptBuilder(100000).data(Script).toText();
-
-        byte[] Original = new ScriptBuilder(10000).fromText(decompiledScript).get();
-        byte[] Upgrade = CompileScriptTokensToBytecode(GetTokensFromString(decompiledScript.replace("#", "//"), true));
-
-        return Arrays.equals(Original, Upgrade);
-    }
 
     public static int GetClosingCharacterIndex(String Search, char Opening, char Closing, int OpeningBraceIndex) {
         int braceDepth = 0;
@@ -101,16 +89,14 @@ public class ScriptParser {
                     } else if(Tokens.get(i).startsWith("{")){ // code block push data
                         String InnerScript = Tokens.get(i).substring(1, Tokens.get(i).length() - 1).strip();
                         scriptBuilder.push(ScriptParser.CompileScriptTokensToBytecode(ScriptParser.GetTokensFromString(InnerScript, true)));
-                    } else if(Tokens.get(i).startsWith("\"") || Tokens.get(i).startsWith("\'")){ // string push data
+                    } else if(Tokens.get(i).startsWith("\"") || Tokens.get(i).startsWith("'")){ // string push data
                         scriptBuilder.pushASCIIString(Tokens.get(i).substring(1, Tokens.get(i).length()-1));
                     } else {                                // interp as numeric push data
                         // we have other ways to push bytes and need an easy way to push 32 bit low numbers
                         scriptBuilder.push(ScriptUtil.NumberStringToBytes(Tokens.get(i), true));
                     }
                 }
-                default -> {
-                    scriptBuilder.op(scriptOperator);
-                }
+                default -> scriptBuilder.op(scriptOperator);
             }
         }
         return scriptBuilder.get();

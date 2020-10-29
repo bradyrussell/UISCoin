@@ -4,17 +4,11 @@ import com.bradyrussell.uiscoin.Hash;
 import com.bradyrussell.uiscoin.Util;
 import com.bradyrussell.uiscoin.transaction.Transaction;
 
-import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * A RAM only BlockChain storage useful for unit tests or single run applications.

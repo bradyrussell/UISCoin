@@ -1,7 +1,6 @@
 package com.bradyrussell.uiscoin.transaction;
 
 import com.bradyrussell.uiscoin.*;
-import com.bradyrussell.uiscoin.block.Block;
 import com.bradyrussell.uiscoin.blockchain.BlockChain;
 import com.bradyrussell.uiscoin.blockchain.exception.NoSuchBlockException;
 import com.bradyrussell.uiscoin.blockchain.exception.NoSuchTransactionException;
@@ -88,7 +87,7 @@ public class TransactionInput  implements IBinaryData, IVerifiable {
             return false;
         }
 
-        Transaction transaction = null;
+        Transaction transaction;
         try {
             transaction = BlockChain.get().getTransaction(InputHash);
             if(Instant.now().getEpochSecond() < transaction.TimeStamp) {

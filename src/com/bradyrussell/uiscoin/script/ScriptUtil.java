@@ -2,7 +2,6 @@ package com.bradyrussell.uiscoin.script;
 
 import com.bradyrussell.uiscoin.Util;
 
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class ScriptUtil {

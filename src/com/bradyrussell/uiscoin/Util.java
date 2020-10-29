@@ -6,7 +6,6 @@ import com.bradyrussell.uiscoin.transaction.TransactionInput;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
