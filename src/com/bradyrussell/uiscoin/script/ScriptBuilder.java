@@ -138,7 +138,7 @@ public class ScriptBuilder {
         int InstructionCounter = 0;
 
         StringBuilder sb = new StringBuilder();
-        sb.append("#Decompiled from ").append(Util.Base64Encode(Script)).append("#\n");
+        sb.append("//Decompiled from ").append(Util.Base64Encode(Script)).append("#\n");
 
         while(InstructionCounter < Script.length){
             //////////////////////////////////////////////////////////////////////////////////////
@@ -169,7 +169,12 @@ public class ScriptBuilder {
         return sb.toString();
     }
 
+    @Deprecated
     public ScriptBuilder fromText(String Text){
+
+        data(ScriptParser.CompileScriptTokensToBytecode(ScriptParser.GetTokensFromString(Text, true)));
+        return this;
+        /*
         Log.info("Parsing script from text...");
 
         //clean up any extraneous characters and format the script in a single line like TRUE FALSE PUSH [1, 3, 6, 7] RETURN
@@ -186,7 +191,7 @@ public class ScriptBuilder {
 
                 Log.fine("Token "+i+": Begin comment # ");
                 do { // single byte
-                    /*I = */
+
                     Log.fine("Token "+i+": comment Element "+parts[i].replace("#", "").replace("#", "") + " from comment part "+parts[i]);
                 }while(!parts[i++].endsWith("#"));
             }
@@ -215,7 +220,7 @@ public class ScriptBuilder {
                     // stack depth -1
                     op(ScriptOperator.DEPTH);
 /*                    pushByte(1);
-                    op(ScriptOperator.SUBTRACTBYTES);*/
+                    op(ScriptOperator.SUBTRACTBYTES);*/ /*
                 } else {
                     pushByte(Byte.parseByte(parameterCount));
                 }
@@ -247,8 +252,8 @@ public class ScriptBuilder {
                     StringBuilder sb = new StringBuilder();
                     Log.fine("Token "+i+": Begin String ' ");
                     do { // single byte
-                        /*I = */
-                        sb.append(parts[i].replace("'", "")/*.replace("'", "")*/);
+
+                        sb.append(parts[i].replace("'", "")/*.replace("'", "")*//*);*/ /*
                         if(!parts[i].endsWith("'")) sb.append(" ");
                         Log.fine("Token "+i+": String Element "+parts[i].replace("'", "").replace("'", "") + " from string part "+parts[i]);
                     }while(!parts[i++].endsWith("'"));
@@ -260,7 +265,7 @@ public class ScriptBuilder {
                     ArrayList<Byte> bytes = new ArrayList<>();
                     Log.fine("Token "+i+": Begin Byte Array [  ");
                     do { // single byte
-                        /*I = */
+
                         byte parseByte = Byte.parseByte(parts[i].replace("[", "").replace("]", "").replace(",", ""));
                         bytes.add(parseByte);
                         Log.fine("Token "+i+": Byte Array Element "+parseByte + " from string part "+parts[i]);
@@ -295,9 +300,9 @@ public class ScriptBuilder {
                     StringBuilder sb = new StringBuilder();
                     Log.fine("Token "+i+": Begin String ' ");
                     do { // single byte
-                        /*I = */
-                        sb.append(parts[i].replace("'", "")/*.replace("'", "")*/);
-                        if(!parts[i].endsWith("'")) sb.append(" ");
+
+                        sb.append(parts[i].replace("'", "")/*.replace("'", "")*///);
+                 /*       if(!parts[i].endsWith("'")) sb.append(" ");
                         Log.fine("Token "+i+": String Element "+parts[i].replace("'", "").replace("'", "") + " from string part "+parts[i]);
                     }while(!parts[i++].endsWith("'"));
 
@@ -312,7 +317,7 @@ public class ScriptBuilder {
                     int NumberOfBrackets = 0;
 
                     do { // single byte
-                        /*I = */
+
 
                         String part = parts[i];
 
@@ -346,7 +351,7 @@ public class ScriptBuilder {
                     Log.fine("Token "+i+": Begin Byte Array [  ");
                     do { // single byte
                         /*I = */
-                        byte parseByte = Byte.parseByte(parts[i].replace("[", "").replace("]", "").replace(",", ""));
+          /*              byte parseByte = Byte.parseByte(parts[i].replace("[", "").replace("]", "").replace(",", ""));
                         bytes.add(parseByte);
                         Log.fine("Token "+i+": Byte Array Element "+parseByte + " from string part "+parts[i]);
                     }while(!parts[i++].endsWith("]"));
@@ -384,7 +389,7 @@ public class ScriptBuilder {
             }
         }
         Log.info("Script compiled into bytecode.");
-        return this;
+        return this;*/
     }
 
     public byte[] get(){

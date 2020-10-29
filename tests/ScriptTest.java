@@ -433,8 +433,8 @@ public class ScriptTest {
                 "convert32to8\n" +
                 "push 0x06\n" +
                 "swap\n" +
-                "#Begin Loaded script as function#\n" +
-                "(3) {#function substring(string, startIndex, endIndex)#\n" +
+                "//Begin Loaded script as function\n" +
+                "(3) {//function substring(string, startIndex, endIndex)#\n" +
                 "shiftup\n" +
                 "shiftup\n" +
                 "swap\n" +
@@ -446,7 +446,7 @@ public class ScriptTest {
                 "subtractbytes\n" +
                 "limit\n" +
                 "reverse }\n" +
-                "#End Loaded script as function#\n" +
+                "//#End Loaded script as function#\n" +
                 "virtualscript\n" +
                 "verify";
         sb.fromText(OriginalString);
@@ -805,10 +805,10 @@ public class ScriptTest {
 
         byte[] a  = new ScriptBuilder(128)
                 .flag((byte)2)
-                .flagData(Util.NumberToByteArray32(123))
+                .flagData(Util.NumberToByteArray32(1234))
                 .get();
 
-        byte[] b= new ScriptBuilder(128).fromText("flag 2 flagdata 123").get();
+        byte[] b= new ScriptBuilder(128).fromText("flag 2 flagdata 1234").get();
 
         Util.printBytesReadable(a);
         Util.printBytesReadable(b);

@@ -110,7 +110,7 @@ public class ScriptParser {
 
             StringBuilder currentToken = new StringBuilder();
 
-            if(Character.isJavaIdentifierPart(CurrentChar)) {
+            if(Character.isJavaIdentifierPart(CurrentChar)) { // todo take numbers with . separately. for some reason trying to do that is taking entire chunks as a single token like .34290582 push 0.7439689
                 while (i < scriptText.length()) {
                     char ch = scriptText.charAt(i++);
                     if (!Character.isJavaIdentifierPart(ch)) {
