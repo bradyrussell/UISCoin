@@ -1378,9 +1378,15 @@ public class ScriptExecution {
                 case JUMP -> {
                     CheckInsufficientStackSize(1);
                     byte[] DestinationBytes = Stack.pop();
-                    CheckIncorrectNumberBytes(DestinationBytes, 1);
+                    CheckInsufficientBytes(DestinationBytes, 1);
 
-                    byte Destination = DestinationBytes[0];
+                    int Destination;
+
+                    if (DestinationBytes.length == 4) {
+                        Destination = ByteArrayToNumber32(DestinationBytes);
+                    } else {
+                        Destination = DestinationBytes[0];
+                    }
 
                     CheckScriptEndsBefore(Destination);
 
@@ -1399,13 +1405,19 @@ public class ScriptExecution {
                 case JUMPIF -> {
                     CheckInsufficientStackSize(2);
                     byte[] DestinationBytes = Stack.pop();
-                    CheckIncorrectNumberBytes(DestinationBytes, 1);
+                    CheckInsufficientBytes(DestinationBytes, 1);
                     byte[] ConditionalBooleanBytes = Stack.pop();
                     CheckIncorrectNumberBytes(ConditionalBooleanBytes, 1);
 
                     if(ConditionalBooleanBytes[0] == 0) return true;
 
-                    byte Destination = DestinationBytes[0];
+                    int Destination;
+
+                    if (DestinationBytes.length == 4) {
+                        Destination = ByteArrayToNumber32(DestinationBytes);
+                    } else {
+                        Destination = DestinationBytes[0];
+                    }
 
                     CheckScriptEndsBefore(Destination);
 
