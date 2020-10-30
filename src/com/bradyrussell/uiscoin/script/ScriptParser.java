@@ -138,7 +138,17 @@ public class ScriptParser {
 
             StringBuilder currentToken = new StringBuilder();
 
-            if(Character.isJavaIdentifierPart(CurrentChar)) { // todo take numbers with . separately. for some reason trying to do that is taking entire chunks as a single token like .34290582 push 0.7439689
+            if(isCharacterNumericToken(CurrentChar) && (i+1 > scriptText.length() || isCharacterNumericToken(scriptText.charAt(i+1)))) { // numeric values,  will match 0, .0, 0., 0.0 but not 0x00 etc
+                while (i < scriptText.length()) {
+                    char ch = scriptText.charAt(i++);
+                    if (!isCharacterNumericToken(ch)) {
+                        i-=2;
+                        break;
+                    }
+                    currentToken.append(ch);
+                }
+                tokens.add(currentToken.toString());
+            } else if(Character.isJavaIdentifierPart(CurrentChar)) { // typical identifiers
                 while (i < scriptText.length()) {
                     char ch = scriptText.charAt(i++);
                     if (!Character.isJavaIdentifierPart(ch)) {
@@ -196,4 +206,7 @@ public class ScriptParser {
         return tokens;
     }
 
+    private static boolean isCharacterNumericToken(char InputChar){
+        return Character.isDigit(InputChar) || InputChar == '.' || Character.toLowerCase(InputChar) == 'e';
+    }
 }
