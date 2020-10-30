@@ -138,7 +138,7 @@ public class ScriptParser {
 
             StringBuilder currentToken = new StringBuilder();
 
-            if(isCharacterNumericToken(CurrentChar) && (i+1 > scriptText.length() || isCharacterNumericToken(scriptText.charAt(i+1)))) { // numeric values,  will match 0, .0, 0., 0.0 but not 0x00 etc
+            if(isCharacterNumericToken(CurrentChar) && (i+1 >= scriptText.length() || isCharacterNumericToken(scriptText.charAt(i+1)))) { // numeric values,  will match 0, .0, 0., 0.0 but not 0x00 etc
                 while (i < scriptText.length()) {
                     char ch = scriptText.charAt(i++);
                     if (!isCharacterNumericToken(ch)) {

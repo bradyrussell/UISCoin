@@ -305,7 +305,7 @@ public class ScriptTest {
                 "// the compiler can easily count the amount of stack used\n" +
                 "//for variables and make a custom shiftup/down with that \n" +
                 "// value to keep the stack in order\n" +
-                "call(\"hello world\", $0, $1, 0x03, {\n" +
+                "if(\"hello world\", $0, $1, 0x03, {\n" +
                 "  shiftup\n" +
                 "  shiftup\n" +
                 "  swap\n" +
