@@ -57,7 +57,7 @@ public class ScriptParser {
                     String InnerScript = Tokens.get(i).substring(1, Tokens.get(i).length() - 1).strip();
                     scriptBuilder.push(ScriptParser.CompileScriptTokensToBytecode(ScriptParser.GetTokensFromString(InnerScript, true)));
                 } else { // parameters to the preceding identifier
-                    String[] parametersArray = parameters.replace(" ", "").replace("\n", "").split(",");
+                    String[] parametersArray = parameters.split(",");
 
                     int BufferPosition = scriptBuilder.buffer.position() - 1;
                     byte PreviousOp = scriptBuilder.buffer.get(BufferPosition);
@@ -65,8 +65,11 @@ public class ScriptParser {
                     scriptBuilder.buffer.position(BufferPosition);  // should be overwritten anyways
 
                     for (String s : parametersArray) {
+                        s = s.strip();
                         if(s.startsWith("0x")){ // hex push data
                             scriptBuilder.push(Util.getBytesFromHexString(s.substring(2)));
+                        } else if(s.startsWith("$")){ // variable / pick x
+                            scriptBuilder.push(ScriptUtil.NumberStringToBytes(s.substring(1), false)).op(ScriptOperator.PICK);
                         } else if(s.startsWith("[")){ // byte array push data
                             scriptBuilder.push(ScriptUtil.ByteArrayStringToBytes(s));
                         } else if(s.startsWith("{")){ // code block push data

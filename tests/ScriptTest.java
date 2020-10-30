@@ -290,7 +290,7 @@ public class ScriptTest {
         assertFalse(scriptExecution.bScriptFailed);
     }
 
-    @RepeatedTest(5000)
+    @RepeatedTest(500)
     @DisplayName("Invalid Script Terminates Cleanly")
     void TestInvalidScript() {
         ScriptExecution scriptExecution = new ScriptExecution();
