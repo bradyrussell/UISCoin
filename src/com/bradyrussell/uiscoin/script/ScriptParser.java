@@ -4,7 +4,6 @@ import com.bradyrussell.uiscoin.Util;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
 public class ScriptParser {
@@ -124,7 +123,7 @@ public class ScriptParser {
                             scriptBuilder.push(TokenLiteralToBytes(assignedValue));
                         }
                         scriptBuilder.pushByte(SymbolTable.get(symbol)); // location to assign to
-                        scriptBuilder.op(ScriptOperator.REPLACE);
+                        scriptBuilder.op(ScriptOperator.PUT);
                         i++;
                     }
                     i++;

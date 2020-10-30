@@ -905,7 +905,7 @@ public class ScriptExecution {
                     Stack.push(Stack.elementAt(A[0]));
                     return true;
                 }
-                case REPLACE -> {
+                case PUT -> {
                     CheckInsufficientStackSize(2);
 
                     byte[] A = Stack.pop();
@@ -1431,6 +1431,8 @@ public class ScriptExecution {
 
                     int NumberExcluded = ExceptBytes[0];
                     int NumberOfElements = Amount[0];
+
+                    if(NumberExcluded < 0) throw new ScriptInvalidParameterException("Number to exclude was not valid! "+NumberExcluded);
 
                     ArrayList<byte[]> beforeStack = Collections.list(Stack.elements());
                     List<byte[]> toRotate = beforeStack.subList(NumberExcluded, beforeStack.size());

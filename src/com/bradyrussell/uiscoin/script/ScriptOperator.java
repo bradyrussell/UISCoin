@@ -44,7 +44,7 @@ public enum ScriptOperator {
     /**
      * Pop the top stack element as N, pop the next stack element and put it into the Nth from the BOTTOM elements location
      */
-    REPLACE(0x08), //
+    PUT(0x08), //
 
     //comparisons
     /**
