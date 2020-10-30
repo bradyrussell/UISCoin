@@ -5,6 +5,7 @@ import com.bradyrussell.uiscoin.Util;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 public class ScriptParser {
 
@@ -43,6 +44,9 @@ public class ScriptParser {
     }
 
     public static byte[] CompileScriptTokensToBytecode(ArrayList<String> Tokens){
+        HashMap<String, Integer> SymbolTable = new HashMap<>();
+        int NextSymbol = 0;
+
         ScriptBuilder scriptBuilder = new ScriptBuilder(Tokens.size()+1024);
 
         for (int i = 0; i < Tokens.size(); i++) {
@@ -58,6 +62,53 @@ public class ScriptParser {
                 continue;
             } else if (token.startsWith("[")) { // byte array data
                 scriptBuilder.data(ScriptUtil.ByteArrayStringToBytes(token));
+                continue;
+            } else if (token.startsWith("$")) { // declaration or assignment
+                String symbol = token.substring(1);
+
+                if(symbol.length() < 1){
+                    continue;
+                }
+
+                //assignment
+                if(Tokens.size() > i+1 && Tokens.get(i+1).startsWith("=")) {
+                    if(Tokens.size() > i+2) {
+                        if(!SymbolTable.containsKey(symbol)) {
+                            System.out.println("Error! Symbol \""+symbol+"\" was not defined in this scope!");
+                            i++;
+                            continue;
+                        }
+
+                        String assignedValue = Tokens.get(i+2).strip();
+                        if(assignedValue.startsWith("$")){ // variable / pick x
+                            String assignedSymbol = assignedValue.substring(1);
+                            // assign to value of another op // todo other symbols
+                            try{
+                                // allow for direct $x addressing
+                                scriptBuilder.push(ScriptUtil.NumberStringToBytes(assignedSymbol, false)).op(ScriptOperator.PICK);
+                            } catch (NumberFormatException e) {
+                                // get symbol address
+                                scriptBuilder.pushByte(SymbolTable.get(assignedSymbol)).op(ScriptOperator.PICK);
+                            }
+
+                        } else {
+                            // assign to value of literal
+                            scriptBuilder.push(TokenLiteralToBytes(assignedValue));
+                        }
+                        scriptBuilder.pushByte(SymbolTable.get(symbol)); // location to assign to
+                        scriptBuilder.op(ScriptOperator.REPLACE);
+                        i++;
+                    }
+                    i++;
+                } else { // declaration
+                    if(SymbolTable.containsKey(symbol)) {
+                        System.out.println("Symbol \""+symbol+"\" was already defined in this scope!");
+                    } else {
+                        SymbolTable.put(symbol, NextSymbol++);
+                        System.out.println("Assigned \""+symbol+"\" to $"+(NextSymbol-1)+".");
+                    }
+                }
+
                 continue;
             } else if (token.startsWith("if")) { // if syntax
                 if(Tokens.size() > i+1 && Tokens.get(i+1).startsWith("(")) { // if parameter
@@ -152,7 +203,27 @@ public class ScriptParser {
                 default -> scriptBuilder.op(scriptOperator);
             }
         }
-        return scriptBuilder.get();
+        int NumberOfVariables = SymbolTable.size();
+        return Util.ConcatArray(Util.ConcatArray(InitializeStackSpaceForVariables(NumberOfVariables), scriptBuilder.get()), CleanupStackSpaceForVariables(NumberOfVariables));
+    }
+
+    public static byte[] InitializeStackSpaceForVariables(int NumberOfVariables) {
+        if(NumberOfVariables <= 0) return new byte[0];
+
+        byte[] Initializer = new byte[NumberOfVariables+3];
+        for (int i = 0; i < NumberOfVariables; i++) {
+            Initializer[i] = ScriptOperator.NULL.OPCode;
+        }
+        Initializer[NumberOfVariables] = ScriptOperator.DEPTH.OPCode; // surround the variables with the count on both ends
+        Initializer[NumberOfVariables+1] = ScriptOperator.DUP.OPCode;  // at the end we can shift it back down and bytesequal it
+        Initializer[NumberOfVariables+2] = ScriptOperator.SHIFTUP.OPCode; // to check the variable space wasnt messed with
+        return Initializer;
+    }
+
+    public static byte[] CleanupStackSpaceForVariables(int NumberOfVariables) {
+        if(NumberOfVariables <= 0) return new byte[0];
+        // bring the surrounding stack counts down together, dup one of them for 2 comparisons. check both stack cookies are equal. verify. check this is equal to what the compiler expected, verify
+        return new byte[]{ ScriptOperator.SHIFTDOWN.OPCode, ScriptOperator.DUP.OPCode, ScriptOperator.BYTESEQUAL.OPCode, ScriptOperator.VERIFY.OPCode, ScriptOperator.PUSH.OPCode, 0x01, (byte)NumberOfVariables, ScriptOperator.BYTESEQUAL.OPCode, ScriptOperator.VERIFY.OPCode };
     }
 
     public static ArrayList<String> GetTokensFromString(String scriptText, boolean bGroupBracketsAndParentheses){

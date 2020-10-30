@@ -1293,6 +1293,17 @@ public class ScriptExecution {
 
                     return true;
                 }
+                case SHIFTN -> {
+                    CheckInsufficientStackSize(1);
+
+                    byte[] Amount = Stack.pop();
+                    CheckIncorrectNumberBytes(Amount, 1);
+
+                    int NumberOfElements = Amount[0];
+
+                    Collections.rotate(Stack, NumberOfElements);
+                    return true;
+                }
                 case SHIFTELEMENTSRIGHT -> {
                     CheckInsufficientStackSize(1);
 
@@ -1407,6 +1418,30 @@ public class ScriptExecution {
                     int oldInstructionConter = InstructionCounter;
                     InstructionCounter += Destination-1;
                     Log.info("Jumped from "+oldInstructionConter+" to "+InstructionCounter+".");
+                    return true;
+                }
+                case SHIFTNEXCEPT -> {
+                    CheckInsufficientStackSize(2);
+
+                    byte[] ExceptBytes = Stack.pop();
+                    CheckIncorrectNumberBytes(ExceptBytes, 1);
+
+                    byte[] Amount = Stack.pop();
+                    CheckIncorrectNumberBytes(Amount, 1);
+
+                    int NumberExcluded = ExceptBytes[0];
+                    int NumberOfElements = Amount[0];
+
+                    ArrayList<byte[]> beforeStack = Collections.list(Stack.elements());
+
+                    List<byte[]> toRotate = beforeStack.subList(NumberExcluded, beforeStack.size());
+                    Collections.rotate(toRotate, NumberOfElements);
+
+                    Stack.clear();
+
+                    Stack.addAll(beforeStack);
+                    Stack.addAll(toRotate);
+
                     return true;
                 }
             }

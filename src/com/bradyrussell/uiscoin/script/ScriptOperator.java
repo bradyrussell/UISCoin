@@ -35,6 +35,17 @@ public enum ScriptOperator {
      *push the time in unix epoch seconds
      */
     TIME(0x06), //
+
+    /**
+     *copy the Nth (from BOTTOM of the stack) element on the stack and push it onto the stack
+     */
+    PICK(0x07), //
+
+    /**
+     * Pop the top stack element as N, pop the next stack element and put it into the Nth from the BOTTOM elements location
+     */
+    REPLACE(0x08), //
+
     //comparisons
     /**
      * are the top two values numerically equal when interpreted as 4 byte integers
@@ -270,10 +281,11 @@ public enum ScriptOperator {
      *shift the entire stack, so the top element becomes second, last becomes first etc
      */
     SHIFTDOWN(0x98), //
+
     /**
-     *copy the Nth (from BOTTOM of the stack) element on the stack and push it onto the stack
+     *shift the entire stack, N elements, based on the byte on top of the stack
      */
-    PICK(0x99), //
+    SHIFTN(0x99), //
 
     /**
      * shift the top stack element's elements to the right, so the first element becomes the second, last becomes first
@@ -300,9 +312,9 @@ public enum ScriptOperator {
     DROPN(0x9e), //
 
     /**
-     * Pop the top stack element and put it into the Nth from the BOTTOM elements location
+     *shift the entire stack EXCEPT the bottom X elements, by Y elements, where X is top of the stack and Y is second so shiftNExcept(1, 4) 1 shift 4 excluded elements
      */
-    REPLACE(0x9f), //
+    SHIFTNEXCEPT(0x9f), //
     // returns
     /**
      * script execution continues if there is a 1 on the stack, else fails

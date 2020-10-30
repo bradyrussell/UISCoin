@@ -221,6 +221,28 @@ public class ScriptTest {
     }
 
     @Test
+    @DisplayName("Script Shift N Except")
+    void TestScriptShiftNExcept() throws ScriptInvalidException, ScriptEmptyStackException, ScriptInvalidParameterException, ScriptUnsupportedOperationException {
+        ScriptBuilder sb = new ScriptBuilder(64);
+        sb.fromText("push 0x01020304050607080900 split shiftnexcept([-1], 0x04)");
+        System.out.println(Arrays.toString(sb.get()));
+
+        ScriptExecution scriptExecution = new ScriptExecution();
+
+        scriptExecution.Initialize(sb.get());
+
+        while (scriptExecution.Step()){
+            System.out.println("Stack: \n"+scriptExecution.getStackContents());
+        }
+
+        System.out.println("Script returned: "+!scriptExecution.bScriptFailed);
+
+        System.out.println("Finished: "+scriptExecution.InstructionCounter+" / "+scriptExecution.Script.length);
+
+        assertFalse(scriptExecution.bScriptFailed);
+    }
+
+    @Test
     @DisplayName("Script Time")
     void TestScriptTime() throws ScriptInvalidException, ScriptEmptyStackException, ScriptInvalidParameterException {
 /*        ScriptBuilder sb = new ScriptBuilder(64);
@@ -294,47 +316,7 @@ public class ScriptTest {
     @RepeatedTest(1)
     @DisplayName("Script Tokenize String")
     void TestTokenize() {
-        ArrayList<String> strings = ScriptParser.GetTokensFromString("push 0x00 // $0\n" +
-                "push 1.0 // $1\n" +
-                "push 1 // $2\n" +
-                "depth // stack cookie\n" +
-                "// todo add localshift operators that only affect a provided\n" +
-                "//number of stack elems, so we can protect the stack\n" +
-                "//maybe add a true between vars and regular stack elems\n" +
-                "// that is checked at the end to make sure the stack wasnt \n" +
-                "// interfered with accidentally?\n" +
-                "// the compiler can easily count the amount of stack used\n" +
-                "//for variables and make a custom shiftup/down with that \n" +
-                "// value to keep the stack in order\n" +
-                "if(\"hello world\", $0, $1, 0x03, {\n" +
-                "  shiftup\n" +
-                "  shiftup\n" +
-                "  swap\n" +
-                "  limit\n" +
-                "  reverse\n" +
-                "  len\n" +
-                "  convert32to8\n" +
-                "  shiftdown\n" +
-                "  subtractbytes\n" +
-                "  limit\n" +
-                "  reverse \n" +
-                "}\n" +
-                ")\n" +
-                "verify\n" +
-                "bytesEqual('hello')\n" +
-                "verify\n" +
-                "dividefloat(5., .5)\n" +
-                "multiplyfloat(10.)\n" +
-                "CONVERTFLOATTO32\n" +
-                "numequal(100)\n" +
-                "verify\n" +
-                "//begin stack cleanup\n" +
-                "dup\n" +
-                "depth\n" +
-                "subtractbytes(0x02)\n" +
-                "bytesequal\n" +
-                "verify // check stack corruption\n" +
-                "dropn // end stack cleanup\n", true);
+        ArrayList<String> strings = ScriptParser.GetTokensFromString("$a = 0; $b = 100; $c = $a + $b;\n", true);
         for (int i = 0; i < strings.size(); i++) {
             String string = strings.get(i);
             System.out.println(i+": "+string);
@@ -383,8 +365,8 @@ public class ScriptTest {
     }
 
     @RepeatedTest(1000)
-    @DisplayName("Script call")
-    void Testcall() throws ScriptInvalidException, ScriptEmptyStackException, ScriptInvalidParameterException, ScriptUnsupportedOperationException {
+    @DisplayName("Script Call")
+    void TestCall() throws ScriptInvalidException, ScriptEmptyStackException, ScriptInvalidParameterException, ScriptUnsupportedOperationException {
         byte[] A = new byte[ThreadLocalRandom.current().nextInt(16,127)];
         byte[] B = new byte[ThreadLocalRandom.current().nextInt(16,127)];
 
