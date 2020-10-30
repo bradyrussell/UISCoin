@@ -18,6 +18,16 @@ public class ScriptOptimizer {
     }
 
     //todo REWRITE JUMPS
+    //todo break into struct {
+    /*
+    OP
+    MultibyteData[]
+
+    position = number of ops + number of multibytes preceding
+    link a jump node to another node
+    do opts
+    get resulting node's new location
+     */
 
     /**
      *  detect JUMPs that will always happen and cut out anything skipped
@@ -131,5 +141,23 @@ public class ScriptOptimizer {
         byte[] ret = new byte[optimizedBuffer.position()];
         System.arraycopy(optimizedBuffer.array(), 0, ret, 0, optimizedBuffer.position());
         return ret;
+    }
+
+    private static byte[] RewriteJumpsAfter(byte[] Script, int StartIndex, int BytesRemoved){
+        ByteBuffer buffer = ByteBuffer.allocate(Script.length);
+
+        byte[] changed = new byte[StartIndex-1];
+        byte[] unchanged = new byte[Script.length - StartIndex];
+        System.arraycopy(Script, 0, changed, 0, StartIndex-1);
+        System.arraycopy(Script, StartIndex, unchanged, 0, Script.length - StartIndex);
+
+        for (int i = 0; i < changed.length; i++) {
+            if(changed[i] == ScriptOperator.JUMPIF.OPCode || changed[i] == ScriptOperator.JUMP.OPCode) {
+                buffer.put(ScriptParser.CompileScriptTokensToBytecode(ScriptParser.GetTokensFromString("", true)));
+               // if would jump over the boundry subtract bytesremoved else nothing
+            }
+        }
+
+        return null;
     }
 }
