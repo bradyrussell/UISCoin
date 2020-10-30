@@ -17,6 +17,8 @@ public class ScriptOptimizer {
         return BytecodeOptimization_BooleanPush(BytecodeOptimization_SkipUnconditionalJump(UnoptimizedBytecode));
     }
 
+    // todo if a push <number> exists see if it can be pushed shorter like push [0, 0, 0, 0, 0, 0, 0, 2] (9 bytes) could be push [2] convert8to32 convert32to64 (4 bytes)
+
     //todo REWRITE JUMPS
     //todo break into struct {
     /*
@@ -159,5 +161,6 @@ public class ScriptOptimizer {
         }
 
         return null;
+        // might have to make a JumpRemapList  of pairs of modifications <StartIndex, BytesRemoved> so jumps can iterate thru til they hit a startindex and then subtract bytesremoved from the jumpvalue
     }
 }
