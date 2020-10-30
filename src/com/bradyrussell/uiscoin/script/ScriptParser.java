@@ -60,7 +60,8 @@ public class ScriptParser {
                     String[] parametersArray = parameters.replace(" ", "").replace("\n", "").split(",");
 
                     byte PreviousOp = scriptBuilder.buffer.get(scriptBuilder.buffer.position()-1);
-                    scriptBuilder.buffer.put(scriptBuilder.buffer.position()-1, ScriptOperator.NOP.OPCode); // replace previous op with NOP // todo improve
+                    scriptBuilder.buffer.put(scriptBuilder.buffer.position()-1, ScriptOperator.NOP.OPCode); // replace previous op with NOP
+                    scriptBuilder.buffer.position(scriptBuilder.buffer.position()-1);  // should be overwritten anyways
 
                     for (String s : parametersArray) {
                         if(s.startsWith("0x")){ // hex push data
