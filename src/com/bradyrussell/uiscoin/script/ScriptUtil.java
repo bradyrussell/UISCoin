@@ -72,7 +72,7 @@ public class ScriptUtil {
     }
 
     public static byte[] NumberStringToBytes(String NumberString, boolean bMinimum32){
-        if(NumberString.contains(".") || NumberString.toLowerCase().contains("e")) {
+        if(NumberString.contains(".") || NumberString.toLowerCase().contains("e") || NumberString.contains("-") || NumberString.contains("+")) {
             return Util.FloatToByteArray(Float.parseFloat(NumberString));
         } else {
             try {

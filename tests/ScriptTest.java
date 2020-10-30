@@ -15,6 +15,7 @@ import com.bradyrussell.uiscoin.transaction.TransactionOutputBuilder;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.engine.script.Script;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -1358,13 +1359,13 @@ public class ScriptTest {
         assertFalse(scriptExecution.bScriptFailed);
     }
 
-    @RepeatedTest(100)
+    @RepeatedTest(10000)
     @DisplayName("Script Float Addition")
     void TestScriptFAddition() throws ScriptInvalidException, ScriptEmptyStackException, ScriptInvalidParameterException, ScriptUnsupportedOperationException {
         float A = ThreadLocalRandom.current().nextFloat();
         float B = ThreadLocalRandom.current().nextFloat();
         float C = A + B;
-
+        ScriptParser.GetTokensFromString("push "+A+" push "+B+" 1-1 addfloat push 1.0E-4 blah", true).forEach(System.out::println);
         ScriptBuilder sb = new ScriptBuilder(32);
         sb
                 .fromText("push "+A+" push "+B)
@@ -1372,6 +1373,8 @@ public class ScriptTest {
                 .pushFloat(C)
                 .op(ScriptOperator.NUMEQUAL)
                 .op(ScriptOperator.VERIFY);
+
+
 
         System.out.println(Arrays.toString(sb.get()));
 

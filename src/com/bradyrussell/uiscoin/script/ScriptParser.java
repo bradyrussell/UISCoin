@@ -24,6 +24,22 @@ public class ScriptParser {
         return -1;
     }
 
+    private static byte[] TokenLiteralToBytes(String Token){
+        String s = Token.strip();
+        if(s.startsWith("0x")){ // hex push data
+            return( Util.getBytesFromHexString(s.substring(2)));
+        } else if(s.startsWith("[")){ // byte array push data
+            return( ScriptUtil.ByteArrayStringToBytes(s));
+        } else if(s.startsWith("{")){ // code block push data
+            String InnerScript = s.substring(1, s.length() - 1).strip();
+            return( ScriptParser.CompileScriptTokensToBytecode(ScriptParser.GetTokensFromString(InnerScript, true)));
+        } else if(s.startsWith("\"") || s.startsWith("'")){ // string push data
+            return( s.substring(1, s.length()-1)).getBytes(StandardCharsets.US_ASCII);
+        } else {                                // interp as numeric push data
+            // we have other ways to push bytes and need an easy way to push 32 bit low numbers
+           return ( ScriptUtil.NumberStringToBytes(s, true));
+        }
+    }
 
     public static byte[] CompileScriptTokensToBytecode(ArrayList<String> Tokens){
         ScriptBuilder scriptBuilder = new ScriptBuilder(Tokens.size()+1024);
@@ -41,6 +57,13 @@ public class ScriptParser {
                 continue;
             } else if (token.startsWith("[")) { // byte array data
                 scriptBuilder.data(ScriptUtil.ByteArrayStringToBytes(token));
+                continue;
+            } else if (token.startsWith("if")) { // if syntax
+
+                if(Tokens.size() > i+1 && Tokens.get(i+1).startsWith("(")) { // if parameter
+
+                }
+
                 continue;
             } else if(token.startsWith("(")) { // function syntax
                 String subToken = token.substring(1); // 1){code}
@@ -66,20 +89,10 @@ public class ScriptParser {
 
                     for (String s : parametersArray) {
                         s = s.strip();
-                        if(s.startsWith("0x")){ // hex push data
-                            scriptBuilder.push(Util.getBytesFromHexString(s.substring(2)));
-                        } else if(s.startsWith("$")){ // variable / pick x
-                            scriptBuilder.push(ScriptUtil.NumberStringToBytes(s.substring(1), false)).op(ScriptOperator.PICK);
-                        } else if(s.startsWith("[")){ // byte array push data
-                            scriptBuilder.push(ScriptUtil.ByteArrayStringToBytes(s));
-                        } else if(s.startsWith("{")){ // code block push data
-                            String InnerScript = s.substring(1, s.length() - 1).strip();
-                            scriptBuilder.push(ScriptParser.CompileScriptTokensToBytecode(ScriptParser.GetTokensFromString(InnerScript, true)));
-                        } else if(s.startsWith("\"") || s.startsWith("'")){ // string push data
-                            scriptBuilder.pushASCIIString(s.substring(1, s.length()-1));
-                        } else {                                // interp as numeric push data
-                            // we have other ways to push bytes and need an easy way to push 32 bit low numbers
-                            scriptBuilder.push(ScriptUtil.NumberStringToBytes(s, true));
+                        if(s.startsWith("$")){ // variable / pick x
+                            scriptBuilder.push( ScriptUtil.NumberStringToBytes(s.substring(1), false)).op(ScriptOperator.PICK);
+                        } else {
+                            scriptBuilder.push(TokenLiteralToBytes(s));
                         }
                     }
 
@@ -99,29 +112,15 @@ public class ScriptParser {
                     }
                 }
                 case FLAGDATA -> {
-                    if(Tokens.get(++i).startsWith("0x")){ // hex flag data
-                        scriptBuilder.flagData(Util.getBytesFromHexString(Tokens.get(i).substring(2)));
-                    } else if(Tokens.get(i).startsWith("[")){ // byte array flag data
-                        scriptBuilder.flagData(ScriptUtil.ByteArrayStringToBytes(Tokens.get(i)));
-                    } else if(Tokens.get(i).startsWith("\"")){ // string flag data
-                        scriptBuilder.flagData(Tokens.get(i).substring(1, Tokens.get(i).length()-1).getBytes(StandardCharsets.US_ASCII));
-                    } else {                                // interp as numeric flag data
-                        scriptBuilder.flagData(ScriptUtil.NumberStringToBytes(Tokens.get(i), false));
-                    }
+                    scriptBuilder.flagData(TokenLiteralToBytes(Tokens.get(++i)));
                 }
                 case BIGPUSH, PUSH -> {
-                    if(Tokens.get(++i).startsWith("0x")){ // hex push data
-                        scriptBuilder.push(Util.getBytesFromHexString(Tokens.get(i).substring(2)));
-                    } else if(Tokens.get(i).startsWith("[")){ // byte array push data
-                        scriptBuilder.push(ScriptUtil.ByteArrayStringToBytes(Tokens.get(i)));
-                    } else if(Tokens.get(i).startsWith("{")){ // code block push data
-                        String InnerScript = Tokens.get(i).substring(1, Tokens.get(i).length() - 1).strip();
-                        scriptBuilder.push(ScriptParser.CompileScriptTokensToBytecode(ScriptParser.GetTokensFromString(InnerScript, true)));
-                    } else if(Tokens.get(i).startsWith("\"") || Tokens.get(i).startsWith("'")){ // string push data
-                        scriptBuilder.pushASCIIString(Tokens.get(i).substring(1, Tokens.get(i).length()-1));
-                    } else {                                // interp as numeric push data
-                        // we have other ways to push bytes and need an easy way to push 32 bit low numbers
-                        scriptBuilder.push(ScriptUtil.NumberStringToBytes(Tokens.get(i), true));
+                    String Token = Tokens.get(++i);
+
+                    if(Token.startsWith("$")){ // variable / pick x
+                        scriptBuilder.push( ScriptUtil.NumberStringToBytes(Token.substring(1), false)).op(ScriptOperator.PICK);
+                    } else {
+                        scriptBuilder.push(TokenLiteralToBytes(Token));
                     }
                 }
                 default -> scriptBuilder.op(scriptOperator);
@@ -138,10 +137,10 @@ public class ScriptParser {
 
             StringBuilder currentToken = new StringBuilder();
 
-            if(isCharacterNumericToken(CurrentChar) && (i+1 >= scriptText.length() || isCharacterNumericToken(scriptText.charAt(i+1)))) { // numeric values,  will match 0, .0, 0., 0.0 but not 0x00 etc
+            if(isCharacterNumericToken(CurrentChar) && (i+1 >= scriptText.length() || isCharacterNumericToken(scriptText.charAt(i+1)))) { // numeric values,  will match 1.0e-4, 0, .0, 0., 0.0 but not 0x00, 1-1, 1.0-1.0 etc
                 while (i < scriptText.length()) {
                     char ch = scriptText.charAt(i++);
-                    if (!isCharacterNumericToken(ch)) {
+                    if (!(isCharacterNumericToken(ch) || (ch == '-' && Character.toLowerCase(scriptText.charAt(i-2)) == 'e'))) {
                         i-=2;
                         break;
                     }
