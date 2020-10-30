@@ -1359,7 +1359,7 @@ public class ScriptTest {
         assertFalse(scriptExecution.bScriptFailed);
     }
 
-    @RepeatedTest(10000)
+    @RepeatedTest(100)
     @DisplayName("Script Float Addition")
     void TestScriptFAddition() throws ScriptInvalidException, ScriptEmptyStackException, ScriptInvalidParameterException, ScriptUnsupportedOperationException {
         float A = ThreadLocalRandom.current().nextFloat();

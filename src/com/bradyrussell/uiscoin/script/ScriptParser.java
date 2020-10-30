@@ -4,6 +4,7 @@ import com.bradyrussell.uiscoin.Util;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class ScriptParser {
 
@@ -59,8 +60,33 @@ public class ScriptParser {
                 scriptBuilder.data(ScriptUtil.ByteArrayStringToBytes(token));
                 continue;
             } else if (token.startsWith("if")) { // if syntax
-
                 if(Tokens.size() > i+1 && Tokens.get(i+1).startsWith("(")) { // if parameter
+                    String parametersToken = Tokens.get(i+1).substring(1);
+                    String parameters = parametersToken.substring(0,parametersToken.indexOf(")"));
+
+                    if(Tokens.size() > i+2 && Tokens.get(i+2).startsWith("{")){ // code block push data
+                        String InnerScript = Tokens.get(i+2).substring(1, Tokens.get(i+2).length() - 1).strip();
+                        byte[] innerBytes = ScriptParser.CompileScriptTokensToBytecode(ScriptParser.GetTokensFromString(InnerScript, true));
+
+                        // push below
+
+                        if(parameters.startsWith("$")){ // variable / pick x
+                            scriptBuilder.push( ScriptUtil.NumberStringToBytes(parameters.substring(1), false)).op(ScriptOperator.PICK);
+                        } else {
+                            scriptBuilder.push(TokenLiteralToBytes(parameters));
+                        }
+
+                       // scriptBuilder.push(dataToPush);
+
+                        scriptBuilder.op(ScriptOperator.NOT);
+                        // not
+                        //push length
+                        scriptBuilder.pushByte(innerBytes.length+1).op(ScriptOperator.JUMPIF);
+                        scriptBuilder.data(innerBytes);
+                        //end jump
+
+                        i += 2;
+                    }
 
                 }
 
