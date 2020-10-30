@@ -114,7 +114,7 @@ public class TransactionOutputBuilder {
                 .pushByte(0)  // [script][uscript][0]
                 .op(ScriptOperator.SWAP)  // [script][0][uscript]
 
-                .op(ScriptOperator.VIRTUALSCRIPT) //  [script][results1][results2]..[1/0] // run unlocking script
+                .op(ScriptOperator.CALL) //  [script][results1][results2]..[1/0] // run unlocking script
 
                 .op(ScriptOperator.VERIFY) // [script][results1][results2]..
 
@@ -125,7 +125,7 @@ public class TransactionOutputBuilder {
                 .pushByte(1) //                     [results1][results2].. [script][>=1][1]
                 .op(ScriptOperator.SUBTRACTBYTES)// [results1][results2].. [script][>=0]
                 .op(ScriptOperator.SWAP)//          [results1][results2].. [>=0][script]
-                .op(ScriptOperator.VIRTUALSCRIPT)// [resulting stack][1 / 0]
+                .op(ScriptOperator.CALL)// [resulting stack][1 / 0]
                 .op(ScriptOperator.VERIFY)
                 .get();
         return this;

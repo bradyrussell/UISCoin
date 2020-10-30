@@ -26,11 +26,11 @@ public class ScriptBuilder {
         return this;
     }
 
-    public ScriptBuilder virtualScript(byte[] Script){
-        return virtualScript(Script, null);
+    public ScriptBuilder call(byte[] Script){
+        return call(Script, null);
     }
 
-    public ScriptBuilder virtualScript(byte[] Script, List<byte[]> InitialStack){
+    public ScriptBuilder call(byte[] Script, List<byte[]> InitialStack){
         if(InitialStack != null) {
             for (byte[] bytes : InitialStack) {
                 push(bytes);
@@ -40,7 +40,7 @@ public class ScriptBuilder {
             pushByte(0);
         }
         push(Script);
-        op(ScriptOperator.VIRTUALSCRIPT);
+        op(ScriptOperator.CALL);
         return this;
     }
 

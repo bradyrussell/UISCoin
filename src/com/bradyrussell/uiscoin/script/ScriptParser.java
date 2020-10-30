@@ -44,19 +44,42 @@ public class ScriptParser {
                 continue;
             } else if(token.startsWith("(")) { // function syntax
                 String subToken = token.substring(1); // 1){code}
-                String parameterCount = subToken.substring(0,subToken.indexOf(")"));
+                String parameters = subToken.substring(0,subToken.indexOf(")"));
 
-                if(parameterCount.equalsIgnoreCase("*")){
-                    scriptBuilder.op(ScriptOperator.DEPTH);
-                } else {
-                    scriptBuilder.pushByte(Byte.parseByte(parameterCount));
-                }
+                if(Tokens.size() > i+1 && Tokens.get(i+1).startsWith("{")){ // code block push data
+                    i++;
+                    if(parameters.equalsIgnoreCase("*")){
+                        scriptBuilder.op(ScriptOperator.DEPTH);
+                    } else {
+                        scriptBuilder.pushByte(Byte.parseByte(parameters));
+                    }
 
-                if(Tokens.get(++i).startsWith("{")){ // code block push data
                     String InnerScript = Tokens.get(i).substring(1, Tokens.get(i).length() - 1).strip();
                     scriptBuilder.push(ScriptParser.CompileScriptTokensToBytecode(ScriptParser.GetTokensFromString(InnerScript, true)));
-                }
+                } else { // parameters to the preceding identifier
+                    String[] parametersArray = parameters.replace(" ", "").replace("\n", "").split(",");
 
+                    byte PreviousOp = scriptBuilder.buffer.get(scriptBuilder.buffer.position()-1);
+                    scriptBuilder.buffer.put(scriptBuilder.buffer.position()-1, ScriptOperator.NOP.OPCode); // replace previous op with NOP // todo improve
+
+                    for (String s : parametersArray) {
+                        if(s.startsWith("0x")){ // hex push data
+                            scriptBuilder.push(Util.getBytesFromHexString(s.substring(2)));
+                        } else if(s.startsWith("[")){ // byte array push data
+                            scriptBuilder.push(ScriptUtil.ByteArrayStringToBytes(s));
+                        } else if(s.startsWith("{")){ // code block push data
+                            String InnerScript = s.substring(1, s.length() - 1).strip();
+                            scriptBuilder.push(ScriptParser.CompileScriptTokensToBytecode(ScriptParser.GetTokensFromString(InnerScript, true)));
+                        } else if(s.startsWith("\"") || s.startsWith("'")){ // string push data
+                            scriptBuilder.pushASCIIString(s.substring(1, s.length()-1));
+                        } else {                                // interp as numeric push data
+                            // we have other ways to push bytes and need an easy way to push 32 bit low numbers
+                            scriptBuilder.push(ScriptUtil.NumberStringToBytes(s, true));
+                        }
+                    }
+
+                    scriptBuilder.data(new byte[]{PreviousOp});
+                }
                 continue;
             }
 
@@ -120,25 +143,25 @@ public class ScriptParser {
                     currentToken.append(ch);
                 }
                 tokens.add(currentToken.toString());
-            } else if(CurrentChar == '/' && scriptText.charAt(i+1) == '/' ) { // one line comments
+            } else if(scriptText.length() > i+1 && CurrentChar == '/' && scriptText.charAt(i+1) == '/' ) { // one line comments
                 String startingAtComment = scriptText.substring(i);
                 int endIndex = startingAtComment.indexOf("\n");
                 //String comment = startingAtComment.substring(0, endIndex);
                 //tokens.add(comment);
-                i += endIndex;
+                i += Math.max(endIndex, 0);
             } else if(CurrentChar == '\"' || CurrentChar == '\'') { // string
                 String startingAtComment = scriptText.substring(i+1);
                 int endIndex = startingAtComment.indexOf(CurrentChar)+1;
                 //todo escaped strings
                 String string = startingAtComment.substring(0, endIndex);
                 tokens.add(CurrentChar+string);
-                i += endIndex;
-            } else if(CurrentChar == '/' && scriptText.charAt(i+1) == '*' ) { // multi line comments
+                i += Math.max(endIndex, 0);
+            } else if(scriptText.length() > i+1 && CurrentChar == '/' && scriptText.charAt(i+1) == '*' ) { // multi line comments
                 String startingAtComment = scriptText.substring(i);
                 int endIndex = startingAtComment.indexOf("*/")+1;
                 //String comment = startingAtComment.substring(0, endIndex)+"/";
                 //tokens.add(comment);
-                i += endIndex;
+                i += Math.max(endIndex, 0);
             } else if(bGroupBracketsAndParentheses && CurrentChar == '[') { // brackets
                 String startingAtComment = scriptText.substring(i);
                 int endIndex = startingAtComment.indexOf(']')+1;

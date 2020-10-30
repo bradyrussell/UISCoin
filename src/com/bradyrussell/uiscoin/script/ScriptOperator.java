@@ -351,8 +351,9 @@ public enum ScriptOperator {
     /**
      * Executes script bytecode from the stack. Stack elements are [virtual script bytecode] [byte number of stack items to take] then N byte arrays
      * Pushes the resulting stack and then a true or false based on whether the execution was successful
+     * Used to be called virtual script because a new virtual machine is created to run the function (cannot access outside of its scope)
      */
-    VIRTUALSCRIPT(0xd0),
+    CALL(0xd0),
 
     /**
      * Jumps to the specified instruction. This is relative to the current location.

@@ -1321,7 +1321,7 @@ public class ScriptExecution {
 
                     return true;
                 }
-                case VIRTUALSCRIPT -> {
+                case CALL -> {
                     CheckInsufficientStackSize(2);
                     byte[] VirtualScriptBytes = Stack.pop();
                     byte[] NumberStackItemsBytes = Stack.pop();
