@@ -1433,13 +1433,13 @@ public class ScriptExecution {
                     int NumberOfElements = Amount[0];
 
                     ArrayList<byte[]> beforeStack = Collections.list(Stack.elements());
-
                     List<byte[]> toRotate = beforeStack.subList(NumberExcluded, beforeStack.size());
+
                     Collections.rotate(toRotate, NumberOfElements);
 
                     Stack.clear();
 
-                    Stack.addAll(beforeStack);
+                    Stack.addAll(beforeStack.subList(0, NumberExcluded));
                     Stack.addAll(toRotate);
 
                     return true;
