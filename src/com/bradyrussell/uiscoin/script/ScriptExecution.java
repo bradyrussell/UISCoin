@@ -321,19 +321,23 @@ public class ScriptExecution {
                 case LESSTHAN -> {
                     CheckInsufficientStackSize(2);
                     byte[] B = Stack.pop();
-                    CheckInsufficientBytes(B, 4);
+                    CheckInsufficientBytes(B, 1);
                     byte[] A = Stack.pop();
-                    CheckInsufficientBytes(A, 4);
+                    CheckInsufficientBytes(A, 1);
 
                     long iA, iB;
 
-                    if (A.length < 8) {
+                    if(A.length == 1){
+                        iA = A[0];
+                    } else if (A.length < 8) {
                         iA = ByteArrayToNumber32(A);
                     } else {
                         iA = ByteArrayToNumber64(A);
                     }
 
-                    if (B.length < 8) {
+                    if(B.length == 1){
+                        iB = B[0];
+                    } else if (B.length < 8) {
                         iB = ByteArrayToNumber32(B);
                     } else {
                         iB = ByteArrayToNumber64(B);
@@ -347,19 +351,23 @@ public class ScriptExecution {
                 case LESSTHANEQUAL -> {
                     CheckInsufficientStackSize(2);
                     byte[] B = Stack.pop();
-                    CheckInsufficientBytes(B, 4);
+                    CheckInsufficientBytes(B, 1);
                     byte[] A = Stack.pop();
-                    CheckInsufficientBytes(A, 4);
+                    CheckInsufficientBytes(A, 1);
 
                     long iA, iB;
 
-                    if (A.length < 8) {
+                    if(A.length == 1){
+                        iA = A[0];
+                    } else if (A.length < 8) {
                         iA = ByteArrayToNumber32(A);
                     } else {
                         iA = ByteArrayToNumber64(A);
                     }
 
-                    if (B.length < 8) {
+                    if(B.length == 1){
+                        iB = B[0];
+                    } else if (B.length < 8) {
                         iB = ByteArrayToNumber32(B);
                     } else {
                         iB = ByteArrayToNumber64(B);
@@ -373,19 +381,23 @@ public class ScriptExecution {
                 case GREATERTHAN -> {
                     CheckInsufficientStackSize(2);
                     byte[] B = Stack.pop();
-                    CheckInsufficientBytes(B, 4);
+                    CheckInsufficientBytes(B, 1);
                     byte[] A = Stack.pop();
-                    CheckInsufficientBytes(A, 4);
+                    CheckInsufficientBytes(A, 1);
 
                     long iA, iB;
 
-                    if (A.length < 8) {
+                    if(A.length == 1){
+                        iA = A[0];
+                    } else if (A.length < 8) {
                         iA = ByteArrayToNumber32(A);
                     } else {
                         iA = ByteArrayToNumber64(A);
                     }
 
-                    if (B.length < 8) {
+                    if(B.length == 1){
+                        iB = B[0];
+                    } else if (B.length < 8) {
                         iB = ByteArrayToNumber32(B);
                     } else {
                         iB = ByteArrayToNumber64(B);
@@ -399,19 +411,23 @@ public class ScriptExecution {
                 case GREATERTHANEQUAL -> {
                     CheckInsufficientStackSize(2);
                     byte[] B = Stack.pop();
-                    CheckInsufficientBytes(B, 4);
+                    CheckInsufficientBytes(B, 1);
                     byte[] A = Stack.pop();
-                    CheckInsufficientBytes(A, 4);
+                    CheckInsufficientBytes(A, 1);
 
                     long iA, iB;
 
-                    if (A.length < 8) {
+                    if(A.length == 1){
+                        iA = A[0];
+                    } else if (A.length < 8) {
                         iA = ByteArrayToNumber32(A);
                     } else {
                         iA = ByteArrayToNumber64(A);
                     }
 
-                    if (B.length < 8) {
+                    if(B.length == 1){
+                        iB = B[0];
+                    } else if (B.length < 8) {
                         iB = ByteArrayToNumber32(B);
                     } else {
                         iB = ByteArrayToNumber64(B);
