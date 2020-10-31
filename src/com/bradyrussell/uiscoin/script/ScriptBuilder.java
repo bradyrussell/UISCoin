@@ -26,11 +26,11 @@ public class ScriptBuilder {
         return this;
     }
 
-    public ScriptBuilder virtualScript(byte[] Script){
-        return virtualScript(Script, null);
+    public ScriptBuilder call(byte[] Script){
+        return call(Script, null);
     }
 
-    public ScriptBuilder virtualScript(byte[] Script, List<byte[]> InitialStack){
+    public ScriptBuilder call(byte[] Script, List<byte[]> InitialStack){
         if(InitialStack != null) {
             for (byte[] bytes : InitialStack) {
                 push(bytes);
@@ -40,7 +40,7 @@ public class ScriptBuilder {
             pushByte(0);
         }
         push(Script);
-        op(ScriptOperator.VIRTUALSCRIPT);
+        op(ScriptOperator.CALL);
         return this;
     }
 
@@ -138,7 +138,7 @@ public class ScriptBuilder {
         int InstructionCounter = 0;
 
         StringBuilder sb = new StringBuilder();
-        sb.append("#Decompiled from ").append(Util.Base64Encode(Script)).append("#\n");
+        sb.append("//Decompiled from ").append(Util.Base64Encode(Script)).append("#\n");
 
         while(InstructionCounter < Script.length){
             //////////////////////////////////////////////////////////////////////////////////////
@@ -170,220 +170,7 @@ public class ScriptBuilder {
     }
 
     public ScriptBuilder fromText(String Text){
-        Log.info("Parsing script from text...");
-
-        //clean up any extraneous characters and format the script in a single line like TRUE FALSE PUSH [1, 3, 6, 7] RETURN
-        String[] parts = Text.replace("\n", " ").replace(";", " ").replace("  ", " ").replace("\r", "").split(" ");
-
-        Log.info(Arrays.toString(parts));
-
-        for (int i = 0; i < parts.length; i++) {
-            boolean bIsFunctionSyntax = false;
-
-            if(parts[i].startsWith("#")) {
-                String substring = parts[i].substring(1);
-                Log.fine("Interpreting Token "+i+" as a comment: "+substring);
-
-                Log.fine("Token "+i+": Begin comment # ");
-                do { // single byte
-                    /*I = */
-                    Log.fine("Token "+i+": comment Element "+parts[i].replace("#", "").replace("#", "") + " from comment part "+parts[i]);
-                }while(!parts[i++].endsWith("#"));
-            }
-            if(parts[i].startsWith("0x")) {
-                String substring = parts[i].substring(2);
-                Log.fine("Interpreting Token "+i+" as hex data: "+substring);
-                fromHexString(substring);
-                continue;
-            }
-            if(parts[i].charAt(0) >= 48 && parts[i].charAt(0) <= 57) {
-                Log.fine("Interpreting Token "+i+" as numeric data: "+parts[i]);
-                int number = Integer.parseInt(parts[i]);
-                if(number < 128 && number > -128) {
-                    buffer.put((byte)number);
-                } else {
-                    buffer.put(Util.NumberToByteArray32(number));
-                }
-
-                continue;
-            }
-            if(parts[i].startsWith("(")) {
-                String substring = parts[i].substring(1); // 1){code}
-                String parameterCount = substring.substring(0,substring.indexOf(")"));
-
-                if(parameterCount.equalsIgnoreCase("*")){
-                    // stack depth -1
-                    op(ScriptOperator.DEPTH);
-/*                    pushByte(1);
-                    op(ScriptOperator.SUBTRACTBYTES);*/
-                } else {
-                    pushByte(Byte.parseByte(parameterCount));
-                }
-                bIsFunctionSyntax = true; // drop down to push the code block
-            }
-
-            Log.fine("Interpreting Token "+i+" as operator.");
-            ScriptOperator scriptOperator = bIsFunctionSyntax ? ScriptOperator.PUSH : ScriptOperator.valueOf(parts[i].toUpperCase());
-
-
-            Log.fine("Token "+i+": OP "+scriptOperator);
-
-            if(scriptOperator == ScriptOperator.FLAG) {
-                if(parts[++i].startsWith("0x")){
-                    String hex = parts[i].substring(2);
-                    flag(getBytesFromHexString(hex)[0]);
-
-                    Log.fine("Token "+i+": Hex Data "+parts[i]);
-                }
-                else { // interp as byte
-                    flag(Byte.parseByte(parts[i]));
-                    Log.fine("Token "+i+": Number "+Integer.parseInt(parts[i]));
-                }
-            }
-
-            /////////////////////////////
-            else if(scriptOperator == ScriptOperator.FLAGDATA) {
-                if(parts[++i].startsWith("'")) { // interp as ascii string
-                    StringBuilder sb = new StringBuilder();
-                    Log.fine("Token "+i+": Begin String ' ");
-                    do { // single byte
-                        /*I = */
-                        sb.append(parts[i].replace("'", "")/*.replace("'", "")*/);
-                        if(!parts[i].endsWith("'")) sb.append(" ");
-                        Log.fine("Token "+i+": String Element "+parts[i].replace("'", "").replace("'", "") + " from string part "+parts[i]);
-                    }while(!parts[i++].endsWith("'"));
-
-                    i--; // todo fix the above loop making this necessary
-
-                    flagData(sb.toString().getBytes(StandardCharsets.US_ASCII));
-                } else if(parts[i].startsWith("[")) { // interp as byte array
-                    ArrayList<Byte> bytes = new ArrayList<>();
-                    Log.fine("Token "+i+": Begin Byte Array [  ");
-                    do { // single byte
-                        /*I = */
-                        byte parseByte = Byte.parseByte(parts[i].replace("[", "").replace("]", "").replace(",", ""));
-                        bytes.add(parseByte);
-                        Log.fine("Token "+i+": Byte Array Element "+parseByte + " from string part "+parts[i]);
-                    }while(!parts[i++].endsWith("]"));
-
-                    i--; // todo fix the above loop making this necessary
-
-                    byte[] byteArray = new byte[bytes.size()];
-                    for (int j = 0; j < bytes.size(); j++) {
-                        byteArray[j] = bytes.get(j);
-                    }
-                    flagData(byteArray);
-                } else if(parts[i].startsWith("0x")){
-                    String hex = parts[i].substring(2);
-                    flagData(getBytesFromHexString(hex));
-
-                    Log.fine("Token "+i+": Hex Data "+parts[i]);
-                }
-                else { // interp as number
-                    flagData(Util.NumberToByteArray32(Integer.parseInt(parts[i])));
-                    Log.fine("Token "+i+": Number "+Integer.parseInt(parts[i]));
-                }
-            }
-            //////////////////
-
-            else if(scriptOperator == ScriptOperator.PUSH || scriptOperator == ScriptOperator.BIGPUSH) {
-                // PUSH 2576
-                // PUSH 'ascii text'
-                // PUSH [4,5,6,7]
-                //int I = ++i;
-                if(parts[++i].startsWith("'")) { // interp as ascii string
-                    StringBuilder sb = new StringBuilder();
-                    Log.fine("Token "+i+": Begin String ' ");
-                    do { // single byte
-                        /*I = */
-                        sb.append(parts[i].replace("'", "")/*.replace("'", "")*/);
-                        if(!parts[i].endsWith("'")) sb.append(" ");
-                        Log.fine("Token "+i+": String Element "+parts[i].replace("'", "").replace("'", "") + " from string part "+parts[i]);
-                    }while(!parts[i++].endsWith("'"));
-
-                    i--; // todo fix the above loop making this necessary
-
-                    pushASCIIString(sb.toString());
-                }
-                else if(parts[i].startsWith("{")) { // interp as code block
-                    StringBuilder sb = new StringBuilder();
-                    Log.fine("Token "+i+": Begin Code Block { ");
-
-                    int NumberOfBrackets = 0;
-
-                    do { // single byte
-                        /*I = */
-
-                        String part = parts[i];
-
-                        if(parts[i].startsWith("{")) {
-                            if(NumberOfBrackets == 0) {
-                                part = parts[i].replace("{","");
-                            }
-                            NumberOfBrackets++;
-                        }
-
-                        if(parts[i].endsWith("}")) {
-                            NumberOfBrackets--;
-                            if(NumberOfBrackets == 0) {
-                                part = parts[i].replace("}","");
-                            }
-                        }
-
-                        sb.append(part);
-
-                        if(!(parts[i].endsWith("}") && NumberOfBrackets == 0)) sb.append(" ");
-
-                        Log.fine("Token "+i+": Code Block Element "+parts[i].replace("{", "").replace("}", "") + " from code block part "+parts[i]);
-                    }while(!(parts[i++].endsWith("}") && NumberOfBrackets == 0));
-
-                    i--; // todo fix the above loop making this necessary
-
-                    String codeBlockScript = sb.toString();
-                    push(new ScriptBuilder(codeBlockScript.length()).fromText(codeBlockScript).get());
-                } else if(parts[i].startsWith("[")) { // interp as byte array
-                    ArrayList<Byte> bytes = new ArrayList<>();
-                    Log.fine("Token "+i+": Begin Byte Array [  ");
-                    do { // single byte
-                        /*I = */
-                        byte parseByte = Byte.parseByte(parts[i].replace("[", "").replace("]", "").replace(",", ""));
-                        bytes.add(parseByte);
-                        Log.fine("Token "+i+": Byte Array Element "+parseByte + " from string part "+parts[i]);
-                    }while(!parts[i++].endsWith("]"));
-
-                    i--; // todo fix the above loop making this necessary
-
-                    byte[] byteArray = new byte[bytes.size()];
-                    for (int j = 0; j < bytes.size(); j++) {
-                        byteArray[j] = bytes.get(j);
-                    }
-                    push(byteArray);
-                } else if(parts[i].startsWith("0x")){
-                    String hex = parts[i].substring(2);
-                    pushHexString(hex);
-
-                    Log.fine("Token "+i+": Hex Data "+parts[i]);
-                }
-                else { // interp as number
-                    if(parts[i].contains(".")) {
-                        pushFloat(Float.parseFloat(parts[i]));
-                        Log.fine("Token " + i + ": Float " + Float.parseFloat(parts[i]));
-                    } else {
-                        try {
-                            pushInt(Integer.parseInt(parts[i]));
-                            Log.fine("Token " + i + ": Number " + Integer.parseInt(parts[i]));
-                        } catch (NumberFormatException ignored) {
-                            pushInt64(Long.parseLong(parts[i]));
-                            Log.fine("Token " + i + ": 64 Bit Number " + Long.parseLong(parts[i]));
-                        }
-                    }
-                }
-            }
-            else {
-                op(scriptOperator);
-            }
-        }
-        Log.info("Script compiled into bytecode.");
+        data(ScriptParser.CompileScriptTokensToBytecode(ScriptParser.GetTokensFromString(Text, true)));
         return this;
     }
 

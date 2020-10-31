@@ -4,6 +4,7 @@ import com.bradyrussell.uiscoin.address.UISCoinKeypair;
 import com.bradyrussell.uiscoin.script.ScriptBuilder;
 import com.bradyrussell.uiscoin.script.ScriptExecution;
 import com.bradyrussell.uiscoin.script.ScriptOperator;
+import com.bradyrussell.uiscoin.script.ScriptParser;
 import com.bradyrussell.uiscoin.script.exception.ScriptEmptyStackException;
 import com.bradyrussell.uiscoin.script.exception.ScriptInvalidException;
 import com.bradyrussell.uiscoin.script.exception.ScriptInvalidParameterException;
@@ -14,6 +15,7 @@ import com.bradyrussell.uiscoin.transaction.TransactionOutputBuilder;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.engine.script.Script;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -21,7 +23,6 @@ import javax.crypto.NoSuchPaddingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.ECPublicKey;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -220,6 +221,28 @@ public class ScriptTest {
     }
 
     @Test
+    @DisplayName("Script Shift N Except")
+    void TestScriptShiftNExcept() throws ScriptInvalidException, ScriptEmptyStackException, ScriptInvalidParameterException, ScriptUnsupportedOperationException {
+        ScriptBuilder sb = new ScriptBuilder(64);
+        sb.fromText("push 0x01020304050607080900 split shiftnexcept([-1], 0x04)");
+        System.out.println(Arrays.toString(sb.get()));
+
+        ScriptExecution scriptExecution = new ScriptExecution();
+
+        scriptExecution.Initialize(sb.get());
+
+        while (scriptExecution.Step()){
+            System.out.println("Stack: \n"+scriptExecution.getStackContents());
+        }
+
+        System.out.println("Script returned: "+!scriptExecution.bScriptFailed);
+
+        System.out.println("Finished: "+scriptExecution.InstructionCounter+" / "+scriptExecution.Script.length);
+
+        assertFalse(scriptExecution.bScriptFailed);
+    }
+
+    @Test
     @DisplayName("Script Time")
     void TestScriptTime() throws ScriptInvalidException, ScriptEmptyStackException, ScriptInvalidParameterException {
 /*        ScriptBuilder sb = new ScriptBuilder(64);
@@ -290,7 +313,17 @@ public class ScriptTest {
         assertFalse(scriptExecution.bScriptFailed);
     }
 
-    @RepeatedTest(5000)
+    @RepeatedTest(1)
+    @DisplayName("Script Tokenize String")
+    void TestTokenize() {
+        ArrayList<String> strings = ScriptParser.GetTokensFromString("$a = 0; $b = 100; $c = $a + $b;\n", true);
+        for (int i = 0; i < strings.size(); i++) {
+            String string = strings.get(i);
+            System.out.println(i+": "+string);
+        }
+    }
+
+    @RepeatedTest(500)
     @DisplayName("Invalid Script Terminates Cleanly")
     void TestInvalidScript() {
         ScriptExecution scriptExecution = new ScriptExecution();
@@ -332,8 +365,8 @@ public class ScriptTest {
     }
 
     @RepeatedTest(1000)
-    @DisplayName("Script VirtualScript")
-    void TestVirtualScript() throws ScriptInvalidException, ScriptEmptyStackException, ScriptInvalidParameterException, ScriptUnsupportedOperationException {
+    @DisplayName("Script Call")
+    void TestCall() throws ScriptInvalidException, ScriptEmptyStackException, ScriptInvalidParameterException, ScriptUnsupportedOperationException {
         byte[] A = new byte[ThreadLocalRandom.current().nextInt(16,127)];
         byte[] B = new byte[ThreadLocalRandom.current().nextInt(16,127)];
 
@@ -359,7 +392,7 @@ public class ScriptTest {
         sb
                 .flag((byte)1)
                 .flagData(Hash.getSHA512Bytes("flag"))
-                .virtualScript(virtualSB.get());
+                .call(virtualSB.get());
 
         ScriptExecution scriptExecution = new ScriptExecution();
         scriptExecution.LogScriptExecution = true;
@@ -378,8 +411,8 @@ public class ScriptTest {
     }
 
     @RepeatedTest(1000)
-    @DisplayName("Script VirtualScript Pass In Stack")
-    void TestVirtualScriptInStack() throws ScriptInvalidException, ScriptEmptyStackException, ScriptInvalidParameterException, ScriptUnsupportedOperationException {
+    @DisplayName("Script call Pass In Stack")
+    void TestcallInStack() throws ScriptInvalidException, ScriptEmptyStackException, ScriptInvalidParameterException, ScriptUnsupportedOperationException {
         byte[] A = new byte[ThreadLocalRandom.current().nextInt(16,127)];
         byte[] B = new byte[ThreadLocalRandom.current().nextInt(16,127)];
 
@@ -405,7 +438,7 @@ public class ScriptTest {
                 .push(A)
                 .pushByte(2)
                 .push(virtualSB.get())
-                .op(ScriptOperator.VIRTUALSCRIPT);
+                .op(ScriptOperator.CALL);
 
         ScriptExecution scriptExecution = new ScriptExecution();
         scriptExecution.LogScriptExecution = true;
@@ -423,9 +456,51 @@ public class ScriptTest {
         assertFalse(scriptExecution.bScriptFailed);
     }
 
+    @RepeatedTest(10)
+    @DisplayName("Script Tokenizer and fromText Parity")
+    void TestTokenizerAndfromTextParity(){
+        int bufferLength = 1024;
+        ScriptBuilder sb = new ScriptBuilder(bufferLength);
+        String OriginalString = "push 'Hello world.'\n" +
+                "len\n" +
+                "convert32to8\n" +
+                "push 0x06\n" +
+                "swap\n" +
+                "//Begin Loaded script as function\n" +
+                "(3) {//function substring(string, startIndex, endIndex)#\n" +
+                "shiftup\n" +
+                "shiftup\n" +
+                "swap\n" +
+                "limit\n" +
+                "reverse\n" +
+                "len\n" +
+                "convert32to8\n" +
+                "shiftdown\n" +
+                "subtractbytes\n" +
+                "limit\n" +
+                "reverse }\n" +
+                "//#End Loaded script as function#\n" +
+                "call\n" +
+                "verify";
+        sb.fromText(OriginalString);
+
+        byte[] Original = sb.get();
+        byte[] Upgrade = ScriptParser.CompileScriptTokensToBytecode(ScriptParser.GetTokensFromString(OriginalString.replace("#", "//"), true));
+
+        assertTrue(Arrays.equals(Original, Upgrade));
+
+        ScriptBuilder sb2 = new ScriptBuilder(bufferLength);
+
+        String decompiledUpgrade = sb2.data(Upgrade).toText();
+
+        sb2 = new ScriptBuilder(bufferLength).fromText(decompiledUpgrade);
+
+        assertTrue(Arrays.equals(Original, sb2.get()));
+    }
+
     @RepeatedTest(1000)
-    @DisplayName("Script VirtualScript Pass Out Stack")
-    void TestVirtualScriptOutStack() throws ScriptInvalidException, ScriptEmptyStackException, ScriptInvalidParameterException, ScriptUnsupportedOperationException {
+    @DisplayName("Script call Pass Out Stack")
+    void TestcallOutStack() throws ScriptInvalidException, ScriptEmptyStackException, ScriptInvalidParameterException, ScriptUnsupportedOperationException {
         byte[] A = new byte[ThreadLocalRandom.current().nextInt(16,127)];
         byte[] B = new byte[ThreadLocalRandom.current().nextInt(16,127)];
 
@@ -449,7 +524,7 @@ public class ScriptTest {
         sb
                 .pushByte(0)
                 .push(virtualSB.get())
-                .op(ScriptOperator.VIRTUALSCRIPT)
+                .op(ScriptOperator.CALL)
                 .op(ScriptOperator.DROP)
                 .op(ScriptOperator.DROP)
                 .push(A)
@@ -473,8 +548,8 @@ public class ScriptTest {
     }
 
     @RepeatedTest(1000)
-    @DisplayName("Script VirtualScript Pass In/Out Stack")
-    void TestVirtualScriptInOutStack() throws ScriptInvalidException, ScriptEmptyStackException, ScriptInvalidParameterException, ScriptUnsupportedOperationException {
+    @DisplayName("Script call Pass In/Out Stack")
+    void TestcallInOutStack() throws ScriptInvalidException, ScriptEmptyStackException, ScriptInvalidParameterException, ScriptUnsupportedOperationException {
         byte[] A = new byte[ThreadLocalRandom.current().nextInt(16,127)];
 
         ThreadLocalRandom.current().nextBytes(A);
@@ -496,7 +571,7 @@ public class ScriptTest {
                 .pushByte(1)
                 .op(ScriptOperator.SUBTRACTBYTES)
                 .push(virtualSB.get())
-                .op(ScriptOperator.VIRTUALSCRIPT)
+                .op(ScriptOperator.CALL)
                 .op(ScriptOperator.DROP)
                 .op(ScriptOperator.BYTESEQUAL)
                 .op(ScriptOperator.VERIFY);
@@ -763,10 +838,10 @@ public class ScriptTest {
 
         byte[] a  = new ScriptBuilder(128)
                 .flag((byte)2)
-                .flagData(Util.NumberToByteArray32(123))
+                .flagData(Util.NumberToByteArray32(1234))
                 .get();
 
-        byte[] b= new ScriptBuilder(128).fromText("flag 2 flagdata 123").get();
+        byte[] b= new ScriptBuilder(128).fromText("flag 2 flagdata 1234").get();
 
         Util.printBytesReadable(a);
         Util.printBytesReadable(b);
@@ -776,7 +851,7 @@ public class ScriptTest {
 
     @Test @DisplayName("Script Code Block")
     void TestScriptCodeBlock() throws ScriptInvalidException, ScriptEmptyStackException, ScriptInvalidParameterException, ScriptUnsupportedOperationException {
-        ScriptBuilder sb = new ScriptBuilder(128).fromText("push 0x00 push {push 0x01020304 return} virtualscript drop push 0x01020304 bytesequal verify");
+        ScriptBuilder sb = new ScriptBuilder(128).fromText("push 0x00 push {push 0x01020304 return} call drop push 0x01020304 bytesequal verify");
 
         System.out.println(Arrays.toString(sb.get()));
 
@@ -797,7 +872,7 @@ public class ScriptTest {
 
     @Test @DisplayName("Script Code If Block")
     void TestScriptCodeIfBlock() throws ScriptInvalidException, ScriptEmptyStackException, ScriptInvalidParameterException, ScriptUnsupportedOperationException {
-        ScriptBuilder sb = new ScriptBuilder(128).fromText("push {push 'Hello world!' true push 0x02 push {verify sha512} virtualscript drop push 'Hello world!' sha512 bytesequal verify}");
+        ScriptBuilder sb = new ScriptBuilder(128).fromText("push {push 'Hello world!' true push 0x02 push {verify sha512} call drop push 'Hello world!' sha512 bytesequal verify}");
 
         System.out.println(Arrays.toString(sb.get()));
 
@@ -832,9 +907,65 @@ public class ScriptTest {
         assertTrue(Arrays.equals(a,b));
     }
 
+    @RepeatedTest(10) @DisplayName("Script Text Comment Syntax")
+    void TestTextCommentSyntax() throws ScriptInvalidException, ScriptEmptyStackException, ScriptInvalidParameterException, ScriptUnsupportedOperationException {
+        byte[] a  = new ScriptBuilder(128).fromText("//line comment\n/* multiline\ncomment\n*/add(1, 2) add(5) ").get();
+
+        byte[] b= new ScriptBuilder(128).fromText(new ScriptBuilder(128).data(a).toText()).get();
+
+        ScriptExecution scriptExecution = new ScriptExecution();
+
+        scriptExecution.Initialize(a);
+
+        while (scriptExecution.Step()){
+            System.out.println("Stack: \n"+scriptExecution.getStackContents());
+        }
+
+        System.out.println("Script returned: "+!scriptExecution.bScriptFailed);
+
+        System.out.println("Finished: "+scriptExecution.InstructionCounter+" / "+scriptExecution.Script.length);
+
+        assertFalse(scriptExecution.bScriptFailed);
+
+        System.out.println();
+
+        Util.printBytesReadable(a);
+        Util.printBytesReadable(b);
+
+        assertTrue(Arrays.equals(a,b));
+    }
+
+    @RepeatedTest(10) @DisplayName("Script Text Parameter Syntax")
+    void TestTextParameterSyntax() throws ScriptInvalidException, ScriptEmptyStackException, ScriptInvalidParameterException, ScriptUnsupportedOperationException {
+        byte[] a  = new ScriptBuilder(128).fromText("add(1, 2) add(5)").get();
+
+        byte[] b= new ScriptBuilder(128).fromText(new ScriptBuilder(128).data(a).toText()).get();
+
+        ScriptExecution scriptExecution = new ScriptExecution();
+
+        scriptExecution.Initialize(a);
+
+        while (scriptExecution.Step()){
+            System.out.println("Stack: \n"+scriptExecution.getStackContents());
+        }
+
+        System.out.println("Script returned: "+!scriptExecution.bScriptFailed);
+
+        System.out.println("Finished: "+scriptExecution.InstructionCounter+" / "+scriptExecution.Script.length);
+
+        assertFalse(scriptExecution.bScriptFailed);
+
+        System.out.println();
+
+        Util.printBytesReadable(a);
+        Util.printBytesReadable(b);
+
+        assertTrue(Arrays.equals(a,b));
+    }
+
     @RepeatedTest(10) @DisplayName("Script Text Function Syntax")
     void TestTextFxnSyntax() throws ScriptInvalidException, ScriptEmptyStackException, ScriptInvalidParameterException, ScriptUnsupportedOperationException {
-        byte[] a  = new ScriptBuilder(128).fromText("push 2 push 1 (*) {push 3 add} virtualscript swap push 4 numequal verify verify").get();
+        byte[] a  = new ScriptBuilder(128).fromText("push 2 push 1 (*) {push 3 add} call swap push 4 numequal verify verify").get();
 
         byte[] b= new ScriptBuilder(128).fromText(new ScriptBuilder(128).data(a).toText()).get();
 
@@ -1011,13 +1142,7 @@ public class ScriptTest {
         while(true) {
             try {
                 if (!unlockingScript.Step()) break;
-            } catch (ScriptEmptyStackException e) {
-                e.printStackTrace();
-            } catch (ScriptInvalidParameterException e) {
-                e.printStackTrace();
-            } catch (ScriptInvalidException e) {
-                e.printStackTrace();
-            } catch (ScriptUnsupportedOperationException e) {
+            } catch (ScriptEmptyStackException | ScriptInvalidParameterException | ScriptUnsupportedOperationException | ScriptInvalidException e) {
                 e.printStackTrace();
             }
             System.out.println("Stack: \n"+unlockingScript.getStackContents());
@@ -1040,13 +1165,7 @@ public class ScriptTest {
         while(true) {
             try {
                 if (!lockingScript.Step()) break;
-            } catch (ScriptEmptyStackException e) {
-                e.printStackTrace();
-            } catch (ScriptInvalidParameterException e) {
-                e.printStackTrace();
-            } catch (ScriptInvalidException e) {
-                e.printStackTrace();
-            } catch (ScriptUnsupportedOperationException e) {
+            } catch (ScriptEmptyStackException | ScriptUnsupportedOperationException | ScriptInvalidException | ScriptInvalidParameterException e) {
                 e.printStackTrace();
             }
             System.out.println("Stack: \n"+lockingScript.getStackContents());
@@ -1172,13 +1291,7 @@ public class ScriptTest {
         while(true) {
             try {
                 if (!lockingScript.Step()) break;
-            } catch (ScriptEmptyStackException e) {
-                e.printStackTrace();
-            } catch (ScriptInvalidParameterException e) {
-                e.printStackTrace();
-            } catch (ScriptInvalidException e) {
-                e.printStackTrace();
-            } catch (ScriptUnsupportedOperationException e) {
+            } catch (ScriptEmptyStackException | ScriptUnsupportedOperationException | ScriptInvalidException | ScriptInvalidParameterException e) {
                 e.printStackTrace();
             }
             System.out.println("Stack: \n"+lockingScript.getStackContents());
@@ -1234,7 +1347,7 @@ public class ScriptTest {
         float A = ThreadLocalRandom.current().nextFloat();
         float B = ThreadLocalRandom.current().nextFloat();
         float C = A + B;
-
+        ScriptParser.GetTokensFromString("push "+A+" push "+B+" 1-1 addfloat push 1.0E-4 blah", true).forEach(System.out::println);
         ScriptBuilder sb = new ScriptBuilder(32);
         sb
                 .fromText("push "+A+" push "+B)
@@ -1242,6 +1355,8 @@ public class ScriptTest {
                 .pushFloat(C)
                 .op(ScriptOperator.NUMEQUAL)
                 .op(ScriptOperator.VERIFY);
+
+
 
         System.out.println(Arrays.toString(sb.get()));
 

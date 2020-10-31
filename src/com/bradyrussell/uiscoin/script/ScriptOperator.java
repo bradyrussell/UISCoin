@@ -35,6 +35,17 @@ public enum ScriptOperator {
      *push the time in unix epoch seconds
      */
     TIME(0x06), //
+
+    /**
+     *copy the Nth (from BOTTOM of the stack) element on the stack and push it onto the stack
+     */
+    PICK(0x07), //
+
+    /**
+     * Pop the top stack element as N, pop the next stack element and put it into the Nth from the BOTTOM elements location
+     */
+    PUT(0x08), //
+
     //comparisons
     /**
      * are the top two values numerically equal when interpreted as 4 byte integers
@@ -270,10 +281,11 @@ public enum ScriptOperator {
      *shift the entire stack, so the top element becomes second, last becomes first etc
      */
     SHIFTDOWN(0x98), //
+
     /**
-     *copy the Nth (from BOTTOM of the stack) element on the stack and push it onto the stack
+     *shift the entire stack, N elements, based on the byte on top of the stack
      */
-    PICK(0x99), //
+    SHIFTN(0x99), //
 
     /**
      * shift the top stack element's elements to the right, so the first element becomes the second, last becomes first
@@ -300,9 +312,9 @@ public enum ScriptOperator {
     DROPN(0x9e), //
 
     /**
-     * Pop the top stack element and put it into the Nth from the BOTTOM elements location
+     *shift the entire stack EXCEPT the bottom X elements, by Y elements, where X is top of the stack and Y is second so shiftNExcept(1, 4) 1 shift 4 excluded elements
      */
-    REPLACE(0x9f), //
+    SHIFTNEXCEPT(0x9f), //
     // returns
     /**
      * script execution continues if there is a 1 on the stack, else fails
@@ -351,8 +363,9 @@ public enum ScriptOperator {
     /**
      * Executes script bytecode from the stack. Stack elements are [virtual script bytecode] [byte number of stack items to take] then N byte arrays
      * Pushes the resulting stack and then a true or false based on whether the execution was successful
+     * Used to be called virtual script because a new virtual machine is created to run the function (cannot access outside of its scope)
      */
-    VIRTUALSCRIPT(0xd0),
+    CALL(0xd0),
 
     /**
      * Jumps to the specified instruction. This is relative to the current location.

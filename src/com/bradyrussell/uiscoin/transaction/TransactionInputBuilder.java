@@ -10,7 +10,6 @@ import java.nio.charset.Charset;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
-import java.util.List;
 
 public class TransactionInputBuilder {
     TransactionInput input = new TransactionInput();
