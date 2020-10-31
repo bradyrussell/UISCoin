@@ -42,6 +42,17 @@ public class ScriptParser {
         }
     }
 
+
+
+    public static byte[] CompileScriptTokensToBytecode_2(ArrayList<String> Tokens) {
+
+
+
+        return null;
+    }
+
+
+
     public static byte[] CompileScriptTokensToBytecode(ArrayList<String> Tokens){
         HashMap<String, Integer> SymbolTable = new HashMap<>();
         int NextSymbol = 1; // we put a stack cookie in 0
@@ -312,6 +323,10 @@ public class ScriptParser {
 
             StringBuilder currentToken = new StringBuilder();
 
+            //todo check for -1 but not 1-1
+            // or should i just treat it separately
+
+            // if is numeric and end of token or the next char is numeric too. this is to avoid capturing 0x00
             if(isCharacterNumericToken(CurrentChar) && (i+1 >= scriptText.length() || isCharacterNumericToken(scriptText.charAt(i+1)))) { // numeric values,  will match 1.0e-4, 0, .0, 0., 0.0 but not 0x00, 1-1, 1.0-1.0 etc
                 while (i < scriptText.length()) {
                     char ch = scriptText.charAt(i++);

@@ -19,6 +19,8 @@ public class ScriptOptimizer {
 
     // todo if a push <number> exists see if it can be pushed shorter like push [0, 0, 0, 0, 0, 0, 0, 2] (9 bytes) could be push [2] convert8to32 convert32to64 (4 bytes)
 
+    // todo if push number then immediately transform it , or push 2 numbers then immediately transform them, replace with result
+
     //todo REWRITE JUMPS
     //todo break into struct {
     /*

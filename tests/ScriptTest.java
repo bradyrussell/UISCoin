@@ -323,6 +323,75 @@ public class ScriptTest {
         }
     }
 
+    @RepeatedTest(1)
+    @DisplayName("Script Tokenize String 2")
+    void TestTokenize2() {
+        ArrayList<String> strings = ScriptParser.GetTokensFromString("//Decompiled from gYGQkpcD_wEEP4AAAAEBAQgBBD8AAAABAQIIAQEBBwEBAgdkAQRBIAAAZC4BBAAAAAUQoAEEAAAAAQEEAAAAAgEEAAAAAwEEAAAABAEBAQEBAAcBAQIknwEBAQEBAAcBAQIknwP_mAEBAhGgkgEBAhGgng==#\n" +
+                "NULL\n" +
+                "NULL\n" +
+                "NULL\n" +
+                "DEPTH\n" +
+                "DUP\n" +
+                "SHIFTUP\n" +
+                "FLAG 0xFF\n" +
+                "PUSH [63, -128, 0, 0]\n" +
+                "PUSH [1]\n" +
+                "REPLACE\n" +
+                "PUSH [63, 0, 0, 0]\n" +
+                "PUSH [2]\n" +
+                "REPLACE\n" +
+                "PUSH [1]\n" +
+                "PICK\n" +
+                "PUSH [2]\n" +
+                "PICK\n" +
+                "MULTIPLYFLOAT\n" +
+                "PUSH [65, 32, 0, 0]\n" +
+                "MULTIPLYFLOAT\n" +
+                "CONVERTFLOATTO32\n" +
+                "PUSH [0, 0, 0, 5]\n" +
+                "NUMEQUAL\n" +
+                "VERIFY\n" +
+                "PUSH [0, 0, 0, 1]\n" +
+                "PUSH [0, 0, 0, 2]\n" +
+                "PUSH [0, 0, 0, 3]\n" +
+                "PUSH [0, 0, 0, 4]\n" +
+                "PUSH [1]\n" +
+                "PUSH [0]\n" +
+                "PICK\n" +
+                "PUSH [2]\n" +
+                "ADDBYTES\n" +
+                "SHIFTNEXCEPT\n" +
+                "PUSH [1]\n" +
+                "PUSH [0]\n" +
+                "PICK\n" +
+                "PUSH [2]\n" +
+                "ADDBYTES\n" +
+                "SHIFTNEXCEPT\n" +
+                "FLAG 0xFF\n" +
+                "flip // puts var stack at top\n" +
+                "dup // copy var count\n" +
+                "push [-1] // shift amt\n" +
+                "swap\n" +
+                "addbytes([4]) // add stack cookies plus the dup and shift amt\n" +
+                "depth \n" +
+                "swap\n" +
+                "subtractbytes // gives us the number of stack elems besides vars\n" +
+                "shiftnexcept\n" +
+                "//SHIFTDOWN\n" +
+                "PUSH [3]\n" +
+                "BYTESEQUAL\n" +
+                "VERIFY\n" +
+                "DUP\n" +
+                "PUSH [3]\n" +
+                "BYTESEQUAL\n" +
+                "VERIFY\n" +
+                "DROPN\n\n", false);
+        for (int i = 0; i < strings.size(); i++) {
+            String string = strings.get(i);
+            System.out.println(i+": "+string);
+        }
+    }
+
     @RepeatedTest(500)
     @DisplayName("Invalid Script Terminates Cleanly")
     void TestInvalidScript() {
