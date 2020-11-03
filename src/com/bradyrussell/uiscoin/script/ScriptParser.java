@@ -29,6 +29,10 @@ public class ScriptParser {
         String s = Token.strip();
         if(s.startsWith("0x")){ // hex push data
             return( Util.getBytesFromHexString(s.substring(2)));
+        } else if(s.equalsIgnoreCase("true")){
+            return new byte[]{0x01};
+        } else if(s.equalsIgnoreCase("false")){
+            return new byte[]{0x00};
         } else if(s.startsWith("[")){ // byte array push data
             return( ScriptUtil.ByteArrayStringToBytes(s));
         } else if(s.startsWith("{")){ // code block push data
@@ -50,8 +54,6 @@ public class ScriptParser {
 
         return null;
     }
-
-
 
     public static byte[] CompileScriptTokensToBytecode(ArrayList<String> Tokens){
         HashMap<String, Integer> SymbolTable = new HashMap<>();

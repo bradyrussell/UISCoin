@@ -3,6 +3,10 @@ package com.bradyrussell.uiscoin.script;
 import com.bradyrussell.uiscoin.Util;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 
 public class ScriptOptimizer {
     public static String OptimizeScriptHighLevel(String UnoptimizedHighLevel) {
@@ -17,9 +21,13 @@ public class ScriptOptimizer {
         return BytecodeOptimization_BooleanPush(BytecodeOptimization_SkipUnconditionalJump(UnoptimizedBytecode));
     }
 
+    // todo remove jumps that get optimized to 1
+
     // todo if a push <number> exists see if it can be pushed shorter like push [0, 0, 0, 0, 0, 0, 0, 2] (9 bytes) could be push [2] convert8to32 convert32to64 (4 bytes)
 
     // todo if push number then immediately transform it , or push 2 numbers then immediately transform them, replace with result
+
+    // todo if push boolean conditon then immediately not it, replace with inverse ?? like a < b not  replace with a >= b // this is a very minor optimization
 
     //todo REWRITE JUMPS
     //todo break into struct {
@@ -147,22 +155,121 @@ public class ScriptOptimizer {
         return ret;
     }
 
-    private static byte[] RewriteJumpsAfter(byte[] Script, int StartIndex, int BytesRemoved){
+    public static byte[] BytecodeOptimization_RemoveNOPs(byte[] Script){
         ByteBuffer buffer = ByteBuffer.allocate(Script.length);
 
-        byte[] changed = new byte[StartIndex-1];
-        byte[] unchanged = new byte[Script.length - StartIndex];
-        System.arraycopy(Script, 0, changed, 0, StartIndex-1);
-        System.arraycopy(Script, StartIndex, unchanged, 0, Script.length - StartIndex);
+        ScriptOptimizationAlignment soa = new ScriptOptimizationAlignment();
+        int NOPStartIndex = -1;
+        int NumberNOPS = 0;
 
-        for (int i = 0; i < changed.length; i++) {
-            if(changed[i] == ScriptOperator.JUMPIF.OPCode || changed[i] == ScriptOperator.JUMP.OPCode) {
-                buffer.put(ScriptParser.CompileScriptTokensToBytecode(ScriptParser.GetTokensFromString("", true)));
-               // if would jump over the boundry subtract bytesremoved else nothing
+        for (int i = 0; i < Script.length; i++) {
+            // todo skip over multibyte ops
+            if(Script[i] != ScriptOperator.NOP.OPCode) {
+                buffer.put(Script[i]);
+                if(NOPStartIndex >= 0) {
+                    soa.Add(NOPStartIndex, NumberNOPS);
+                    NOPStartIndex = -1;
+                    NumberNOPS = 0;
+                }
+            } else {
+                if(NOPStartIndex < 0) {
+                    NOPStartIndex = i;
+                }
+                NumberNOPS++;
             }
         }
+        if(NOPStartIndex > 0) {
+            soa.Add(NOPStartIndex, NumberNOPS);
+        }
 
-        return null;
-        // might have to make a JumpRemapList  of pairs of modifications <StartIndex, BytesRemoved> so jumps can iterate thru til they hit a startindex and then subtract bytesremoved from the jumpvalue
+        System.out.println("Remove NOPs removed "+soa.get().size()+" NOP groups.");
+        for (ScriptOptimizationAlignmentSection scriptOptimizationAlignmentSection : soa.get()) {
+            System.out.println("From "+scriptOptimizationAlignmentSection.Index+" to "+(scriptOptimizationAlignmentSection.Index+scriptOptimizationAlignmentSection.Offset));
+        }
+
+        byte[] returnArray = new byte[buffer.position()];
+        System.arraycopy(buffer.array(), 0, returnArray, 0, buffer.position());
+
+        for (ScriptOptimizationAlignmentSection scriptOptimizationAlignmentSection : soa.getReversed()) {
+            System.out.println(Arrays.toString(returnArray));
+            returnArray = RewriteJumpsAfter(returnArray, scriptOptimizationAlignmentSection.Index, scriptOptimizationAlignmentSection.Offset);
+        }
+
+        return returnArray;
+    }
+
+    // todo not working. needs to be called after each modification and not after all?? otherwise the indices recorded no longer make sense
+    public static byte[] RewriteJumpsAfter(byte[] Script, int StartIndex, int BytesRemoved){
+        if(StartIndex == 0) return Script;
+
+        ByteBuffer buffer = ByteBuffer.allocate(Script.length+32);
+
+        System.out.println("Realigning JUMPs that land after "+StartIndex+" back "+BytesRemoved+" bytes!");
+
+        for (int i = 0; i < Script.length; i++) {
+
+            // todo skip over multibyte ops
+            if(i <= StartIndex && ScriptOperator.JUMP.OPCode == Script[i] || ScriptOperator.JUMPIF.OPCode == Script[i]) {
+                // anything here is inserted right before the jump
+                // adds 13 bytes
+                buffer.put(ScriptOperator.DUP.OPCode);
+                buffer.put(ScriptOperator.PUSH.OPCode);
+                buffer.put((byte)0x01);
+                buffer.put((byte)(StartIndex - i));  // todo test off by ones
+                buffer.put(ScriptOperator.LESSTHANEQUAL.OPCode);
+                buffer.put(ScriptOperator.PUSH.OPCode);
+                buffer.put((byte)0x01);
+                buffer.put((byte)0x05);
+                buffer.put(ScriptOperator.JUMPIF.OPCode);
+                buffer.put(ScriptOperator.PUSH.OPCode);
+                buffer.put((byte)0x01);
+                buffer.put((byte)BytesRemoved); // todo test off by ones
+                buffer.put(ScriptOperator.SUBTRACTBYTES.OPCode);
+
+                /* // this will patch the top stack value
+                    DUP
+                    PUSH [x] // is jump greaterthan the boundary // x is the maximal value where a jump still is aligned properly
+                    LESSTHANEQUAL // inverse greaterthan
+                    PUSH [5] // 5 bytes in if statement
+                    JUMPIF   // skip realignment
+                    PUSH [y] // amount to reduce jump by
+                    SUBTRACTBYTES
+
+                 */
+            }
+
+            buffer.put(Script[i]);
+        }
+        byte[] returnArray = new byte[buffer.position()];
+        System.arraycopy(buffer.array(), 0, returnArray, 0, buffer.position());
+        return returnArray;
+    }
+
+    private static class ScriptOptimizationAlignmentSection{
+        int Index;
+        int Offset;
+
+        public ScriptOptimizationAlignmentSection(int index, int offset) {
+            Index = index;
+            Offset = offset;
+        }
+    }
+
+    private static class ScriptOptimizationAlignment{
+        ArrayList<ScriptOptimizationAlignmentSection> Sections = new ArrayList<>();
+
+        void Add(int Index, int Offset){
+            Sections.add(new ScriptOptimizationAlignmentSection(Index, Offset));
+        }
+
+        ArrayList<ScriptOptimizationAlignmentSection> get(){
+            return Sections;
+        }
+
+        ArrayList<ScriptOptimizationAlignmentSection> getReversed(){
+            ArrayList<ScriptOptimizationAlignmentSection> ret = new ArrayList<>(Sections);
+            Collections.reverse(ret);
+            return ret;
+        }
     }
 }

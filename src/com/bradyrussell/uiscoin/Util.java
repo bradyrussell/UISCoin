@@ -13,6 +13,7 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 public class Util {
+    @Deprecated
     public static void printBytesReadable(byte[] bytes) {
         System.out.print("[");
         for (byte b : bytes) {
@@ -28,6 +29,7 @@ public class Util {
         System.out.println("]");
     }
 
+    @Deprecated
     public static void printBytesHex(byte[] bytes) {
         System.out.print("[");
         for (byte b : bytes) {
@@ -38,6 +40,7 @@ public class Util {
         System.out.println("]");
     }
 
+    @Deprecated
     public static void printBytesHexDump(byte[] bytes) {
         System.out.print("[");
         System.out.print("0x");

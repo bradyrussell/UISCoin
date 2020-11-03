@@ -187,4 +187,67 @@ public class ScriptOptimizationTest {
         assertEquals(scriptExecutionO.getStackContents(), scriptExecution.getStackContents());
         assertTrue(optimized.length <= unoptimized.length);
     }
+
+    @RepeatedTest(1)
+    @DisplayName("Script Optimization - Skip NOP")
+    void TestScriptOptimization_SkipNOP() throws ScriptInvalidException, ScriptEmptyStackException, ScriptInvalidParameterException, ScriptUnsupportedOperationException {
+        float A = ThreadLocalRandom.current().nextFloat();
+        float B = ThreadLocalRandom.current().nextFloat();
+        float C = A + B;
+
+        ScriptBuilder sb = new ScriptBuilder(1024);
+
+        sb.fromText("nop nop nop nop\n" +
+                "push 0x01\n" +
+                "nop nop nop nop nop nop nop nop nop nop nop nop nop nop\n" +
+                "push 0x07\n" +
+                "jumpif \n" +
+                "nop nop nop nop nop nop \n" +
+                "push 0x03 nop nop nop nop nop nop nop");
+
+        byte[] unoptimized = sb.get();
+        System.out.println(Arrays.toString(unoptimized));
+
+        byte[] optimized = ScriptOptimizer.BytecodeOptimization_RemoveNOPs(unoptimized);
+        System.out.println(Arrays.toString(optimized));
+
+        //////////////////////////////////////////////////////////////////////////////////////
+
+        ScriptExecution scriptExecution = new ScriptExecution();
+        scriptExecution.LogScriptExecution = true;
+
+        scriptExecution.Initialize(unoptimized);
+
+        while (scriptExecution.Step()){
+            System.out.println("Unoptimized Stack: \n"+scriptExecution.getStackContents());
+        }
+
+        System.out.println("Unoptimized Script returned: "+!scriptExecution.bScriptFailed);
+
+        System.out.println("Unoptimized  Finished: "+scriptExecution.InstructionCounter+" / "+scriptExecution.Script.length);
+
+        assertFalse(scriptExecution.bScriptFailed);
+
+        //////////////////////////////////////////////////////////////////////////////////
+
+        ScriptExecution scriptExecutionO = new ScriptExecution();
+        scriptExecutionO.LogScriptExecution = true;
+
+        scriptExecutionO.Initialize(optimized);
+
+        while (scriptExecutionO.Step()){
+            System.out.println("Optimized Stack: \n"+scriptExecutionO.getStackContents());
+        }
+
+        System.out.println("Optimized Script returned: "+!scriptExecutionO.bScriptFailed);
+
+        System.out.println("Optimized  Finished: "+scriptExecutionO.InstructionCounter+" / "+scriptExecutionO.Script.length);
+
+        assertFalse(scriptExecutionO.bScriptFailed);
+        ////////////////////////////////////////////////////////////////////////////////////
+
+        assertEquals(scriptExecutionO.getStackContents(), scriptExecution.getStackContents());
+        //assertTrue(optimized.length <= unoptimized.length);
+        if(optimized.length <= unoptimized.length) System.out.println("Warning: Optimization made script longer!");
+    }
 }
