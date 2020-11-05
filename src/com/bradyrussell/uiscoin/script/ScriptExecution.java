@@ -1413,7 +1413,7 @@ public class ScriptExecution {
                     if(Destination <= 0) {
                         bScriptFailed = true;
                         throw new ScriptUnsupportedOperationException("Jumping backwards is not supported."+
-                                "\n" + ScriptUtil.PrintScriptOpCodesSurroundingHighlight(Script, InstructionCounter - 1, 5, "Exception occurred here!") +
+                                "\n" + ScriptUtil.PrintScriptOpCodesSurroundingHighlight(Script, InstructionCounter - 1, 10, "Exception occurred here!") +
                                 "\n" + ScriptUtil.PrintStack(Stack.elements(), null));
                     }
 
@@ -1444,7 +1444,7 @@ public class ScriptExecution {
                     if(Destination <= 0) {
                         bScriptFailed = true;
                         throw new ScriptUnsupportedOperationException("Jumping backwards is not supported."+
-                                "\n" + ScriptUtil.PrintScriptOpCodesSurroundingHighlight(Script, InstructionCounter - 1, 5, "Exception occurred here!") +
+                                "\n" + ScriptUtil.PrintScriptOpCodesSurroundingHighlight(Script, InstructionCounter - 1, 100, "Exception occurred here!") +
                                 "\n" + ScriptUtil.PrintStack(Stack.elements(), null));
                     }
                     int oldInstructionConter = InstructionCounter;

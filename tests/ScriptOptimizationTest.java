@@ -197,13 +197,17 @@ public class ScriptOptimizationTest {
 
         ScriptBuilder sb = new ScriptBuilder(1024);
 
+        //todo this works if jump is +1 what i expect. im guessing jump indexing is off by one
+        sb.fromText("nop nop nop nop nop nop push 0xFFFFFFFF push 0xFFFFFFFF add push [-1, -1, -1, -2] bytesequal push [9] jumpif nop nop nop nop nop nop nop nop push 0x01 push 0x02 push 0x03 push 0x04 true push [9] jumpif nop nop nop nop nop nop nop nop push 0x01 push 0x02 push 0x03 push 0x04");
+
+/*
         sb.fromText("nop nop nop nop\n" +
                 "push 0x01\n" +
                 "nop nop nop nop nop nop nop nop nop nop nop nop nop nop\n" +
                 "push 0x07\n" +
                 "jumpif \n" +
                 "nop nop nop nop nop nop \n" +
-                "push 0x03 nop nop nop nop nop nop nop");
+                "push 0x03 nop nop nop nop nop nop nop");*/
 
         byte[] unoptimized = sb.get();
         System.out.println(Arrays.toString(unoptimized));
@@ -248,6 +252,8 @@ public class ScriptOptimizationTest {
 
         assertEquals(scriptExecutionO.getStackContents(), scriptExecution.getStackContents());
         //assertTrue(optimized.length <= unoptimized.length);
-        if(optimized.length <= unoptimized.length) System.out.println("Warning: Optimization made script longer!");
+        System.out.println("Unoptimized length: "+ unoptimized.length);
+        System.out.println("Optimized length: "+ optimized.length);
+        if(optimized.length >= unoptimized.length) System.out.println("Warning: Optimization made script longer!");
     }
 }

@@ -191,8 +191,9 @@ public class ScriptOptimizer {
         System.arraycopy(buffer.array(), 0, returnArray, 0, buffer.position());
 
         for (ScriptOptimizationAlignmentSection scriptOptimizationAlignmentSection : soa.getReversed()) {
-            System.out.println(Arrays.toString(returnArray));
+            System.out.println("Before: "+Arrays.toString(returnArray));
             returnArray = RewriteJumpsAfter(returnArray, scriptOptimizationAlignmentSection.Index, scriptOptimizationAlignmentSection.Offset);
+            System.out.println("After: "+Arrays.toString(returnArray));
         }
 
         return returnArray;
@@ -202,20 +203,22 @@ public class ScriptOptimizer {
     public static byte[] RewriteJumpsAfter(byte[] Script, int StartIndex, int BytesRemoved){
         if(StartIndex == 0) return Script;
 
-        ByteBuffer buffer = ByteBuffer.allocate(Script.length+32);
+        ByteBuffer buffer = ByteBuffer.allocate(Script.length+1024); // todo why is this getting overflowed when low
 
         System.out.println("Realigning JUMPs that land after "+StartIndex+" back "+BytesRemoved+" bytes!");
 
         for (int i = 0; i < Script.length; i++) {
 
             // todo skip over multibyte ops
+
+            //if this code is before the cut, and is a jump
             if(i <= StartIndex && ScriptOperator.JUMP.OPCode == Script[i] || ScriptOperator.JUMPIF.OPCode == Script[i]) {
                 // anything here is inserted right before the jump
                 // adds 13 bytes
                 buffer.put(ScriptOperator.DUP.OPCode);
                 buffer.put(ScriptOperator.PUSH.OPCode);
                 buffer.put((byte)0x01);
-                buffer.put((byte)(StartIndex - i));  // todo test off by ones
+                buffer.put((byte)(StartIndex - i));  // todo test off by ones // todo this is not right? // todo StartIndex is no longer aligned when we do one optimization
                 buffer.put(ScriptOperator.LESSTHANEQUAL.OPCode);
                 buffer.put(ScriptOperator.PUSH.OPCode);
                 buffer.put((byte)0x01);
