@@ -71,6 +71,19 @@ public enum ScriptOperator {
     NOTEQUAL(0x18),
     NOTZERO(0x19),
 
+    /**
+     * get(int StackElementIndex, int BeginIndex, int Length)
+     * StackElement is the Nth (from BOTTOM of the stack) element on the stack
+     * From StackElement, copy from BeginIndex to BeginIndex+Length onto the top of the stack
+     */
+    GET(0x1a),
+
+    /**
+     * set(byte[] Source, int StackElement, int BeginIndex, int Length)
+     * StackElement is the Nth (from BOTTOM of the stack) element on the stack
+     * From source, copy from the beginning to Length into StackElement at BeginIndex to BeginIndex+Length
+     */
+    SET(0x1b),
     // math
     /**
      * numeric

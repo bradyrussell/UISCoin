@@ -478,6 +478,70 @@ public class ScriptExecution {
                     Stack.push(new byte[]{0});
                     return true;
                 }
+                case GET -> { // todo allow any numeric operands rather than just int32?
+                    CheckInsufficientStackSize(3);
+
+                    byte[] LengthBytes = Stack.pop();
+                    CheckInsufficientBytes(LengthBytes, 4);
+                    int Length = ByteArrayToNumber32(LengthBytes);
+
+                    byte[] BeginIndexBytes = Stack.pop();
+                    CheckInsufficientBytes(BeginIndexBytes, 4);
+                    int BeginIndex = ByteArrayToNumber32(BeginIndexBytes);
+
+                    byte[] StackElementIndexBytes = Stack.pop();
+                    CheckInsufficientBytes(StackElementIndexBytes, 4);
+                    int StackElementIndex = ByteArrayToNumber32(StackElementIndexBytes);
+
+                    CheckInsufficientStackSize(StackElementIndex+1);
+                    CheckNumberIsInRange(StackElementIndex, 0, Stack.size()-1);
+
+                    byte[] StackElement = Stack.elementAt(StackElementIndex);
+
+                    CheckNumberIsInRange(Length, 0, StackElement.length);
+                    CheckNumberIsInRange(BeginIndex, 0, StackElement.length);
+
+                    CheckInsufficientBytes(StackElement, BeginIndex+Length);
+
+                    byte[] Copy = new byte[Length];
+                    System.arraycopy(StackElement, BeginIndex, Copy, 0, Length);
+
+                    Stack.push(Copy);
+                    return true;
+                }
+                case SET -> {
+                    CheckInsufficientStackSize(4);
+
+                    byte[] LengthBytes = Stack.pop();
+                    CheckInsufficientBytes(LengthBytes, 4);
+                    int Length = ByteArrayToNumber32(LengthBytes);
+
+                    byte[] BeginIndexBytes = Stack.pop();
+                    CheckInsufficientBytes(BeginIndexBytes, 4);
+                    int BeginIndex = ByteArrayToNumber32(BeginIndexBytes);
+
+                    byte[] DestinationIndexBytes = Stack.pop();
+                    CheckInsufficientBytes(DestinationIndexBytes, 4);
+                    int StackElementIndex = ByteArrayToNumber32(DestinationIndexBytes);
+
+                    byte[] Source = Stack.pop();
+
+                    CheckInsufficientStackSize(StackElementIndex+1);
+                    CheckNumberIsInRange(StackElementIndex, 0, Stack.size()-1);
+
+                    //byte[] DestinationOriginal = Stack.elementAt(StackElementIndex);
+
+                    CheckInsufficientBytes(Source, Length);
+                    CheckNumberIsInRange(Length, 0, Source.length);
+                    CheckNumberIsInRange(BeginIndex, 0, Source.length);
+
+                    //byte[] Result = new byte[BeginIndex+Length];
+                    // todo bounds checks
+                    System.arraycopy(Source, 0, Stack.elementAt(StackElementIndex), BeginIndex, Length);
+
+                    //Stack.push(Copy);
+                    return true;
+                }
                 case ADD -> {
                     CheckInsufficientStackSize(2);
                     byte[] B = Stack.pop();
@@ -1464,7 +1528,8 @@ public class ScriptExecution {
                     int NumberExcluded = ExceptBytes[0];
                     int NumberOfElements = Amount[0];
 
-                    if(NumberExcluded < 0) throw new ScriptInvalidParameterException("Number to exclude was not valid! "+NumberExcluded);
+                    CheckNumberIsInRange(NumberExcluded, 0, Stack.size());
+                    //if(NumberExcluded < 0) throw new ScriptInvalidParameterException("Number to exclude was not valid! "+NumberExcluded);
 
                     ArrayList<byte[]> beforeStack = Collections.list(Stack.elements());
                     List<byte[]> toRotate = beforeStack.subList(NumberExcluded, beforeStack.size());
@@ -1521,6 +1586,12 @@ public class ScriptExecution {
                     "\n" + ScriptUtil.PrintScriptOpCodesSurroundingHighlight(Script, InstructionCounter - 1, 5, "Exception occurred here!") +
                     "\n" + ScriptUtil.PrintStack(Stack.elements(), Bytes));
         }
+    }
+
+    private void CheckNumberIsInRange(int Number, int InclusiveMin, int InclusiveMax) throws ScriptInvalidParameterException {
+        if(Number < InclusiveMin || Number > InclusiveMax) throw new ScriptInvalidParameterException("Parameter was "+Number+" but expected "+(Number < InclusiveMin ? "above or equal to "+InclusiveMin:"below or equal to "+InclusiveMax)+
+                "\n" + ScriptUtil.PrintScriptOpCodesSurroundingHighlight(Script, InstructionCounter - 1, 5, "Exception occurred here!") +
+                "\n" + ScriptUtil.PrintStack(Stack.elements(), null));
     }
 
 }

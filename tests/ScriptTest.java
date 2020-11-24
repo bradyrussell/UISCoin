@@ -282,6 +282,55 @@ public class ScriptTest {
     }
 
     @Test
+    @DisplayName("Script Get/Set")
+    void TestScriptGetSet() throws ScriptInvalidException, ScriptEmptyStackException, ScriptInvalidParameterException, ScriptUnsupportedOperationException {
+        byte[] C = new byte[16];
+        ThreadLocalRandom.current().nextBytes(C);
+
+        byte[] B = new byte[8];
+
+        System.arraycopy(C,8,B,0,8);
+
+        ScriptBuilder sb = new ScriptBuilder(2048);
+        sb
+                .pushASCIIString("garbage")
+                .push(C)
+                .pushInt(1) // stack element index
+                .pushInt(8) // begin index
+                .pushInt(8) // length
+                .op(ScriptOperator.GET)
+                .push(B)
+                .op(ScriptOperator.BYTESEQUAL)
+                .op(ScriptOperator.VERIFY)
+                .pushInt(1) // stack element index
+                .pushInt(0) // begin index
+                .pushInt(8) // length
+                .op(ScriptOperator.GET) // source
+                .pushInt(1) // stack element index
+                .pushInt(8) // begin index
+                .pushInt(8) // length
+                .op(ScriptOperator.SET) // source
+                .pushInt(8)
+                .op(ScriptOperator.SPLIT);
+
+        System.out.println(Arrays.toString(sb.get()));
+
+        ScriptExecution scriptExecution = new ScriptExecution();
+
+        scriptExecution.Initialize(sb.get());
+
+        while (scriptExecution.Step()){
+            System.out.println("Stack: \n"+scriptExecution.getStackContents());
+        }
+
+        System.out.println("Script returned: "+!scriptExecution.bScriptFailed);
+
+        System.out.println("Finished: "+scriptExecution.InstructionCounter+" / "+scriptExecution.Script.length);
+
+        assertFalse(scriptExecution.bScriptFailed);
+    }
+
+    @Test
     @DisplayName("Script BigPush")
     void TestScriptBigPush() throws ScriptInvalidException, ScriptEmptyStackException, ScriptInvalidParameterException, ScriptUnsupportedOperationException {
         byte[] C = new byte[2048];
