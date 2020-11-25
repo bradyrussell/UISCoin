@@ -215,7 +215,7 @@ public class Transaction implements IBinaryData, IVerifiable {
     public boolean VerifyInputsUnspent() throws NoSuchTransactionException {
         for (TransactionInput input : Inputs) {
             if (BlockChain.get().getUnspentTransactionOutput(input.InputHash, input.IndexNumber) == null) {
-                Log.info("Could not verify that transaction " + Util.Base64Encode(getHash()) + " input " + Util.Base64Encode(input.InputHash) + " " + input.IndexNumber + " was UTXO!");
+                Log.info("Could not verify that transaction " + BytesUtil.Base64Encode(getHash()) + " input " + BytesUtil.Base64Encode(input.InputHash) + " " + input.IndexNumber + " was UTXO!");
                 return false;
             }
         }

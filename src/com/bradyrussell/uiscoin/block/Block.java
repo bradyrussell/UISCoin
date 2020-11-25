@@ -66,9 +66,9 @@ public class Block implements IBinaryData, IVerifiable {
             byte[] arr = Nodes.get(i);
 
             if(i == Nodes.size()-1) {
-                ret.add(Hash.getSHA512Bytes(Util.ConcatArray(arr, arr)));
+                ret.add(Hash.getSHA512Bytes(BytesUtil.ConcatArray(arr, arr)));
             } else {
-                ret.add(Hash.getSHA512Bytes(Util.ConcatArray(arr, Nodes.get(i+1))));
+                ret.add(Hash.getSHA512Bytes(BytesUtil.ConcatArray(arr, Nodes.get(i+1))));
             }
         }
 
@@ -184,7 +184,7 @@ public class Block implements IBinaryData, IVerifiable {
             } else {
 
                 for (TransactionInput input : transaction.Inputs) {
-                    byte[] inputTXO = Util.ConcatArray(input.InputHash, Util.NumberToByteArray32(input.IndexNumber));
+                    byte[] inputTXO = BytesUtil.ConcatArray(input.InputHash, BytesUtil.NumberToByteArray32(input.IndexNumber));
                     for (byte[] transactionOutput : TransactionOutputs) {
                         if(Arrays.equals(inputTXO,transactionOutput)) {
                             Log.warning("Block contains duplicate Transaction Outputs! See transaction "+i+".");

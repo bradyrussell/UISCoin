@@ -1,6 +1,6 @@
 package com.bradyrussell.uiscoin.script;
 
-import com.bradyrussell.uiscoin.Util;
+import com.bradyrussell.uiscoin.BytesUtil;
 
 import java.util.*;
 
@@ -73,17 +73,17 @@ public class ScriptUtil {
 
     public static byte[] NumberStringToBytes(String NumberString, boolean bMinimum32){
         if(NumberString.contains(".") || NumberString.toLowerCase().contains("e") || NumberString.contains("-") || NumberString.contains("+")) {
-            return Util.FloatToByteArray(Float.parseFloat(NumberString));
+            return BytesUtil.FloatToByteArray(Float.parseFloat(NumberString));
         } else {
             try {
                 int intToPush = Integer.parseInt(NumberString);
                 if(intToPush <= Byte.MAX_VALUE && intToPush >= Byte.MIN_VALUE && !bMinimum32) {
                     return new byte[]{(byte)intToPush};
                 } else {
-                    return Util.NumberToByteArray32(intToPush);
+                    return BytesUtil.NumberToByteArray32(intToPush);
                 }
             } catch (NumberFormatException ignored) {
-                return Util.NumberToByteArray64(Long.parseLong(NumberString));
+                return BytesUtil.NumberToByteArray64(Long.parseLong(NumberString));
             }
         }
     }

@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-public class Util {
+public class BytesUtil {
     @Deprecated
     public static void printBytesReadable(byte[] bytes) {
         System.out.print("[");

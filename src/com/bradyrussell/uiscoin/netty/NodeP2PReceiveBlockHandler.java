@@ -1,6 +1,6 @@
 package com.bradyrussell.uiscoin.netty;
 
-import com.bradyrussell.uiscoin.Util;
+import com.bradyrussell.uiscoin.BytesUtil;
 import com.bradyrussell.uiscoin.block.Block;
 import com.bradyrussell.uiscoin.blockchain.BlockChain;
 import com.bradyrussell.uiscoin.blockchain.BlockChainStorageBase;
@@ -40,7 +40,7 @@ public class NodeP2PReceiveBlockHandler extends SimpleChannelInboundHandler<Bloc
 
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, Block block) throws Exception {
-        Log.info("Handler Received block "+ Util.Base64Encode(block.Header.getHash()));
+        Log.info("Handler Received block "+ BytesUtil.Base64Encode(block.Header.getHash()));
 
         if(BlockChain.get().BlockHeight >= block.Header.BlockHeight && BlockChain.get().exists(block.Header.getHash(), BlockChainStorageBase.BlocksDatabase)){
             Log.info("Already have. Discarding...");

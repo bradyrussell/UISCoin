@@ -1,6 +1,6 @@
 package com.bradyrussell.uiscoin.netty;
 
-import com.bradyrussell.uiscoin.Util;
+import com.bradyrussell.uiscoin.BytesUtil;
 import com.bradyrussell.uiscoin.blockchain.BlockChain;
 import com.bradyrussell.uiscoin.node.Node;
 import com.bradyrussell.uiscoin.transaction.Transaction;
@@ -37,7 +37,7 @@ public class NodeP2PReceiveTransactionHandler extends SimpleChannelInboundHandle
 
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, Transaction transaction) throws Exception {
-        Log.info("Handler Received transaction "+ Util.Base64Encode(transaction.getHash()));
+        Log.info("Handler Received transaction "+ BytesUtil.Base64Encode(transaction.getHash()));
 
         if(BlockChain.get().getMempool().contains(transaction)){
             Log.info("Already have. Discarding...");
@@ -57,7 +57,7 @@ public class NodeP2PReceiveTransactionHandler extends SimpleChannelInboundHandle
         }
 
         for (TransactionInput input : transaction.Inputs) {
-            if(Util.doTransactionsContainTXO(input.InputHash, input.IndexNumber, BlockChain.get().getMempool())) {
+            if(BytesUtil.doTransactionsContainTXO(input.InputHash, input.IndexNumber, BlockChain.get().getMempool())) {
                 Log.info("Transaction contains outputs that are already in another mempool transaction! Discarding...");
                 return;
             }

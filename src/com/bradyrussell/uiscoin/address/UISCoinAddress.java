@@ -2,7 +2,7 @@ package com.bradyrussell.uiscoin.address;
 
 import com.bradyrussell.uiscoin.Hash;
 import com.bradyrussell.uiscoin.MagicBytes;
-import com.bradyrussell.uiscoin.Util;
+import com.bradyrussell.uiscoin.BytesUtil;
 
 import java.security.interfaces.ECPublicKey;
 import java.util.logging.Logger;
@@ -15,13 +15,13 @@ public class UISCoinAddress {
         byte[] pubkeyHash = Hash.getSHA512Bytes(PubKey.getEncoded());
         byte[] checksum = getChecksumFromHashData(pubkeyHash);
 
-        return Util.ConcatArray(header,Util.ConcatArray(pubkeyHash, checksum));
+        return BytesUtil.ConcatArray(header, BytesUtil.ConcatArray(pubkeyHash, checksum));
     }
 
     public static byte[] fromScriptHash(byte[] ScriptHash){
         byte[] header = {MagicBytes.AddressHeader.Value, MagicBytes.AddressHeader2.Value, MagicBytes.AddressVersionP2SH.Value};
         byte[] checksum = getChecksumFromHashData(ScriptHash);
-        return Util.ConcatArray(header,Util.ConcatArray(ScriptHash, checksum));
+        return BytesUtil.ConcatArray(header, BytesUtil.ConcatArray(ScriptHash, checksum));
     }
 
     public static DecodedAddress decodeAddress(byte[] Address){

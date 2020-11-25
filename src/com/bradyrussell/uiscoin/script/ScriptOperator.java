@@ -84,6 +84,25 @@ public enum ScriptOperator {
      * From source, copy from the beginning to Length into StackElement at BeginIndex to BeginIndex+Length
      */
     SET(0x1b),
+
+    /**
+     * set(int SourceStackElement, int SourceBeginIndex, int DestStackElement, int DestBeginIndex, int Length)
+     * From source, copy from the begin index to Length into StackElement at DestBeginIndex to DestBeginIndex+Length
+     */
+    COPY(0x1c),
+
+    /**
+     * alloc(int NumberOfBytes)
+     * Push a new element onto the stack, consisting of NumberOfBytes zeros
+     */
+    ALLOC(0x1d),
+
+
+    /**
+     * Push the entire script bytecode on to the stack. Only available with ExtendedFlowControl due to recursion
+     */
+    THIS(0x1e),
+
     // math
     /**
      * numeric

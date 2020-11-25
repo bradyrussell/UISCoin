@@ -15,7 +15,6 @@ import com.bradyrussell.uiscoin.transaction.TransactionOutputBuilder;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.engine.script.Script;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -41,7 +40,7 @@ public class ScriptTest {
         for (ScriptOperator value : ScriptOperator.values()) {
             if(values.contains(value.OPCode)) {
                 System.out.println("Duplicate opcode values: ");
-                Util.printBytesHex(new byte[]{value.OPCode});
+                BytesUtil.printBytesHex(new byte[]{value.OPCode});
                 fail();
             }
             values.add(value.OPCode);
@@ -55,7 +54,7 @@ public class ScriptTest {
         for (ScriptOperator value : ScriptOperator.values()) {
             if(values.contains(value.OPCode)) {
                 System.out.println("Duplicate opcode values: ");
-                Util.printBytesHex(new byte[]{value.OPCode});
+                BytesUtil.printBytesHex(new byte[]{value.OPCode});
                 fail();
             }
             values.add(value.OPCode);
@@ -68,7 +67,7 @@ public class ScriptTest {
 
         System.out.println("Unused opcode values: ");
         for (Byte unusedValue : unusedValues) {
-            Util.printBytesHex(new byte[]{unusedValue});
+            BytesUtil.printBytesHex(new byte[]{unusedValue});
         }
 
         System.out.println("There are "+values.size()+" used OPCode values.");
@@ -331,6 +330,39 @@ public class ScriptTest {
     }
 
     @Test
+    @DisplayName("Script This")
+    void TestScriptThis() throws ScriptInvalidException, ScriptEmptyStackException, ScriptInvalidParameterException, ScriptUnsupportedOperationException {
+        byte[] C = new byte[2048];
+        ThreadLocalRandom.current().nextBytes(C);
+
+        ScriptBuilder sb = new ScriptBuilder(4098);
+        sb
+                .push(C)
+                .pushInt64(1)
+                .pushByte(1)
+                .op(ScriptOperator.THIS);
+
+        System.out.println(Arrays.toString(sb.get()));
+
+        ScriptExecution scriptExecution = new ScriptExecution();
+
+        scriptExecution.bExtendedFlowControl = true;
+
+        scriptExecution.Initialize(sb.get());
+
+        while (scriptExecution.Step()){
+            System.out.println("Stack: \n"+scriptExecution.getStackContents());
+        }
+
+        System.out.println("Script returned: "+!scriptExecution.bScriptFailed);
+
+        System.out.println("Finished: "+scriptExecution.InstructionCounter+" / "+scriptExecution.Script.length);
+
+        assertFalse(scriptExecution.bScriptFailed);
+    }
+
+
+    @Test
     @DisplayName("Script BigPush")
     void TestScriptBigPush() throws ScriptInvalidException, ScriptEmptyStackException, ScriptInvalidParameterException, ScriptUnsupportedOperationException {
         byte[] C = new byte[2048];
@@ -365,7 +397,7 @@ public class ScriptTest {
     @RepeatedTest(1)
     @DisplayName("Script Tokenize String")
     void TestTokenize() {
-        ArrayList<String> strings = ScriptParser.GetTokensFromString("$a = 0; $b = 100; $c = $a + $b;\n", true);
+        ArrayList<String> strings = ScriptParser.GetTokensFromString("$a = 0; $b = 100; $c = $a + $b; $d[2] = $e[$c]\n", true);
         for (int i = 0; i < strings.size(); i++) {
             String string = strings.get(i);
             System.out.println(i+": "+string);
@@ -956,13 +988,13 @@ public class ScriptTest {
 
         byte[] a  = new ScriptBuilder(128)
                 .flag((byte)2)
-                .flagData(Util.NumberToByteArray32(1234))
+                .flagData(BytesUtil.NumberToByteArray32(1234))
                 .get();
 
         byte[] b= new ScriptBuilder(128).fromText("flag 2 flagdata 1234").get();
 
-        Util.printBytesReadable(a);
-        Util.printBytesReadable(b);
+        BytesUtil.printBytesReadable(a);
+        BytesUtil.printBytesReadable(b);
 
         assertTrue(Arrays.equals(a,b));
     }
@@ -1019,8 +1051,8 @@ public class ScriptTest {
 
         byte[] b= new ScriptBuilder(128).fromText("push "+A).get();
 
-        Util.printBytesReadable(a);
-        Util.printBytesReadable(b);
+        BytesUtil.printBytesReadable(a);
+        BytesUtil.printBytesReadable(b);
 
         assertTrue(Arrays.equals(a,b));
     }
@@ -1047,8 +1079,8 @@ public class ScriptTest {
 
         System.out.println();
 
-        Util.printBytesReadable(a);
-        Util.printBytesReadable(b);
+        BytesUtil.printBytesReadable(a);
+        BytesUtil.printBytesReadable(b);
 
         assertTrue(Arrays.equals(a,b));
     }
@@ -1075,8 +1107,8 @@ public class ScriptTest {
 
         System.out.println();
 
-        Util.printBytesReadable(a);
-        Util.printBytesReadable(b);
+        BytesUtil.printBytesReadable(a);
+        BytesUtil.printBytesReadable(b);
 
         assertTrue(Arrays.equals(a,b));
     }
@@ -1103,8 +1135,8 @@ public class ScriptTest {
 
         System.out.println();
 
-        Util.printBytesReadable(a);
-        Util.printBytesReadable(b);
+        BytesUtil.printBytesReadable(a);
+        BytesUtil.printBytesReadable(b);
 
         assertTrue(Arrays.equals(a,b));
     }
@@ -1133,8 +1165,8 @@ public class ScriptTest {
 
         byte[] b= new ScriptBuilder(128).fromText(/*"flag 2 flagdata 123*/ "dup sha512").push(A).fromText("len push 4 swap subtract limit bytesequal verify verifysig").get();
 
-        Util.printBytesReadable(a);
-        Util.printBytesReadable(b);
+        BytesUtil.printBytesReadable(a);
+        BytesUtil.printBytesReadable(b);
 
         assertTrue(Arrays.equals(a,b));
     }
@@ -1195,8 +1227,8 @@ public class ScriptTest {
 
         byte[] pubkey_sha512Bytes = Hash.getSHA512Bytes(coinKeypairRecipient.Keys.getPublic().getEncoded());
 
-        Util.printBytesReadable(decodedAddress.HashData);
-        Util.printBytesReadable(pubkey_sha512Bytes);
+        BytesUtil.printBytesReadable(decodedAddress.HashData);
+        BytesUtil.printBytesReadable(pubkey_sha512Bytes);
         assertTrue(Arrays.equals(decodedAddress.HashData, pubkey_sha512Bytes));
 
         TransactionOutput transactionOutput = new TransactionOutputBuilder().setAmount(Conversions.CoinsToSatoshis(1.0)).setPayToPublicKeyHash(decodedAddress.HashData).get();
@@ -1245,7 +1277,7 @@ public class ScriptTest {
         byte[] randomPassword = new byte[64];
         ThreadLocalRandom.current().nextBytes(randomPassword);
 
-        String password = Util.Base64Encode(randomPassword);
+        String password = BytesUtil.Base64Encode(randomPassword);
 
         TransactionOutput transactionOutput = new TransactionOutputBuilder().setAmount(Conversions.CoinsToSatoshis(1.0)).setPayToPassword(password).get();
         byte[] lockingScriptBytes = transactionOutput.LockingScript;
@@ -1305,7 +1337,7 @@ public class ScriptTest {
         byte[] randomPassword = new byte[64];
         ThreadLocalRandom.current().nextBytes(randomPassword);
 
-        String password = Util.Base64Encode(randomPassword);
+        String password = BytesUtil.Base64Encode(randomPassword);
 
         byte[] CustomScript = new TransactionOutputBuilder().setPayToPassword(password).get().LockingScript;
         byte[] CustomScriptUnlock = new TransactionInputBuilder().setUnlockPayToPassword(password).get().UnlockingScript;
@@ -1313,7 +1345,7 @@ public class ScriptTest {
         /////////////////////////////////////////////////////////////
         byte[] scriptHashAddress = UISCoinAddress.fromScriptHash(Hash.getSHA512Bytes(CustomScript));
 
-        System.out.println("Pays to address: "+Util.Base64Encode(scriptHashAddress));
+        System.out.println("Pays to address: "+ BytesUtil.Base64Encode(scriptHashAddress));
 
         TransactionOutput transactionOutput = new TransactionOutputBuilder().setAmount(Conversions.CoinsToSatoshis(1.0)).setPayToAddress(scriptHashAddress).get();
         byte[] lockingScriptBytes = transactionOutput.LockingScript;
@@ -1439,7 +1471,7 @@ public class ScriptTest {
         int C = A + B;
 
         ScriptBuilder sb = new ScriptBuilder(256);
-        sb.push(Util.NumberToByteArray32(A)).push(Util.NumberToByteArray32(B)).fromText("sha512 swap sha512 lenequal verify");
+        sb.push(BytesUtil.NumberToByteArray32(A)).push(BytesUtil.NumberToByteArray32(B)).fromText("sha512 swap sha512 lenequal verify");
 
         ScriptExecution scriptExecution = new ScriptExecution();
 

@@ -1,6 +1,6 @@
 package com.bradyrussell.uiscoin.netty;
 
-import com.bradyrussell.uiscoin.Util;
+import com.bradyrussell.uiscoin.BytesUtil;
 import com.bradyrussell.uiscoin.blockchain.BlockChain;
 import com.bradyrussell.uiscoin.blockchain.BlockChainStorageFile;
 import com.bradyrussell.uiscoin.node.BlockHeaderResponse;
@@ -34,7 +34,7 @@ public class NodeP2PReceiveBlockRequestHandler extends SimpleChannelInboundHandl
 
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, BlockRequest blockRequest) throws Exception {
-        Log.info("Handler Received block request " + Util.Base64Encode(blockRequest.BlockHash));
+        Log.info("Handler Received block request " + BytesUtil.Base64Encode(blockRequest.BlockHash));
         if (!BlockChain.get().exists(blockRequest.BlockHash, blockRequest.bOnlyHeader ? BlockChainStorageFile.BlockHeadersDatabase : BlockChainStorageFile.BlocksDatabase)) {
             System.out.println("Not found in database! Discarding.");
             return;

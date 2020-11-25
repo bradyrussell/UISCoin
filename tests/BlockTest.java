@@ -1,6 +1,6 @@
 import com.bradyrussell.uiscoin.Conversions;
 import com.bradyrussell.uiscoin.Hash;
-import com.bradyrussell.uiscoin.Util;
+import com.bradyrussell.uiscoin.BytesUtil;
 import com.bradyrussell.uiscoin.address.UISCoinKeypair;
 import com.bradyrussell.uiscoin.block.Block;
 import com.bradyrussell.uiscoin.block.BlockBuilder;
@@ -64,7 +64,7 @@ public class BlockTest {
     @DisplayName("Hash GetDifficulty")
     void TestHashGetDifficulty() {
 
-        byte[] hash = Util.Base64Decode("UISa1foAACU7v1siyHul3StuvEJx5rebFgMkP_Sgiz60NoOSV00SP-yD_MO7JoHr7mmixKvj28QECDeaXQfzIQ==");
+        byte[] hash = BytesUtil.Base64Decode("UISa1foAACU7v1siyHul3StuvEJx5rebFgMkP_Sgiz60NoOSV00SP-yD_MO7JoHr7mmixKvj28QECDeaXQfzIQ==");
         assertEquals(Hash.validateHash(hash,3),Hash.getHashDifficulty(hash)==3);
 
     }

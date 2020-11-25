@@ -1,5 +1,5 @@
 import com.bradyrussell.uiscoin.Keys;
-import com.bradyrussell.uiscoin.Util;
+import com.bradyrussell.uiscoin.BytesUtil;
 import com.bradyrussell.uiscoin.address.UISCoinAddress;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.RepeatedTest;
@@ -34,9 +34,9 @@ public class AddressTest {
             UISCoinAddress.DecodedAddress decodedAddress = UISCoinAddress.decodeAddress(address);
             System.out.println("Address Type: "+decodedAddress.Type);
             System.out.print("Address PubKeyHash: ");
-            Util.printBytesReadable(decodedAddress.HashData);
+            BytesUtil.printBytesReadable(decodedAddress.HashData);
             System.out.print("Address Checksum: ");
-            Util.printBytesReadable(decodedAddress.Checksum);
+            BytesUtil.printBytesReadable(decodedAddress.Checksum);
 
             assertTrue(UISCoinAddress.verifyAddressChecksum(address));
 
@@ -62,9 +62,9 @@ public class AddressTest {
         UISCoinAddress.DecodedAddress decodedAddress = UISCoinAddress.decodeAddress(address);
         System.out.println("Address Type: "+decodedAddress.Type);
         System.out.print("Address HashData: ");
-        Util.printBytesReadable(decodedAddress.HashData);
+        BytesUtil.printBytesReadable(decodedAddress.HashData);
         System.out.print("Address Checksum: ");
-        Util.printBytesReadable(decodedAddress.Checksum);
+        BytesUtil.printBytesReadable(decodedAddress.Checksum);
 
         assertTrue(UISCoinAddress.verifyAddressChecksum(address));
 

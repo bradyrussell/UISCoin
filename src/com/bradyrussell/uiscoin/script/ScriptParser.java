@@ -1,9 +1,11 @@
 package com.bradyrussell.uiscoin.script;
 
-import com.bradyrussell.uiscoin.Util;
+import com.bradyrussell.uiscoin.BytesUtil;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 
 public class ScriptParser {
@@ -28,7 +30,7 @@ public class ScriptParser {
     private static byte[] TokenLiteralToBytes(String Token){
         String s = Token.strip();
         if(s.startsWith("0x")){ // hex push data
-            return( Util.getBytesFromHexString(s.substring(2)));
+            return( BytesUtil.getBytesFromHexString(s.substring(2)));
         } else if(s.equalsIgnoreCase("true")){
             return new byte[]{0x01};
         } else if(s.equalsIgnoreCase("false")){
@@ -57,6 +59,7 @@ public class ScriptParser {
 
     public static byte[] CompileScriptTokensToBytecode(ArrayList<String> Tokens){
         HashMap<String, Integer> SymbolTable = new HashMap<>();
+        HashMap<String, ArrayList<Integer>> GotoTable = new HashMap<>(); // label : jump position
         int NextSymbol = 1; // we put a stack cookie in 0
 
         ScriptBuilder scriptBuilder = new ScriptBuilder(Tokens.size()+1024);
@@ -74,6 +77,49 @@ public class ScriptParser {
                 continue;
             } else if (token.startsWith("[")) { // byte array data
                 scriptBuilder.data(ScriptUtil.ByteArrayStringToBytes(token));
+                continue;
+            } else if (token.startsWith("goto")) { // goto
+                scriptBuilder.pushByte(0x80); // dummy
+                scriptBuilder.op(token.equals("gotoif") ? ScriptOperator.JUMPIF : ScriptOperator.JUMP);
+
+                int jumpPosition = scriptBuilder.buffer.position();
+                String gotoLabel = Tokens.get(++i);
+
+                if(GotoTable.containsKey(gotoLabel)) {
+                    GotoTable.get(gotoLabel).add(jumpPosition);
+                } else {
+                    GotoTable.put(gotoLabel, new ArrayList<Integer>(Collections.singletonList(jumpPosition)));
+                }
+                continue;
+            } else if (token.startsWith(":")) { // label
+                String gotoLabel = Tokens.get(++i);
+                if(GotoTable.containsKey(gotoLabel)) {
+                    System.out.println("Jumps to this label: "+GotoTable.get(gotoLabel).size());
+
+                    ArrayList<Integer> integers = GotoTable.get(gotoLabel);
+                    //Collections.reverse(integers);
+                    for (Integer jumpFromLocation : integers) {
+                        System.out.println("rewriting for "+jumpFromLocation);
+                        byte[] originalScriptBytes = scriptBuilder.get();
+
+                        byte[] beforeJump = new byte[jumpFromLocation-1]; // put at end here
+                        byte[] jumpAndAfter = new byte[originalScriptBytes.length-(jumpFromLocation-1)];
+
+                        System.out.println(Arrays.toString(originalScriptBytes));
+
+                        System.arraycopy(originalScriptBytes, 0, beforeJump, 0, jumpFromLocation-1);
+                        System.arraycopy(originalScriptBytes, jumpFromLocation-1, jumpAndAfter, 0, jumpAndAfter.length);
+
+                        beforeJump[beforeJump.length-1] = (byte) (1+scriptBuilder.buffer.position() - jumpFromLocation); // new jump amount
+
+                        System.out.println(Arrays.toString(beforeJump));
+                        System.out.println(Arrays.toString(jumpAndAfter));
+
+                        scriptBuilder = new ScriptBuilder(scriptBuilder.buffer.limit()).data(BytesUtil.ConcatArray(beforeJump, jumpAndAfter));
+                    }
+                } else {
+                    System.out.println("Nothing jumps to this label. "+gotoLabel);
+                }
                 continue;
             } else if (token.startsWith("*$")) { // addressof symbol
                 String assignedSymbol = token.substring(2);
@@ -267,7 +313,7 @@ public class ScriptParser {
                 }
                 case FLAG -> {
                     if(Tokens.get(++i).startsWith("0x")){ // hex byte flag
-                        scriptBuilder.flag(Util.getBytesFromHexString(Tokens.get(i).substring(2))[0]);
+                        scriptBuilder.flag(BytesUtil.getBytesFromHexString(Tokens.get(i).substring(2))[0]);
                     } else { // interp as byte flag
                         scriptBuilder.flag(Byte.parseByte(Tokens.get(i)));
                     }
@@ -288,7 +334,7 @@ public class ScriptParser {
             }
         }
         int NumberOfVariables = SymbolTable.size();
-        return Util.ConcatArray(Util.ConcatArray(InitializeStackSpaceForVariables(NumberOfVariables), scriptBuilder.get()), CleanupStackSpaceForVariables(NumberOfVariables));
+        return BytesUtil.ConcatArray(BytesUtil.ConcatArray(InitializeStackSpaceForVariables(NumberOfVariables), scriptBuilder.get()), CleanupStackSpaceForVariables(NumberOfVariables));
     }
 
     public static byte[] InitializeStackSpaceForVariables(int NumberOfVariables) {

@@ -1,12 +1,11 @@
 package com.bradyrussell.uiscoin.script;
 
-import com.bradyrussell.uiscoin.Util;
+import com.bradyrussell.uiscoin.BytesUtil;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 
 public class ScriptOptimizer {
     public static String OptimizeScriptHighLevel(String UnoptimizedHighLevel) {
@@ -73,7 +72,7 @@ public class ScriptOptimizer {
                     byte[] bytesToPushArr  = new byte[4];
                     System.arraycopy(UnoptimizedBytecode, InstructionCounter+1, bytesToPushArr, 0, 4);
 
-                    int bytesToPush = Util.ByteArrayToNumber32(bytesToPushArr);
+                    int bytesToPush = BytesUtil.ByteArrayToNumber32(bytesToPushArr);
 
                     InstructionCounter+=4;
 
@@ -129,7 +128,7 @@ public class ScriptOptimizer {
                     byte[] bytesToPushArr  = new byte[4];
                     System.arraycopy(UnoptimizedBytecode, InstructionCounter+1, bytesToPushArr, 0, 4);
 
-                    int bytesToPush = Util.ByteArrayToNumber32(bytesToPushArr);
+                    int bytesToPush = BytesUtil.ByteArrayToNumber32(bytesToPushArr);
 
                     InstructionCounter+=4;
 

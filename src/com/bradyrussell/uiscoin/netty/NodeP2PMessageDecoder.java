@@ -1,7 +1,7 @@
 package com.bradyrussell.uiscoin.netty;
 
 import com.bradyrussell.uiscoin.MagicBytes;
-import com.bradyrussell.uiscoin.Util;
+import com.bradyrussell.uiscoin.BytesUtil;
 import com.bradyrussell.uiscoin.block.Block;
 import com.bradyrussell.uiscoin.block.BlockHeader;
 import com.bradyrussell.uiscoin.blockchain.BlockChain;
@@ -94,7 +94,7 @@ public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
                     byte[] Bytes = new byte[Size];
                     byteBuf.readBytes(Bytes);
 
-                    Log.fine("3 Received peer "+ Util.Base64Encode(Bytes));
+                    Log.fine("3 Received peer "+ BytesUtil.Base64Encode(Bytes));
 
                     InetAddress address = InetAddress.getByAddress(Bytes);
 
@@ -108,7 +108,7 @@ public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
                     Transaction transaction = new Transaction();
                     transaction.setBinaryData(Bytes);
 
-                    Log.fine("3 Received transaction "+Util.Base64Encode(transaction.getHash()));
+                    Log.fine("3 Received transaction "+ BytesUtil.Base64Encode(transaction.getHash()));
                     list.add(transaction);
                 }
                 case BLOCK -> {
@@ -119,7 +119,7 @@ public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
                     Block block = new Block();
                     block.setBinaryData(Bytes);
 
-                    Log.fine("3 Received block "+Util.Base64Encode(block.Header.getHash()));
+                    Log.fine("3 Received block "+ BytesUtil.Base64Encode(block.Header.getHash()));
                     list.add(block);
                 }
                 case HEADER -> {
@@ -134,7 +134,7 @@ public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
 
                     blockHeader.setBinaryData(Bytes);
 
-                    Log.fine("3 Received block header "+Util.Base64Encode(Hash));
+                    Log.fine("3 Received block header "+ BytesUtil.Base64Encode(Hash));
                     list.add(new BlockHeaderResponse(Hash, blockHeader));
                 }
                 case HEIGHT -> {
@@ -159,7 +159,7 @@ public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
                     byte[] Bytes = new byte[64];
                     byteBuf.readBytes(Bytes);
 
-                    Log.fine("3 Received block request "+Util.Base64Encode(Bytes));
+                    Log.fine("3 Received block request "+ BytesUtil.Base64Encode(Bytes));
                     list.add(new BlockRequest(Bytes, bOnlyHeader));
                 }
                 case SYNC -> {

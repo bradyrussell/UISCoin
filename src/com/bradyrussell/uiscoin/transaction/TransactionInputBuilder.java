@@ -2,7 +2,7 @@ package com.bradyrussell.uiscoin.transaction;
 
 import com.bradyrussell.uiscoin.Keys;
 import com.bradyrussell.uiscoin.MagicNumbers;
-import com.bradyrussell.uiscoin.Util;
+import com.bradyrussell.uiscoin.BytesUtil;
 import com.bradyrussell.uiscoin.address.UISCoinKeypair;
 import com.bradyrussell.uiscoin.script.ScriptBuilder;
 
@@ -77,7 +77,7 @@ public class TransactionInputBuilder {
     }
 
     public TransactionInputBuilder setUnlockPayToPassword(String Password) {
-        byte[] dataToPush = (Password + Util.getConstantSalt()).getBytes(Charset.defaultCharset());
+        byte[] dataToPush = (Password + BytesUtil.getConstantSalt()).getBytes(Charset.defaultCharset());
         input.UnlockingScript = new ScriptBuilder(dataToPush.length+2).push(dataToPush).get();
         return this;
     }

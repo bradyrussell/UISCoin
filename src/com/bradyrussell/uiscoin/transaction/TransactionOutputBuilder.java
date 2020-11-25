@@ -2,7 +2,7 @@ package com.bradyrussell.uiscoin.transaction;
 
 import com.bradyrussell.uiscoin.Hash;
 import com.bradyrussell.uiscoin.MagicBytes;
-import com.bradyrussell.uiscoin.Util;
+import com.bradyrussell.uiscoin.BytesUtil;
 import com.bradyrussell.uiscoin.address.UISCoinAddress;
 import com.bradyrussell.uiscoin.script.ScriptBuilder;
 import com.bradyrussell.uiscoin.script.ScriptOperator;
@@ -94,7 +94,7 @@ public class TransactionOutputBuilder {
         output.LockingScript = new ScriptBuilder(128)
                 .op(ScriptOperator.SHA512) // hash plaintext input password
                 .op(ScriptOperator.SHA512) // double hash plaintext input password
-                .push(Hash.getSHA512Bytes(Hash.getSHA512Bytes(Password + Util.getConstantSalt()))) // push the double hashed known Password
+                .push(Hash.getSHA512Bytes(Hash.getSHA512Bytes(Password + BytesUtil.getConstantSalt()))) // push the double hashed known Password
                 .op(ScriptOperator.BYTESEQUAL) // equal to provided input password hash?
                 .op(ScriptOperator.VERIFY)
                 .get();
