@@ -62,7 +62,7 @@ public class ScriptParser {
         HashMap<String, ArrayList<Integer>> GotoTable = new HashMap<>(); // label : jump position
         int NextSymbol = 1; // we put a stack cookie in 0
 
-        ScriptBuilder scriptBuilder = new ScriptBuilder(Tokens.size()+1024);
+        ScriptBuilder scriptBuilder = new ScriptBuilder(Tokens.size()+102400);
 
         for (int i = 0; i < Tokens.size(); i++) {
             String token = Tokens.get(i);
