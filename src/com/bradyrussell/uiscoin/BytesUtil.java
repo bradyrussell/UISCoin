@@ -9,8 +9,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
+import java.util.zip.*;
 
 public class BytesUtil {
     @Deprecated
@@ -99,36 +98,62 @@ public class BytesUtil {
                 };
     }
 
-    //https://stackoverflow.com/questions/14777800/gzip-compression-to-a-byte-array/44922240
-    public static byte[] ZipBytes(byte[] uncompressedData) {
-        byte[] result = new byte[]{};
-        try (ByteArrayOutputStream bos = new ByteArrayOutputStream(uncompressedData.length);
-             GZIPOutputStream gzipOS = new GZIPOutputStream(bos)) {
-            gzipOS.write(uncompressedData);
-            // You need to close it before using bos
-            gzipOS.close();
-            result = bos.toByteArray();
-        } catch (IOException e) {
+    // zlib seems to produce smaller output in all my tests vs gzip
+    public static byte[] ZipBytes(byte[] uncompressedData)  {
+        try {
+            Deflater deflater = new Deflater();
+            deflater.setInput(uncompressedData);
+
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream(uncompressedData.length);
+
+            deflater.finish();
+            byte[] buffer = new byte[1024];
+            while (!deflater.finished()) {
+                int count = deflater.deflate(buffer);
+                outputStream.write(buffer, 0, count);
+            }
+            outputStream.close();
+            return outputStream.toByteArray();
+        } catch (IOException e){
             e.printStackTrace();
+            return new byte[0];
         }
-        return result;
     }
 
     public static byte[] UnzipBytes(byte[] compressedData) {
-        byte[] result = new byte[]{};
-        try (ByteArrayInputStream bis = new ByteArrayInputStream(compressedData);
-             ByteArrayOutputStream bos = new ByteArrayOutputStream();
-             GZIPInputStream gzipIS = new GZIPInputStream(bis)) {
-            byte[] buffer = new byte[1024];
-            int len;
-            while ((len = gzipIS.read(buffer)) != -1) {
-                bos.write(buffer, 0, len);
+        if(compressedData[0] == 120 && compressedData[1] == -100) { // zlib header
+            try {
+                Inflater inflater = new Inflater();
+                inflater.setInput(compressedData);
+
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream(compressedData.length);
+                byte[] buffer = new byte[1024];
+                while (!inflater.finished()) {
+                    int count = inflater.inflate(buffer);
+                    outputStream.write(buffer, 0, count);
+                }
+                outputStream.close();
+                return outputStream.toByteArray();
+            } catch (Exception e){
+                e.printStackTrace();
+                return new byte[0];
             }
-            result = bos.toByteArray();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } else { // for backwards compatibility
+            byte[] result = new byte[]{};
+            try (ByteArrayInputStream bis = new ByteArrayInputStream(compressedData);
+                 ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                 GZIPInputStream gzipIS = new GZIPInputStream(bis)) {
+                byte[] buffer = new byte[1024];
+                int len;
+                while ((len = gzipIS.read(buffer)) != -1) {
+                    bos.write(buffer, 0, len);
+                }
+                result = bos.toByteArray();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return result;
         }
-        return result;
     }
 
     //https://www.baeldung.com/java-convert-float-to-byte-array
