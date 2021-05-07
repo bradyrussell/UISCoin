@@ -1618,9 +1618,13 @@ public class ScriptExecution {
     }
 
     private void CheckNumberIsInRange(int Number, int InclusiveMin, int InclusiveMax) throws ScriptInvalidParameterException {
-        if(Number < InclusiveMin || Number > InclusiveMax) throw new ScriptInvalidParameterException("Parameter was "+Number+" but expected "+(Number < InclusiveMin ? "above or equal to "+InclusiveMin:"below or equal to "+InclusiveMax)+
-                "\n" + ScriptUtil.PrintScriptOpCodesSurroundingHighlight(Script, InstructionCounter - 1, 5, "Exception occurred here!") +
-                "\n" + ScriptUtil.PrintStack(Stack.elements(), null));
+        if(Number < InclusiveMin || Number > InclusiveMax) {
+            bScriptFailed = true;
+            throw new ScriptInvalidParameterException("Parameter was " + Number + " but expected " + (Number < InclusiveMin ? "above or equal to " + InclusiveMin : "below or equal to " + InclusiveMax) +
+                    "\n" + ScriptUtil.PrintScriptOpCodesSurroundingHighlight(Script, InstructionCounter - 1, 5, "Exception occurred here!") +
+                    "\n" + ScriptUtil.PrintStack(Stack.elements(), null));
+
+        }
     }
 
 }
