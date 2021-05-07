@@ -563,7 +563,10 @@ public class ScriptExecution {
                     return true;
                 }
                 case THIS -> { // allows recursion
-                    if(!bExtendedFlowControl) throw new ScriptUnsupportedOperationException("The THIS operation is only available with Extended Flow Control enabled.");
+                    if(!bExtendedFlowControl) {
+                        bScriptFailed = true;
+                        throw new ScriptUnsupportedOperationException("The THIS operation is only available with Extended Flow Control enabled.");
+                    }
                     Stack.push(Script);
                     return true;
                 }
