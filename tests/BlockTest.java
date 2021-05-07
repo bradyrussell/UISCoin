@@ -4,6 +4,8 @@ import com.bradyrussell.uiscoin.BytesUtil;
 import com.bradyrussell.uiscoin.address.UISCoinKeypair;
 import com.bradyrussell.uiscoin.block.Block;
 import com.bradyrussell.uiscoin.block.BlockBuilder;
+import com.bradyrussell.uiscoin.blockchain.exception.NoSuchBlockException;
+import com.bradyrussell.uiscoin.blockchain.exception.NoSuchTransactionException;
 import com.bradyrussell.uiscoin.transaction.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.RepeatedTest;
@@ -17,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class BlockTest {
     @RepeatedTest(10)
     @DisplayName("Serialization / Deserialization")
-    void TestBlockSerialization() {
+    void TestBlockSerialization() throws NoSuchTransactionException, NoSuchBlockException {
         long timeStamp = Instant.now().getEpochSecond();
 
         UISCoinKeypair uisCoinKeypair = UISCoinKeypair.Create();

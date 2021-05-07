@@ -123,14 +123,14 @@ public class BlockBuilder {
         return this;
     }
 
-    public BlockBuilder addCoinbasePayToPublicKeyHash(byte[] PublicKeyHash){
+    public BlockBuilder addCoinbasePayToPublicKeyHash(byte[] PublicKeyHash) throws NoSuchTransactionException, NoSuchBlockException {
         addCoinbasePayToPublicKeyHash(PublicKeyHash,"Default Coinbase Message");
         return this;
     }
-    public BlockBuilder addCoinbasePayToPublicKeyHash(byte[] PublicKeyHash, String CoinbaseMessage){
+    public BlockBuilder addCoinbasePayToPublicKeyHash(byte[] PublicKeyHash, String CoinbaseMessage) throws NoSuchTransactionException, NoSuchBlockException {
         Transaction transaction = new TransactionBuilder().setVersion(1).setLockTime(0)
                 .addInput(new TransactionInputBuilder().setInputTransaction(new byte[64], block.Header.BlockHeight).setUnlockingScript(new ScriptBuilder(68).push(Hash.getSHA512Bytes(CoinbaseMessage)).op(ScriptOperator.TRUE).op(ScriptOperator.VERIFY).get()).get())
-                .addOutput(new TransactionOutputBuilder().setPayToPublicKeyHash(PublicKeyHash).setAmount(Block.CalculateBlockReward(0)).get()).get();
+                .addOutput(new TransactionOutputBuilder().setPayToPublicKeyHash(PublicKeyHash).setAmount(Block.CalculateBlockReward(block.Header.BlockHeight) + block.getFees()).get()).get();
         block.addCoinbaseTransaction(transaction);
         return this;
     }

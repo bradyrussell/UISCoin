@@ -148,10 +148,15 @@ public class Block implements IBinaryData, IVerifiable {
 
     @Override
     public boolean Verify() {
-        return Header.Verify() && VerifyTransactions() && VerifyBlockReward() && Hash.validateHash(Header.getHash(), Header.DifficultyTarget) && getSize() < MagicNumbers.MaxBlockSize.Value && Arrays.equals(Header.HashMerkleRoot, CalculateMerkleRoot());
+        try {
+            return Header.Verify() && VerifyTransactions() && VerifyBlockReward() && Hash.validateHash(Header.getHash(), Header.DifficultyTarget) && getSize() < MagicNumbers.MaxBlockSize.Value && Arrays.equals(Header.HashMerkleRoot, CalculateMerkleRoot());
+        } catch (NoSuchBlockException | NoSuchTransactionException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
-    public void DebugVerify(){
+    public void DebugVerify() throws NoSuchTransactionException, NoSuchBlockException {
         Log.warning("Header verify: "+ Header.Verify());
        assert Header.Verify();
         Log.warning("Transactions verify: "+ VerifyTransactions());
@@ -232,14 +237,21 @@ public class Block implements IBinaryData, IVerifiable {
         return Conversions.CoinsToSatoshis(50) >> NumberOfHalvings;
     }
 
-    private boolean VerifyBlockReward(){
+    private boolean VerifyBlockReward() throws NoSuchTransactionException, NoSuchBlockException {
         Transaction coinbase = Transactions.get(0);
         if(coinbase == null) return false;
-        return coinbase.getOutputTotal() <= CalculateBlockReward(Header.BlockHeight);
+        return coinbase.getOutputTotal() <= CalculateBlockReward(Header.BlockHeight) + getFees();
     }
 
     public boolean VerifyProofOfWork(){
         return Hash.validateHash(Header.getHash(), Header.DifficultyTarget);
     }
 
+    public long getFees() throws NoSuchTransactionException, NoSuchBlockException {
+        long totalFees = 0;
+        for (Transaction transaction : Transactions) {
+            totalFees += transaction.getFees();
+        }
+        return totalFees;
+    }
 }

@@ -35,7 +35,7 @@ public class BlockChain {
         return Storage;
     }
 
-    public static boolean Verify(int StartBlockHeight) throws NoSuchBlockException, InvalidBlockException {
+    public static boolean Verify(int StartBlockHeight) throws NoSuchBlockException, InvalidBlockException, NoSuchTransactionException {
         List<Block> blockChain = get().getBlockChainFromHeight(StartBlockHeight);
         for (Block b : blockChain) {
             if (!b.Verify()) {
