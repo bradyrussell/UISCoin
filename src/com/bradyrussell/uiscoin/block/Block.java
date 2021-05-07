@@ -1,6 +1,7 @@
 package com.bradyrussell.uiscoin.block;
 
 import com.bradyrussell.uiscoin.*;
+import com.bradyrussell.uiscoin.blockchain.exception.InvalidBlockException;
 import com.bradyrussell.uiscoin.blockchain.exception.NoSuchBlockException;
 import com.bradyrussell.uiscoin.blockchain.exception.NoSuchTransactionException;
 import com.bradyrussell.uiscoin.transaction.Transaction;
@@ -150,13 +151,13 @@ public class Block implements IBinaryData, IVerifiable {
     public boolean Verify() {
         try {
             return Header.Verify() && VerifyTransactions() && VerifyBlockReward() && Hash.validateHash(Header.getHash(), Header.DifficultyTarget) && getSize() < MagicNumbers.MaxBlockSize.Value && Arrays.equals(Header.HashMerkleRoot, CalculateMerkleRoot());
-        } catch (NoSuchBlockException | NoSuchTransactionException e) {
+        } catch (NoSuchBlockException | NoSuchTransactionException | InvalidBlockException e) {
             e.printStackTrace();
             return false;
         }
     }
 
-    public void DebugVerify() throws NoSuchTransactionException, NoSuchBlockException {
+    public void DebugVerify() throws NoSuchTransactionException, NoSuchBlockException, InvalidBlockException {
         Log.warning("Header verify: "+ Header.Verify());
        assert Header.Verify();
         Log.warning("Transactions verify: "+ VerifyTransactions());
@@ -237,7 +238,7 @@ public class Block implements IBinaryData, IVerifiable {
         return Conversions.CoinsToSatoshis(50) >> NumberOfHalvings;
     }
 
-    private boolean VerifyBlockReward() throws NoSuchTransactionException, NoSuchBlockException {
+    private boolean VerifyBlockReward() throws NoSuchTransactionException, NoSuchBlockException, InvalidBlockException {
         Transaction coinbase = Transactions.get(0);
         if(coinbase == null) return false;
         return coinbase.getOutputTotal() <= CalculateBlockReward(Header.BlockHeight) + getFees();
@@ -247,11 +248,13 @@ public class Block implements IBinaryData, IVerifiable {
         return Hash.validateHash(Header.getHash(), Header.DifficultyTarget);
     }
 
-    public long getFees() throws NoSuchTransactionException, NoSuchBlockException {
+    public long getFees() throws NoSuchTransactionException, NoSuchBlockException, InvalidBlockException {
+        if(Transactions.size() <= 1) return 0;
         long totalFees = 0;
-        for (Transaction transaction : Transactions) {
+        for (Transaction transaction : Transactions.subList(1,Transactions.size()-1)) {
             totalFees += transaction.getFees();
         }
+        if(totalFees < 0) throw new InvalidBlockException("This block has negative fees.");
         return totalFees;
     }
 }
