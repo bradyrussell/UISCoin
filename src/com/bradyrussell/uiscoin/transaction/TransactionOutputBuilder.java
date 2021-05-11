@@ -113,7 +113,7 @@ public class TransactionOutputBuilder {
 
                 .op(ScriptOperator.SWAP) // [script][uscript]
 
-                .pushByte(0)  // [script][uscript][0]
+                .op(ScriptOperator.FALSE)//.pushByte(0)  // [script][uscript][0]
                 .op(ScriptOperator.SWAP)  // [script][0][uscript]
 
                 .op(ScriptOperator.CALL) //  [script][results1][results2]..[1/0] // run unlocking script
@@ -124,7 +124,7 @@ public class TransactionOutputBuilder {
                 // rotate
 
                 .op(ScriptOperator.DEPTH) //        get results amount [results1][results2].. [script][>=1]
-                .pushByte(1) //                     [results1][results2].. [script][>=1][1]
+                .op(ScriptOperator.TRUE)//.pushByte(1) //                     [results1][results2].. [script][>=1][1]
                 .op(ScriptOperator.SUBTRACTBYTES)// [results1][results2].. [script][>=0]
                 .op(ScriptOperator.SWAP)//          [results1][results2].. [>=0][script]
                 .op(ScriptOperator.CALL)// [resulting stack][1 / 0]

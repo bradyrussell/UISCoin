@@ -1,10 +1,7 @@
 import com.bradyrussell.uiscoin.*;
 import com.bradyrussell.uiscoin.address.UISCoinAddress;
 import com.bradyrussell.uiscoin.address.UISCoinKeypair;
-import com.bradyrussell.uiscoin.script.ScriptBuilder;
-import com.bradyrussell.uiscoin.script.ScriptExecution;
-import com.bradyrussell.uiscoin.script.ScriptOperator;
-import com.bradyrussell.uiscoin.script.ScriptParser;
+import com.bradyrussell.uiscoin.script.*;
 import com.bradyrussell.uiscoin.script.exception.ScriptEmptyStackException;
 import com.bradyrussell.uiscoin.script.exception.ScriptInvalidException;
 import com.bradyrussell.uiscoin.script.exception.ScriptInvalidParameterException;
@@ -1790,5 +1787,46 @@ public class ScriptTest {
         System.out.println("Finished: "+scriptExecution.InstructionCounter+" / "+scriptExecution.Script.length);
 
         assertFalse(scriptExecution.bScriptFailed);
+    }
+
+    @RepeatedTest(1)
+    @DisplayName("Script Matcher True")
+    void TestScriptMatcher()  {
+        ScriptMatcher scriptMatcherp2pkh = new ScriptMatcherBuilder()
+                .op(ScriptOperator.DUP) // dup the public key
+                .op(ScriptOperator.SHA512) // hash it
+                .push()
+                .op(ScriptOperator.BYTESEQUAL) // equal to pubkey hash?
+                .op(ScriptOperator.VERIFY)
+                .op(ScriptOperator.VERIFYSIG)
+                .get();
+
+        byte[] publicKeyHash = new byte[64];
+        byte[] lockingScript = new TransactionOutputBuilder()
+                .setAmount(123)
+                .setMemo("hello")
+                .setPayToPublicKeyHash(publicKeyHash).get().LockingScript;
+
+        assertTrue(scriptMatcherp2pkh.match(lockingScript));
+        assertTrue(Arrays.equals(scriptMatcherp2pkh.getPushData(0),publicKeyHash));
+    }
+
+    @RepeatedTest(1)
+    @DisplayName("Script Matcher False")
+    void TestScriptMatcherFalse()  {
+        ScriptMatcher scriptMatcherp2pkh = new ScriptMatcherBuilder()
+                .op(ScriptOperator.DUP) // dup the public key
+                .op(ScriptOperator.SHA512) // hash it
+                .op(ScriptOperator.BYTESEQUAL) // equal to pubkey hash?
+                .op(ScriptOperator.VERIFY)
+                .op(ScriptOperator.VERIFYSIG)
+                .get();
+
+        byte[] lockingScript = new TransactionOutputBuilder()
+                .setAmount(123)
+                .setMemo("hello")
+                .setPayToPublicKey(new byte[64]).get().LockingScript;
+
+        assertFalse(scriptMatcherp2pkh.match(lockingScript));
     }
 }
