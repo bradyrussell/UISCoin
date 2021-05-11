@@ -6,7 +6,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-
+@Deprecated
 public class ScriptOptimizer {
     public static String OptimizeScriptHighLevel(String UnoptimizedHighLevel) {
         return null;

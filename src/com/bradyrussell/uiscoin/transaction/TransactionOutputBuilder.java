@@ -11,6 +11,7 @@ import java.util.Arrays;
 
 public class TransactionOutputBuilder {
     TransactionOutput output = new TransactionOutput();
+    private String Memo = null;
 
     public TransactionOutputBuilder setAmount(long Amount){
         output.Amount = Amount;
@@ -71,6 +72,7 @@ public class TransactionOutputBuilder {
     }
 
     // https://learnmeabitcoin.com/technical/p2pkh
+    @Deprecated
     public TransactionOutputBuilder setPayToPublicKeyHashWithChecksum(byte[] PublicKeyHash){
         output.LockingScript = new ScriptBuilder(128)
                 .op(ScriptOperator.DUP) // dup the public key
@@ -131,7 +133,16 @@ public class TransactionOutputBuilder {
         return this;
     }
 
+    // allows appending a message to the end of a locking script.
+    public TransactionOutputBuilder setMemo(String Memo) {
+        this.Memo = Memo;
+        return this;
+    }
+
     public TransactionOutput get(){
+        if(Memo != null) {
+            output.LockingScript = BytesUtil.ConcatArray(output.LockingScript, new ScriptBuilder(16+Memo.length()).pushASCIIString(Memo).get());
+        }
         return output;
     }
 }
