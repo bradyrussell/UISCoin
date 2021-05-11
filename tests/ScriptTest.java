@@ -1792,35 +1792,21 @@ public class ScriptTest {
     @RepeatedTest(1)
     @DisplayName("Script Matcher True")
     void TestScriptMatcher()  {
-        ScriptMatcher scriptMatcherp2pkh = new ScriptMatcherBuilder()
-                .op(ScriptOperator.DUP) // dup the public key
-                .op(ScriptOperator.SHA512) // hash it
-                .push()
-                .op(ScriptOperator.BYTESEQUAL) // equal to pubkey hash?
-                .op(ScriptOperator.VERIFY)
-                .op(ScriptOperator.VERIFYSIG)
-                .get();
-
         byte[] publicKeyHash = new byte[64];
         byte[] lockingScript = new TransactionOutputBuilder()
                 .setAmount(123)
                 .setMemo("hello")
                 .setPayToPublicKeyHash(publicKeyHash).get().LockingScript;
 
-        assertTrue(scriptMatcherp2pkh.match(lockingScript));
-        assertTrue(Arrays.equals(scriptMatcherp2pkh.getPushData(0),publicKeyHash));
+        ScriptMatcher matcherP2PKH = ScriptMatcher.getMatcherP2PKH();
+        assertTrue(matcherP2PKH.match(lockingScript));
+        assertTrue(Arrays.equals(matcherP2PKH.getPushData(0),publicKeyHash));
     }
 
     @RepeatedTest(1)
     @DisplayName("Script Matcher False")
     void TestScriptMatcherFalse()  {
-        ScriptMatcher scriptMatcherp2pkh = new ScriptMatcherBuilder()
-                .op(ScriptOperator.DUP) // dup the public key
-                .op(ScriptOperator.SHA512) // hash it
-                .op(ScriptOperator.BYTESEQUAL) // equal to pubkey hash?
-                .op(ScriptOperator.VERIFY)
-                .op(ScriptOperator.VERIFYSIG)
-                .get();
+        ScriptMatcher scriptMatcherp2pkh = ScriptMatcher.getMatcherP2PKH();
 
         byte[] lockingScript = new TransactionOutputBuilder()
                 .setAmount(123)

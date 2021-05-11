@@ -35,15 +35,20 @@ public class ScriptMatcher {
         return PushContents.get(Index);
     }
 
-    // push 0: public key
+    public int getPushCount() {
+        return PushContents.size();
+    }
+
+    // push 0: public key, push 1: memo
     public static ScriptMatcher getMatcherP2PK() {
         return new ScriptMatcherBuilder()
                 .push()
                 .op(ScriptOperator.VERIFYSIG)
+                .push() //memo
                 .get();
     }
 
-    // push 0: public key hash
+    // push 0: public key hash, push 1: memo
     public static ScriptMatcher getMatcherP2PKH() {
         return new ScriptMatcherBuilder()
                 .op(ScriptOperator.DUP) // dup the public key
@@ -52,10 +57,11 @@ public class ScriptMatcher {
                 .op(ScriptOperator.BYTESEQUAL) // equal to pubkey hash?
                 .op(ScriptOperator.VERIFY)
                 .op(ScriptOperator.VERIFYSIG)
+                .push() //memo
                 .get();
     }
 
-    //push 0: double hashed known password
+    //push 0: double hashed known password, push 1: memo
     public static ScriptMatcher getMatcherP2Password() {
         return new ScriptMatcherBuilder()
                 .op(ScriptOperator.SHA512) // hash plaintext input password
@@ -63,10 +69,11 @@ public class ScriptMatcher {
                 .push() // push the double hashed known Password
                 .op(ScriptOperator.BYTESEQUAL) // equal to provided input password hash?
                 .op(ScriptOperator.VERIFY)
+                .push() //memo
                 .get();
     }
 
-    //push 0: hashed script
+    //push 0: hashed script, push 1: memo
     public static ScriptMatcher getMatcherP2SH() {
         return new ScriptMatcherBuilder()
                 .op(ScriptOperator.DUP) //          copy the script block for execution [uscript][script][script]
@@ -93,6 +100,7 @@ public class ScriptMatcher {
                 .op(ScriptOperator.SWAP)//          [results1][results2].. [>=0][script]
                 .op(ScriptOperator.CALL)// [resulting stack][1 / 0]
                 .op(ScriptOperator.VERIFY)
+                .push() //memo
                 .get();
     }
 }
