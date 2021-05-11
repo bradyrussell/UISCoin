@@ -184,13 +184,13 @@ public abstract class BlockChainStorageBase {
     public ArrayList<byte[]> matchUTXOForP2PKHAddress(byte[] PublicKeyHash) {
         ArrayList<byte[]> utxo = new ArrayList<>();
 
-        ScriptMatcher matcherP2PK = ScriptMatcher.getMatcherP2PK();
+        ScriptMatcher matcherP2PKH = ScriptMatcher.getMatcherP2PKH();
 
         for(byte[] UTXOHash:keys(TransactionOutputDatabase)){
             TransactionOutput output = new TransactionOutput();
             output.setBinaryData(get(UTXOHash,TransactionOutputDatabase));
 
-            if(matcherP2PK.match(output.LockingScript) && Arrays.equals(matcherP2PK.getPushData(0),PublicKeyHash)) {
+            if(matcherP2PKH.match(output.LockingScript) && Arrays.equals(matcherP2PKH.getPushData(0),PublicKeyHash)) {
                 utxo.add(UTXOHash);
             }
 
