@@ -5,6 +5,7 @@ import com.bradyrussell.uiscoin.block.Block;
 import com.bradyrussell.uiscoin.block.BlockHeader;
 import com.bradyrussell.uiscoin.blockchain.exception.NoSuchBlockException;
 import com.bradyrussell.uiscoin.blockchain.exception.NoSuchTransactionException;
+import com.bradyrussell.uiscoin.script.ScriptMatcher;
 import com.bradyrussell.uiscoin.transaction.Transaction;
 import com.bradyrussell.uiscoin.transaction.TransactionInput;
 import com.bradyrussell.uiscoin.transaction.TransactionOutput;
@@ -162,7 +163,8 @@ public abstract class BlockChainStorageBase {
         remove(BytesUtil.ConcatArray(TransactionHash, BytesUtil.NumberToByteArray32(Index)), TransactionOutputDatabase);
     }
 
-    //this returns UTXO, which are 64 bytes TransactionHash, 4 bytes Index
+    //use matchUTXOForP2PKHAddress(byte[] PublicKeyHash)
+    @Deprecated()
     public ArrayList<byte[]> ScanUnspentOutputsToAddress(byte[] PublicKeyHash) {
         ArrayList<byte[]> utxo = new ArrayList<>();
         byte[] lockingScript = new TransactionOutputBuilder().setPayToPublicKeyHash(PublicKeyHash).get().LockingScript;
@@ -174,6 +176,24 @@ public abstract class BlockChainStorageBase {
             if(Arrays.equals(output.LockingScript,lockingScript)) {
                 utxo.add(UTXOHash);
             }
+        }
+        return utxo;
+    }
+
+   // this returns UTXO, which are 64 bytes TransactionHash, 4 bytes Index
+    public ArrayList<byte[]> matchUTXOForP2PKHAddress(byte[] PublicKeyHash) {
+        ArrayList<byte[]> utxo = new ArrayList<>();
+
+        ScriptMatcher matcherP2PK = ScriptMatcher.getMatcherP2PK();
+
+        for(byte[] UTXOHash:keys(TransactionOutputDatabase)){
+            TransactionOutput output = new TransactionOutput();
+            output.setBinaryData(get(UTXOHash,TransactionOutputDatabase));
+
+            if(matcherP2PK.match(output.LockingScript) && Arrays.equals(matcherP2PK.getPushData(0),PublicKeyHash)) {
+                utxo.add(UTXOHash);
+            }
+
         }
         return utxo;
     }
