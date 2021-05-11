@@ -24,7 +24,6 @@ public class ScriptMatcher {
             }
 
             if(expected.OPCode != Script[i]) {
-                System.out.println("Matcher expected "+expected+" found "+ScriptOperator.getByOpCode(Script[i])+" at script index "+i);
                 return false;
             }
         }
