@@ -43,6 +43,7 @@ public enum ScriptOperator {
 
     /**
      * Pop the top stack element as N, pop the next stack element and put it into the Nth from the BOTTOM elements location
+     * put(byte[] Value, byte Address)
      */
     PUT(0x08), //
 
@@ -70,6 +71,38 @@ public enum ScriptOperator {
     GREATERTHANEQUAL(0x17),
     NOTEQUAL(0x18),
     NOTZERO(0x19),
+
+    /**
+     * get(int StackElementIndex, int BeginIndex, int Length)
+     * StackElement is the Nth (from BOTTOM of the stack) element on the stack
+     * From StackElement, copy from BeginIndex to BeginIndex+Length onto the top of the stack
+     */
+    GET(0x1a),
+
+    /**
+     * set(byte[] Source, int StackElement, int BeginIndex, int Length)
+     * StackElement is the Nth (from BOTTOM of the stack) element on the stack
+     * From source, copy from the beginning to Length into StackElement at BeginIndex to BeginIndex+Length
+     */
+    SET(0x1b),
+
+    /**
+     * set(int SourceStackElement, int SourceBeginIndex, int DestStackElement, int DestBeginIndex, int Length)
+     * From source, copy from the begin index to Length into StackElement at DestBeginIndex to DestBeginIndex+Length
+     */
+    COPY(0x1c),
+
+    /**
+     * alloc(int NumberOfBytes)
+     * Push a new element onto the stack, consisting of NumberOfBytes zeros
+     */
+    ALLOC(0x1d),
+
+
+    /**
+     * Push the entire script bytecode on to the stack. Only available with ExtendedFlowControl due to recursion
+     */
+    THIS(0x1e),
 
     // math
     /**

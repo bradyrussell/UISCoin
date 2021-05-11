@@ -1,9 +1,12 @@
 import com.bradyrussell.uiscoin.Conversions;
 import com.bradyrussell.uiscoin.Hash;
-import com.bradyrussell.uiscoin.Util;
+import com.bradyrussell.uiscoin.BytesUtil;
 import com.bradyrussell.uiscoin.address.UISCoinKeypair;
 import com.bradyrussell.uiscoin.block.Block;
 import com.bradyrussell.uiscoin.block.BlockBuilder;
+import com.bradyrussell.uiscoin.blockchain.exception.InvalidBlockException;
+import com.bradyrussell.uiscoin.blockchain.exception.NoSuchBlockException;
+import com.bradyrussell.uiscoin.blockchain.exception.NoSuchTransactionException;
 import com.bradyrussell.uiscoin.transaction.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.RepeatedTest;
@@ -17,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class BlockTest {
     @RepeatedTest(10)
     @DisplayName("Serialization / Deserialization")
-    void TestBlockSerialization() {
+    void TestBlockSerialization() throws NoSuchTransactionException, NoSuchBlockException, InvalidBlockException {
         long timeStamp = Instant.now().getEpochSecond();
 
         UISCoinKeypair uisCoinKeypair = UISCoinKeypair.Create();
@@ -64,7 +67,7 @@ public class BlockTest {
     @DisplayName("Hash GetDifficulty")
     void TestHashGetDifficulty() {
 
-        byte[] hash = Util.Base64Decode("UISa1foAACU7v1siyHul3StuvEJx5rebFgMkP_Sgiz60NoOSV00SP-yD_MO7JoHr7mmixKvj28QECDeaXQfzIQ==");
+        byte[] hash = BytesUtil.Base64Decode("UISa1foAACU7v1siyHul3StuvEJx5rebFgMkP_Sgiz60NoOSV00SP-yD_MO7JoHr7mmixKvj28QECDeaXQfzIQ==");
         assertEquals(Hash.validateHash(hash,3),Hash.getHashDifficulty(hash)==3);
 
     }

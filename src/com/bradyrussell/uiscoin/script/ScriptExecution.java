@@ -3,7 +3,7 @@ package com.bradyrussell.uiscoin.script;
 import com.bradyrussell.uiscoin.Encryption;
 import com.bradyrussell.uiscoin.Hash;
 import com.bradyrussell.uiscoin.Keys;
-import com.bradyrussell.uiscoin.Util;
+import com.bradyrussell.uiscoin.BytesUtil;
 import com.bradyrussell.uiscoin.script.exception.ScriptEmptyStackException;
 import com.bradyrussell.uiscoin.script.exception.ScriptInvalidException;
 import com.bradyrussell.uiscoin.script.exception.ScriptInvalidParameterException;
@@ -19,13 +19,15 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.*;
 import java.util.logging.Logger;
 
-import static com.bradyrussell.uiscoin.Util.*;
+import static com.bradyrussell.uiscoin.BytesUtil.*;
 
 public class ScriptExecution {
     private static final Logger Log = Logger.getLogger(ScriptExecution.class.getName());
     public int InstructionCounter;
     public Stack<byte[]> Stack;
     public boolean bScriptFailed = false;
+    public int MaximumStepsAllowed = 1000;
+    public boolean bExtendedFlowControl = false;
 
     public boolean LogScriptExecution = false;
 
@@ -75,7 +77,7 @@ public class ScriptExecution {
         for (int i = 0, toArrayLength = toArray.length; i < toArrayLength; i++) {
             byte[] stackElem = (byte[]) toArray[i];
             Log.info(i + " ");
-            Util.printBytesReadable(stackElem);
+            BytesUtil.printBytesReadable(stackElem);
         }
     }
 
@@ -102,9 +104,13 @@ public class ScriptExecution {
         return n;
     }
 
+    public int Steps = 0;
+
     // returns whether the script should continue
     public boolean Step() throws ScriptEmptyStackException, ScriptInvalidParameterException, ScriptInvalidException, ScriptUnsupportedOperationException {
         if (InstructionCounter >= Script.length) return false;
+
+        if(Steps++ > MaximumStepsAllowed) throw new ScriptUnsupportedOperationException("Script exceeded the instruction limit.");
 
         ScriptOperator scriptOperator = ScriptOperator.getByOpCode(Script[InstructionCounter++]);
 
@@ -173,7 +179,7 @@ public class ScriptExecution {
                         int32bytes[i] = Script[InstructionCounter++];
                     }
 
-                    int NumberOfBytesToPush = Util.ByteArrayToNumber32(int32bytes);
+                    int NumberOfBytesToPush = BytesUtil.ByteArrayToNumber32(int32bytes);
 
                     if (NumberOfBytesToPush <= 0) {
                         Log.warning("Invalid BIGPUSH amount specified: " + NumberOfBytesToPush);
@@ -478,6 +484,92 @@ public class ScriptExecution {
                     Stack.push(new byte[]{0});
                     return true;
                 }
+                case GET -> { // todo allow any numeric operands rather than just int32?
+                    CheckInsufficientStackSize(3);
+
+                    byte[] LengthBytes = Stack.pop();
+                    CheckInsufficientBytes(LengthBytes, 4);
+                    int Length = ByteArrayToNumber32(LengthBytes);
+
+                    byte[] BeginIndexBytes = Stack.pop();
+                    CheckInsufficientBytes(BeginIndexBytes, 4);
+                    int BeginIndex = ByteArrayToNumber32(BeginIndexBytes);
+
+                    byte[] StackElementIndexBytes = Stack.pop();
+                    CheckInsufficientBytes(StackElementIndexBytes, 4);
+                    int StackElementIndex = ByteArrayToNumber32(StackElementIndexBytes);
+
+                    CheckInsufficientStackSize(StackElementIndex+1);
+                    CheckNumberIsInRange(StackElementIndex, 0, Stack.size()-1);
+
+                    byte[] StackElement = Stack.elementAt(StackElementIndex);
+
+                    CheckNumberIsInRange(Length, 0, StackElement.length);
+                    CheckNumberIsInRange(BeginIndex, 0, StackElement.length);
+
+                    CheckInsufficientBytes(StackElement, BeginIndex+Length);
+
+                    byte[] Copy = new byte[Length];
+                    System.arraycopy(StackElement, BeginIndex, Copy, 0, Length);
+
+                    Stack.push(Copy);
+                    return true;
+                }
+                case SET -> {
+                    CheckInsufficientStackSize(4);
+
+                    byte[] LengthBytes = Stack.pop();
+                    CheckInsufficientBytes(LengthBytes, 4);
+                    int Length = ByteArrayToNumber32(LengthBytes);
+
+                    byte[] BeginIndexBytes = Stack.pop();
+                    CheckInsufficientBytes(BeginIndexBytes, 4);
+                    int BeginIndex = ByteArrayToNumber32(BeginIndexBytes);
+
+                    byte[] DestinationIndexBytes = Stack.pop();
+                    CheckInsufficientBytes(DestinationIndexBytes, 4);
+                    int StackElementIndex = ByteArrayToNumber32(DestinationIndexBytes);
+
+                    byte[] Source = Stack.pop();
+
+                    CheckInsufficientStackSize(StackElementIndex+1);
+                    CheckNumberIsInRange(StackElementIndex, 0, Stack.size()-1);
+
+                    //byte[] DestinationOriginal = Stack.elementAt(StackElementIndex);
+
+                    CheckInsufficientBytes(Source, Length);
+                    CheckNumberIsInRange(Length, 0, Source.length);
+                    CheckNumberIsInRange(BeginIndex+Length, 0, Stack.elementAt(StackElementIndex).length);
+
+                    //byte[] Result = new byte[BeginIndex+Length];
+                    // todo bounds checks
+                    System.arraycopy(Source, 0, Stack.elementAt(StackElementIndex), BeginIndex, Length);
+
+                    //Stack.push(Copy);
+                    return true;
+                }
+                case COPY -> {
+                }
+                case ALLOC -> {
+                    CheckInsufficientStackSize(1);
+
+                    byte[] LengthBytes = Stack.pop();
+                    CheckInsufficientBytes(LengthBytes, 4);
+                    int Length = ByteArrayToNumber32(LengthBytes);
+
+                    CheckNumberIsInRange(Length, 0, Short.MAX_VALUE);
+
+                    Stack.push(new byte[Length]);
+                    return true;
+                }
+                case THIS -> { // allows recursion
+                    if(!bExtendedFlowControl) {
+                        bScriptFailed = true;
+                        throw new ScriptUnsupportedOperationException("The THIS operation is only available with Extended Flow Control enabled.");
+                    }
+                    Stack.push(Script);
+                    return true;
+                }
                 case ADD -> {
                     CheckInsufficientStackSize(2);
                     byte[] B = Stack.pop();
@@ -729,7 +821,7 @@ public class ScriptExecution {
 
                     CheckInsufficientBytes(A, 1);
 
-                    Stack.push(Util.NumberToByteArray32(A[0]));
+                    Stack.push(BytesUtil.NumberToByteArray32(A[0]));
                     return true;
                 }
                 case CONVERT32TO8 -> {
@@ -738,7 +830,7 @@ public class ScriptExecution {
 
                     CheckInsufficientBytes(A, 4);
 
-                    Stack.push(new byte[]{(byte) Util.ByteArrayToNumber32(A)});
+                    Stack.push(new byte[]{(byte) BytesUtil.ByteArrayToNumber32(A)});
                     return true;
                 }
                 case CONVERT64TO32 -> {
@@ -747,7 +839,7 @@ public class ScriptExecution {
 
                     CheckInsufficientBytes(A, 8);
 
-                    Stack.push(Util.NumberToByteArray32((int) Util.ByteArrayToNumber64(A)));
+                    Stack.push(BytesUtil.NumberToByteArray32((int) BytesUtil.ByteArrayToNumber64(A)));
                     return true;
                 }
                 case CONVERT32TO64 -> {
@@ -756,7 +848,7 @@ public class ScriptExecution {
 
                     CheckInsufficientBytes(A, 4);
 
-                    Stack.push(Util.NumberToByteArray64(Util.ByteArrayToNumber32(A)));
+                    Stack.push(BytesUtil.NumberToByteArray64(BytesUtil.ByteArrayToNumber32(A)));
                     return true;
                 }
                 case CONVERTFLOATTO32 -> {
@@ -765,7 +857,7 @@ public class ScriptExecution {
 
                     CheckInsufficientBytes(A, 4);
 
-                    Stack.push(Util.NumberToByteArray32((int) Util.ByteArrayToFloat(A)));
+                    Stack.push(BytesUtil.NumberToByteArray32((int) BytesUtil.ByteArrayToFloat(A)));
                     return true;
                 }
                 case CONVERT32TOFLOAT -> {
@@ -774,7 +866,7 @@ public class ScriptExecution {
 
                     CheckInsufficientBytes(A, 4);
 
-                    Stack.push(Util.FloatToByteArray((float) Util.ByteArrayToNumber32(A)));
+                    Stack.push(BytesUtil.FloatToByteArray((float) BytesUtil.ByteArrayToNumber32(A)));
                     return true;
                 }
                 case BITNOT -> {
@@ -987,12 +1079,12 @@ public class ScriptExecution {
                 }
                 case ZIP -> {
                     CheckInsufficientStackSize(1);
-                    Stack.push(Util.ZipBytes(Stack.pop()));
+                    Stack.push(BytesUtil.ZipBytes(Stack.pop()));
                     return true;
                 }
                 case UNZIP -> {
                     CheckInsufficientStackSize(1);
-                    Stack.push(Util.UnzipBytes(Stack.pop()));
+                    Stack.push(BytesUtil.UnzipBytes(Stack.pop()));
                     return true;
                 }
                 case ENCRYPTAES -> {
@@ -1377,9 +1469,11 @@ public class ScriptExecution {
                     virtualScriptExecution.Initialize(VirtualScriptBytes, Collections.enumeration(VirtualStack));
                     virtualScriptExecution.setSignatureVerificationMessage(SignatureVerificationMessage); // inherit from parent
                     virtualScriptExecution.LogScriptExecution = LogScriptExecution;  // inherit from parent
+                    virtualScriptExecution.bExtendedFlowControl = bExtendedFlowControl; // inherit from parent
+                    virtualScriptExecution.Steps = Steps;
 
                     if (LogScriptExecution)
-                        Log.info("Begin virtual script execution: " + Util.Base64Encode(VirtualScriptBytes));
+                        Log.info("Begin virtual script execution: " + BytesUtil.Base64Encode(VirtualScriptBytes));
 
                     //noinspection StatementWithEmptyBody
                     while (virtualScriptExecution.Step()) ;
@@ -1389,6 +1483,8 @@ public class ScriptExecution {
                     }
 
                     Stack.push(new byte[]{(byte) (virtualScriptExecution.bScriptFailed ? 0 : 1)});
+
+                    Steps = virtualScriptExecution.Steps;
 
                     if (LogScriptExecution)
                         Log.info("End virtual script execution: " + !virtualScriptExecution.bScriptFailed);
@@ -1410,10 +1506,10 @@ public class ScriptExecution {
 
                     CheckScriptEndsBefore(Destination);
 
-                    if(Destination <= 0) {
+                    if(!bExtendedFlowControl && Destination <= 0) {
                         bScriptFailed = true;
                         throw new ScriptUnsupportedOperationException("Jumping backwards is not supported."+
-                                "\n" + ScriptUtil.PrintScriptOpCodesSurroundingHighlight(Script, InstructionCounter - 1, 5, "Exception occurred here!") +
+                                "\n" + ScriptUtil.PrintScriptOpCodesSurroundingHighlight(Script, InstructionCounter - 1, 10, "Exception occurred here!") +
                                 "\n" + ScriptUtil.PrintStack(Stack.elements(), null));
                     }
 
@@ -1441,10 +1537,10 @@ public class ScriptExecution {
 
                     CheckScriptEndsBefore(Destination);
 
-                    if(Destination <= 0) {
+                    if(!bExtendedFlowControl && Destination <= 0) {
                         bScriptFailed = true;
                         throw new ScriptUnsupportedOperationException("Jumping backwards is not supported."+
-                                "\n" + ScriptUtil.PrintScriptOpCodesSurroundingHighlight(Script, InstructionCounter - 1, 5, "Exception occurred here!") +
+                                "\n" + ScriptUtil.PrintScriptOpCodesSurroundingHighlight(Script, InstructionCounter - 1, 100, "Exception occurred here!") +
                                 "\n" + ScriptUtil.PrintStack(Stack.elements(), null));
                     }
                     int oldInstructionConter = InstructionCounter;
@@ -1464,7 +1560,8 @@ public class ScriptExecution {
                     int NumberExcluded = ExceptBytes[0];
                     int NumberOfElements = Amount[0];
 
-                    if(NumberExcluded < 0) throw new ScriptInvalidParameterException("Number to exclude was not valid! "+NumberExcluded);
+                    CheckNumberIsInRange(NumberExcluded, 0, Stack.size());
+                    //if(NumberExcluded < 0) throw new ScriptInvalidParameterException("Number to exclude was not valid! "+NumberExcluded);
 
                     ArrayList<byte[]> beforeStack = Collections.list(Stack.elements());
                     List<byte[]> toRotate = beforeStack.subList(NumberExcluded, beforeStack.size());
@@ -1520,6 +1617,16 @@ public class ScriptExecution {
             throw new ScriptInvalidParameterException("CheckIncorrect Expected " + Size + " bytes for top stack element: " + Bytes.length + " != " + Size +
                     "\n" + ScriptUtil.PrintScriptOpCodesSurroundingHighlight(Script, InstructionCounter - 1, 5, "Exception occurred here!") +
                     "\n" + ScriptUtil.PrintStack(Stack.elements(), Bytes));
+        }
+    }
+
+    private void CheckNumberIsInRange(int Number, int InclusiveMin, int InclusiveMax) throws ScriptInvalidParameterException {
+        if(Number < InclusiveMin || Number > InclusiveMax) {
+            bScriptFailed = true;
+            throw new ScriptInvalidParameterException("Parameter was " + Number + " but expected " + (Number < InclusiveMin ? "above or equal to " + InclusiveMin : "below or equal to " + InclusiveMax) +
+                    "\n" + ScriptUtil.PrintScriptOpCodesSurroundingHighlight(Script, InstructionCounter - 1, 5, "Exception occurred here!") +
+                    "\n" + ScriptUtil.PrintStack(Stack.elements(), null));
+
         }
     }
 

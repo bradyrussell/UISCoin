@@ -1,7 +1,7 @@
 package com.bradyrussell.uiscoin.blockchain;
 
 import com.bradyrussell.uiscoin.Hash;
-import com.bradyrussell.uiscoin.Util;
+import com.bradyrussell.uiscoin.BytesUtil;
 import com.bradyrussell.uiscoin.transaction.Transaction;
 
 import java.io.IOException;
@@ -29,7 +29,7 @@ public class BlockChainStorageFile extends BlockChainStorageBase {
             BlockHeight = buf.getInt();
             buf.get(HighestBlockHash);
 
-            Log.info("Loaded blockchain " + (BlockHeight + 1) + " blocks long. Last block: " + Util.Base64Encode(HighestBlockHash));
+            Log.info("Loaded blockchain " + (BlockHeight + 1) + " blocks long. Last block: " + BytesUtil.Base64Encode(HighestBlockHash));
         }
 
         MemPool = new ArrayList<>();
@@ -101,12 +101,12 @@ public class BlockChainStorageFile extends BlockChainStorageBase {
 
     @Override
     public byte[] get(byte[] Key, String Database) {
-        if(!Files.exists(Path.of("blockchain/"+Database+"/"+ Util.Base64Encode(Key)))) {
+        if(!Files.exists(Path.of("blockchain/"+Database+"/"+ BytesUtil.Base64Encode(Key)))) {
             //System.out.println("Path does not exist! "+"blockchain/"+Database+"/"+ Util.Base64Encode(Key));
             return null;
         }
         try {
-            return Files.readAllBytes(Path.of("blockchain/"+Database+"/"+Util.Base64Encode(Key)));
+            return Files.readAllBytes(Path.of("blockchain/"+Database+"/"+ BytesUtil.Base64Encode(Key)));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -118,7 +118,7 @@ public class BlockChainStorageFile extends BlockChainStorageBase {
         try {
             MakeDir("blockchain/");
             MakeDir("blockchain/"+Database+"/");
-            Files.write(Path.of("blockchain/"+Database+"/"+Util.Base64Encode(Key)),Value);
+            Files.write(Path.of("blockchain/"+Database+"/"+ BytesUtil.Base64Encode(Key)),Value);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -126,12 +126,12 @@ public class BlockChainStorageFile extends BlockChainStorageBase {
 
     @Override
     public void remove(byte[] Key, String Database) {
-        if(!Files.exists(Path.of("blockchain/"+Database+"/"+ Util.Base64Encode(Key)))) {
+        if(!Files.exists(Path.of("blockchain/"+Database+"/"+ BytesUtil.Base64Encode(Key)))) {
             //System.out.println("Path does not exist! "+"blockchain/"+Database+"/"+ Util.Base64Encode(Key));
             return;
         }
         try {
-            Files.delete(Path.of("blockchain/"+Database+"/"+ Util.Base64Encode(Key)));
+            Files.delete(Path.of("blockchain/"+Database+"/"+ BytesUtil.Base64Encode(Key)));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -139,7 +139,7 @@ public class BlockChainStorageFile extends BlockChainStorageBase {
 
     @Override
     public boolean exists(byte[] Key, String Database) {
-        return Files.exists(Path.of("blockchain/"+Database+"/"+ Util.Base64Encode(Key)));
+        return Files.exists(Path.of("blockchain/"+Database+"/"+ BytesUtil.Base64Encode(Key)));
     }
 
     @Override
@@ -150,7 +150,7 @@ public class BlockChainStorageFile extends BlockChainStorageBase {
                     .filter(file -> !Files.isDirectory(file))
                     .map(Path::getFileName)
                     .map(Path::toString)
-                    .map(Util::Base64Decode)
+                    .map(BytesUtil::Base64Decode)
                     .collect(Collectors.toList());
         } catch (IOException e) {
             e.printStackTrace();

@@ -1,6 +1,6 @@
 package com.bradyrussell.uiscoin.blockchain;
 
-import com.bradyrussell.uiscoin.Util;
+import com.bradyrussell.uiscoin.BytesUtil;
 import com.bradyrussell.uiscoin.block.Block;
 import com.bradyrussell.uiscoin.block.BlockHeader;
 import com.bradyrussell.uiscoin.blockchain.exception.NoSuchBlockException;
@@ -38,17 +38,17 @@ public abstract class BlockChainStorageBase {
     public abstract List<byte[]> keys(String Database);
 
     public Block getBlock(byte[] BlockHash) throws NoSuchBlockException {
-        Log.info("BlockHash = " + Util.Base64Encode(BlockHash));
+        Log.info("BlockHash = " + BytesUtil.Base64Encode(BlockHash));
 
         Block block = new Block();
         byte[] data = get(BlockHash, BlocksDatabase);
-        if(data == null) throw new NoSuchBlockException("There was no Block with the hash: "+Util.Base64Encode(BlockHash));
+        if(data == null) throw new NoSuchBlockException("There was no Block with the hash: "+ BytesUtil.Base64Encode(BlockHash));
         block.setBinaryData(data);
         return block;
     }
 
     public BlockHeader getBlockHeader(byte[] BlockHash) throws NoSuchBlockException {
-        String hash = Util.Base64Encode(BlockHash);
+        String hash = BytesUtil.Base64Encode(BlockHash);
         Log.info("BlockHash = " + hash);
 
         BlockHeader blockHeader = new BlockHeader();
@@ -59,7 +59,7 @@ public abstract class BlockChainStorageBase {
     }
 
     public Transaction getTransaction(byte[] TransactionHash) throws NoSuchTransactionException, NoSuchBlockException {
-        Log.info("TransactionHash = " + Util.Base64Encode(TransactionHash));
+        Log.info("TransactionHash = " + BytesUtil.Base64Encode(TransactionHash));
 
         Block block = getBlockWithTransaction(TransactionHash);
 
@@ -73,27 +73,27 @@ public abstract class BlockChainStorageBase {
         for(Transaction transaction:block.Transactions){
             if(Arrays.equals(transaction.getHash(), TransactionHash)) return transaction;
         }
-        throw new NoSuchTransactionException("There was no transaction with the hash: "+Util.Base64Encode(TransactionHash)+" in block: "+Util.Base64Encode(block.Header.getHash()));
+        throw new NoSuchTransactionException("There was no transaction with the hash: "+ BytesUtil.Base64Encode(TransactionHash)+" in block: "+ BytesUtil.Base64Encode(block.Header.getHash()));
     }
 
     public Block getBlockWithTransaction(byte[] TransactionHash) throws NoSuchBlockException {
-        Log.info("TransactionHash = " + Util.Base64Encode(TransactionHash));
+        Log.info("TransactionHash = " + BytesUtil.Base64Encode(TransactionHash));
 
         byte[] blockHash = get(TransactionHash, TransactionToBlockDatabase);
-        if(blockHash == null) throw new NoSuchBlockException("There was no Transaction with the hash: "+Util.Base64Encode(TransactionHash));
+        if(blockHash == null) throw new NoSuchBlockException("There was no Transaction with the hash: "+ BytesUtil.Base64Encode(TransactionHash));
         return getBlock(blockHash);
     }
 
     public int getIndexOfTransaction(byte[] TransactionHash) throws NoSuchTransactionException {
-        Log.info("TransactionHash = " + Util.Base64Encode(TransactionHash));
+        Log.info("TransactionHash = " + BytesUtil.Base64Encode(TransactionHash));
 
-        byte[] bytes = get(Util.ConcatArray(TransactionHash, new byte[]{'I'}), TransactionToBlockDatabase);
-        if(bytes == null) throw new NoSuchTransactionException("There was no Transaction Index with the hash: "+Util.Base64Encode(TransactionHash));
-        return Util.ByteArrayToNumber32(bytes);
+        byte[] bytes = get(BytesUtil.ConcatArray(TransactionHash, new byte[]{'I'}), TransactionToBlockDatabase);
+        if(bytes == null) throw new NoSuchTransactionException("There was no Transaction Index with the hash: "+ BytesUtil.Base64Encode(TransactionHash));
+        return BytesUtil.ByteArrayToNumber32(bytes);
     }
 
     public TransactionOutput getTransactionOutput(byte[] TransactionHash, int Index) throws NoSuchTransactionException, NoSuchBlockException {
-        Log.info("TransactionHash = " + Util.Base64Encode(TransactionHash) + ", Index = " + Index);
+        Log.info("TransactionHash = " + BytesUtil.Base64Encode(TransactionHash) + ", Index = " + Index);
 
         TransactionOutput unspentTransactionOutput = getUnspentTransactionOutput(TransactionHash, Index);
         if(unspentTransactionOutput != null) return unspentTransactionOutput;
@@ -101,11 +101,11 @@ public abstract class BlockChainStorageBase {
     }
 
     public TransactionOutput getUnspentTransactionOutput(byte[] TransactionHash, int Index) throws NoSuchTransactionException {
-        Log.info("TransactionHash = " + Util.Base64Encode(TransactionHash) + ", Index = " + Index);
+        Log.info("TransactionHash = " + BytesUtil.Base64Encode(TransactionHash) + ", Index = " + Index);
 
         if(TransactionHash == null) throw new NoSuchTransactionException("There was no Transaction with the hash: null");
         TransactionOutput transactionOutput = new TransactionOutput();
-        byte[] binaryData = get(Util.ConcatArray(TransactionHash, Util.NumberToByteArray32(Index)), TransactionOutputDatabase);
+        byte[] binaryData = get(BytesUtil.ConcatArray(TransactionHash, BytesUtil.NumberToByteArray32(Index)), TransactionOutputDatabase);
 
         if(binaryData == null) return null; // should we keep using this or use an exception? i dont want to use exceptions for business logic but it would be more clear
         transactionOutput.setBinaryData(binaryData);
@@ -122,7 +122,7 @@ public abstract class BlockChainStorageBase {
             Transaction transaction = transactions.get(TransactionIndex);
 //gonna break blocks need to do other way
             put(transaction.getHash(), headerHash, TransactionToBlockDatabase);
-            put(Util.ConcatArray(transaction.getHash(), new byte[]{'I'}), Util.NumberToByteArray32(TransactionIndex), TransactionToBlockDatabase); // making second row for semi backwards compat. if this row doesnt exist then default to linear search
+            put(BytesUtil.ConcatArray(transaction.getHash(), new byte[]{'I'}), BytesUtil.NumberToByteArray32(TransactionIndex), TransactionToBlockDatabase); // making second row for semi backwards compat. if this row doesnt exist then default to linear search
 
             if(TransactionIndex != 0) { // only for non coinbase transactions
                 BlockChain.get().removeFromMempool(transaction); // remove from mempool
@@ -155,11 +155,11 @@ public abstract class BlockChainStorageBase {
     }
 
     public void putUnspentTransactionOutput(byte[] TransactionHash, int Index, TransactionOutput transactionOutput){
-        put(Util.ConcatArray(TransactionHash,Util.NumberToByteArray32(Index)), transactionOutput.getBinaryData(), TransactionOutputDatabase);
+        put(BytesUtil.ConcatArray(TransactionHash, BytesUtil.NumberToByteArray32(Index)), transactionOutput.getBinaryData(), TransactionOutputDatabase);
     }
 
     public void removeUnspentTransactionOutput(byte[] TransactionHash, int Index){
-        remove(Util.ConcatArray(TransactionHash,Util.NumberToByteArray32(Index)), TransactionOutputDatabase);
+        remove(BytesUtil.ConcatArray(TransactionHash, BytesUtil.NumberToByteArray32(Index)), TransactionOutputDatabase);
     }
 
     //this returns UTXO, which are 64 bytes TransactionHash, 4 bytes Index

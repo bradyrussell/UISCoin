@@ -1,6 +1,6 @@
 package com.bradyrussell.uiscoin.netty;
 
-import com.bradyrussell.uiscoin.Util;
+import com.bradyrussell.uiscoin.BytesUtil;
 import com.bradyrussell.uiscoin.node.Node;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -34,7 +34,7 @@ public class NodeP2PReceivePeerHandler extends SimpleChannelInboundHandler<InetA
 
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, InetAddress inetAddress) throws Exception {
-        Log.info("Handler Received peer "+ Util.Base64Encode(inetAddress.getAddress()));
+        Log.info("Handler Received peer "+ BytesUtil.Base64Encode(inetAddress.getAddress()));
 
         if(thisNode.getPeers().contains(inetAddress)) {
             Log.info("4 Already known, discarding...");

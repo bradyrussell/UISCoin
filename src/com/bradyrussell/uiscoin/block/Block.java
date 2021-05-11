@@ -1,6 +1,7 @@
 package com.bradyrussell.uiscoin.block;
 
 import com.bradyrussell.uiscoin.*;
+import com.bradyrussell.uiscoin.blockchain.exception.InvalidBlockException;
 import com.bradyrussell.uiscoin.blockchain.exception.NoSuchBlockException;
 import com.bradyrussell.uiscoin.blockchain.exception.NoSuchTransactionException;
 import com.bradyrussell.uiscoin.transaction.Transaction;
@@ -66,9 +67,9 @@ public class Block implements IBinaryData, IVerifiable {
             byte[] arr = Nodes.get(i);
 
             if(i == Nodes.size()-1) {
-                ret.add(Hash.getSHA512Bytes(Util.ConcatArray(arr, arr)));
+                ret.add(Hash.getSHA512Bytes(BytesUtil.ConcatArray(arr, arr)));
             } else {
-                ret.add(Hash.getSHA512Bytes(Util.ConcatArray(arr, Nodes.get(i+1))));
+                ret.add(Hash.getSHA512Bytes(BytesUtil.ConcatArray(arr, Nodes.get(i+1))));
             }
         }
 
@@ -148,10 +149,15 @@ public class Block implements IBinaryData, IVerifiable {
 
     @Override
     public boolean Verify() {
-        return Header.Verify() && VerifyTransactions() && VerifyBlockReward() && Hash.validateHash(Header.getHash(), Header.DifficultyTarget) && getSize() < MagicNumbers.MaxBlockSize.Value && Arrays.equals(Header.HashMerkleRoot, CalculateMerkleRoot());
+        try {
+            return Header.Verify() && VerifyTransactions() && VerifyBlockReward() && Hash.validateHash(Header.getHash(), Header.DifficultyTarget) && getSize() < MagicNumbers.MaxBlockSize.Value && Arrays.equals(Header.HashMerkleRoot, CalculateMerkleRoot());
+        } catch (NoSuchBlockException | NoSuchTransactionException | InvalidBlockException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
-    public void DebugVerify(){
+    public void DebugVerify() throws NoSuchTransactionException, NoSuchBlockException, InvalidBlockException {
         Log.warning("Header verify: "+ Header.Verify());
        assert Header.Verify();
         Log.warning("Transactions verify: "+ VerifyTransactions());
@@ -184,7 +190,7 @@ public class Block implements IBinaryData, IVerifiable {
             } else {
 
                 for (TransactionInput input : transaction.Inputs) {
-                    byte[] inputTXO = Util.ConcatArray(input.InputHash, Util.NumberToByteArray32(input.IndexNumber));
+                    byte[] inputTXO = BytesUtil.ConcatArray(input.InputHash, BytesUtil.NumberToByteArray32(input.IndexNumber));
                     for (byte[] transactionOutput : TransactionOutputs) {
                         if(Arrays.equals(inputTXO,transactionOutput)) {
                             Log.warning("Block contains duplicate Transaction Outputs! See transaction "+i+".");
@@ -232,14 +238,23 @@ public class Block implements IBinaryData, IVerifiable {
         return Conversions.CoinsToSatoshis(50) >> NumberOfHalvings;
     }
 
-    private boolean VerifyBlockReward(){
+    private boolean VerifyBlockReward() throws NoSuchTransactionException, NoSuchBlockException, InvalidBlockException {
         Transaction coinbase = Transactions.get(0);
         if(coinbase == null) return false;
-        return coinbase.getOutputTotal() <= CalculateBlockReward(Header.BlockHeight);
+        return coinbase.getOutputTotal() <= CalculateBlockReward(Header.BlockHeight) + getFees();
     }
 
     public boolean VerifyProofOfWork(){
         return Hash.validateHash(Header.getHash(), Header.DifficultyTarget);
     }
 
+    public long getFees() throws NoSuchTransactionException, NoSuchBlockException, InvalidBlockException {
+        if(Transactions.size() <= 1) return 0;
+        long totalFees = 0;
+        for (Transaction transaction : Transactions.subList(1,Transactions.size()-1)) {
+            totalFees += transaction.getFees();
+        }
+        if(totalFees < 0) throw new InvalidBlockException("This block has negative fees.");
+        return totalFees;
+    }
 }

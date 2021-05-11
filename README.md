@@ -10,7 +10,7 @@ A WIP block explorer can be found at https://uiscoin.software/ . (Hosting is dow
 
 # Differences from Bitcoin
 
-While UISCoin was largely inspired by Bitcoin, there are some intentional differences between the two. 
+While UISCoin was largely inspired by Bitcoin, there are some intentional differences between the two.
 
 - For one, we use SHA512 as a hash algorithm rather than SHA256 & RIPEMD160. This makes all hashes in UISCoin 64 bytes long rather than 32. We also only hash a single time.
 - Instead of base58 encoding used by Bitcoin we use Base64 URL Encoded from Java's Base64.getUrlEncoder().
@@ -27,7 +27,7 @@ JavaDoc is available here: https://bradyrussell.github.io/UISCoin/
 
 I recommend looking at this extension as well: [UISCoin_BlockChainStorageLevelDB_Extension](https://github.com/bradyrussell/UISCoin_BlockChainStorageLevelDB_Extension/releases/tag/1.0)
 
-It adds another BlockChainStorage class, this one using a LevelDB database which is much faster than flatfiles. 
+It adds another BlockChainStorage class, this one using a LevelDB database which is much faster than flatfiles.
 
 For a demonstration of the API, here is how I created the Genesis Block.
 
@@ -67,11 +67,11 @@ For a demonstration of the API, here is how I created the Genesis Block.
         System.out.println("Genesis block broadcast!");
         BlockChain.get().close();
     }
-    
-    
+
+
 # Scripting Language
 The UISCoin scripting language is executed in bytecode format. [See the available OPCodes.](https://bradyrussell.github.io/UISCoin/com/bradyrussell/uiscoin/script/ScriptOperator.html) Scripts can be converted back and forth between bytecode and script using ScriptBuilder.fromText() and ScriptBuilder.toText(). Scripts can also be created using the Builder pattern as seen below:
-                
+
                 byte[] a  = new ScriptBuilder(128)
                 .op(ScriptOperator.DUP) // dup the public key
                 .op(ScriptOperator.SHA512) // hash it
@@ -88,6 +88,6 @@ The UISCoin scripting language is executed in bytecode format. [See the availabl
 
                 byte[] b= new ScriptBuilder(128).fromText("dup sha512").push(A).fromText("len push 4 swap subtract limit bytesequal verify verifysig").get();
                 assertTrue(Arrays.equals(a,b));// true
-                
+
 I am working on an IDE for scripts which can be seen here:
 ![Image of Script Editor](https://raw.githubusercontent.com/bradyrussell/UISCoin/master/script_ide.png)

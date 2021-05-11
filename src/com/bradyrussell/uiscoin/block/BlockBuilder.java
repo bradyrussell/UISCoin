@@ -2,6 +2,7 @@ package com.bradyrussell.uiscoin.block;
 
 import com.bradyrussell.uiscoin.Hash;
 import com.bradyrussell.uiscoin.blockchain.BlockChain;
+import com.bradyrussell.uiscoin.blockchain.exception.InvalidBlockException;
 import com.bradyrussell.uiscoin.blockchain.exception.NoSuchBlockException;
 import com.bradyrussell.uiscoin.blockchain.exception.NoSuchTransactionException;
 import com.bradyrussell.uiscoin.script.ScriptBuilder;
@@ -123,14 +124,14 @@ public class BlockBuilder {
         return this;
     }
 
-    public BlockBuilder addCoinbasePayToPublicKeyHash(byte[] PublicKeyHash){
+    public BlockBuilder addCoinbasePayToPublicKeyHash(byte[] PublicKeyHash) throws NoSuchTransactionException, NoSuchBlockException, InvalidBlockException {
         addCoinbasePayToPublicKeyHash(PublicKeyHash,"Default Coinbase Message");
         return this;
     }
-    public BlockBuilder addCoinbasePayToPublicKeyHash(byte[] PublicKeyHash, String CoinbaseMessage){
+    public BlockBuilder addCoinbasePayToPublicKeyHash(byte[] PublicKeyHash, String CoinbaseMessage) throws NoSuchTransactionException, NoSuchBlockException, InvalidBlockException {
         Transaction transaction = new TransactionBuilder().setVersion(1).setLockTime(0)
                 .addInput(new TransactionInputBuilder().setInputTransaction(new byte[64], block.Header.BlockHeight).setUnlockingScript(new ScriptBuilder(68).push(Hash.getSHA512Bytes(CoinbaseMessage)).op(ScriptOperator.TRUE).op(ScriptOperator.VERIFY).get()).get())
-                .addOutput(new TransactionOutputBuilder().setPayToPublicKeyHash(PublicKeyHash).setAmount(Block.CalculateBlockReward(0)).get()).get();
+                .addOutput(new TransactionOutputBuilder().setPayToPublicKeyHash(PublicKeyHash).setAmount(Block.CalculateBlockReward(block.Header.BlockHeight) + block.getFees()).get()).get();
         block.addCoinbaseTransaction(transaction);
         return this;
     }

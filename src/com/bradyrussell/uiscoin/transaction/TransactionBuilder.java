@@ -30,17 +30,6 @@ public class TransactionBuilder {
         return this;
     }
 
-/*    @Deprecated // this is not consistent, everything else takes PubKeyHash
-    public TransactionBuilder addChangeOutput(byte[] FullAddress, long FeeToLeave){
-        long Amount = (transaction.getInputTotal() - transaction.getOutputTotal()) - FeeToLeave;
-
-        assert Amount > 0;
-
-        UISCoinAddress.DecodedAddress decodedAddress = UISCoinAddress.decodeAddress(FullAddress);
-        transaction.addOutput(new TransactionOutputBuilder().setPayToPublicKeyHash(decodedAddress.PublicKeyHash).setAmount(Amount).get());
-        return this;
-    }*/
-
     public TransactionBuilder addChangeOutputToPublicKeyHash(byte[] PublicKeyHash, long FeeToLeave) throws NoSuchTransactionException, NoSuchBlockException {
         long Amount = (transaction.getInputTotal() - transaction.getOutputTotal()) - FeeToLeave;
 

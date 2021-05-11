@@ -1,6 +1,6 @@
 package com.bradyrussell.uiscoin.blockchain;
 
-import com.bradyrussell.uiscoin.Util;
+import com.bradyrussell.uiscoin.BytesUtil;
 import com.bradyrussell.uiscoin.block.Block;
 import com.bradyrussell.uiscoin.blockchain.exception.InvalidBlockException;
 import com.bradyrussell.uiscoin.blockchain.exception.NoSuchBlockException;
@@ -35,13 +35,13 @@ public class BlockChain {
         return Storage;
     }
 
-    public static boolean Verify(int StartBlockHeight) throws NoSuchBlockException, InvalidBlockException {
+    public static boolean Verify(int StartBlockHeight) throws NoSuchBlockException, InvalidBlockException, NoSuchTransactionException {
         List<Block> blockChain = get().getBlockChainFromHeight(StartBlockHeight);
         for (Block b : blockChain) {
             if (!b.Verify()) {
                 b.DebugVerify();
-                Log.warning("Block " + Util.Base64Encode(b.Header.getHash()) + " at height " + b.Header.BlockHeight + " has failed verification!");
-                throw new InvalidBlockException("Block " + Util.Base64Encode(b.Header.getHash()) + " at height " + b.Header.BlockHeight + " has failed verification!");
+                Log.warning("Block " + BytesUtil.Base64Encode(b.Header.getHash()) + " at height " + b.Header.BlockHeight + " has failed verification!");
+                throw new InvalidBlockException("Block " + BytesUtil.Base64Encode(b.Header.getHash()) + " at height " + b.Header.BlockHeight + " has failed verification!");
             }
         }
         return true;
@@ -55,11 +55,11 @@ public class BlockChain {
         for (Block b : blockChain) {
             for (Transaction transaction : b.Transactions) {
                 for (TransactionInput input : transaction.Inputs) {
-                    final byte[] concatArray = Util.ConcatArray(input.InputHash, Util.NumberToByteArray32(input.IndexNumber));
+                    final byte[] concatArray = BytesUtil.ConcatArray(input.InputHash, BytesUtil.NumberToByteArray32(input.IndexNumber));
                     TransactionOutputs.removeIf(bytes -> Arrays.equals(bytes,concatArray)); // this has been spent, remove it
                 }
                 for (int i = 0; i < transaction.Outputs.size(); i++) {
-                    TransactionOutputs.add(Util.ConcatArray(transaction.getHash(), Util.NumberToByteArray32(i)));
+                    TransactionOutputs.add(BytesUtil.ConcatArray(transaction.getHash(), BytesUtil.NumberToByteArray32(i)));
                 }
             }
         }
@@ -72,7 +72,7 @@ public class BlockChain {
             System.arraycopy(transactionOutput, 64, Index, 0, 4);
 
             //System.out.println("Saving UTXO " + Util.Base64Encode(transactionOutput));
-            Storage.putUnspentTransactionOutput(TsxnHash, Util.ByteArrayToNumber32(Index), Storage.getTransactionOutput(TsxnHash, Util.ByteArrayToNumber32(Index)));
+            Storage.putUnspentTransactionOutput(TsxnHash, BytesUtil.ByteArrayToNumber32(Index), Storage.getTransactionOutput(TsxnHash, BytesUtil.ByteArrayToNumber32(Index)));
         }
     }
 }

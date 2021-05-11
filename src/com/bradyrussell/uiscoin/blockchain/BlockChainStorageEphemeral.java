@@ -1,7 +1,7 @@
 package com.bradyrussell.uiscoin.blockchain;
 
 import com.bradyrussell.uiscoin.Hash;
-import com.bradyrussell.uiscoin.Util;
+import com.bradyrussell.uiscoin.BytesUtil;
 import com.bradyrussell.uiscoin.transaction.Transaction;
 
 import java.nio.ByteBuffer;
@@ -36,7 +36,7 @@ public class BlockChainStorageEphemeral extends BlockChainStorageBase {
             BlockHeight = buf.getInt();
             buf.get(HighestBlockHash);
 
-            Log.info("Loaded blockchain " + (BlockHeight + 1) + " blocks long. Last block: " + Util.Base64Encode(HighestBlockHash));
+            Log.info("Loaded blockchain " + (BlockHeight + 1) + " blocks long. Last block: " + BytesUtil.Base64Encode(HighestBlockHash));
         }
 
         MemPool = new ArrayList<>();

@@ -1,9 +1,11 @@
 package com.bradyrussell.uiscoin.script;
 
-import com.bradyrussell.uiscoin.Util;
+import com.bradyrussell.uiscoin.BytesUtil;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 
 public class ScriptParser {
@@ -28,7 +30,11 @@ public class ScriptParser {
     private static byte[] TokenLiteralToBytes(String Token){
         String s = Token.strip();
         if(s.startsWith("0x")){ // hex push data
-            return( Util.getBytesFromHexString(s.substring(2)));
+            return( BytesUtil.getBytesFromHexString(s.substring(2)));
+        } else if(s.equalsIgnoreCase("true")){
+            return new byte[]{0x01};
+        } else if(s.equalsIgnoreCase("false")){
+            return new byte[]{0x00};
         } else if(s.startsWith("[")){ // byte array push data
             return( ScriptUtil.ByteArrayStringToBytes(s));
         } else if(s.startsWith("{")){ // code block push data
@@ -42,11 +48,21 @@ public class ScriptParser {
         }
     }
 
+
+
+    public static byte[] CompileScriptTokensToBytecode_2(ArrayList<String> Tokens) {
+
+
+
+        return null;
+    }
+
     public static byte[] CompileScriptTokensToBytecode(ArrayList<String> Tokens){
         HashMap<String, Integer> SymbolTable = new HashMap<>();
+        HashMap<String, ArrayList<Integer>> GotoTable = new HashMap<>(); // label : jump position
         int NextSymbol = 1; // we put a stack cookie in 0
 
-        ScriptBuilder scriptBuilder = new ScriptBuilder(Tokens.size()+1024);
+        ScriptBuilder scriptBuilder = new ScriptBuilder(Tokens.size()+102400);
 
         for (int i = 0; i < Tokens.size(); i++) {
             String token = Tokens.get(i);
@@ -62,6 +78,49 @@ public class ScriptParser {
             } else if (token.startsWith("[")) { // byte array data
                 scriptBuilder.data(ScriptUtil.ByteArrayStringToBytes(token));
                 continue;
+            } else if (token.startsWith("goto")) { // goto
+                scriptBuilder.pushByte(0x80); // dummy
+                scriptBuilder.op(token.equals("gotoif") ? ScriptOperator.JUMPIF : ScriptOperator.JUMP);
+
+                int jumpPosition = scriptBuilder.buffer.position();
+                String gotoLabel = Tokens.get(++i);
+
+                if(GotoTable.containsKey(gotoLabel)) {
+                    GotoTable.get(gotoLabel).add(jumpPosition);
+                } else {
+                    GotoTable.put(gotoLabel, new ArrayList<Integer>(Collections.singletonList(jumpPosition)));
+                }
+                continue;
+            } else if (token.startsWith(":")) { // label
+                String gotoLabel = Tokens.get(++i);
+                if(GotoTable.containsKey(gotoLabel)) {
+                    System.out.println("Jumps to this label: "+GotoTable.get(gotoLabel).size());
+
+                    ArrayList<Integer> integers = GotoTable.get(gotoLabel);
+                    //Collections.reverse(integers);
+                    for (Integer jumpFromLocation : integers) {
+                        System.out.println("rewriting for "+jumpFromLocation);
+                        byte[] originalScriptBytes = scriptBuilder.get();
+
+                        byte[] beforeJump = new byte[jumpFromLocation-1]; // put at end here
+                        byte[] jumpAndAfter = new byte[originalScriptBytes.length-(jumpFromLocation-1)];
+
+                        System.out.println(Arrays.toString(originalScriptBytes));
+
+                        System.arraycopy(originalScriptBytes, 0, beforeJump, 0, jumpFromLocation-1);
+                        System.arraycopy(originalScriptBytes, jumpFromLocation-1, jumpAndAfter, 0, jumpAndAfter.length);
+
+                        beforeJump[beforeJump.length-1] = (byte) (1+scriptBuilder.buffer.position() - jumpFromLocation); // new jump amount
+
+                        System.out.println(Arrays.toString(beforeJump));
+                        System.out.println(Arrays.toString(jumpAndAfter));
+
+                        scriptBuilder = new ScriptBuilder(scriptBuilder.buffer.limit()).data(BytesUtil.ConcatArray(beforeJump, jumpAndAfter));
+                    }
+                } else {
+                    System.out.println("Nothing jumps to this label. "+gotoLabel);
+                }
+                continue;
             } else if (token.startsWith("*$")) { // addressof symbol
                 String assignedSymbol = token.substring(2);
 
@@ -76,66 +135,138 @@ public class ScriptParser {
                     scriptBuilder.pushByte(SymbolTable.get(assignedSymbol));
                 }
 
-            }  else if (token.startsWith("$")) { // declaration or assignment
+            }  else if (token.startsWith("$")) { // declaration or assignment // todo here
                 String symbol = token.substring(1);
 
                 if(symbol.length() < 1){
                     continue;
                 }
 
-                //assignment
-                if(Tokens.size() > i+1 && Tokens.get(i+1).startsWith("=")) {
-                    if(Tokens.size() > i+2) {
-                        if(!SymbolTable.containsKey(symbol)) {
-                            System.out.println("Error! Symbol \""+symbol+"\" was not defined in this scope!");
-                            i++;
-                            continue;
-                        }
+                // array access
+                if(Tokens.get(i+1).startsWith("[")) {
+                    String arrayGetter = Tokens.get(++i); // [0:4]
+                    String[] arrayGetterSplit = arrayGetter.replace("[", "").replace("]", "").split(":");
 
-                        String assignedValue = Tokens.get(i+2).strip();
-                        if(assignedValue.startsWith("$")){ // variable / pick x
-                            String assignedSymbol = assignedValue.substring(1);
-                            // assign to value of another op
-                            try{
-                                // allow for direct $x addressing
-                                scriptBuilder.push(ScriptUtil.NumberStringToBytes(assignedSymbol, false)).op(ScriptOperator.PICK);
-                            } catch (NumberFormatException e) {
-                                // get symbol address
-                                scriptBuilder.pushByte(SymbolTable.get(assignedSymbol)).op(ScriptOperator.PICK);
-                            }
-
-                        } else if (assignedValue.startsWith("*$")) { // addressof symbol
-                            String assignedSymbol = assignedValue.substring(2);
-
-                            if(assignedSymbol.length() < 1){
-                                continue;
-                            }
-
-                            if(!SymbolTable.containsKey(assignedSymbol)) {
-                                System.out.println("Error! Symbol \""+assignedSymbol+"\" was not defined in this scope!");
-                                continue;
-                            } else {
-                                scriptBuilder.pushByte(SymbolTable.get(assignedSymbol));
-                            }
-
-                        } else {
-                            // assign to value of literal
-                            scriptBuilder.push(TokenLiteralToBytes(assignedValue));
-                        }
-                        scriptBuilder.pushByte(SymbolTable.get(symbol)); // location to assign to
-                        scriptBuilder.op(ScriptOperator.PUT);
-                        i++;
+                    int ArrayIndex = -1;
+                    int TypeSize = -1;
+                    try {
+                        ArrayIndex = Integer.parseInt(arrayGetterSplit[0]);
+                        TypeSize = Integer.parseInt(arrayGetterSplit[1]);
+                    } catch (Exception e){
+                        System.out.println("Error! Cannot parse array access "+arrayGetter+"!");
+                        continue;
                     }
-                    i++;
-                } else { // declaration
-                    if(SymbolTable.containsKey(symbol)) {
-                        System.out.println("Symbol \""+symbol+"\" was already defined in this scope!");
-                    } else {
-                        SymbolTable.put(symbol, NextSymbol++);
-                        System.out.println("Assigned \""+symbol+"\" to $"+(NextSymbol-1)+".");
+
+                    //array value assignment
+                    if (Tokens.size() > i + 1 && Tokens.get(i + 1).startsWith("=")) {
+                        if (Tokens.size() > i + 2) {
+                            if (!SymbolTable.containsKey(symbol)) {
+                                System.out.println("Error! Symbol \"" + symbol + "\" was not defined in this scope!");
+                                i++;
+                                continue;
+                            }
+
+                            String assignedValue = Tokens.get(i + 2).strip();
+                            if (assignedValue.startsWith("$")) { // variable / pick x // todo here
+                                String assignedSymbol = assignedValue.substring(1);
+                                // assign to value of another op
+                                try {
+                                    // allow for direct $x addressing
+                                    scriptBuilder.push(ScriptUtil.NumberStringToBytes(assignedSymbol, false)).op(ScriptOperator.PICK);
+                                } catch (NumberFormatException e) {
+                                    // get symbol address
+                                    scriptBuilder.pushByte(SymbolTable.get(assignedSymbol)).op(ScriptOperator.PICK);
+                                }
+
+                            } else if (assignedValue.startsWith("*$")) { // addressof symbol
+                                String assignedSymbol = assignedValue.substring(2);
+
+                                if (assignedSymbol.length() < 1) {
+                                    continue;
+                                }
+
+                                if (!SymbolTable.containsKey(assignedSymbol)) {
+                                    System.out.println("Error! Symbol \"" + assignedSymbol + "\" was not defined in this scope!");
+                                    continue;
+                                } else {
+                                    scriptBuilder.pushByte(SymbolTable.get(assignedSymbol));
+                                }
+
+                            } else {
+                                // assign to value of literal
+                                scriptBuilder.push(TokenLiteralToBytes(assignedValue));
+                            }
+                            scriptBuilder.pushInt(SymbolTable.get(symbol)); // location to assign to // SET expects int
+                            scriptBuilder.pushInt(ArrayIndex*TypeSize); // array index
+                            scriptBuilder.pushInt(TypeSize);   // length
+                            scriptBuilder.op(ScriptOperator.SET);
+                            i++;
+                        }
+                        i++;
+                    } else { // declaration
+                        if (SymbolTable.containsKey(symbol)) {
+                            System.out.println("Symbol \"" + symbol + "\" was already defined in this scope!");
+                        } else {
+                            SymbolTable.put(symbol, NextSymbol++);
+                            System.out.println("Assigned \"" + symbol + "\" to $" + (NextSymbol - 1) + ".");
+                        }
+                    }
+
+                } // else ?
+                else {
+                    //assignment
+                    if (Tokens.size() > i + 1 && Tokens.get(i + 1).startsWith("=")) {
+                        if (Tokens.size() > i + 2) {
+                            if (!SymbolTable.containsKey(symbol)) {
+                                System.out.println("Error! Symbol \"" + symbol + "\" was not defined in this scope!");
+                                i++;
+                                continue;
+                            }
+
+                            String assignedValue = Tokens.get(i + 2).strip();
+                            if (assignedValue.startsWith("$")) { // variable / pick x // todo here
+                                String assignedSymbol = assignedValue.substring(1);
+                                // assign to value of another op
+                                try {
+                                    // allow for direct $x addressing
+                                    scriptBuilder.push(ScriptUtil.NumberStringToBytes(assignedSymbol, false)).op(ScriptOperator.PICK);
+                                } catch (NumberFormatException e) {
+                                    // get symbol address
+                                    scriptBuilder.pushByte(SymbolTable.get(assignedSymbol)).op(ScriptOperator.PICK);
+                                }
+
+                            } else if (assignedValue.startsWith("*$")) { // addressof symbol // todo here
+                                String assignedSymbol = assignedValue.substring(2);
+
+                                if (assignedSymbol.length() < 1) {
+                                    continue;
+                                }
+
+                                if (!SymbolTable.containsKey(assignedSymbol)) {
+                                    System.out.println("Error! Symbol \"" + assignedSymbol + "\" was not defined in this scope!");
+                                    continue;
+                                } else {
+                                    scriptBuilder.pushByte(SymbolTable.get(assignedSymbol));
+                                }
+
+                            } else {
+                                // assign to value of literal
+                                scriptBuilder.push(TokenLiteralToBytes(assignedValue));
+                            }
+                            scriptBuilder.pushByte(SymbolTable.get(symbol)); // location to assign to
+                            scriptBuilder.op(ScriptOperator.PUT);
+                            i++;
+                        }
+                        i++;
+                    } else { // declaration
+                        if (SymbolTable.containsKey(symbol)) {
+                            System.out.println("Symbol \"" + symbol + "\" was already defined in this scope!");
+                        } else {
+                            SymbolTable.put(symbol, NextSymbol++);
+                            System.out.println("Assigned \"" + symbol + "\" to $" + (NextSymbol - 1) + ".");
+                        }
                     }
                 }
-
                 continue;
             } else if (token.startsWith("if")) { // if syntax
                 if(Tokens.size() > i+1 && Tokens.get(i+1).startsWith("(")) { // if parameter
@@ -198,7 +329,7 @@ public class ScriptParser {
 
                     for (String s : parametersArray) {
                         s = s.strip();
-                        if(s.startsWith("$")){ // variable / pick x
+                        if(s.startsWith("$")){ // variable / pick x // todo here
                             try{
                                 // allow for direct $x addressing
                                 scriptBuilder.push(ScriptUtil.NumberStringToBytes(s.substring(1), false)).op(ScriptOperator.PICK);
@@ -207,7 +338,7 @@ public class ScriptParser {
                                 if(!SymbolTable.containsKey(s.substring(1))) continue;
                                 scriptBuilder.pushByte(SymbolTable.get(s.substring(1))).op(ScriptOperator.PICK);
                             }
-                        } else if (s.startsWith("*$")) { // addressof symbol
+                        } else if (s.startsWith("*$")) { // addressof symbol // todo here
                             String assignedSymbol = s.substring(2);
 
                             if(assignedSymbol.length() < 1){
@@ -254,7 +385,7 @@ public class ScriptParser {
                 }
                 case FLAG -> {
                     if(Tokens.get(++i).startsWith("0x")){ // hex byte flag
-                        scriptBuilder.flag(Util.getBytesFromHexString(Tokens.get(i).substring(2))[0]);
+                        scriptBuilder.flag(BytesUtil.getBytesFromHexString(Tokens.get(i).substring(2))[0]);
                     } else { // interp as byte flag
                         scriptBuilder.flag(Byte.parseByte(Tokens.get(i)));
                     }
@@ -275,7 +406,7 @@ public class ScriptParser {
             }
         }
         int NumberOfVariables = SymbolTable.size();
-        return Util.ConcatArray(Util.ConcatArray(InitializeStackSpaceForVariables(NumberOfVariables), scriptBuilder.get()), CleanupStackSpaceForVariables(NumberOfVariables));
+        return BytesUtil.ConcatArray(BytesUtil.ConcatArray(InitializeStackSpaceForVariables(NumberOfVariables), scriptBuilder.get()), CleanupStackSpaceForVariables(NumberOfVariables));
     }
 
     public static byte[] InitializeStackSpaceForVariables(int NumberOfVariables) {
@@ -312,6 +443,10 @@ public class ScriptParser {
 
             StringBuilder currentToken = new StringBuilder();
 
+            //todo check for -1 but not 1-1
+            // or should i just treat it separately
+
+            // if is numeric and end of token or the next char is numeric too. this is to avoid capturing 0x00
             if(isCharacterNumericToken(CurrentChar) && (i+1 >= scriptText.length() || isCharacterNumericToken(scriptText.charAt(i+1)))) { // numeric values,  will match 1.0e-4, 0, .0, 0., 0.0 but not 0x00, 1-1, 1.0-1.0 etc
                 while (i < scriptText.length()) {
                     char ch = scriptText.charAt(i++);
