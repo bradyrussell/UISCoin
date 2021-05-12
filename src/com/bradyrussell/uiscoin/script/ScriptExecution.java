@@ -1145,6 +1145,74 @@ public class ScriptExecution {
                 case CODESEPARATOR -> {
 
                 }
+                case VERIFYMULTISIG -> {
+                    /**
+                     * input stack:
+                     * [signatures...]
+                     * [number of required signatures]
+                     * [public keys]
+                     * [number of public keys]
+                     *
+                     */
+                    if (SignatureVerificationMessage == null) {
+                        Log.warning("SignatureVerificationMessage has not been set!");
+                        bScriptFailed = true;
+                        return false;
+                    }
+
+                    CheckInsufficientStackSize(1);
+
+                    byte[] NumPublicKeysBytes = Stack.pop();
+                    CheckIncorrectNumberBytes(NumPublicKeysBytes, 1);
+                    byte NumPublicKeys = NumPublicKeysBytes[0];
+
+                    CheckInsufficientStackSize(NumPublicKeys+1);
+
+                    ArrayList<byte[]> PublicKeys = new ArrayList<>();
+
+                    for (int i = 0; i < NumPublicKeys; i++) {
+                        PublicKeys.add(Stack.pop());
+                    }
+
+                    byte[] NumSignaturesBytes = Stack.pop();
+                    CheckIncorrectNumberBytes(NumSignaturesBytes, 1);
+                    byte NumSignatures = NumSignaturesBytes[0];
+
+                    ArrayList<byte[]> Signatures = new ArrayList<>();
+
+                    CheckInsufficientStackSize(NumSignatures);
+
+                    for (int i = 0; i < NumSignatures; i++) {
+                        Signatures.add(Stack.pop());
+                    }
+
+                    ArrayList<byte[]> VerifiedPublicKeys = new ArrayList<>();
+
+                    for (byte[] signature : Signatures) {
+                        boolean bVerified = false;
+                        for (byte[] publicKey : PublicKeys) {
+                            if(VerifiedPublicKeys.contains(publicKey)) continue; // skip verified public keys, otherwise one keyholder could submit multiple sigs
+                            try {
+                                boolean verifySignedData = Keys.VerifySignedData(new Keys.SignedData(publicKey, signature, SignatureVerificationMessage));
+                                if(verifySignedData) {
+                                    bVerified = true;
+                                    VerifiedPublicKeys.add(publicKey);
+                                    break;//next signature
+                                }
+                            } catch (NoSuchAlgorithmException | InvalidKeySpecException | InvalidKeyException | SignatureException e) {
+                                e.printStackTrace();
+                                bScriptFailed = true;
+                                return false;
+                            }
+                        }
+                        if(!bVerified) {
+                            bScriptFailed = true;
+                            return false;
+                        }
+                    }
+                    // success
+                    return false;
+                }
                 case LIMIT -> {
                     CheckInsufficientStackSize(2);
 

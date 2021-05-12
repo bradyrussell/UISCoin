@@ -1,6 +1,9 @@
 package com.bradyrussell.uiscoin.script;
 
 public enum ScriptOperator {
+    /**
+     * No operation, this operator is ignored
+     */
     NOP(0x00), //
     /**
      *the next byte specifies the number of following bytes to put on the stack
@@ -392,6 +395,16 @@ public enum ScriptOperator {
 
     // code
     CODESEPARATOR(0xc1),
+
+    /**
+     * input stack:
+     * [signatures...] byte[]
+     * [number of required signatures] byte
+     * [public keys...] byte[]
+     * [number of public keys] byte
+     *
+     */
+    VERIFYMULTISIG(0xc2), //
 
     /**
      * Executes script bytecode from the stack. Stack elements are [virtual script bytecode] [byte number of stack items to take] then N byte arrays
