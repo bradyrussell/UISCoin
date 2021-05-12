@@ -252,7 +252,7 @@ public class Block implements IBinaryData, IVerifiable {
         if(Transactions.size() <= 0) return 0;
         long totalFees = 0;
         for (Transaction transaction : Transactions) {
-            totalFees += Math.abs(transaction.getFees());
+            totalFees += Math.max(transaction.getFees(), 0);
         }
         if(totalFees < 0) throw new InvalidBlockException("This block has negative fees.");
         return totalFees;
