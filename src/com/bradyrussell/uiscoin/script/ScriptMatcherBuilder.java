@@ -27,6 +27,11 @@ public class ScriptMatcherBuilder {
         return this;
     }
 
+    public ScriptMatcherBuilder setNumberOptionalOperationsAtEnd(int NumberOptionalOperations){
+        matcher.OptionalOperatorsAtEnd = NumberOptionalOperations;
+        return this;
+    }
+
     public ScriptMatcher get(){
         return matcher;
     }

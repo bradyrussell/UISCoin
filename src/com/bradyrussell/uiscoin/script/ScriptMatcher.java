@@ -3,11 +3,18 @@ package com.bradyrussell.uiscoin.script;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
+/**
+ * ScriptMatcher is used to match and / or extract push data from scripts.
+ * ScriptMatcher#match returns a boolean as to whether the script matches the matcher.
+ * A matcher, created with ScriptMatcherBuilder, matches a script
+ * There are default matchers provided for the default transaction types.
+ */
 public class ScriptMatcher {
     private static final Logger Log = Logger.getLogger(ScriptMatcher.class.getName());
     // null = 1 byte wildcard
     public ArrayList<ScriptOperator> scriptMatch = new ArrayList<>();
     public ArrayList<byte[]> PushContents = new ArrayList<>();
+    public int OptionalOperatorsAtEnd = 0;
 
     public boolean match(byte[] Script) {
         PushContents.clear();
@@ -32,8 +39,7 @@ public class ScriptMatcher {
                 return false;
             }
         }
-        Log.fine("Script matched!");
-        return true;
+        return expected_i + OptionalOperatorsAtEnd >= scriptMatch.size(); // this will return false if the provided script is shorter than the original, ignoring optionals
     }
 
     public byte[] getPushData(int Index) {
@@ -50,6 +56,7 @@ public class ScriptMatcher {
                 .push()
                 .op(ScriptOperator.VERIFYSIG)
                 .push() //memo
+                .setNumberOptionalOperationsAtEnd(1)
                 .get();
     }
 
@@ -63,6 +70,7 @@ public class ScriptMatcher {
                 .op(ScriptOperator.VERIFY)
                 .op(ScriptOperator.VERIFYSIG)
                 .push() //memo
+                .setNumberOptionalOperationsAtEnd(1)
                 .get();
     }
 
@@ -75,6 +83,7 @@ public class ScriptMatcher {
                 .op(ScriptOperator.BYTESEQUAL) // equal to provided input password hash?
                 .op(ScriptOperator.VERIFY)
                 .push() //memo
+                .setNumberOptionalOperationsAtEnd(1)
                 .get();
     }
 
@@ -106,6 +115,7 @@ public class ScriptMatcher {
                 .op(ScriptOperator.CALL)// [resulting stack][1 / 0]
                 .op(ScriptOperator.VERIFY)
                 .push() //memo
+                .setNumberOptionalOperationsAtEnd(1)
                 .get();
     }
 }

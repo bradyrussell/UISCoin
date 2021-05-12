@@ -1807,6 +1807,19 @@ public class ScriptTest {
     }
 
     @RepeatedTest(1)
+    @DisplayName("Script Matcher True Optional")
+    void TestScriptMatcherMemo()  {
+        byte[] publicKeyHash = new byte[64];
+        byte[] lockingScript = new TransactionOutputBuilder()
+                .setAmount(123)
+                .setPayToPublicKeyHash(publicKeyHash).get().LockingScript;
+
+        ScriptMatcher matcherP2PKH = ScriptMatcher.getMatcherP2PKH();
+        assertTrue(matcherP2PKH.match(lockingScript));
+        assertTrue(Arrays.equals(matcherP2PKH.getPushData(0),publicKeyHash));
+    }
+
+    @RepeatedTest(1)
     @DisplayName("Script Matcher False")
     void TestScriptMatcherFalse()  {
         ScriptMatcher scriptMatcherp2pkh = ScriptMatcher.getMatcherP2PKH();
