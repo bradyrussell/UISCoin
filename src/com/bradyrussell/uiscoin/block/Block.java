@@ -249,10 +249,10 @@ public class Block implements IBinaryData, IVerifiable {
     }
 
     public long getFees() throws NoSuchTransactionException, NoSuchBlockException, InvalidBlockException {
-        if(Transactions.size() <= 1) return 0;
+        if(Transactions.size() <= 0) return 0;
         long totalFees = 0;
-        for (Transaction transaction : Transactions.subList(1,Transactions.size()-1)) {
-            totalFees += transaction.getFees();
+        for (Transaction transaction : Transactions) {
+            totalFees += Math.abs(transaction.getFees());
         }
         if(totalFees < 0) throw new InvalidBlockException("This block has negative fees.");
         return totalFees;

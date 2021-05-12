@@ -129,6 +129,12 @@ public class BlockBuilder {
         return this;
     }
     public BlockBuilder addCoinbasePayToPublicKeyHash(byte[] PublicKeyHash, String CoinbaseMessage) throws NoSuchTransactionException, NoSuchBlockException, InvalidBlockException {
+        if(block.Transactions.size() == 0) {
+            Log.warning("Coinbase transaction should be added last in order to calculate fees!");
+        }
+        if(block.getFees() <= 0) {
+            Log.warning("Coinbase transaction does not collect any fees!");
+        }
         Transaction transaction = new TransactionBuilder().setVersion(1).setLockTime(0)
                 .addInput(new TransactionInputBuilder().setInputTransaction(new byte[64], block.Header.BlockHeight).setUnlockingScript(new ScriptBuilder(68).push(Hash.getSHA512Bytes(CoinbaseMessage)).op(ScriptOperator.TRUE).op(ScriptOperator.VERIFY).get()).get())
                 .addOutput(new TransactionOutputBuilder().setPayToPublicKeyHash(PublicKeyHash).setAmount(Block.CalculateBlockReward(block.Header.BlockHeight) + block.getFees()).get()).get();
