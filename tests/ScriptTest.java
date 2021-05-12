@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.ECPublicKey;
@@ -1793,14 +1794,16 @@ public class ScriptTest {
     @DisplayName("Script Matcher True")
     void TestScriptMatcher()  {
         byte[] publicKeyHash = new byte[64];
+        String memo = "memo";
         byte[] lockingScript = new TransactionOutputBuilder()
                 .setAmount(123)
-                .setMemo("hello")
+                .setMemo(memo)
                 .setPayToPublicKeyHash(publicKeyHash).get().LockingScript;
 
         ScriptMatcher matcherP2PKH = ScriptMatcher.getMatcherP2PKH();
         assertTrue(matcherP2PKH.match(lockingScript));
         assertTrue(Arrays.equals(matcherP2PKH.getPushData(0),publicKeyHash));
+        //assertTrue(Arrays.equals(matcherP2PKH.getPushData(1),memo.getBytes(StandardCharsets.US_ASCII)));
     }
 
     @RepeatedTest(1)

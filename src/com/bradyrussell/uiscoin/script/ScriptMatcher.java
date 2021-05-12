@@ -1,8 +1,10 @@
 package com.bradyrussell.uiscoin.script;
 
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 public class ScriptMatcher {
+    private static final Logger Log = Logger.getLogger(ScriptMatcher.class.getName());
     // null = 1 byte wildcard
     public ArrayList<ScriptOperator> scriptMatch = new ArrayList<>();
     public ArrayList<byte[]> PushContents = new ArrayList<>();
@@ -10,14 +12,17 @@ public class ScriptMatcher {
     public boolean match(byte[] Script) {
         PushContents.clear();
         int expected_i = 0;
-        for (int i = 0; i < Script.length && i < scriptMatch.size(); i++) {
+        for (int i = 0; i < Script.length && expected_i < scriptMatch.size(); i++) {
             ScriptOperator expected = scriptMatch.get(expected_i++);
+            Log.info("Expected: "+(expected == null ? "Any":expected)+" / Actual: "+ScriptOperator.getByOpCode(Script[i]));
             if(expected == null) continue;
 
-            if (Script[i] == ScriptOperator.PUSH.OPCode && expected.equals(ScriptOperator.PUSH)) {
+            if (Script[i] == ScriptOperator.PUSH.OPCode && expected.equals(ScriptOperator.PUSH)) { //todo bigpush
+                Log.info("Skipping push contents.");
                 byte amount = Script[++i];
+                Log.info("Amount: "+amount);
                 byte[] outBytes = new byte[amount];
-                System.arraycopy(Script, ++i, outBytes,0,amount);
+                System.arraycopy(Script, i+1, outBytes,0,amount);
                 PushContents.add(outBytes);
                 i += amount;
                 continue;
@@ -27,6 +32,7 @@ public class ScriptMatcher {
                 return false;
             }
         }
+        Log.info("Script matched!");
         return true;
     }
 
