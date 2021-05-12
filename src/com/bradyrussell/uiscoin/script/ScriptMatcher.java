@@ -14,13 +14,13 @@ public class ScriptMatcher {
         int expected_i = 0;
         for (int i = 0; i < Script.length && expected_i < scriptMatch.size(); i++) {
             ScriptOperator expected = scriptMatch.get(expected_i++);
-            Log.info("Expected: "+(expected == null ? "Any":expected)+" / Actual: "+ScriptOperator.getByOpCode(Script[i]));
+            Log.fine("Expected: "+(expected == null ? "Any":expected)+" / Actual: "+ScriptOperator.getByOpCode(Script[i]));
             if(expected == null) continue;
 
             if (Script[i] == ScriptOperator.PUSH.OPCode && expected.equals(ScriptOperator.PUSH)) { //todo bigpush
-                Log.info("Skipping push contents.");
+                Log.fine("Skipping push contents.");
                 byte amount = Script[++i];
-                Log.info("Amount: "+amount);
+                Log.fine("Amount: "+amount);
                 byte[] outBytes = new byte[amount];
                 System.arraycopy(Script, i+1, outBytes,0,amount);
                 PushContents.add(outBytes);
@@ -32,7 +32,7 @@ public class ScriptMatcher {
                 return false;
             }
         }
-        Log.info("Script matched!");
+        Log.fine("Script matched!");
         return true;
     }
 

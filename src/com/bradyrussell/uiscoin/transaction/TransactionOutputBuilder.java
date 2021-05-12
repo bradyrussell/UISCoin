@@ -141,7 +141,7 @@ public class TransactionOutputBuilder {
 
     public TransactionOutput get(){
         if(Memo != null) {
-            output.LockingScript = BytesUtil.ConcatArray(output.LockingScript, new ScriptBuilder(16+Memo.length()).pushASCIIString(Memo).get());
+            output.LockingScript = BytesUtil.ConcatArray(output.LockingScript, new ScriptBuilder(16+Memo.length()).pushUTF8String(Memo).get());
         }
         return output;
     }

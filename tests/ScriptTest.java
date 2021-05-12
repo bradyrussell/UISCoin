@@ -1803,7 +1803,7 @@ public class ScriptTest {
         ScriptMatcher matcherP2PKH = ScriptMatcher.getMatcherP2PKH();
         assertTrue(matcherP2PKH.match(lockingScript));
         assertTrue(Arrays.equals(matcherP2PKH.getPushData(0),publicKeyHash));
-        //assertTrue(Arrays.equals(matcherP2PKH.getPushData(1),memo.getBytes(StandardCharsets.US_ASCII)));
+        assertTrue(Arrays.equals(matcherP2PKH.getPushData(1),memo.getBytes(StandardCharsets.UTF_8)));
     }
 
     @RepeatedTest(1)

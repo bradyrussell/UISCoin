@@ -136,6 +136,12 @@ public class ScriptBuilder {
         return this;
     }
 
+    public ScriptBuilder pushUTF8String(String Str){
+        byte[] strBytes = Str.getBytes(StandardCharsets.UTF_8);
+        push(strBytes);
+        return this;
+    }
+
     public ScriptBuilder data(byte[] Data){
         buffer.put(Data);
         return this;
