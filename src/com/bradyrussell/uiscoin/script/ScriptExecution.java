@@ -1145,8 +1145,9 @@ public class ScriptExecution {
                 case CODESEPARATOR -> {
 
                 }
+                //noinspection deprecation
                 case VERIFYMULTISIG -> {
-                    /**
+                    /*
                      * input stack:
                      * [signatures...]
                      * [number of required signatures]

@@ -404,6 +404,7 @@ public enum ScriptOperator {
      * [number of public keys] byte
      *
      */
+    @Deprecated // just use P2SH for multisig
     VERIFYMULTISIG(0xc2), //
 
     /**
