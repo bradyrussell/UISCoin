@@ -7,7 +7,9 @@ import com.bradyrussell.uiscoin.address.UISCoinAddress;
 import com.bradyrussell.uiscoin.script.ScriptBuilder;
 import com.bradyrussell.uiscoin.script.ScriptOperator;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class TransactionOutputBuilder {
     TransactionOutput output = new TransactionOutput();
@@ -100,6 +102,21 @@ public class TransactionOutputBuilder {
                 .op(ScriptOperator.BYTESEQUAL) // equal to provided input password hash?
                 .op(ScriptOperator.VERIFY)
                 .get();
+        return this;
+    }
+
+    @Deprecated
+    public TransactionOutputBuilder setPayToMultiSig(int RequiredSignatures, List<byte[]> PublicKeys){
+        ScriptBuilder scriptBuilder = new ScriptBuilder(128+PublicKeys.size()*128)
+                .pushByte(RequiredSignatures);
+
+        for (byte[] publicKey : PublicKeys) {
+            scriptBuilder.push(publicKey);
+        }
+
+        scriptBuilder.pushByte(PublicKeys.size()).op(ScriptOperator.VERIFYMULTISIG);
+
+        output.LockingScript = scriptBuilder.get();
         return this;
     }
 

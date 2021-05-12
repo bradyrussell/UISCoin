@@ -19,10 +19,12 @@ import javax.crypto.NoSuchPaddingException;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.SignatureException;
 import java.security.interfaces.ECPublicKey;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -1269,6 +1271,72 @@ public class ScriptTest {
         assertTrue(!lockingScript.bScriptFailed && !unlockingScript.bScriptFailed);
     }
 
+    @SuppressWarnings("deprecation")
+    @RepeatedTest(100) @DisplayName("Pay to MultiSig Lock & Unlock")
+    void TestPayToMultiSig() throws ScriptInvalidException, ScriptEmptyStackException, ScriptInvalidParameterException, ScriptUnsupportedOperationException, NoSuchAlgorithmException, InvalidKeyException, SignatureException {
+
+        byte[] randomPassword = new byte[64];
+        ThreadLocalRandom.current().nextBytes(randomPassword);
+
+        //String password = BytesUtil.Base64Encode(randomPassword);
+
+        UISCoinKeypair alice = UISCoinKeypair.Create();
+        UISCoinKeypair bob = UISCoinKeypair.Create();
+        UISCoinKeypair charlie = UISCoinKeypair.Create();
+        UISCoinKeypair daniel = UISCoinKeypair.Create();
+
+        TransactionOutput transactionOutput = new TransactionOutputBuilder().setAmount(Conversions.CoinsToSatoshis(1.0)).setPayToMultiSig(2, List.of(alice.Keys.getPublic().getEncoded(),bob.Keys.getPublic().getEncoded(), charlie.Keys.getPublic().getEncoded())).get();
+        byte[] lockingScriptBytes = transactionOutput.LockingScript;
+        byte[] unlockingScriptBytes = new TransactionInputBuilder().setUnlockPayToMultiSig(List.of(charlie,bob),transactionOutput).get().UnlockingScript;
+
+        ScriptExecution unlockingScript = new ScriptExecution();
+        unlockingScript.LogScriptExecution  =true;
+        unlockingScript.Initialize(unlockingScriptBytes);
+
+        System.out.println("Running unlocking script...");
+
+        while(true) {
+            try {
+                if (!unlockingScript.Step()) break;
+            } catch (ScriptEmptyStackException | ScriptInvalidParameterException | ScriptUnsupportedOperationException | ScriptInvalidException e) {
+                e.printStackTrace();
+            }
+            System.out.println("Stack: \n"+unlockingScript.getStackContents());
+        }
+
+        System.out.println("Unlocking script has ended.");
+
+        if(unlockingScript.bScriptFailed) {
+            System.out.println("Unlocking script failed! Terminating...");
+            fail("Unlocking script failed!");
+        }
+
+        ScriptExecution lockingScript = new ScriptExecution();
+        lockingScript.Initialize(lockingScriptBytes, unlockingScript.Stack.elements());
+        lockingScript.LogScriptExecution  =true;
+        lockingScript.setSignatureVerificationMessage(transactionOutput.getHash());
+
+        System.out.println("Running locking script...");
+
+        while(true) {
+            try {
+                if (!lockingScript.Step()) break;
+            } catch (ScriptEmptyStackException | ScriptUnsupportedOperationException | ScriptInvalidException | ScriptInvalidParameterException e) {
+                e.printStackTrace();
+            }
+            System.out.println("Stack: \n"+lockingScript.getStackContents());
+        }
+
+        System.out.println("Locking script has ended.");
+
+        if(lockingScript.bScriptFailed) {
+            System.out.println("Locking script failed! Terminating...");
+
+        }
+
+        assertTrue(!lockingScript.bScriptFailed && !unlockingScript.bScriptFailed);
+    }
+
     @RepeatedTest(100) @DisplayName("Pay to Password Lock & Unlock")
     void TestPayToPassword() throws ScriptInvalidException, ScriptEmptyStackException, ScriptInvalidParameterException, ScriptUnsupportedOperationException {
 
@@ -1282,7 +1350,7 @@ public class ScriptTest {
         byte[] unlockingScriptBytes = new TransactionInputBuilder().setUnlockPayToPassword(password).get().UnlockingScript;
 
         ScriptExecution unlockingScript = new ScriptExecution();
-        unlockingScript.LogScriptExecution  =true;
+        unlockingScript.LogScriptExecution = true;
         unlockingScript.Initialize(unlockingScriptBytes);
 
         System.out.println("Running unlocking script...");

@@ -10,6 +10,8 @@ import java.nio.charset.Charset;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TransactionInputBuilder {
     TransactionInput input = new TransactionInput();
@@ -79,6 +81,18 @@ public class TransactionInputBuilder {
     public TransactionInputBuilder setUnlockPayToPassword(String Password) {
         byte[] dataToPush = (Password + BytesUtil.getConstantSalt()).getBytes(Charset.defaultCharset());
         input.UnlockingScript = new ScriptBuilder(dataToPush.length+2).push(dataToPush).get();
+        return this;
+    }
+
+    @Deprecated
+    public TransactionInputBuilder setUnlockPayToMultiSig(List<UISCoinKeypair> keypairs, TransactionOutput outputToSpend) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
+        ScriptBuilder scriptBuilder = new ScriptBuilder(128+ keypairs.size()*128);
+
+        for (UISCoinKeypair keypair : keypairs) {
+            scriptBuilder.push(Keys.SignData(keypair.Keys, outputToSpend.getHash()).Signature);
+        }
+
+        input.UnlockingScript = scriptBuilder.get();
         return this;
     }
 
