@@ -1,8 +1,16 @@
 package com.bradyrussell.uiscoin.transaction;
 
+import com.bradyrussell.uiscoin.BytesUtil;
+import com.bradyrussell.uiscoin.address.UISCoinAddress;
+import com.bradyrussell.uiscoin.address.UISCoinKeypair;
+import com.bradyrussell.uiscoin.blockchain.BlockChain;
 import com.bradyrussell.uiscoin.blockchain.exception.NoSuchBlockException;
 import com.bradyrussell.uiscoin.blockchain.exception.NoSuchTransactionException;
 
+import java.security.interfaces.ECPublicKey;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.logging.Logger;
 
 public class TransactionBuilder {
@@ -44,6 +52,71 @@ public class TransactionBuilder {
 
         transaction.addOutput(new TransactionOutputBuilder().setPayToPublicKeyHash(PublicKeyHash).setAmount(Amount).get());
         Log.info("Added change output to transaction for "+Amount+" satoshis.");
+        return this;
+    }
+
+    public TransactionBuilder addInputsFromP2pkhUtxo(UISCoinKeypair UnlockingKeypair, long AmountIncludingEstimatedFee) {
+        ArrayList<byte[]> outputsToAddress = BlockChain.get().matchUTXOForP2PKHAddress(UISCoinAddress.decodeAddress(UISCoinAddress.fromPublicKey((ECPublicKey) UnlockingKeypair.Keys.getPublic())).HashData);
+
+        System.out.println("Found " + outputsToAddress.size() + " unspent outputs to your address.");
+
+        // todo could this be optimized with subset nearest to sum?
+
+        long totalBalance = 0;
+
+        // sort by ascending amount
+        TreeMap<Long,byte[]> utxosByAmount = new TreeMap<>();
+        for (byte[] toAddress : outputsToAddress) {
+            byte[] TsxnHash = new byte[64];
+            byte[] IndexBytes = new byte[4];
+
+            System.arraycopy(toAddress, 0, TsxnHash, 0, 64);
+            System.arraycopy(toAddress, 64, IndexBytes, 0, 4);
+
+            long amount;
+            try {
+                amount = BlockChain.get().getUnspentTransactionOutput(TsxnHash, BytesUtil.ByteArrayToNumber32(IndexBytes)).Amount;
+            } catch (NoSuchTransactionException e) {
+                e.printStackTrace();
+                continue;
+            }
+            totalBalance += amount;
+            utxosByAmount.put(amount, toAddress);
+        }
+
+        if(totalBalance < AmountIncludingEstimatedFee) {
+            Log.warning("Insufficient funds to add inputs for "+AmountIncludingEstimatedFee+" sats!");
+            return this;
+        }
+
+        long currentTotal = 0;
+
+        for (Map.Entry<Long, byte[]> utxo : utxosByAmount.entrySet()) {
+            try {
+                byte[] TsxnHash = new byte[64];
+                byte[] IndexBytes = new byte[4];
+
+                System.arraycopy(utxo.getValue(), 0, TsxnHash, 0, 64);
+                System.arraycopy(utxo.getValue(), 64, IndexBytes, 0, 4);
+
+                TransactionOutput output = BlockChain.get().getTransactionOutput(TsxnHash, BytesUtil.ByteArrayToNumber32(IndexBytes));
+                currentTotal += utxo.getKey();
+                transaction.addInput(
+                        new TransactionInputBuilder()
+                                .setUnlockPayToPublicKeyHash(UnlockingKeypair, output)
+                                .setInputTransaction(TsxnHash,BytesUtil.ByteArrayToNumber32(IndexBytes))
+                                .get());
+
+            } catch (NoSuchTransactionException | NoSuchBlockException e) {
+                e.printStackTrace();
+            }
+
+            if(currentTotal >= AmountIncludingEstimatedFee) {
+                Log.info("Successfully added inputs from P2PKH outputs!");
+                break;
+            }
+        }
+
         return this;
     }
 
