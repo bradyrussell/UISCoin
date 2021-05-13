@@ -140,7 +140,7 @@ public class Transaction implements IBinaryData, IVerifiable {
     @Override //https://www.oreilly.com/library/view/mastering-bitcoin/9781491902639/ch08.html
     public boolean Verify() {
         try {
-            return VerifyInputs() && VerifyOutputs() && getFees() > getSize() * MagicNumbers.MinSatPerByte.Value
+            return VerifyInputs() && VerifyOutputs() && getFees() > (long) getSize() * MagicNumbers.MinSatPerByte.Value
                     && Inputs.size() > 0 && Outputs.size() > 0 && TimeStamp < Long.MAX_VALUE
                     && getSize() < MagicNumbers.MaxTransactionSize.Value && getFees() > 0 && getInputTotal() > 0 && getOutputTotal() > 0;
         } catch (NoSuchTransactionException | NoSuchBlockException e) {
@@ -161,8 +161,8 @@ public class Transaction implements IBinaryData, IVerifiable {
         assert VerifyInputs();
         Log.warning("VerifyOutputs " + VerifyOutputs());
         assert VerifyOutputs();
-        Log.warning("VerifyFees " + (getFees() > getSize() * MagicNumbers.MinSatPerByte.Value));
-        assert getFees() > getSize() * MagicNumbers.MinSatPerByte.Value;
+        Log.warning("VerifyFees " + (getFees() > (long) getSize() * MagicNumbers.MinSatPerByte.Value)+" fee: "+getFees()+" size: "+getSize());
+        assert getFees() > (long) getSize() * MagicNumbers.MinSatPerByte.Value;
         Log.warning("VerifyInputsSize " + (Inputs.size() > 0));
         assert Inputs.size() > 0;
         Log.warning("VerifyOutputsSize " + (Outputs.size() > 0));

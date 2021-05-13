@@ -19,6 +19,7 @@ While UISCoin was largely inspired by Bitcoin, there are some intentional differ
 - Java uses signed bytes, so any implementation in another language will need to as well. ([See here for C++](https://github.com/bradyrussell/UISCoinScriptVM))
 - The block height is stored in the Index of the Coinbase transaction input rather than the script.
 - The unlocking script signature message is the hash of the transaction output you are trying to spend. This allows you to combine multiple unrelated inputs into one transasction. (Not sure how this works in BTC)
+- Transaction fees are collected by the miner in the coinbase transaction. (Pretty sure it does not work like that in BTC)
 - The [difficulty algorithm](https://github.com/bradyrussell/UISCoin/blob/40b0327f5efbbfb06a320874aa1ac41bbeaa6344/src/com/bradyrussell/uiscoin/block/BlockHeader.java#L130) is much simpler, basically if the last block was over five minutes ago, the difficulty is lastBlockDifficulty - 1. If it was before 5 minutes ago it is lastBlockDifficulty + 1. This is not as robust as Bitcoin's but works well enough.
 - As alluded to in the previous bullet point, the target block time is five minutes rather than BTC's ten.
 
