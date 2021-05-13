@@ -55,6 +55,34 @@ public class TransactionBuilder {
         return this;
     }
 
+    public TransactionBuilder addInputsFromAllP2pkhUtxo(UISCoinKeypair UnlockingKeypair) {
+        ArrayList<byte[]> outputsToAddress = BlockChain.get().matchUTXOForP2PKHAddress(UISCoinAddress.decodeAddress(UISCoinAddress.fromPublicKey((ECPublicKey) UnlockingKeypair.Keys.getPublic())).HashData);
+
+        System.out.println("Found " + outputsToAddress.size() + " unspent outputs to your address.");
+
+        for (byte[] toAddress : outputsToAddress) {
+            try {
+                byte[] TsxnHash = new byte[64];
+                byte[] IndexBytes = new byte[4];
+
+                System.arraycopy(toAddress, 0, TsxnHash, 0, 64);
+                System.arraycopy(toAddress, 64, IndexBytes, 0, 4);
+
+                TransactionOutput output = BlockChain.get().getTransactionOutput(TsxnHash, BytesUtil.ByteArrayToNumber32(IndexBytes));
+                transaction.addInput(
+                        new TransactionInputBuilder()
+                                .setUnlockPayToPublicKeyHash(UnlockingKeypair, output)
+                                .setInputTransaction(TsxnHash,BytesUtil.ByteArrayToNumber32(IndexBytes))
+                                .get());
+
+            } catch (NoSuchTransactionException | NoSuchBlockException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return this;
+    }
+
     public TransactionBuilder addInputsFromP2pkhUtxo(UISCoinKeypair UnlockingKeypair, long AmountIncludingEstimatedFee) {
         ArrayList<byte[]> outputsToAddress = BlockChain.get().matchUTXOForP2PKHAddress(UISCoinAddress.decodeAddress(UISCoinAddress.fromPublicKey((ECPublicKey) UnlockingKeypair.Keys.getPublic())).HashData);
 

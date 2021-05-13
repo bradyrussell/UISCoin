@@ -125,8 +125,7 @@ public class BlockBuilder {
     }
 
     public BlockBuilder addCoinbasePayToPublicKeyHash(byte[] PublicKeyHash) throws NoSuchTransactionException, NoSuchBlockException, InvalidBlockException {
-        addCoinbasePayToPublicKeyHash(PublicKeyHash,"Default Coinbase Message");
-        return this;
+        return addCoinbasePayToPublicKeyHash(PublicKeyHash,"Default Coinbase Message");
     }
     public BlockBuilder addCoinbasePayToPublicKeyHash(byte[] PublicKeyHash, String CoinbaseMessage) throws NoSuchTransactionException, NoSuchBlockException, InvalidBlockException {
         if(block.Transactions.size() == 0) {
