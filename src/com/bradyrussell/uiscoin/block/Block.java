@@ -162,7 +162,7 @@ public class Block implements IBinaryData, IVerifiable {
        assert Header.Verify();
         Log.warning("Transactions verify: "+ VerifyTransactions());
        assert VerifyTransactions();
-        Log.warning("BlockReward verify: "+ VerifyBlockReward());
+        Log.warning("BlockReward verify: "+ VerifyBlockReward()+Transactions.get(0).getOutputTotal()+" > " +CalculateBlockReward(Header.BlockHeight)+"+" + getFees());
        assert VerifyBlockReward();
         Log.warning("PoW verify: "+ Hash.validateHash(Header.getHash(), Header.DifficultyTarget));
        assert Hash.validateHash(Header.getHash(), Header.DifficultyTarget);

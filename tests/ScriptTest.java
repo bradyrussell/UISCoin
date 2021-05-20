@@ -1337,6 +1337,13 @@ public class ScriptTest {
         assertTrue(!lockingScript.bScriptFailed && !unlockingScript.bScriptFailed);
     }
 
+    @Test
+    void TestSize(){
+        TransactionOutput transactionOutput = new TransactionOutputBuilder().setPayToPublicKeyHash(new byte[64]).setAmount(123).get();
+        System.out.println(transactionOutput.getSize());
+        System.out.println(new TransactionInputBuilder().setInputTransaction(new byte[64],1).setUnlockPayToPublicKeyHash(UISCoinKeypair.Create(),transactionOutput).get().getSize());
+    }
+
     @RepeatedTest(100) @DisplayName("Pay to Password Lock & Unlock")
     void TestPayToPassword() throws ScriptInvalidException, ScriptEmptyStackException, ScriptInvalidParameterException, ScriptUnsupportedOperationException {
 
