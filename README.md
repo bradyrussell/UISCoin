@@ -6,7 +6,7 @@ An example address is `UISxBraDYN4U4BN4bAKRLenuj1K37xr9zlhAfRFnKu-KLVf89uu3pBBSd
 
 Much like Bitcoin, we are using secp256k1 EC, but we sign messages with SHA512withECDSA. I believe the secp256k1 implementation used was removed in Java 15 so only 14 is supported.
 
-A WIP block explorer can be found at https://uiscoin.software/ . (Hosting is down for the time being, [here is the source](https://github.com/bradyrussell/UISCoinBlockExplorer))
+A WIP block explorer can be found at https://uiscoin.bradyrussell.com/ . [Here is the source](https://github.com/bradyrussell/UISCoinBlockExplorer)
 
 # Differences from Bitcoin
 
