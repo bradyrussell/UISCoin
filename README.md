@@ -26,6 +26,7 @@ While UISCoin was largely inspired by Bitcoin, there are some intentional differ
 JavaDoc is available here: https://bradyrussell.github.io/UISCoin/
 
 I recommend looking at this extension as well: [UISCoin_BlockChainStorageLevelDB_Extension](https://github.com/bradyrussell/UISCoin_BlockChainStorageLevelDB_Extension/releases/tag/1.0)
+Or this one: [BlockchainStorageSQL.java](https://github.com/bradyrussell/UISCoinNodeREST/blob/master/src/main/java/com/bradyrussell/uiscoin/storage/BlockchainStorageSQL.java)
 
 It adds another BlockChainStorage class, this one using a LevelDB database which is much faster than flatfiles.
 
