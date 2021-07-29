@@ -54,7 +54,7 @@ public class TransactionBuilder {
     }
 
     public TransactionBuilder addInputsFromAllP2pkhUtxo(UISCoinKeypair UnlockingKeypair) {
-        ArrayList<byte[]> outputsToAddress = BlockChain.get().matchUTXOForP2PKHAddress(UISCoinAddress.decodeAddress(UISCoinAddress.fromPublicKey((ECPublicKey) UnlockingKeypair.Keys.getPublic())).HashData);
+        ArrayList<byte[]> outputsToAddress = BlockChain.get().matchUtxoForP2phkAddress(UISCoinAddress.decodeAddress(UISCoinAddress.fromPublicKey((ECPublicKey) UnlockingKeypair.Keys.getPublic())).HashData);
 
         System.out.println("Found " + outputsToAddress.size() + " unspent outputs to your address.");
 
@@ -66,11 +66,11 @@ public class TransactionBuilder {
                 System.arraycopy(toAddress, 0, TsxnHash, 0, 64);
                 System.arraycopy(toAddress, 64, IndexBytes, 0, 4);
 
-                TransactionOutput output = BlockChain.get().getTransactionOutput(TsxnHash, BytesUtil.ByteArrayToNumber32(IndexBytes));
+                TransactionOutput output = BlockChain.get().getTransactionOutput(TsxnHash, BytesUtil.byteArrayToNumber32(IndexBytes));
                 transaction.addInput(
                         new TransactionInputBuilder()
                                 .setUnlockPayToPublicKeyHash(UnlockingKeypair, output)
-                                .setInputTransaction(TsxnHash, BytesUtil.ByteArrayToNumber32(IndexBytes))
+                                .setInputTransaction(TsxnHash, BytesUtil.byteArrayToNumber32(IndexBytes))
                                 .get());
 
             } catch (NoSuchTransactionException | NoSuchBlockException e) {
@@ -102,7 +102,7 @@ public class TransactionBuilder {
 
         for (UISCoinKeypair keypair : keypairs) {
             try {
-                ArrayList<byte[]> outputsToAddress = BlockChain.get().matchUTXOForP2PKHAddress(UISCoinAddress.decodeAddress(UISCoinAddress.fromPublicKey((ECPublicKey) keypair.Keys.getPublic())).HashData);
+                ArrayList<byte[]> outputsToAddress = BlockChain.get().matchUtxoForP2phkAddress(UISCoinAddress.decodeAddress(UISCoinAddress.fromPublicKey((ECPublicKey) keypair.Keys.getPublic())).HashData);
                 for (byte[] toAddress : outputsToAddress) {
                     byte[] TsxnHash = new byte[64];
                     byte[] IndexBytes = new byte[4];
@@ -112,13 +112,13 @@ public class TransactionBuilder {
 
                     long amount;
                     try {
-                        amount = BlockChain.get().getUnspentTransactionOutput(TsxnHash, BytesUtil.ByteArrayToNumber32(IndexBytes)).Amount;
+                        amount = BlockChain.get().getUnspentTransactionOutput(TsxnHash, BytesUtil.byteArrayToNumber32(IndexBytes)).Amount;
                     } catch (NoSuchTransactionException e) {
                         e.printStackTrace();
                         continue;
                     }
                     total += amount;
-                    utxos.put(amount, new UTXO(TsxnHash, BytesUtil.ByteArrayToNumber32(IndexBytes), amount, keypair));
+                    utxos.put(amount, new UTXO(TsxnHash, BytesUtil.byteArrayToNumber32(IndexBytes), amount, keypair));
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -157,7 +157,7 @@ public class TransactionBuilder {
     }
 
     public TransactionBuilder addInputsFromP2pkhUtxo(UISCoinKeypair UnlockingKeypair, long AmountIncludingEstimatedFee) {
-        ArrayList<byte[]> outputsToAddress = BlockChain.get().matchUTXOForP2PKHAddress(UISCoinAddress.decodeAddress(UISCoinAddress.fromPublicKey((ECPublicKey) UnlockingKeypair.Keys.getPublic())).HashData);
+        ArrayList<byte[]> outputsToAddress = BlockChain.get().matchUtxoForP2phkAddress(UISCoinAddress.decodeAddress(UISCoinAddress.fromPublicKey((ECPublicKey) UnlockingKeypair.Keys.getPublic())).HashData);
 
         System.out.println("Found " + outputsToAddress.size() + " unspent outputs to your address.");
 
@@ -176,7 +176,7 @@ public class TransactionBuilder {
 
             long amount;
             try {
-                amount = BlockChain.get().getUnspentTransactionOutput(TsxnHash, BytesUtil.ByteArrayToNumber32(IndexBytes)).Amount;
+                amount = BlockChain.get().getUnspentTransactionOutput(TsxnHash, BytesUtil.byteArrayToNumber32(IndexBytes)).Amount;
             } catch (NoSuchTransactionException e) {
                 e.printStackTrace();
                 continue;
@@ -200,12 +200,12 @@ public class TransactionBuilder {
                 System.arraycopy(utxo.getValue(), 0, TsxnHash, 0, 64);
                 System.arraycopy(utxo.getValue(), 64, IndexBytes, 0, 4);
 
-                TransactionOutput output = BlockChain.get().getTransactionOutput(TsxnHash, BytesUtil.ByteArrayToNumber32(IndexBytes));
+                TransactionOutput output = BlockChain.get().getTransactionOutput(TsxnHash, BytesUtil.byteArrayToNumber32(IndexBytes));
                 currentTotal += utxo.getKey();
                 transaction.addInput(
                         new TransactionInputBuilder()
                                 .setUnlockPayToPublicKeyHash(UnlockingKeypair, output)
-                                .setInputTransaction(TsxnHash, BytesUtil.ByteArrayToNumber32(IndexBytes))
+                                .setInputTransaction(TsxnHash, BytesUtil.byteArrayToNumber32(IndexBytes))
                                 .get());
 
             } catch (NoSuchTransactionException | NoSuchBlockException e) {

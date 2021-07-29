@@ -40,7 +40,7 @@ public class NodeP2PReceiveBlockHandler extends SimpleChannelInboundHandler<Bloc
 
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, Block block) throws Exception {
-        Log.info("Handler Received block "+ BytesUtil.Base64Encode(block.Header.getHash()));
+        Log.info("Handler Received block "+ BytesUtil.base64Encode(block.Header.getHash()));
 
         if(BlockChain.get().BlockHeight >= block.Header.BlockHeight && BlockChain.get().exists(block.Header.getHash(), BlockChainStorageBase.BlocksDatabase)){
             Log.info("Already have. Discarding...");
@@ -58,14 +58,14 @@ public class NodeP2PReceiveBlockHandler extends SimpleChannelInboundHandler<Bloc
             return; // we are on a longer chain!
         }
 
-        if(!block.Verify()) {
-            block.DebugVerify();
+        if(!block.verify()) {
+            block.debugVerify();
             Log.info("Invalid block! Discarding.");
             return;
         }
 
         if (BlockChain.get().BlockHeight < block.Header.BlockHeight) {
-            if(!block.VerifyTransactionsUnspent()) {
+            if(!block.verifyTransactionsUnspent()) {
                 Log.warning("Block contains spent transactions! Discarding!");
                 return;
             }
@@ -75,6 +75,6 @@ public class NodeP2PReceiveBlockHandler extends SimpleChannelInboundHandler<Bloc
         BlockChain.get().putBlock(block);
 
         Log.info("Rebroadcasting...");
-        thisNode.BroadcastBlockToPeers(block);
+        thisNode.broadcastBlockToPeers(block);
     }
 }

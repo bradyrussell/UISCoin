@@ -105,7 +105,7 @@ public class BlockHeader implements IBinaryData, IVerifiable {
     }
 
     @Override
-    public boolean Verify() {
+    public boolean verify() {
         if(BlockHeight > 0) {
             BlockHeader previousBlockHeader;
             try {
@@ -119,8 +119,8 @@ public class BlockHeader implements IBinaryData, IVerifiable {
                 assert (BlockHeight == previousBlockHeader.BlockHeight + 1);
                 return false; // we are previous Block Height + 1
             }
-            if(DifficultyTarget < CalculateDifficultyTarget(Time - previousBlockHeader.Time, previousBlockHeader.DifficultyTarget)){
-                assert (DifficultyTarget >= CalculateDifficultyTarget(Time - previousBlockHeader.Time, previousBlockHeader.DifficultyTarget));
+            if(DifficultyTarget < calculateDifficultyTarget(Time - previousBlockHeader.Time, previousBlockHeader.DifficultyTarget)){
+                assert (DifficultyTarget >= calculateDifficultyTarget(Time - previousBlockHeader.Time, previousBlockHeader.DifficultyTarget));
                 return false;
             }
 
@@ -137,7 +137,7 @@ public class BlockHeader implements IBinaryData, IVerifiable {
         return true;
     }
 
-    public static int CalculateDifficultyTarget(long TimeSinceLastBlock, int LastBlockDifficulty) {
+    public static int calculateDifficultyTarget(long TimeSinceLastBlock, int LastBlockDifficulty) {
         if(TimeSinceLastBlock < MagicNumbers.TargetSecondsPerBlock.Value) return Math.min(63, LastBlockDifficulty + 1);
         if(TimeSinceLastBlock > MagicNumbers.TargetSecondsPerBlock.Value) return Math.max(3, LastBlockDifficulty - 1);
         return LastBlockDifficulty;

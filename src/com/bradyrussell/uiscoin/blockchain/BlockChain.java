@@ -19,7 +19,7 @@ public class BlockChain {
 
     public static BlockChainStorageBase Storage = null;
 
-    public static <T extends BlockChainStorageBase> void Initialize(Class<T> StorageClass) {
+    public static <T extends BlockChainStorageBase> void initialize(Class<T> StorageClass) {
         try {
             Storage = StorageClass.getDeclaredConstructor().newInstance();
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
@@ -35,19 +35,19 @@ public class BlockChain {
         return Storage;
     }
 
-    public static boolean Verify(int StartBlockHeight) throws NoSuchBlockException, InvalidBlockException, NoSuchTransactionException {
+    public static boolean verify(int StartBlockHeight) throws NoSuchBlockException, InvalidBlockException, NoSuchTransactionException {
         List<Block> blockChain = get().getBlockChainFromHeight(StartBlockHeight);
         for (Block b : blockChain) {
-            if (!b.Verify()) {
-                b.DebugVerify();
-                Log.warning("Block " + BytesUtil.Base64Encode(b.Header.getHash()) + " at height " + b.Header.BlockHeight + " has failed verification!");
-                throw new InvalidBlockException("Block " + BytesUtil.Base64Encode(b.Header.getHash()) + " at height " + b.Header.BlockHeight + " has failed verification!");
+            if (!b.verify()) {
+                b.debugVerify();
+                Log.warning("Block " + BytesUtil.base64Encode(b.Header.getHash()) + " at height " + b.Header.BlockHeight + " has failed verification!");
+                throw new InvalidBlockException("Block " + BytesUtil.base64Encode(b.Header.getHash()) + " at height " + b.Header.BlockHeight + " has failed verification!");
             }
         }
         return true;
     }
 
-    public static void BuildUTXOSet(int StartBlockHeight) throws NoSuchBlockException, NoSuchTransactionException {
+    public static void buildUtxoSet(int StartBlockHeight) throws NoSuchBlockException, NoSuchTransactionException {
         List<Block> blockChain = get().getBlockChainFromHeight(StartBlockHeight);
 
         ArrayList<byte[]> TransactionOutputs = new ArrayList<>();
@@ -55,11 +55,11 @@ public class BlockChain {
         for (Block b : blockChain) {
             for (Transaction transaction : b.Transactions) {
                 for (TransactionInput input : transaction.Inputs) {
-                    final byte[] concatArray = BytesUtil.ConcatArray(input.InputHash, BytesUtil.NumberToByteArray32(input.IndexNumber));
+                    final byte[] concatArray = BytesUtil.concatArray(input.InputHash, BytesUtil.numberToByteArray32(input.IndexNumber));
                     TransactionOutputs.removeIf(bytes -> Arrays.equals(bytes,concatArray)); // this has been spent, remove it
                 }
                 for (int i = 0; i < transaction.Outputs.size(); i++) {
-                    TransactionOutputs.add(BytesUtil.ConcatArray(transaction.getHash(), BytesUtil.NumberToByteArray32(i)));
+                    TransactionOutputs.add(BytesUtil.concatArray(transaction.getHash(), BytesUtil.numberToByteArray32(i)));
                 }
             }
         }
@@ -72,7 +72,7 @@ public class BlockChain {
             System.arraycopy(transactionOutput, 64, Index, 0, 4);
 
             //System.out.println("Saving UTXO " + Util.Base64Encode(transactionOutput));
-            Storage.putUnspentTransactionOutput(TsxnHash, BytesUtil.ByteArrayToNumber32(Index), Storage.getTransactionOutput(TsxnHash, BytesUtil.ByteArrayToNumber32(Index)));
+            Storage.putUnspentTransactionOutput(TsxnHash, BytesUtil.byteArrayToNumber32(Index), Storage.getTransactionOutput(TsxnHash, BytesUtil.byteArrayToNumber32(Index)));
         }
     }
 }

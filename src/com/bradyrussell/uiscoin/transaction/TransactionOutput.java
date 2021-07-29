@@ -50,7 +50,7 @@ public class TransactionOutput  implements IBinaryData, IVerifiable {
     }
 
     @Override
-    public boolean Verify() {
+    public boolean verify() {
         return LockingScript.length < MagicNumbers.MaxLockingScriptLength.Value && Amount > 0;
     }
 }

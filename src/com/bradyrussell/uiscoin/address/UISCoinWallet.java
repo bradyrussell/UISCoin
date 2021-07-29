@@ -15,7 +15,7 @@ public class UISCoinWallet implements IBinaryData {
 
     public ArrayList<UISCoinKeypair> Keypairs = new ArrayList<>();
 
-    public UISCoinKeypair GenerateNewKey(){
+    public UISCoinKeypair generateNewKey(){
         UISCoinKeypair create = UISCoinKeypair.create();
         Keypairs.add(create);
         return create;

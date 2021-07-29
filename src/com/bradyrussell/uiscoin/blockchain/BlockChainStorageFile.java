@@ -30,7 +30,7 @@ public class BlockChainStorageFile extends BlockChainStorageBase {
             BlockHeight = buf.getInt();
             buf.get(HighestBlockHash);
 
-            Log.info("Loaded blockchain " + (BlockHeight + 1) + " blocks long. Last block: " + BytesUtil.Base64Encode(HighestBlockHash));
+            Log.info("Loaded blockchain " + (BlockHeight + 1) + " blocks long. Last block: " + BytesUtil.base64Encode(HighestBlockHash));
         }
 
         MemPool = new ArrayList<>();
@@ -47,7 +47,7 @@ public class BlockChainStorageFile extends BlockChainStorageBase {
 
                 Transaction t = new Transaction();
                 t.setBinaryData(TransactionBytes);
-                if(t.Verify()) MemPool.add(t);
+                if(t.verify()) MemPool.add(t);
             }
             Log.info("Loaded mempool with "+MemPool.size()+" transactions.");
         }
@@ -102,12 +102,12 @@ public class BlockChainStorageFile extends BlockChainStorageBase {
 
     @Override
     public byte[] get(byte[] Key, String Database) {
-        if(!Files.exists(Path.of("blockchain/"+Database+"/"+ BytesUtil.Base64Encode(Key)))) {
+        if(!Files.exists(Path.of("blockchain/"+Database+"/"+ BytesUtil.base64Encode(Key)))) {
             //System.out.println("Path does not exist! "+"blockchain/"+Database+"/"+ Util.Base64Encode(Key));
             return null;
         }
         try {
-            return Files.readAllBytes(Path.of("blockchain/"+Database+"/"+ BytesUtil.Base64Encode(Key)));
+            return Files.readAllBytes(Path.of("blockchain/"+Database+"/"+ BytesUtil.base64Encode(Key)));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -115,24 +115,24 @@ public class BlockChainStorageFile extends BlockChainStorageBase {
     }
 
     @Override
-    public void put(byte[] Key, byte[] Value, String Database) {
+    public synchronized void put(byte[] Key, byte[] Value, String Database) {
         try {
-            MakeDir("blockchain/");
-            MakeDir("blockchain/"+Database+"/");
-            Files.write(Path.of("blockchain/"+Database+"/"+ BytesUtil.Base64Encode(Key)),Value);
+            makeDir("blockchain/");
+            makeDir("blockchain/"+Database+"/");
+            Files.write(Path.of("blockchain/"+Database+"/"+ BytesUtil.base64Encode(Key)),Value);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public void remove(byte[] Key, String Database) {
-        if(!Files.exists(Path.of("blockchain/"+Database+"/"+ BytesUtil.Base64Encode(Key)))) {
+    public synchronized void remove(byte[] Key, String Database) {
+        if(!Files.exists(Path.of("blockchain/"+Database+"/"+ BytesUtil.base64Encode(Key)))) {
             //System.out.println("Path does not exist! "+"blockchain/"+Database+"/"+ Util.Base64Encode(Key));
             return;
         }
         try {
-            Files.delete(Path.of("blockchain/"+Database+"/"+ BytesUtil.Base64Encode(Key)));
+            Files.delete(Path.of("blockchain/"+Database+"/"+ BytesUtil.base64Encode(Key)));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -140,7 +140,7 @@ public class BlockChainStorageFile extends BlockChainStorageBase {
 
     @Override
     public boolean exists(byte[] Key, String Database) {
-        return Files.exists(Path.of("blockchain/"+Database+"/"+ BytesUtil.Base64Encode(Key)));
+        return Files.exists(Path.of("blockchain/"+Database+"/"+ BytesUtil.base64Encode(Key)));
     }
 
     @Override
@@ -151,7 +151,7 @@ public class BlockChainStorageFile extends BlockChainStorageBase {
                     .filter(file -> !Files.isDirectory(file))
                     .map(Path::getFileName)
                     .map(Path::toString)
-                    .map(BytesUtil::Base64Decode)
+                    .map(BytesUtil::base64Decode)
                     .collect(Collectors.toList());
         } catch (IOException e) {
             e.printStackTrace();
@@ -160,7 +160,7 @@ public class BlockChainStorageFile extends BlockChainStorageBase {
     }
 
 
-    private void MakeDir(String s){
+    private void makeDir(String s){
         try {
             Files.createDirectory(Path.of(s));
         } catch (IOException ignored) {

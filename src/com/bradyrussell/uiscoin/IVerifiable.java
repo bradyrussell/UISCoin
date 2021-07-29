@@ -1,5 +1,5 @@
 package com.bradyrussell.uiscoin;
 
 public interface IVerifiable {
-    boolean Verify();
+    boolean verify();
 }

@@ -17,7 +17,7 @@ public class HTTP {
     public static boolean LogRequestTimes = true;
 
     public static @Nullable
-    String Request(String URL, String Method, Map<String, String> Properties, String Content) throws IOException {
+    String request(String URL, String Method, Map<String, String> Properties, String Content) throws IOException {
         long StartMs = System.currentTimeMillis();
 
         if (LogRequests)

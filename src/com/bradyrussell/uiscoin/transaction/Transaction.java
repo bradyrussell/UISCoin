@@ -138,9 +138,9 @@ public class Transaction implements IBinaryData, IVerifiable {
     }
 
     @Override //https://www.oreilly.com/library/view/mastering-bitcoin/9781491902639/ch08.html
-    public boolean Verify() {
+    public boolean verify() {
         try {
-            return VerifyInputs() && VerifyOutputs() && getFees() > (long) getSize() * MagicNumbers.MinSatPerByte.Value
+            return verifyInputs() && verifyOutputs() && getFees() > (long) getSize() * MagicNumbers.MinSatPerByte.Value
                     && Inputs.size() > 0 && Outputs.size() > 0 && TimeStamp < Long.MAX_VALUE
                     && getSize() < MagicNumbers.MaxTransactionSize.Value && getFees() > 0 && getInputTotal() > 0 && getOutputTotal() > 0;
         } catch (NoSuchTransactionException | NoSuchBlockException e) {
@@ -149,18 +149,18 @@ public class Transaction implements IBinaryData, IVerifiable {
         }
     }
 
-    public boolean VerifyCoinbase(int BlockHeight) {
-        return VerifyCoinbaseInputs() && VerifyOutputs()
+    public boolean verifyCoinbase(int BlockHeight) {
+        return verifyCoinbaseInputs() && verifyOutputs()
                 && Inputs.size() == 1 && Outputs.size() > 0 && TimeStamp < Long.MAX_VALUE
                 && getSize() < MagicNumbers.MaxTransactionSize.Value && Inputs.get(0).IndexNumber == BlockHeight
                 && Arrays.equals(Inputs.get(0).InputHash, new byte[64]);
     }
 
-    public void DebugVerify() throws NoSuchTransactionException, NoSuchBlockException {
-        Log.warning("VerifyInputs " + VerifyInputs());
-        assert VerifyInputs();
-        Log.warning("VerifyOutputs " + VerifyOutputs());
-        assert VerifyOutputs();
+    public void debugVerify() throws NoSuchTransactionException, NoSuchBlockException {
+        Log.warning("VerifyInputs " + verifyInputs());
+        assert verifyInputs();
+        Log.warning("VerifyOutputs " + verifyOutputs());
+        assert verifyOutputs();
         Log.warning("VerifyFees " + (getFees() > (long) getSize() * MagicNumbers.MinSatPerByte.Value)+" fee: "+getFees()+" size: "+getSize());
         assert getFees() > (long) getSize() * MagicNumbers.MinSatPerByte.Value;
         Log.warning("VerifyInputsSize " + (Inputs.size() > 0));
@@ -179,9 +179,9 @@ public class Transaction implements IBinaryData, IVerifiable {
         assert getOutputTotal() > 0;
     }
 
-    public void DebugVerifyCoinbase(int BlockHeight) {
-        assert VerifyCoinbaseInputs();
-        assert VerifyOutputs();
+    public void debugVerifyCoinbase(int BlockHeight) {
+        assert verifyCoinbaseInputs();
+        assert verifyOutputs();
         assert Inputs.size() == 1;
         assert Inputs.get(0).IndexNumber == BlockHeight;
         assert Outputs.size() > 0;
@@ -191,31 +191,31 @@ public class Transaction implements IBinaryData, IVerifiable {
     }
 
 
-    private boolean VerifyOutputs() {
+    private boolean verifyOutputs() {
         for (TransactionOutput output : Outputs) {
-            if (!output.Verify()) return false;
+            if (!output.verify()) return false;
         }
         return true;
     }
 
-    private boolean VerifyInputs() {
+    private boolean verifyInputs() {
         for (TransactionInput input : Inputs) {
-            if (!input.Verify()) return false;
+            if (!input.verify()) return false;
         }
         return true;
     }
 
-    private boolean VerifyCoinbaseInputs() {
+    private boolean verifyCoinbaseInputs() {
         for (TransactionInput input : Inputs) {
             if (input.UnlockingScript.length > MagicNumbers.MaxUnlockingScriptLength.Value) return false;
         }
         return true;
     }
 
-    public boolean VerifyInputsUnspent() throws NoSuchTransactionException {
+    public boolean verifyInputsUnspent() throws NoSuchTransactionException {
         for (TransactionInput input : Inputs) {
             if (BlockChain.get().getUnspentTransactionOutput(input.InputHash, input.IndexNumber) == null) {
-                Log.info("Could not verify that transaction " + BytesUtil.Base64Encode(getHash()) + " input " + BytesUtil.Base64Encode(input.InputHash) + " " + input.IndexNumber + " was UTXO!");
+                Log.info("Could not verify that transaction " + BytesUtil.base64Encode(getHash()) + " input " + BytesUtil.base64Encode(input.InputHash) + " " + input.IndexNumber + " was UTXO!");
                 return false;
             }
         }

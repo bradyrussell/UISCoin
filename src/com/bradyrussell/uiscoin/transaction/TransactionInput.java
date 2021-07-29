@@ -81,7 +81,7 @@ public class TransactionInput  implements IBinaryData, IVerifiable {
     }
 
     @Override
-    public boolean Verify() {
+    public boolean verify() {
         if(UnlockingScript.length > MagicNumbers.MaxUnlockingScriptLength.Value) {
             Log.info("Verification failed! Unlocking script is too long! Maximum length is "+MagicNumbers.MaxUnlockingScriptLength.Value+" bytes.");
             return false;
@@ -103,10 +103,10 @@ public class TransactionInput  implements IBinaryData, IVerifiable {
         TransactionOutput transactionOutput = transaction.Outputs.get(IndexNumber);
 
         ScriptExecution UnlockingScriptEx = new ScriptExecution();
-        UnlockingScriptEx.Initialize(UnlockingScript);
+        UnlockingScriptEx.initialize(UnlockingScript);
 
         try{
-            while(UnlockingScriptEx.Step());
+            while(UnlockingScriptEx.step());
         } catch (ScriptInvalidException | ScriptEmptyStackException | ScriptInvalidParameterException | ScriptUnsupportedOperationException e) {
             e.printStackTrace();
         }
@@ -118,10 +118,10 @@ public class TransactionInput  implements IBinaryData, IVerifiable {
 
         ScriptExecution LockingScriptEx = new ScriptExecution();
         LockingScriptEx.setSignatureVerificationMessage(transactionOutput.getHash());
-        LockingScriptEx.Initialize(transactionOutput.LockingScript, UnlockingScriptEx.Stack.elements());
+        LockingScriptEx.initialize(transactionOutput.LockingScript, UnlockingScriptEx.Stack.elements());
 
         try{
-            while(LockingScriptEx.Step());
+            while(LockingScriptEx.step());
         } catch (ScriptInvalidException | ScriptEmptyStackException | ScriptInvalidParameterException | ScriptUnsupportedOperationException e) {
             e.printStackTrace();
         }

@@ -72,7 +72,7 @@ public class ScriptOptimizer {
                     byte[] bytesToPushArr  = new byte[4];
                     System.arraycopy(UnoptimizedBytecode, InstructionCounter+1, bytesToPushArr, 0, 4);
 
-                    int bytesToPush = BytesUtil.ByteArrayToNumber32(bytesToPushArr);
+                    int bytesToPush = BytesUtil.byteArrayToNumber32(bytesToPushArr);
 
                     InstructionCounter+=4;
 
@@ -128,7 +128,7 @@ public class ScriptOptimizer {
                     byte[] bytesToPushArr  = new byte[4];
                     System.arraycopy(UnoptimizedBytecode, InstructionCounter+1, bytesToPushArr, 0, 4);
 
-                    int bytesToPush = BytesUtil.ByteArrayToNumber32(bytesToPushArr);
+                    int bytesToPush = BytesUtil.byteArrayToNumber32(bytesToPushArr);
 
                     InstructionCounter+=4;
 

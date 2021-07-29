@@ -94,9 +94,9 @@ public class ScriptTest {
 
         ScriptExecution scriptExecution = new ScriptExecution();
 
-        scriptExecution.Initialize(sb.get());
+        scriptExecution.initialize(sb.get());
 
-        while (scriptExecution.Step()){
+        while (scriptExecution.step()){
             System.out.println("Stack: \n"+scriptExecution.getStackContents());
         }
 
@@ -118,9 +118,9 @@ public class ScriptTest {
 
         ScriptExecution scriptExecution = new ScriptExecution();
 
-        scriptExecution.Initialize(sb.get());
+        scriptExecution.initialize(sb.get());
 
-        while (scriptExecution.Step()){
+        while (scriptExecution.step()){
             System.out.println("Stack: \n"+scriptExecution.getStackContents());
         }
 
@@ -140,9 +140,9 @@ public class ScriptTest {
 
         ScriptExecution scriptExecution = new ScriptExecution();
 
-        scriptExecution.Initialize(sb.get());
+        scriptExecution.initialize(sb.get());
 
-        while (scriptExecution.Step()){
+        while (scriptExecution.step()){
             System.out.println("Stack: \n"+scriptExecution.getStackContents());
         }
 
@@ -162,9 +162,9 @@ public class ScriptTest {
 
         ScriptExecution scriptExecution = new ScriptExecution();
 
-        scriptExecution.Initialize(sb.get());
+        scriptExecution.initialize(sb.get());
 
-        while (scriptExecution.Step()){
+        while (scriptExecution.step()){
             System.out.println("Stack: \n"+scriptExecution.getStackContents());
         }
 
@@ -184,9 +184,9 @@ public class ScriptTest {
 
         ScriptExecution scriptExecution = new ScriptExecution();
 
-        scriptExecution.Initialize(sb.get());
+        scriptExecution.initialize(sb.get());
 
-        while (scriptExecution.Step()){
+        while (scriptExecution.step()){
             System.out.println("Stack: \n"+scriptExecution.getStackContents());
         }
 
@@ -206,9 +206,9 @@ public class ScriptTest {
 
         ScriptExecution scriptExecution = new ScriptExecution();
 
-        scriptExecution.Initialize(sb.get());
+        scriptExecution.initialize(sb.get());
 
-        while (scriptExecution.Step()){
+        while (scriptExecution.step()){
             System.out.println("Stack: \n"+scriptExecution.getStackContents());
         }
 
@@ -228,9 +228,9 @@ public class ScriptTest {
 
         ScriptExecution scriptExecution = new ScriptExecution();
 
-        scriptExecution.Initialize(sb.get());
+        scriptExecution.initialize(sb.get());
 
-        while (scriptExecution.Step()){
+        while (scriptExecution.step()){
             System.out.println("Stack: \n"+scriptExecution.getStackContents());
         }
 
@@ -316,9 +316,9 @@ public class ScriptTest {
 
         ScriptExecution scriptExecution = new ScriptExecution();
 
-        scriptExecution.Initialize(sb.get());
+        scriptExecution.initialize(sb.get());
 
-        while (scriptExecution.Step()){
+        while (scriptExecution.step()){
             System.out.println("Stack: \n"+scriptExecution.getStackContents());
         }
 
@@ -348,9 +348,9 @@ public class ScriptTest {
 
         scriptExecution.bExtendedFlowControl = true;
 
-        scriptExecution.Initialize(sb.get());
+        scriptExecution.initialize(sb.get());
 
-        while (scriptExecution.Step()){
+        while (scriptExecution.step()){
             System.out.println("Stack: \n"+scriptExecution.getStackContents());
         }
 
@@ -381,9 +381,9 @@ public class ScriptTest {
 
         ScriptExecution scriptExecution = new ScriptExecution();
 
-        scriptExecution.Initialize(sb.get());
+        scriptExecution.initialize(sb.get());
 
-        while (scriptExecution.Step()){
+        while (scriptExecution.step()){
             System.out.println("Stack: \n"+scriptExecution.getStackContents());
         }
 
@@ -494,9 +494,9 @@ public class ScriptTest {
             fakeStack.add(C);
             //fakeStack.add(A);
 
-            scriptExecution.Initialize(A, Collections.enumeration(fakeStack));
+            scriptExecution.initialize(A, Collections.enumeration(fakeStack));
 
-            while (scriptExecution.Step()) {
+            while (scriptExecution.step()) {
                 System.out.println("Stack: \n"+scriptExecution.getStackContents());
             }
 
@@ -547,9 +547,9 @@ public class ScriptTest {
         ScriptExecution scriptExecution = new ScriptExecution();
         scriptExecution.LogScriptExecution = true;
 
-        scriptExecution.Initialize(sb.get());
+        scriptExecution.initialize(sb.get());
 
-        while (scriptExecution.Step()){
+        while (scriptExecution.step()){
             System.out.println("Stack: \n"+scriptExecution.getStackContents());
         }
 
@@ -593,9 +593,9 @@ public class ScriptTest {
         ScriptExecution scriptExecution = new ScriptExecution();
         scriptExecution.LogScriptExecution = true;
 
-        scriptExecution.Initialize(sb.get());
+        scriptExecution.initialize(sb.get());
 
-        while (scriptExecution.Step()){
+        while (scriptExecution.step()){
             System.out.println("Stack: \n"+scriptExecution.getStackContents());
         }
 
@@ -684,9 +684,9 @@ public class ScriptTest {
         ScriptExecution scriptExecution = new ScriptExecution();
         scriptExecution.LogScriptExecution = true;
 
-        scriptExecution.Initialize(sb.get());
+        scriptExecution.initialize(sb.get());
 
-        while (scriptExecution.Step()){
+        while (scriptExecution.step()){
             System.out.println("Stack: \n"+scriptExecution.getStackContents());
         }
 
@@ -729,9 +729,9 @@ public class ScriptTest {
         ScriptExecution scriptExecution = new ScriptExecution();
         scriptExecution.LogScriptExecution = true;
 
-        scriptExecution.Initialize(sb.get());
+        scriptExecution.initialize(sb.get());
 
-        while (scriptExecution.Step()){
+        while (scriptExecution.step()){
             System.out.println("Stack: \n"+scriptExecution.getStackContents());
         }
 
@@ -768,9 +768,9 @@ public class ScriptTest {
         ScriptExecution scriptExecution = new ScriptExecution();
         scriptExecution.LogScriptExecution = true;
 
-        scriptExecution.Initialize(sb.get());
+        scriptExecution.initialize(sb.get());
 
-        while (scriptExecution.Step()){
+        while (scriptExecution.step()){
             System.out.println("Stack: \n"+scriptExecution.getStackContents());
         }
 
@@ -795,7 +795,7 @@ public class ScriptTest {
                 .push(B)
                 .push(A)
                 .op(ScriptOperator.ENCRYPTAES)
-                .push(Encryption.Encrypt(A,B))
+                .push(Encryption.encrypt(A,B))
                 .op(ScriptOperator.BYTESEQUAL)
                 .op(ScriptOperator.VERIFY);
 
@@ -804,9 +804,9 @@ public class ScriptTest {
         ScriptExecution scriptExecution = new ScriptExecution();
         scriptExecution.LogScriptExecution = true;
 
-        scriptExecution.Initialize(sb.get());
+        scriptExecution.initialize(sb.get());
 
-        while (scriptExecution.Step()){
+        while (scriptExecution.step()){
             System.out.println("Stack: \n"+scriptExecution.getStackContents());
         }
 
@@ -837,9 +837,9 @@ public class ScriptTest {
 
         ScriptExecution scriptExecution = new ScriptExecution();
 
-        scriptExecution.Initialize(sb.get());
+        scriptExecution.initialize(sb.get());
 
-        while (scriptExecution.Step()){
+        while (scriptExecution.step()){
             System.out.println("Stack: \n"+scriptExecution.getStackContents());
         }
 
@@ -870,9 +870,9 @@ public class ScriptTest {
 
         ScriptExecution scriptExecution = new ScriptExecution();
 
-        scriptExecution.Initialize(sb.get());
+        scriptExecution.initialize(sb.get());
 
-        while (scriptExecution.Step()){
+        while (scriptExecution.step()){
             System.out.println("Stack: \n"+scriptExecution.getStackContents());
         }
 
@@ -903,9 +903,9 @@ public class ScriptTest {
 
         ScriptExecution scriptExecution = new ScriptExecution();
 
-        scriptExecution.Initialize(sb.get());
+        scriptExecution.initialize(sb.get());
 
-        while (scriptExecution.Step()){
+        while (scriptExecution.step()){
             System.out.println("Stack: \n"+scriptExecution.getStackContents());
         }
 
@@ -936,9 +936,9 @@ public class ScriptTest {
 
         ScriptExecution scriptExecution = new ScriptExecution();
 
-        scriptExecution.Initialize(sb.get());
+        scriptExecution.initialize(sb.get());
 
-        while (scriptExecution.Step()){
+        while (scriptExecution.step()){
             System.out.println("Stack: \n"+scriptExecution.getStackContents());
         }
 
@@ -967,9 +967,9 @@ public class ScriptTest {
 
         ScriptExecution scriptExecution = new ScriptExecution();
 
-        scriptExecution.Initialize(sb.get());
+        scriptExecution.initialize(sb.get());
 
-        while (scriptExecution.Step()){
+        while (scriptExecution.step()){
             System.out.println("Stack: \n"+scriptExecution.getStackContents());
         }
 
@@ -988,7 +988,7 @@ public class ScriptTest {
 
         byte[] a  = new ScriptBuilder(128)
                 .flag((byte)2)
-                .flagData(BytesUtil.NumberToByteArray32(1234))
+                .flagData(BytesUtil.numberToByteArray32(1234))
                 .get();
 
         byte[] b= new ScriptBuilder(128).fromText("flag 2 flagdata 1234").get();
@@ -1007,9 +1007,9 @@ public class ScriptTest {
 
         ScriptExecution scriptExecution = new ScriptExecution();
 
-        scriptExecution.Initialize(sb.get());
+        scriptExecution.initialize(sb.get());
 
-        while (scriptExecution.Step()){
+        while (scriptExecution.step()){
             System.out.println("Stack: \n"+scriptExecution.getStackContents());
         }
 
@@ -1028,9 +1028,9 @@ public class ScriptTest {
 
         ScriptExecution scriptExecution = new ScriptExecution();
 
-        scriptExecution.Initialize(sb.get());
+        scriptExecution.initialize(sb.get());
 
-        while (scriptExecution.Step()){
+        while (scriptExecution.step()){
             System.out.println("Stack: \n"+scriptExecution.getStackContents());
         }
 
@@ -1065,9 +1065,9 @@ public class ScriptTest {
 
         ScriptExecution scriptExecution = new ScriptExecution();
 
-        scriptExecution.Initialize(a);
+        scriptExecution.initialize(a);
 
-        while (scriptExecution.Step()){
+        while (scriptExecution.step()){
             System.out.println("Stack: \n"+scriptExecution.getStackContents());
         }
 
@@ -1093,9 +1093,9 @@ public class ScriptTest {
 
         ScriptExecution scriptExecution = new ScriptExecution();
 
-        scriptExecution.Initialize(a);
+        scriptExecution.initialize(a);
 
-        while (scriptExecution.Step()){
+        while (scriptExecution.step()){
             System.out.println("Stack: \n"+scriptExecution.getStackContents());
         }
 
@@ -1121,9 +1121,9 @@ public class ScriptTest {
 
         ScriptExecution scriptExecution = new ScriptExecution();
 
-        scriptExecution.Initialize(a);
+        scriptExecution.initialize(a);
 
-        while (scriptExecution.Step()){
+        while (scriptExecution.step()){
             System.out.println("Stack: \n"+scriptExecution.getStackContents());
         }
 
@@ -1175,16 +1175,16 @@ public class ScriptTest {
     void TestPayToPublicKey() throws ScriptInvalidException, ScriptEmptyStackException, ScriptInvalidParameterException, ScriptUnsupportedOperationException {
         UISCoinKeypair coinKeypairRecipient = UISCoinKeypair.create();
 
-        TransactionOutput transactionOutput = new TransactionOutputBuilder().setAmount(Conversions.CoinsToSatoshis(1.0)).setPayToPublicKey(coinKeypairRecipient.Keys.getPublic().getEncoded()).get();
+        TransactionOutput transactionOutput = new TransactionOutputBuilder().setAmount(Conversions.coinsToSatoshis(1.0)).setPayToPublicKey(coinKeypairRecipient.Keys.getPublic().getEncoded()).get();
         byte[] lockingScriptBytes = transactionOutput.LockingScript;
         byte[] unlockingScriptBytes = new TransactionInputBuilder().setUnlockPayToPublicKey(coinKeypairRecipient, transactionOutput).get().UnlockingScript;
 
         ScriptExecution unlockingScript = new ScriptExecution();
-        unlockingScript.Initialize(unlockingScriptBytes);
+        unlockingScript.initialize(unlockingScriptBytes);
 
         System.out.println("Running unlocking script...");
 
-        while(unlockingScript.Step()) {
+        while(unlockingScript.step()) {
             System.out.println("Stack: \n"+unlockingScript.getStackContents());
         }
 
@@ -1196,12 +1196,12 @@ public class ScriptTest {
         }
 
         ScriptExecution lockingScript = new ScriptExecution();
-        lockingScript.Initialize(lockingScriptBytes, unlockingScript.Stack.elements());
+        lockingScript.initialize(lockingScriptBytes, unlockingScript.Stack.elements());
         lockingScript.setSignatureVerificationMessage(transactionOutput.getHash());
 
         System.out.println("Running locking script...");
 
-        while(lockingScript.Step()) {
+        while(lockingScript.step()) {
             System.out.println("Stack: \n"+lockingScript.getStackContents());
         }
 
@@ -1231,16 +1231,16 @@ public class ScriptTest {
         BytesUtil.printBytesReadable(pubkey_sha512Bytes);
         assertTrue(Arrays.equals(decodedAddress.HashData, pubkey_sha512Bytes));
 
-        TransactionOutput transactionOutput = new TransactionOutputBuilder().setAmount(Conversions.CoinsToSatoshis(1.0)).setPayToPublicKeyHash(decodedAddress.HashData).get();
+        TransactionOutput transactionOutput = new TransactionOutputBuilder().setAmount(Conversions.coinsToSatoshis(1.0)).setPayToPublicKeyHash(decodedAddress.HashData).get();
         byte[] lockingScriptBytes = transactionOutput.LockingScript;
         byte[] unlockingScriptBytes = new TransactionInputBuilder().setUnlockPayToPublicKeyHash(coinKeypairRecipient, transactionOutput).get().UnlockingScript;
 
         ScriptExecution unlockingScript = new ScriptExecution();
-        unlockingScript.Initialize(unlockingScriptBytes);
+        unlockingScript.initialize(unlockingScriptBytes);
 
         System.out.println("Running unlocking script...");
 
-        while(unlockingScript.Step()) {
+        while(unlockingScript.step()) {
             System.out.println("Stack: \n"+unlockingScript.getStackContents());
         }
 
@@ -1252,12 +1252,12 @@ public class ScriptTest {
         }
 
         ScriptExecution lockingScript = new ScriptExecution();
-        lockingScript.Initialize(lockingScriptBytes, unlockingScript.Stack.elements());
+        lockingScript.initialize(lockingScriptBytes, unlockingScript.Stack.elements());
         lockingScript.setSignatureVerificationMessage(transactionOutput.getHash());
 
         System.out.println("Running locking script...");
 
-        while(lockingScript.Step()) {
+        while(lockingScript.step()) {
             System.out.println("Stack: \n"+lockingScript.getStackContents());
         }
 
@@ -1285,19 +1285,19 @@ public class ScriptTest {
         UISCoinKeypair charlie = UISCoinKeypair.create();
         UISCoinKeypair daniel = UISCoinKeypair.create();
 
-        TransactionOutput transactionOutput = new TransactionOutputBuilder().setAmount(Conversions.CoinsToSatoshis(1.0)).setPayToMultiSig(2, List.of(alice.Keys.getPublic().getEncoded(),bob.Keys.getPublic().getEncoded(), charlie.Keys.getPublic().getEncoded())).get();
+        TransactionOutput transactionOutput = new TransactionOutputBuilder().setAmount(Conversions.coinsToSatoshis(1.0)).setPayToMultiSig(2, List.of(alice.Keys.getPublic().getEncoded(),bob.Keys.getPublic().getEncoded(), charlie.Keys.getPublic().getEncoded())).get();
         byte[] lockingScriptBytes = transactionOutput.LockingScript;
         byte[] unlockingScriptBytes = new TransactionInputBuilder().setUnlockPayToMultiSig(List.of(charlie,bob),transactionOutput).get().UnlockingScript;
 
         ScriptExecution unlockingScript = new ScriptExecution();
         unlockingScript.LogScriptExecution  =true;
-        unlockingScript.Initialize(unlockingScriptBytes);
+        unlockingScript.initialize(unlockingScriptBytes);
 
         System.out.println("Running unlocking script...");
 
         while(true) {
             try {
-                if (!unlockingScript.Step()) break;
+                if (!unlockingScript.step()) break;
             } catch (ScriptEmptyStackException | ScriptInvalidParameterException | ScriptUnsupportedOperationException | ScriptInvalidException e) {
                 e.printStackTrace();
             }
@@ -1312,7 +1312,7 @@ public class ScriptTest {
         }
 
         ScriptExecution lockingScript = new ScriptExecution();
-        lockingScript.Initialize(lockingScriptBytes, unlockingScript.Stack.elements());
+        lockingScript.initialize(lockingScriptBytes, unlockingScript.Stack.elements());
         lockingScript.LogScriptExecution  =true;
         lockingScript.setSignatureVerificationMessage(transactionOutput.getHash());
 
@@ -1320,7 +1320,7 @@ public class ScriptTest {
 
         while(true) {
             try {
-                if (!lockingScript.Step()) break;
+                if (!lockingScript.step()) break;
             } catch (ScriptEmptyStackException | ScriptUnsupportedOperationException | ScriptInvalidException | ScriptInvalidParameterException e) {
                 e.printStackTrace();
             }
@@ -1350,21 +1350,21 @@ public class ScriptTest {
         byte[] randomPassword = new byte[64];
         ThreadLocalRandom.current().nextBytes(randomPassword);
 
-        String password = BytesUtil.Base64Encode(randomPassword);
+        String password = BytesUtil.base64Encode(randomPassword);
 
-        TransactionOutput transactionOutput = new TransactionOutputBuilder().setAmount(Conversions.CoinsToSatoshis(1.0)).setPayToPassword(password).get();
+        TransactionOutput transactionOutput = new TransactionOutputBuilder().setAmount(Conversions.coinsToSatoshis(1.0)).setPayToPassword(password).get();
         byte[] lockingScriptBytes = transactionOutput.LockingScript;
         byte[] unlockingScriptBytes = new TransactionInputBuilder().setUnlockPayToPassword(password).get().UnlockingScript;
 
         ScriptExecution unlockingScript = new ScriptExecution();
         unlockingScript.LogScriptExecution = true;
-        unlockingScript.Initialize(unlockingScriptBytes);
+        unlockingScript.initialize(unlockingScriptBytes);
 
         System.out.println("Running unlocking script...");
 
         while(true) {
             try {
-                if (!unlockingScript.Step()) break;
+                if (!unlockingScript.step()) break;
             } catch (ScriptEmptyStackException | ScriptInvalidParameterException | ScriptUnsupportedOperationException | ScriptInvalidException e) {
                 e.printStackTrace();
             }
@@ -1379,7 +1379,7 @@ public class ScriptTest {
         }
 
         ScriptExecution lockingScript = new ScriptExecution();
-        lockingScript.Initialize(lockingScriptBytes, unlockingScript.Stack.elements());
+        lockingScript.initialize(lockingScriptBytes, unlockingScript.Stack.elements());
         lockingScript.LogScriptExecution  =true;
         lockingScript.setSignatureVerificationMessage(transactionOutput.getHash());
 
@@ -1387,7 +1387,7 @@ public class ScriptTest {
 
         while(true) {
             try {
-                if (!lockingScript.Step()) break;
+                if (!lockingScript.step()) break;
             } catch (ScriptEmptyStackException | ScriptUnsupportedOperationException | ScriptInvalidException | ScriptInvalidParameterException e) {
                 e.printStackTrace();
             }
@@ -1410,7 +1410,7 @@ public class ScriptTest {
         byte[] randomPassword = new byte[64];
         ThreadLocalRandom.current().nextBytes(randomPassword);
 
-        String password = BytesUtil.Base64Encode(randomPassword);
+        String password = BytesUtil.base64Encode(randomPassword);
 
         byte[] CustomScript = new TransactionOutputBuilder().setPayToPassword(password).get().LockingScript;
         byte[] CustomScriptUnlock = new TransactionInputBuilder().setUnlockPayToPassword(password).get().UnlockingScript;
@@ -1418,20 +1418,20 @@ public class ScriptTest {
         /////////////////////////////////////////////////////////////
         byte[] scriptHashAddress = UISCoinAddress.fromScriptHash(Hash.getSHA512Bytes(CustomScript));
 
-        System.out.println("Pays to address: "+ BytesUtil.Base64Encode(scriptHashAddress));
+        System.out.println("Pays to address: "+ BytesUtil.base64Encode(scriptHashAddress));
 
-        TransactionOutput transactionOutput = new TransactionOutputBuilder().setAmount(Conversions.CoinsToSatoshis(1.0)).setPayToAddress(scriptHashAddress).get();
+        TransactionOutput transactionOutput = new TransactionOutputBuilder().setAmount(Conversions.coinsToSatoshis(1.0)).setPayToAddress(scriptHashAddress).get();
         byte[] lockingScriptBytes = transactionOutput.LockingScript;
 
         byte[] unlockingScriptBytes = new TransactionInputBuilder().setUnlockPayToScriptHash(CustomScript, CustomScriptUnlock).get().UnlockingScript;
 
         ScriptExecution unlockingScript = new ScriptExecution();
         unlockingScript.LogScriptExecution  =true;
-        unlockingScript.Initialize(unlockingScriptBytes);
+        unlockingScript.initialize(unlockingScriptBytes);
 
         System.out.println("Running unlocking script...");
 
-        while(unlockingScript.Step()) {
+        while(unlockingScript.step()) {
             System.out.println("Stack: \n"+unlockingScript.getStackContents());
         }
 
@@ -1443,13 +1443,13 @@ public class ScriptTest {
         }
 
         ScriptExecution lockingScript = new ScriptExecution();
-        lockingScript.Initialize(lockingScriptBytes, unlockingScript.Stack.elements());
+        lockingScript.initialize(lockingScriptBytes, unlockingScript.Stack.elements());
         lockingScript.LogScriptExecution  =true;
         lockingScript.setSignatureVerificationMessage(transactionOutput.getHash());
 
         System.out.println("Running locking script...");
 
-        while(lockingScript.Step()) {
+        while(lockingScript.step()) {
             System.out.println("Stack: \n"+lockingScript.getStackContents());
         }
 
@@ -1477,23 +1477,23 @@ public class ScriptTest {
 
         assertTrue(Arrays.equals(decodedAddress.HashData, pubkey_sha512Bytes));
 
-        TransactionOutput transactionOutput1 = new TransactionOutputBuilder().setAmount(Conversions.CoinsToSatoshis(1.0)).setPayToPublicKeyHash(decodedAddress.HashData).get();
+        TransactionOutput transactionOutput1 = new TransactionOutputBuilder().setAmount(Conversions.coinsToSatoshis(1.0)).setPayToPublicKeyHash(decodedAddress.HashData).get();
         byte[] CustomScript = transactionOutput1.LockingScript;
         byte[] CustomScriptUnlock = new TransactionInputBuilder().setUnlockPayToPublicKeyHash(coinKeypairRecipient, transactionOutput1).get().UnlockingScript;
 
         /////////////////////////////////////////////////////////////
 
-        TransactionOutput transactionOutput = new TransactionOutputBuilder().setAmount(Conversions.CoinsToSatoshis(1.0)).setPayToScriptHash(Hash.getSHA512Bytes(CustomScript)).get();
+        TransactionOutput transactionOutput = new TransactionOutputBuilder().setAmount(Conversions.coinsToSatoshis(1.0)).setPayToScriptHash(Hash.getSHA512Bytes(CustomScript)).get();
         byte[] lockingScriptBytes = transactionOutput.LockingScript;
         byte[] unlockingScriptBytes = new TransactionInputBuilder().setUnlockPayToScriptHash(CustomScript, CustomScriptUnlock).get().UnlockingScript;
 
         ScriptExecution unlockingScript = new ScriptExecution();
         unlockingScript.LogScriptExecution  =true;
-        unlockingScript.Initialize(unlockingScriptBytes);
+        unlockingScript.initialize(unlockingScriptBytes);
 
         System.out.println("Running unlocking script...");
 
-        while(unlockingScript.Step()) {
+        while(unlockingScript.step()) {
             System.out.println("Stack: \n"+unlockingScript.getStackContents());
         }
 
@@ -1505,7 +1505,7 @@ public class ScriptTest {
         }
 
         ScriptExecution lockingScript = new ScriptExecution();
-        lockingScript.Initialize(lockingScriptBytes, unlockingScript.Stack.elements());
+        lockingScript.initialize(lockingScriptBytes, unlockingScript.Stack.elements());
         lockingScript.LogScriptExecution  =true;
         lockingScript.setSignatureVerificationMessage(transactionOutput1.getHash());
 
@@ -1513,7 +1513,7 @@ public class ScriptTest {
 
         while(true) {
             try {
-                if (!lockingScript.Step()) break;
+                if (!lockingScript.step()) break;
             } catch (ScriptEmptyStackException | ScriptUnsupportedOperationException | ScriptInvalidException | ScriptInvalidParameterException e) {
                 e.printStackTrace();
             }
@@ -1544,16 +1544,16 @@ public class ScriptTest {
         int C = A + B;
 
         ScriptBuilder sb = new ScriptBuilder(256);
-        sb.push(BytesUtil.NumberToByteArray32(A)).push(BytesUtil.NumberToByteArray32(B)).fromText("sha512 swap sha512 lenequal verify");
+        sb.push(BytesUtil.numberToByteArray32(A)).push(BytesUtil.numberToByteArray32(B)).fromText("sha512 swap sha512 lenequal verify");
 
         ScriptExecution scriptExecution = new ScriptExecution();
 
         String toText = sb.toText();
         System.out.println(toText);
 
-        scriptExecution.Initialize(new ScriptBuilder(1024).fromText(toText).get());
+        scriptExecution.initialize(new ScriptBuilder(1024).fromText(toText).get());
 
-        while (scriptExecution.Step()){
+        while (scriptExecution.step()){
             System.out.println("Stack: \n"+scriptExecution.getStackContents());
         }
 
@@ -1586,9 +1586,9 @@ public class ScriptTest {
         ScriptExecution scriptExecution = new ScriptExecution();
         scriptExecution.LogScriptExecution = true;
 
-        scriptExecution.Initialize(sb.get());
+        scriptExecution.initialize(sb.get());
 
-        while (scriptExecution.Step()){
+        while (scriptExecution.step()){
             System.out.println("Stack: \n"+scriptExecution.getStackContents());
         }
 
@@ -1620,9 +1620,9 @@ public class ScriptTest {
         ScriptExecution scriptExecution = new ScriptExecution();
         scriptExecution.LogScriptExecution = true;
 
-        scriptExecution.Initialize(sb.get());
+        scriptExecution.initialize(sb.get());
 
-        while (scriptExecution.Step()){
+        while (scriptExecution.step()){
             System.out.println("Stack: \n"+scriptExecution.getStackContents());
         }
 
@@ -1654,9 +1654,9 @@ public class ScriptTest {
         ScriptExecution scriptExecution = new ScriptExecution();
         scriptExecution.LogScriptExecution = true;
 
-        scriptExecution.Initialize(sb.get());
+        scriptExecution.initialize(sb.get());
 
-        while (scriptExecution.Step()){
+        while (scriptExecution.step()){
             System.out.println("Stack: \n"+scriptExecution.getStackContents());
         }
 
@@ -1688,9 +1688,9 @@ public class ScriptTest {
         ScriptExecution scriptExecution = new ScriptExecution();
         scriptExecution.LogScriptExecution = true;
 
-        scriptExecution.Initialize(sb.get());
+        scriptExecution.initialize(sb.get());
 
-        while (scriptExecution.Step()){
+        while (scriptExecution.step()){
             System.out.println("Stack: \n"+scriptExecution.getStackContents());
         }
 
@@ -1721,9 +1721,9 @@ public class ScriptTest {
 
         ScriptExecution scriptExecution = new ScriptExecution();
 
-        scriptExecution.Initialize(sb.get());
+        scriptExecution.initialize(sb.get());
 
-        while (scriptExecution.Step()){
+        while (scriptExecution.step()){
             System.out.println("Stack: \n"+scriptExecution.getStackContents());
         }
 
@@ -1754,9 +1754,9 @@ public class ScriptTest {
 
         ScriptExecution scriptExecution = new ScriptExecution();
 
-        scriptExecution.Initialize(sb.get());
+        scriptExecution.initialize(sb.get());
 
-        while (scriptExecution.Step()){
+        while (scriptExecution.step()){
             System.out.println("Stack: \n"+scriptExecution.getStackContents());
         }
 
@@ -1781,9 +1781,9 @@ public class ScriptTest {
 
             System.out.println(Arrays.toString(sb.get()));
 
-            scriptExecution.Initialize(sb.get());
+            scriptExecution.initialize(sb.get());
 
-            while (scriptExecution.Step()){
+            while (scriptExecution.step()){
                 System.out.println("Stack: \n"+scriptExecution.getStackContents());
             }
 
@@ -1819,9 +1819,9 @@ public class ScriptTest {
 
         ScriptExecution scriptExecution = new ScriptExecution();
 
-        scriptExecution.Initialize(sb.get());
+        scriptExecution.initialize(sb.get());
 
-        while (scriptExecution.Step()){
+        while (scriptExecution.step()){
             System.out.println("Stack: \n"+scriptExecution.getStackContents());
         }
 
@@ -1852,9 +1852,9 @@ public class ScriptTest {
 
         ScriptExecution scriptExecution = new ScriptExecution();
 
-        scriptExecution.Initialize(sb.get());
+        scriptExecution.initialize(sb.get());
 
-        while (scriptExecution.Step()){
+        while (scriptExecution.step()){
             System.out.println("Stack: \n"+scriptExecution.getStackContents());
         }
 

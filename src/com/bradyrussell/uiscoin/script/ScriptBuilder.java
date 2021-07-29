@@ -68,7 +68,7 @@ public class ScriptBuilder {
 
     public ScriptBuilder push(byte[] DataToPush){
         buffer.put(DataToPush.length > 127 ? ScriptOperator.BIGPUSH.OPCode : ScriptOperator.PUSH.OPCode);
-        buffer.put(DataToPush.length > 127 ? BytesUtil.NumberToByteArray32(DataToPush.length):new byte[]{(byte)DataToPush.length});
+        buffer.put(DataToPush.length > 127 ? BytesUtil.numberToByteArray32(DataToPush.length):new byte[]{(byte)DataToPush.length});
         buffer.put(DataToPush);
         return this;
     }
@@ -90,21 +90,21 @@ public class ScriptBuilder {
     public ScriptBuilder pushInt(int IntToPush){
         buffer.put(ScriptOperator.PUSH.OPCode);
         buffer.put((byte)4);
-        buffer.put(BytesUtil.NumberToByteArray32(IntToPush));
+        buffer.put(BytesUtil.numberToByteArray32(IntToPush));
         return this;
     }
 
     public ScriptBuilder pushInt64(long IntToPush){
         buffer.put(ScriptOperator.PUSH.OPCode);
         buffer.put((byte)8);
-        buffer.put(BytesUtil.NumberToByteArray64(IntToPush));
+        buffer.put(BytesUtil.numberToByteArray64(IntToPush));
         return this;
     }
 
     public ScriptBuilder pushFloat(float FloatToPush){
         buffer.put(ScriptOperator.PUSH.OPCode);
         buffer.put((byte)4);
-        buffer.put(BytesUtil.FloatToByteArray(FloatToPush));
+        buffer.put(BytesUtil.floatToByteArray(FloatToPush));
         return this;
     }
 
@@ -153,7 +153,7 @@ public class ScriptBuilder {
         int InstructionCounter = 0;
 
         StringBuilder sb = new StringBuilder();
-        sb.append("//Decompiled from ").append(BytesUtil.Base64Encode(Script)).append("#\n");
+        sb.append("//Decompiled from ").append(BytesUtil.base64Encode(Script)).append("#\n");
 
         while(InstructionCounter < Script.length){
             //////////////////////////////////////////////////////////////////////////////////////

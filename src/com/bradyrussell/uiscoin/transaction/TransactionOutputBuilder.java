@@ -7,7 +7,6 @@ import com.bradyrussell.uiscoin.address.UISCoinAddress;
 import com.bradyrussell.uiscoin.script.ScriptBuilder;
 import com.bradyrussell.uiscoin.script.ScriptOperator;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -158,7 +157,7 @@ public class TransactionOutputBuilder {
 
     public TransactionOutput get(){
         if(Memo != null) {
-            output.LockingScript = BytesUtil.ConcatArray(output.LockingScript, new ScriptBuilder(16+Memo.length()).pushUTF8String(Memo).get());
+            output.LockingScript = BytesUtil.concatArray(output.LockingScript, new ScriptBuilder(16+Memo.length()).pushUTF8String(Memo).get());
         }
         return output;
     }

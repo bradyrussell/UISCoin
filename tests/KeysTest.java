@@ -39,22 +39,22 @@ public class KeysTest {
 
             byte[] LOCKSCRIPT = new ScriptBuilder(256).push(keyPair.getPublic().getEncoded()).op(ScriptOperator.VERIFYSIG).get();
 
-            Keys.SignedData signedData = Keys.SignData(keyPair, LOCKSCRIPT);
+            Keys.SignedData signedData = Keys.signData(keyPair, LOCKSCRIPT);
 
-            assertTrue(Keys.VerifySignedData(signedData));
+            assertTrue(Keys.verifySignedData(signedData));
 
             ScriptExecution unlockingScript = new ScriptExecution();
-            unlockingScript.Initialize(new ScriptBuilder(256).push(signedData.Signature).get());
+            unlockingScript.initialize(new ScriptBuilder(256).push(signedData.Signature).get());
 
-            while(unlockingScript.Step()){
+            while(unlockingScript.step()){
                 unlockingScript.dumpStack();
             }
 
             ScriptExecution lockingScript = new ScriptExecution();
-            lockingScript.Initialize(LOCKSCRIPT, unlockingScript.Stack.elements());
+            lockingScript.initialize(LOCKSCRIPT, unlockingScript.Stack.elements());
             lockingScript.setSignatureVerificationMessage(LOCKSCRIPT);
 
-            while(lockingScript.Step()){
+            while(lockingScript.step()){
                 lockingScript.dumpStack();
             }
 
@@ -75,7 +75,7 @@ public class KeysTest {
 
             KeyPair keyPair = Keys.makeKeyPair(Randomseed);
 
-            KeyPair otherKeyPair = Keys.LoadKeys(keyPair.getPublic().getEncoded(), keyPair.getPrivate().getEncoded());
+            KeyPair otherKeyPair = Keys.loadKeys(keyPair.getPublic().getEncoded(), keyPair.getPrivate().getEncoded());
 
             assertTrue(Arrays.equals(otherKeyPair.getPublic().getEncoded(), keyPair.getPublic().getEncoded()));
             assertTrue(Arrays.equals(otherKeyPair.getPrivate().getEncoded(), keyPair.getPrivate().getEncoded()));
@@ -120,14 +120,14 @@ public class KeysTest {
         String tempPass = "password"+ThreadLocalRandom.current().nextInt();
 
         try {
-            Wallet.SaveKeypairToFileWithPassword(Path.of("tests/test_wallet.uisw"),tempPass, uisCoinKeypair);
+            Wallet.saveKeypairToFileWithPassword(Path.of("tests/test_wallet.uisw"),tempPass, uisCoinKeypair);
         } catch (IOException | IllegalBlockSizeException | InvalidKeyException | BadPaddingException | NoSuchAlgorithmException | NoSuchPaddingException e) {
             e.printStackTrace();
             fail();
         }
         UISCoinKeypair keypairFromFileWithPassword = null;
         try {
-            keypairFromFileWithPassword = Wallet.LoadKeypairFromFileWithPassword(Path.of("tests/test_wallet.uisw"), tempPass);
+            keypairFromFileWithPassword = Wallet.loadKeypairFromFileWithPassword(Path.of("tests/test_wallet.uisw"), tempPass);
         } catch (IOException | IllegalBlockSizeException | InvalidKeyException | BadPaddingException | NoSuchAlgorithmException | NoSuchPaddingException e) {
             e.printStackTrace();
             fail();
@@ -146,20 +146,20 @@ public class KeysTest {
         String tempPass = "password"+ThreadLocalRandom.current().nextInt();
 
         for(int i = 0; i < 10; i++){
-            wallet.GenerateNewKey();
+            wallet.generateNewKey();
         }
 
         assertTrue(wallet.Keypairs.size() > 0);
 
         try {
-            Wallet.SaveWalletToFileWithPassword(Path.of("tests/test_wallet.uiscoin"),tempPass,wallet);
+            Wallet.saveWalletToFileWithPassword(Path.of("tests/test_wallet.uiscoin"),tempPass,wallet);
         } catch (IOException | IllegalBlockSizeException | InvalidKeyException | BadPaddingException | NoSuchAlgorithmException | NoSuchPaddingException e) {
             e.printStackTrace();
             fail();
         }
         UISCoinWallet wallet1 = null;
         try {
-            wallet1 = Wallet.LoadWalletFromFileWithPassword(Path.of("tests/test_wallet.uiscoin"), tempPass);
+            wallet1 = Wallet.loadWalletFromFileWithPassword(Path.of("tests/test_wallet.uiscoin"), tempPass);
         } catch (IOException | IllegalBlockSizeException | InvalidKeyException | BadPaddingException | NoSuchAlgorithmException | NoSuchPaddingException e) {
             e.printStackTrace();
             fail();

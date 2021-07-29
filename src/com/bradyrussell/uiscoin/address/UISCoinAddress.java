@@ -15,13 +15,13 @@ public class UISCoinAddress {
         byte[] pubkeyHash = Hash.getSHA512Bytes(PubKey.getEncoded());
         byte[] checksum = getChecksumFromHashData(pubkeyHash);
 
-        return BytesUtil.ConcatArray(header, BytesUtil.ConcatArray(pubkeyHash, checksum));
+        return BytesUtil.concatArray(header, BytesUtil.concatArray(pubkeyHash, checksum));
     }
 
     public static byte[] fromScriptHash(byte[] ScriptHash){
         byte[] header = {MagicBytes.AddressHeader.Value, MagicBytes.AddressHeader2.Value, MagicBytes.AddressVersionP2SH.Value};
         byte[] checksum = getChecksumFromHashData(ScriptHash);
-        return BytesUtil.ConcatArray(header, BytesUtil.ConcatArray(ScriptHash, checksum));
+        return BytesUtil.concatArray(header, BytesUtil.concatArray(ScriptHash, checksum));
     }
 
     public static DecodedAddress decodeAddress(byte[] Address){

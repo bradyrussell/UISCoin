@@ -1,4 +1,3 @@
-import com.bradyrussell.uiscoin.Encryption;
 import com.bradyrussell.uiscoin.script.*;
 import com.bradyrussell.uiscoin.script.exception.ScriptEmptyStackException;
 import com.bradyrussell.uiscoin.script.exception.ScriptInvalidException;
@@ -7,11 +6,6 @@ import com.bradyrussell.uiscoin.script.exception.ScriptUnsupportedOperationExcep
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.RepeatedTest;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -41,9 +35,9 @@ public class ScriptOptimizationTest {
         ScriptExecution scriptExecution = new ScriptExecution();
         scriptExecution.LogScriptExecution = true;
 
-        scriptExecution.Initialize(unoptimized);
+        scriptExecution.initialize(unoptimized);
 
-        while (scriptExecution.Step()){
+        while (scriptExecution.step()){
             System.out.println("Unoptimized Stack: \n"+scriptExecution.getStackContents());
         }
 
@@ -58,9 +52,9 @@ public class ScriptOptimizationTest {
         ScriptExecution scriptExecutionO = new ScriptExecution();
         scriptExecutionO.LogScriptExecution = true;
 
-        scriptExecutionO.Initialize(optimized);
+        scriptExecutionO.initialize(optimized);
 
-        while (scriptExecutionO.Step()){
+        while (scriptExecutionO.step()){
             System.out.println("Optimized Stack: \n"+scriptExecutionO.getStackContents());
         }
 
@@ -98,9 +92,9 @@ public class ScriptOptimizationTest {
         ScriptExecution scriptExecution = new ScriptExecution();
         scriptExecution.LogScriptExecution = true;
 
-        scriptExecution.Initialize(unoptimized);
+        scriptExecution.initialize(unoptimized);
 
-        while (scriptExecution.Step()){
+        while (scriptExecution.step()){
             System.out.println("Unoptimized Stack: \n"+scriptExecution.getStackContents());
         }
 
@@ -115,9 +109,9 @@ public class ScriptOptimizationTest {
         ScriptExecution scriptExecutionO = new ScriptExecution();
         scriptExecutionO.LogScriptExecution = true;
 
-        scriptExecutionO.Initialize(optimized);
+        scriptExecutionO.initialize(optimized);
 
-        while (scriptExecutionO.Step()){
+        while (scriptExecutionO.step()){
             System.out.println("Optimized Stack: \n"+scriptExecutionO.getStackContents());
         }
 
@@ -154,9 +148,9 @@ public class ScriptOptimizationTest {
         ScriptExecution scriptExecution = new ScriptExecution();
         scriptExecution.LogScriptExecution = true;
 
-        scriptExecution.Initialize(unoptimized);
+        scriptExecution.initialize(unoptimized);
 
-        while (scriptExecution.Step()){
+        while (scriptExecution.step()){
             System.out.println("Unoptimized Stack: \n"+scriptExecution.getStackContents());
         }
 
@@ -171,9 +165,9 @@ public class ScriptOptimizationTest {
         ScriptExecution scriptExecutionO = new ScriptExecution();
         scriptExecutionO.LogScriptExecution = true;
 
-        scriptExecutionO.Initialize(optimized);
+        scriptExecutionO.initialize(optimized);
 
-        while (scriptExecutionO.Step()){
+        while (scriptExecutionO.step()){
             System.out.println("Optimized Stack: \n"+scriptExecutionO.getStackContents());
         }
 
@@ -220,9 +214,9 @@ public class ScriptOptimizationTest {
         ScriptExecution scriptExecution = new ScriptExecution();
         scriptExecution.LogScriptExecution = true;
 
-        scriptExecution.Initialize(unoptimized);
+        scriptExecution.initialize(unoptimized);
 
-        while (scriptExecution.Step()){
+        while (scriptExecution.step()){
             System.out.println("Unoptimized Stack: \n"+scriptExecution.getStackContents());
         }
 
@@ -237,9 +231,9 @@ public class ScriptOptimizationTest {
         ScriptExecution scriptExecutionO = new ScriptExecution();
         scriptExecutionO.LogScriptExecution = true;
 
-        scriptExecutionO.Initialize(optimized);
+        scriptExecutionO.initialize(optimized);
 
-        while (scriptExecutionO.Step()){
+        while (scriptExecutionO.step()){
             System.out.println("Optimized Stack: \n"+scriptExecutionO.getStackContents());
         }
 

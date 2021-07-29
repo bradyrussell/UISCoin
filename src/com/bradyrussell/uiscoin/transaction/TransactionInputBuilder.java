@@ -10,7 +10,6 @@ import java.nio.charset.Charset;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class TransactionInputBuilder {
@@ -55,7 +54,7 @@ public class TransactionInputBuilder {
     // https://learnmeabitcoin.com/technical/p2pk
     public TransactionInputBuilder setUnlockPayToPublicKey(UISCoinKeypair Keypair, TransactionOutput outputToSpend){
         try {
-            Keys.SignedData signedData = Keys.SignData(Keypair.Keys, outputToSpend.getHash());
+            Keys.SignedData signedData = Keys.signData(Keypair.Keys, outputToSpend.getHash());
             input.UnlockingScript = new ScriptBuilder(256).push(signedData.Signature).get();
 
         } catch (NoSuchAlgorithmException | InvalidKeyException | SignatureException e) {
@@ -68,7 +67,7 @@ public class TransactionInputBuilder {
     //https://learnmeabitcoin.com/technical/p2pkh
     public TransactionInputBuilder setUnlockPayToPublicKeyHash(UISCoinKeypair Keypair, TransactionOutput outputToSpend) {
         try {
-            Keys.SignedData signedData = Keys.SignData(Keypair.Keys, outputToSpend.getHash());
+            Keys.SignedData signedData = Keys.signData(Keypair.Keys, outputToSpend.getHash());
             input.UnlockingScript = new ScriptBuilder(256).push(signedData.Signature).push(Keypair.Keys.getPublic().getEncoded()).get();
 
         } catch (NoSuchAlgorithmException | InvalidKeyException | SignatureException e) {
@@ -89,7 +88,7 @@ public class TransactionInputBuilder {
         ScriptBuilder scriptBuilder = new ScriptBuilder(128+ keypairs.size()*128);
 
         for (UISCoinKeypair keypair : keypairs) {
-            scriptBuilder.push(Keys.SignData(keypair.Keys, outputToSpend.getHash()).Signature);
+            scriptBuilder.push(Keys.signData(keypair.Keys, outputToSpend.getHash()).Signature);
         }
 
         input.UnlockingScript = scriptBuilder.get();

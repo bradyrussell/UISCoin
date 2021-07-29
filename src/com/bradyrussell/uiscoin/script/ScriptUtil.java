@@ -73,17 +73,17 @@ public class ScriptUtil {
 
     public static byte[] NumberStringToBytes(String NumberString, boolean bMinimum32){
         if(NumberString.contains(".") || NumberString.toLowerCase().contains("e") || NumberString.contains("-") || NumberString.contains("+")) {
-            return BytesUtil.FloatToByteArray(Float.parseFloat(NumberString));
+            return BytesUtil.floatToByteArray(Float.parseFloat(NumberString));
         } else {
             try {
                 int intToPush = Integer.parseInt(NumberString);
                 if(intToPush <= Byte.MAX_VALUE && intToPush >= Byte.MIN_VALUE && !bMinimum32) {
                     return new byte[]{(byte)intToPush};
                 } else {
-                    return BytesUtil.NumberToByteArray32(intToPush);
+                    return BytesUtil.numberToByteArray32(intToPush);
                 }
             } catch (NumberFormatException ignored) {
-                return BytesUtil.NumberToByteArray64(Long.parseLong(NumberString));
+                return BytesUtil.numberToByteArray64(Long.parseLong(NumberString));
             }
         }
     }

@@ -37,21 +37,21 @@ public class NodeP2PReceiveTransactionHandler extends SimpleChannelInboundHandle
 
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, Transaction transaction) throws Exception {
-        Log.info("Handler Received transaction "+ BytesUtil.Base64Encode(transaction.getHash()));
+        Log.info("Handler Received transaction "+ BytesUtil.base64Encode(transaction.getHash()));
 
         if(BlockChain.get().getMempool().contains(transaction)){
             Log.info("Already have. Discarding...");
             return;
         }
 
-        if(!transaction.VerifyInputsUnspent()) {
-            transaction.DebugVerify();
+        if(!transaction.verifyInputsUnspent()) {
+            transaction.debugVerify();
             Log.info("Spent input! Discarding.");
             return;
         }
 
-        if(!transaction.Verify()) {
-            transaction.DebugVerify();
+        if(!transaction.verify()) {
+            transaction.debugVerify();
             Log.info("Invalid transaction! Discarding.");
             return;
         }
@@ -67,6 +67,6 @@ public class NodeP2PReceiveTransactionHandler extends SimpleChannelInboundHandle
         BlockChain.get().addToMempool(transaction);
 
         System.out.println("Rebroadcasting...");
-        thisNode.BroadcastTransactionToPeers(transaction);
+        thisNode.broadcastTransactionToPeers(transaction);
     }
 }

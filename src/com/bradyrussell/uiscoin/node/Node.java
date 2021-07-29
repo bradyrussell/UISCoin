@@ -51,7 +51,7 @@ public class Node {
         this.HighestSeenBlockHeight = -1; // we have not seen another nodes blockheight yet
     }
 
-    public void ConnectToPeer(InetAddress Address){
+    public void connectToPeer(InetAddress Address){
         if(getPeers().contains(Address)) {
             Log.info("Already connected to this peer!");
             return;
@@ -80,7 +80,7 @@ public class Node {
     }
 
     @Deprecated
-    public void RequestBlockChainFromPeers(int BlockHeight){
+    public void requestBlockChainFromPeers(int BlockHeight){
         ByteBuf buffer = Unpooled.buffer();
         buffer.writeByte(PeerPacketType.SYNC.Header);
         buffer.writeBoolean(false);
@@ -90,39 +90,39 @@ public class Node {
         nodeClients.writeAndFlush(buffer);
     }
 
-    public void RequestBlockFromPeers(BlockRequest request){
+    public void requestBlockFromPeers(BlockRequest request){
         peerClients.writeAndFlush(request);
         nodeClients.writeAndFlush(request);
     }
 
-    public void BroadcastBlockToPeers(Block block){
+    public void broadcastBlockToPeers(Block block){
         peerClients.writeAndFlush(block);
         nodeClients.writeAndFlush(block);
     }
 
-    public void RequestMemPoolFromPeers(){
+    public void requestMemPoolFromPeers(){
         ByteBuf buffer = Unpooled.buffer();
         buffer.writeByte(PeerPacketType.MEMPOOL.Header);
         peerClients.writeAndFlush(buffer.copy());
         nodeClients.writeAndFlush(buffer);
     }
 
-    public void BroadcastBlockHeaderToPeers(BlockHeaderResponse blockHeaderResponse){
+    public void broadcastBlockHeaderToPeers(BlockHeaderResponse blockHeaderResponse){
         peerClients.writeAndFlush(blockHeaderResponse);
         nodeClients.writeAndFlush(blockHeaderResponse);
     }
 
-    public void BroadcastTransactionToPeers(Transaction transaction){
+    public void broadcastTransactionToPeers(Transaction transaction){
         peerClients.writeAndFlush(transaction);
         nodeClients.writeAndFlush(transaction);
     }
 
-    public void BroadcastPeerToPeers(InetAddress address){
+    public void broadcastPeerToPeers(InetAddress address){
         peerClients.writeAndFlush(address);
         nodeClients.writeAndFlush(address);
     }
 
-    public void Start(){
+    public void start(){
         //startup the node server
         EventLoopGroup bossGroup = new NioEventLoopGroup(1);
         EventLoopGroup workerGroup = new NioEventLoopGroup();
@@ -140,7 +140,7 @@ public class Node {
 
     }
 
-    public void Stop(){
+    public void stop(){
         try {
             if(peerClients != null) peerClients.close().sync();
             if(nodeClients != null) nodeClients.close().sync();
@@ -164,13 +164,13 @@ public class Node {
         }
     }
 
-    public void RetryPeers(){
+    public void retryPeers(){
         ArrayList<InetAddress> peersToRetry = new ArrayList<>(peersEverSeen);
 
         peersToRetry.removeAll(getPeers());
 
         for (InetAddress inetAddress : peersToRetry) {
-            ConnectToPeer(inetAddress);
+            connectToPeer(inetAddress);
         }
     }
 

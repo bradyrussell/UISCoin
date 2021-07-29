@@ -115,7 +115,7 @@ public class ScriptParser {
                         System.out.println(Arrays.toString(beforeJump));
                         System.out.println(Arrays.toString(jumpAndAfter));
 
-                        scriptBuilder = new ScriptBuilder(scriptBuilder.buffer.limit()).data(BytesUtil.ConcatArray(beforeJump, jumpAndAfter));
+                        scriptBuilder = new ScriptBuilder(scriptBuilder.buffer.limit()).data(BytesUtil.concatArray(beforeJump, jumpAndAfter));
                     }
                 } else {
                     System.out.println("Nothing jumps to this label. "+gotoLabel);
@@ -406,7 +406,7 @@ public class ScriptParser {
             }
         }
         int NumberOfVariables = SymbolTable.size();
-        return BytesUtil.ConcatArray(BytesUtil.ConcatArray(InitializeStackSpaceForVariables(NumberOfVariables), scriptBuilder.get()), CleanupStackSpaceForVariables(NumberOfVariables));
+        return BytesUtil.concatArray(BytesUtil.concatArray(InitializeStackSpaceForVariables(NumberOfVariables), scriptBuilder.get()), CleanupStackSpaceForVariables(NumberOfVariables));
     }
 
     public static byte[] InitializeStackSpaceForVariables(int NumberOfVariables) {

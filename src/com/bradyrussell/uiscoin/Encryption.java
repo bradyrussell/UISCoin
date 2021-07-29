@@ -10,7 +10,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
 public class Encryption {
-    public static byte[] Encrypt(byte[] Data, byte[] Key) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+    public static byte[] encrypt(byte[] Data, byte[] Key) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
         byte[] keyBytes = Arrays.copyOf(Hash.getSHA512Bytes(Key), 16);
         SecretKeySpec secretKeySpec = new SecretKeySpec(keyBytes, "AES");
 
@@ -19,7 +19,7 @@ public class Encryption {
         return cipher.doFinal(Data);
     }
 
-    public static byte[] Decrypt(byte[] Data, byte[] Key) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+    public static byte[] decrypt(byte[] Data, byte[] Key) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
         byte[] keyBytes = Arrays.copyOf(Hash.getSHA512Bytes(Key), 16);
         SecretKeySpec secretKeySpec = new SecretKeySpec(keyBytes, "AES");
 

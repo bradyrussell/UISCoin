@@ -55,8 +55,8 @@ public class BlockBuilder {
         return this;
     }
 
-    public BlockBuilder CalculateMerkleRoot(){
-        getOrCreateHeader().HashMerkleRoot = block.CalculateMerkleRoot();
+    public BlockBuilder calculateMerkleRoot(){
+        getOrCreateHeader().HashMerkleRoot = block.calculateMerkleRoot();
         return this;
     }
 
@@ -65,9 +65,9 @@ public class BlockBuilder {
         return this;
     }
 
-    public BlockBuilder CalculateDifficultyTarget() throws NoSuchBlockException {
+    public BlockBuilder calculateDifficultyTarget() throws NoSuchBlockException {
         Block lastBlock = BlockChain.get().getBlock(BlockChain.get().HighestBlockHash);
-        setDifficultyTarget(BlockHeader.CalculateDifficultyTarget(block.Header.Time - lastBlock.Header.Time, lastBlock.Header.DifficultyTarget));
+        setDifficultyTarget(BlockHeader.calculateDifficultyTarget(block.Header.Time - lastBlock.Header.Time, lastBlock.Header.DifficultyTarget));
         return this;
     }
 
@@ -100,7 +100,7 @@ public class BlockBuilder {
         int size = 0;
         for(Transaction t:mempool){
             try {
-                if(!t.Verify()  || !t.VerifyInputsUnspent()) {
+                if(!t.verify()  || !t.verifyInputsUnspent()) {
                     toRemove.add(t);
                     continue;
                 }
@@ -136,7 +136,7 @@ public class BlockBuilder {
         }
         Transaction transaction = new TransactionBuilder().setVersion(1).setLockTime(0)
                 .addInput(new TransactionInputBuilder().setInputTransaction(new byte[64], block.Header.BlockHeight).setUnlockingScript(new ScriptBuilder(68).push(Hash.getSHA512Bytes(CoinbaseMessage)).op(ScriptOperator.TRUE).op(ScriptOperator.VERIFY).get()).get())
-                .addOutput(new TransactionOutputBuilder().setPayToPublicKeyHash(PublicKeyHash).setAmount(Block.CalculateBlockReward(block.Header.BlockHeight) + block.getFees()).get()).get();
+                .addOutput(new TransactionOutputBuilder().setPayToPublicKeyHash(PublicKeyHash).setAmount(Block.calculateBlockReward(block.Header.BlockHeight) + block.getFees()).get()).get();
         block.addCoinbaseTransaction(transaction);
         return this;
     }
@@ -146,7 +146,7 @@ public class BlockBuilder {
         block.Transactions.remove(0);
         Collections.shuffle(block.Transactions);
         block.Transactions.add(0, coinbase);
-        CalculateMerkleRoot();
+        calculateMerkleRoot();
         return this;
     }
 

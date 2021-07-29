@@ -40,7 +40,7 @@ public class BlockTest {
         TransactionBuilder tb = new TransactionBuilder();
         Transaction transaction = tb.setVersion(1).setLockTime(-1)
                 .addInput(new TransactionInputBuilder().setInputTransaction(RandomHash2,0).setUnlockingScript(Hash.getSHA512Bytes("aaa")).get())
-                .addOutput(new TransactionOutput(Conversions.CoinsToSatoshis(.5), RandomHash2))
+                .addOutput(new TransactionOutput(Conversions.coinsToSatoshis(.5), RandomHash2))
                 .get();
 
         Block block = new BlockBuilder().setBlockHeight(1).addCoinbasePayToPublicKeyHash(RandomHash1).setHashPreviousBlock(RandomHash2).get();
@@ -48,7 +48,7 @@ public class BlockTest {
         block.addTransaction(transaction);
 
         block.Header.HashPreviousBlock = RandomHash2;
-        block.Header.HashMerkleRoot = block.CalculateMerkleRoot();
+        block.Header.HashMerkleRoot = block.calculateMerkleRoot();
 
         byte[] blockBinaryData = block.getBinaryData();
 
@@ -67,7 +67,7 @@ public class BlockTest {
     @DisplayName("Hash GetDifficulty")
     void TestHashGetDifficulty() {
 
-        byte[] hash = BytesUtil.Base64Decode("UISa1foAACU7v1siyHul3StuvEJx5rebFgMkP_Sgiz60NoOSV00SP-yD_MO7JoHr7mmixKvj28QECDeaXQfzIQ==");
+        byte[] hash = BytesUtil.base64Decode("UISa1foAACU7v1siyHul3StuvEJx5rebFgMkP_Sgiz60NoOSV00SP-yD_MO7JoHr7mmixKvj28QECDeaXQfzIQ==");
         assertEquals(Hash.validateHash(hash,3),Hash.getHashDifficulty(hash)==3);
 
     }

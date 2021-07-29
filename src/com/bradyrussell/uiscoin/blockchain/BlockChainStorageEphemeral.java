@@ -36,7 +36,7 @@ public class BlockChainStorageEphemeral extends BlockChainStorageBase {
             BlockHeight = buf.getInt();
             buf.get(HighestBlockHash);
 
-            Log.info("Loaded blockchain " + (BlockHeight + 1) + " blocks long. Last block: " + BytesUtil.Base64Encode(HighestBlockHash));
+            Log.info("Loaded blockchain " + (BlockHeight + 1) + " blocks long. Last block: " + BytesUtil.base64Encode(HighestBlockHash));
         }
 
         MemPool = new ArrayList<>();
@@ -53,7 +53,7 @@ public class BlockChainStorageEphemeral extends BlockChainStorageBase {
 
                 Transaction t = new Transaction();
                 t.setBinaryData(TransactionBytes);
-                if(t.Verify()) MemPool.add(t);
+                if(t.verify()) MemPool.add(t);
             }
             Log.info("Loaded mempool with "+MemPool.size()+" transactions.");
         }

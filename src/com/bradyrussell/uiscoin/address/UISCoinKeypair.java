@@ -55,7 +55,7 @@ public class UISCoinKeypair implements IBinaryData {
         buf.get(Seed);
 
         try {
-            Keys = com.bradyrussell.uiscoin.Keys.LoadKeys(Public,Private);
+            Keys = com.bradyrussell.uiscoin.Keys.loadKeys(Public,Private);
         } catch (NoSuchAlgorithmException | InvalidKeySpecException | InvalidKeyException | SignatureException e) {
             e.printStackTrace();
         }

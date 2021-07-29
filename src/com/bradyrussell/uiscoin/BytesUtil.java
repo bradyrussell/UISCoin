@@ -49,7 +49,7 @@ public class BytesUtil {
         System.out.println("]");
     }
 
-    public static byte[] ConcatArray(byte[] A, byte[] B) {
+    public static byte[] concatArray(byte[] A, byte[] B) {
         byte[] C = new byte[A.length + B.length];
         for (int i = 0; i < A.length + B.length; i++) {
             C[i] = (i < A.length) ? A[i] : B[i - A.length];
@@ -57,14 +57,14 @@ public class BytesUtil {
         return C;
     }
 
-    public static int ByteArrayToNumber32(byte[] Bytes) {
+    public static int byteArrayToNumber32(byte[] Bytes) {
         return ((int) Bytes[0] & 0xFF) << 24
                 | ((int) Bytes[1] & 0xFF) << 16
                 | ((int) Bytes[2] & 0xFF) << 8
                 | ((int) Bytes[3] & 0xFF);
     }
 
-    public static byte[] NumberToByteArray32(int Number) {
+    public static byte[] numberToByteArray32(int Number) {
         return new byte[]{
                 (byte) (Number >> 24),
                 (byte) (Number >> 16),
@@ -74,7 +74,7 @@ public class BytesUtil {
     }
 
     //https://stackoverflow.com/questions/4485128/how-do-i-convert-long-to-byte-and-back-in-java
-    public static long ByteArrayToNumber64(byte[] Bytes) {
+    public static long byteArrayToNumber64(byte[] Bytes) {
         return ((long) Bytes[0] << 56)
                 | ((long) Bytes[1] & 0xFF) << 48
                 | ((long) Bytes[2] & 0xFF) << 40
@@ -85,7 +85,7 @@ public class BytesUtil {
                 | ((long) Bytes[7] & 0xFF);
     }
 
-    public static byte[] NumberToByteArray64(long Number) {
+    public static byte[] numberToByteArray64(long Number) {
         return new byte[]{
                 (byte) (Number >> 56),
                 (byte) (Number >> 48),
@@ -99,7 +99,7 @@ public class BytesUtil {
     }
 
     // zlib seems to produce smaller output in all my tests vs gzip
-    public static byte[] ZipBytes(byte[] uncompressedData)  {
+    public static byte[] zipBytes(byte[] uncompressedData)  {
         try {
             Deflater deflater = new Deflater();
             deflater.setInput(uncompressedData);
@@ -120,7 +120,7 @@ public class BytesUtil {
         }
     }
 
-    public static byte[] UnzipBytes(byte[] compressedData) {
+    public static byte[] unzipBytes(byte[] compressedData) {
         if(compressedData[0] == 120 && compressedData[1] == -100) { // zlib header
             try {
                 Inflater inflater = new Inflater();
@@ -157,23 +157,23 @@ public class BytesUtil {
     }
 
     //https://www.baeldung.com/java-convert-float-to-byte-array
-    public static byte[] FloatToByteArray(float Number) {
+    public static byte[] floatToByteArray(float Number) {
         int intBits = Float.floatToIntBits(Number);
         return new byte[]{
                 (byte) (intBits >> 24), (byte) (intBits >> 16), (byte) (intBits >> 8), (byte) (intBits)};
     }
 
-    public static float ByteArrayToFloat(byte[] Bytes) {
+    public static float byteArrayToFloat(byte[] Bytes) {
         int intBits =
                 Bytes[0] << 24 | (Bytes[1] & 0xFF) << 16 | (Bytes[2] & 0xFF) << 8 | (Bytes[3] & 0xFF);
         return Float.intBitsToFloat(intBits);
     }
 
-    public static String Base64Encode(byte[] Data) {
+    public static String base64Encode(byte[] Data) {
         return Base64.getUrlEncoder().encodeToString(Data);
     }
 
-    public static byte[] Base64Decode(String Base64String) {
+    public static byte[] base64Decode(String Base64String) {
         return Base64.getUrlDecoder().decode(Base64String);
     }
 

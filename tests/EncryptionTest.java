@@ -25,7 +25,7 @@ public class EncryptionTest {
 
         byte[] encrypt = new byte[0];
         try {
-            encrypt = Encryption.Encrypt(RandomHash1, RandomHash2);
+            encrypt = Encryption.encrypt(RandomHash1, RandomHash2);
         } catch (NoSuchPaddingException | NoSuchAlgorithmException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {
             e.printStackTrace();
             fail();
@@ -33,7 +33,7 @@ public class EncryptionTest {
 
         byte[] decrypt = new byte[0];
         try {
-            decrypt = Encryption.Decrypt(encrypt, RandomHash2);
+            decrypt = Encryption.decrypt(encrypt, RandomHash2);
         } catch (NoSuchPaddingException | NoSuchAlgorithmException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {
             e.printStackTrace();
             fail();
