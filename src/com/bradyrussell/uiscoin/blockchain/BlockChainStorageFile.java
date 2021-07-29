@@ -9,6 +9,7 @@ import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -89,7 +90,7 @@ public class BlockChainStorageFile extends BlockChainStorageBase {
 
     @Override
     public void removeFromMempool(Transaction t) {
-        if(!MemPool.contains(t)) Log.warning("Mempool does not contain this transaction");
+        if(!MemPool.contains(t)) Log.warning("Mempool does not contain this transaction" + Base64.getUrlEncoder().encodeToString(t.getHash()));
         MemPool.remove(t);
         close(); // just putting this here to store the blockheight more often
     }

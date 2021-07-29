@@ -14,7 +14,7 @@ public class UISCoinKeypair implements IBinaryData {
     public KeyPair Keys;
     public byte[] Seed; // todo this is a property of wallet not keypair
 
-    public static UISCoinKeypair Create(){
+    public static UISCoinKeypair create(){
         UISCoinKeypair keypair = new UISCoinKeypair();
         try {
             keypair.Seed =  new byte[32];

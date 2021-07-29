@@ -23,7 +23,7 @@ public class BlockTest {
     void TestBlockSerialization() throws NoSuchTransactionException, NoSuchBlockException, InvalidBlockException {
         long timeStamp = Instant.now().getEpochSecond();
 
-        UISCoinKeypair uisCoinKeypair = UISCoinKeypair.Create();
+        UISCoinKeypair uisCoinKeypair = UISCoinKeypair.create();
 
         byte[] RandomHash1 = new byte[64];
         byte[] RandomHash2 = new byte[64];

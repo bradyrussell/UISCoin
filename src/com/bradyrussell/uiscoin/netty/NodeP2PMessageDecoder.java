@@ -56,7 +56,7 @@ public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
                     node.BroadcastPeerToPeers(((InetSocketAddress)channelHandlerContext.channel().remoteAddress()).getAddress());
 
                     for (InetAddress peer : node.getPeers()) {
-                        if(!peer.equals(((InetSocketAddress )channelHandlerContext.channel().remoteAddress()).getAddress())) channelHandlerContext.write(peer);
+                        if(!peer.equals(((InetSocketAddress)channelHandlerContext.channel().remoteAddress()).getAddress())) channelHandlerContext.write(peer);
                     }
 
                     ByteBuf wrappedBuffer = Unpooled.buffer();
@@ -94,9 +94,8 @@ public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
                     byte[] Bytes = new byte[Size];
                     byteBuf.readBytes(Bytes);
 
-                    Log.fine("3 Received peer "+ BytesUtil.Base64Encode(Bytes));
-
                     InetAddress address = InetAddress.getByAddress(Bytes);
+                    Log.fine("3 Received peer "+ address.toString());
 
                     list.add(address);
                 }

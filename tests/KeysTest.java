@@ -80,7 +80,7 @@ public class KeysTest {
             assertTrue(Arrays.equals(otherKeyPair.getPublic().getEncoded(), keyPair.getPublic().getEncoded()));
             assertTrue(Arrays.equals(otherKeyPair.getPrivate().getEncoded(), keyPair.getPrivate().getEncoded()));
 
-            UISCoinKeypair uisCoinKeypair = UISCoinKeypair.Create();
+            UISCoinKeypair uisCoinKeypair = UISCoinKeypair.create();
 
             byte[] uisCoinKeypairBinaryData = uisCoinKeypair.getBinaryData();
 
@@ -115,7 +115,7 @@ public class KeysTest {
     @RepeatedTest(100)
     @DisplayName("Wallet Encrypted Keys Save / Load")
     void TestWalletKeysSaveLoad() {
-        UISCoinKeypair uisCoinKeypair = UISCoinKeypair.Create();
+        UISCoinKeypair uisCoinKeypair = UISCoinKeypair.create();
 
         String tempPass = "password"+ThreadLocalRandom.current().nextInt();
 

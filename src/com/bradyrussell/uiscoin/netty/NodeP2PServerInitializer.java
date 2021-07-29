@@ -6,6 +6,7 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.compression.ZlibCodecFactory;
 import io.netty.handler.codec.compression.ZlibWrapper;
+import io.netty.handler.timeout.IdleStateHandler;
 
 
 public class NodeP2PServerInitializer extends ChannelInitializer<SocketChannel> {
@@ -33,6 +34,9 @@ public class NodeP2PServerInitializer extends ChannelInitializer<SocketChannel> 
         // Enable stream compression (you can remove these two if unnecessary)
         pipeline.addLast(ZlibCodecFactory.newZlibEncoder(ZlibWrapper.GZIP));
         pipeline.addLast(ZlibCodecFactory.newZlibDecoder(ZlibWrapper.GZIP));
+
+        pipeline.addLast(new IdleStateHandler(60, 30, 0));
+        pipeline.addLast(new NodeP2PIdleStateHandler());
 
         pipeline.addLast(new NodeP2PTransactionEncoder()); // need encoders before decoder so it can send blocks back
         pipeline.addLast(new NodeP2PBlockEncoder());

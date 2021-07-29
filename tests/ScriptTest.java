@@ -1173,7 +1173,7 @@ public class ScriptTest {
 
     @RepeatedTest(100) @DisplayName("Pay to Public Key Lock & Unlock")
     void TestPayToPublicKey() throws ScriptInvalidException, ScriptEmptyStackException, ScriptInvalidParameterException, ScriptUnsupportedOperationException {
-        UISCoinKeypair coinKeypairRecipient = UISCoinKeypair.Create();
+        UISCoinKeypair coinKeypairRecipient = UISCoinKeypair.create();
 
         TransactionOutput transactionOutput = new TransactionOutputBuilder().setAmount(Conversions.CoinsToSatoshis(1.0)).setPayToPublicKey(coinKeypairRecipient.Keys.getPublic().getEncoded()).get();
         byte[] lockingScriptBytes = transactionOutput.LockingScript;
@@ -1217,7 +1217,7 @@ public class ScriptTest {
 
     @Test @DisplayName("Pay to Public Key Hash Lock & Unlock")
     void TestPayToPublicKeyHash() throws ScriptInvalidException, ScriptEmptyStackException, ScriptInvalidParameterException, ScriptUnsupportedOperationException {
-        UISCoinKeypair coinKeypairRecipient = UISCoinKeypair.Create();
+        UISCoinKeypair coinKeypairRecipient = UISCoinKeypair.create();
 
         byte[] addressv1 = UISCoinAddress.fromPublicKey((ECPublicKey) coinKeypairRecipient.Keys.getPublic());
 
@@ -1280,10 +1280,10 @@ public class ScriptTest {
 
         //String password = BytesUtil.Base64Encode(randomPassword);
 
-        UISCoinKeypair alice = UISCoinKeypair.Create();
-        UISCoinKeypair bob = UISCoinKeypair.Create();
-        UISCoinKeypair charlie = UISCoinKeypair.Create();
-        UISCoinKeypair daniel = UISCoinKeypair.Create();
+        UISCoinKeypair alice = UISCoinKeypair.create();
+        UISCoinKeypair bob = UISCoinKeypair.create();
+        UISCoinKeypair charlie = UISCoinKeypair.create();
+        UISCoinKeypair daniel = UISCoinKeypair.create();
 
         TransactionOutput transactionOutput = new TransactionOutputBuilder().setAmount(Conversions.CoinsToSatoshis(1.0)).setPayToMultiSig(2, List.of(alice.Keys.getPublic().getEncoded(),bob.Keys.getPublic().getEncoded(), charlie.Keys.getPublic().getEncoded())).get();
         byte[] lockingScriptBytes = transactionOutput.LockingScript;
@@ -1341,7 +1341,7 @@ public class ScriptTest {
     void TestSize(){
         TransactionOutput transactionOutput = new TransactionOutputBuilder().setPayToPublicKeyHash(new byte[64]).setAmount(123).get();
         System.out.println(transactionOutput.getSize());
-        System.out.println(new TransactionInputBuilder().setInputTransaction(new byte[64],1).setUnlockPayToPublicKeyHash(UISCoinKeypair.Create(),transactionOutput).get().getSize());
+        System.out.println(new TransactionInputBuilder().setInputTransaction(new byte[64],1).setUnlockPayToPublicKeyHash(UISCoinKeypair.create(),transactionOutput).get().getSize());
     }
 
     @RepeatedTest(100) @DisplayName("Pay to Password Lock & Unlock")
@@ -1465,7 +1465,7 @@ public class ScriptTest {
 
     @RepeatedTest(100) @DisplayName("Pay to Script Hash Signature Verification Lock & Unlock")
     void TestPayToScriptHashMultiStack() throws ScriptInvalidException, ScriptEmptyStackException, ScriptInvalidParameterException, ScriptUnsupportedOperationException {
-        UISCoinKeypair coinKeypairRecipient = UISCoinKeypair.Create();
+        UISCoinKeypair coinKeypairRecipient = UISCoinKeypair.create();
 
         byte[] addressv1 = UISCoinAddress.fromPublicKey((ECPublicKey) coinKeypairRecipient.Keys.getPublic());
 
