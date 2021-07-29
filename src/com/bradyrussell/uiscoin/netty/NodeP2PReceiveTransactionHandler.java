@@ -46,19 +46,19 @@ public class NodeP2PReceiveTransactionHandler extends SimpleChannelInboundHandle
 
         if(!transaction.verifyInputsUnspent()) {
             transaction.debugVerify();
-            Log.info("Spent input! Discarding.");
+            Log.warning("Spent input! Discarding.");
             return;
         }
 
         if(!transaction.verify()) {
             transaction.debugVerify();
-            Log.info("Invalid transaction! Discarding.");
+            Log.warning("Invalid transaction! Discarding.");
             return;
         }
 
         for (TransactionInput input : transaction.Inputs) {
             if(BytesUtil.doTransactionsContainTXO(input.InputHash, input.IndexNumber, BlockChain.get().getMempool())) {
-                Log.info("Transaction contains outputs that are already in another mempool transaction! Discarding...");
+                Log.warning("Transaction contains outputs that are already in another mempool transaction! Discarding..."); // todo this might not be necessary as long as utxos are checked to be unique on adding to candidate block
                 return;
             }
         }
