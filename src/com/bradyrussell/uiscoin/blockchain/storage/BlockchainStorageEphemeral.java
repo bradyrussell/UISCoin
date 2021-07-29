@@ -14,36 +14,37 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class BlockchainStorageEphemeral implements BlockchainStorage {
-    private final ArrayList<Block> blocksByHeight = new ArrayList<>(); // this should be all that needs stored, everything else can be reconstructed
+    protected final ArrayList<Block> blocksByHeight = new ArrayList<>(); // this should be all that needs stored, everything else can be reconstructed
     private final HashMap<byte[], Block> blocks = new HashMap<>();
     private final HashMap<byte[], byte[]> blockHashesByTransaction = new HashMap<>();
     private final HashMap<byte[], Transaction> mempool = new HashMap<>();
     private final AtomicInteger blockheight = new AtomicInteger(-1);
 
     private final HashSet<TransactionOutputIdentifier> unspentTransactionOutputSet = new HashSet<>();
+    private boolean computeUnspentTransactionOutputs = true; // should disable if getting blocks out of order, and then build at the end
 
-    private void buildUnspentTransactionOutputSet() {
-        ArrayList<byte[]> TransactionOutputs = new ArrayList<>();
-
-        for (Block b : blocksByHeight) {
-            for (Transaction transaction : b.Transactions) {
+    @Override
+    public void buildUnspentTransactionOutputSet() {
+        for (Block block : blocksByHeight) {
+            for (Transaction transaction : block.Transactions) {
                 for (TransactionInput input : transaction.Inputs) {
-                    final byte[] concatArray = BytesUtil.concatArray(input.InputHash, BytesUtil.numberToByteArray32(input.IndexNumber));
-                    TransactionOutputs.removeIf(bytes -> Arrays.equals(bytes,concatArray)); // this has been spent, remove it
+                    unspentTransactionOutputSet.remove(new TransactionOutputIdentifier(input.InputHash, input.IndexNumber)); //spent
                 }
                 for (int i = 0; i < transaction.Outputs.size(); i++) {
-                    TransactionOutputs.add(BytesUtil.concatArray(transaction.getHash(), BytesUtil.numberToByteArray32(i)));
+                    unspentTransactionOutputSet.add(new TransactionOutputIdentifier(transaction.getHash(), i));
                 }
             }
         }
+    }
 
-        for (byte[] transactionOutput : TransactionOutputs) {
-            byte[] TsxnHash = new byte[64];
-            byte[] Index = new byte[4];
-            System.arraycopy(transactionOutput, 0, TsxnHash, 0, 64);
-            System.arraycopy(transactionOutput, 64, Index, 0, 4);
-            unspentTransactionOutputSet.add(new TransactionOutputIdentifier(TsxnHash, BytesUtil.byteArrayToNumber32(Index)));
-        }
+    @Override
+    public boolean open() {
+        return true;
+    }
+
+    @Override
+    public boolean close() {
+        return true;
     }
 
     @Override
@@ -109,12 +110,21 @@ public class BlockchainStorageEphemeral implements BlockchainStorage {
     @Override
     public boolean putBlock(Block block) {
         blockheight.set(block.Header.BlockHeight);
-        blocks.put(block.getHash(), block);
+        blocks.put(block.Header.getHash(), block);
         blocksByHeight.ensureCapacity(block.Header.BlockHeight + 1);
         blocksByHeight.set(block.Header.BlockHeight, block);
 
         for (Transaction transaction : block.Transactions) {
             blockHashesByTransaction.put(transaction.getHash(), block.getHash());
+
+            if(computeUnspentTransactionOutputs) {
+                for (TransactionInput input : transaction.Inputs) {
+                    unspentTransactionOutputSet.remove(new TransactionOutputIdentifier(input.InputHash, input.IndexNumber));
+                }
+                for (int i = 0; i < transaction.Outputs.size(); i++) {
+                    unspentTransactionOutputSet.add(new TransactionOutputIdentifier(transaction.getHash(), i));
+                }
+            }
         }
 
         return true;

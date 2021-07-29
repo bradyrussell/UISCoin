@@ -14,6 +14,8 @@ import java.util.Objects;
 import java.util.Set;
 
 public interface BlockchainStorage {
+    boolean open();
+    boolean close();
     boolean isOperational();
 
     int getBlockHeight();
@@ -38,6 +40,7 @@ public interface BlockchainStorage {
     TransactionOutput getTransactionOutput(byte[] transactionHash, int index) throws NoSuchTransactionException, NoSuchBlockException;
     boolean isTransactionOutputSpent(byte[] transactionHash, int index);
     Set<TransactionOutputIdentifier> getUnspentTransactionOutputs();
+    void buildUnspentTransactionOutputSet();
 
     Set<Transaction> getMempoolTransactions();
     Transaction getMempoolTransaction(byte[] transactionHash) throws NoSuchTransactionException;
