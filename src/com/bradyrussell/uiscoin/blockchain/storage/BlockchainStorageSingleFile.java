@@ -25,7 +25,7 @@ public class BlockchainStorageSingleFile extends BlockchainStorageEphemeral {
             }
         }
 
-        for (Block block : blocksByHeight) {
+        for (Block block : new ArrayList<>(blocksByHeight)) {
             putBlock(block);
         }
 
