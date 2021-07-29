@@ -1,13 +1,14 @@
 package com.bradyrussell.uiscoin.netty;
 
 import com.bradyrussell.uiscoin.BytesUtil;
-import com.bradyrussell.uiscoin.blockchain.BlockChain;
+import com.bradyrussell.uiscoin.blockchain.storage.Blockchain;
 import com.bradyrussell.uiscoin.node.Node;
 import com.bradyrussell.uiscoin.transaction.Transaction;
 import com.bradyrussell.uiscoin.transaction.TransactionInput;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
+import java.util.ArrayList;
 import java.util.logging.Logger;
 
 public class NodeP2PReceiveTransactionHandler extends SimpleChannelInboundHandler<Transaction> {
@@ -39,7 +40,7 @@ public class NodeP2PReceiveTransactionHandler extends SimpleChannelInboundHandle
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, Transaction transaction) throws Exception {
         Log.info("Handler Received transaction "+ BytesUtil.base64Encode(transaction.getHash()));
 
-        if(BlockChain.get().getMempool().contains(transaction)){
+        if(Blockchain.get().getMempoolTransaction(transaction.getHash()) != null){
             Log.info("Already have. Discarding...");
             return;
         }
@@ -57,14 +58,14 @@ public class NodeP2PReceiveTransactionHandler extends SimpleChannelInboundHandle
         }
 
         for (TransactionInput input : transaction.Inputs) {
-            if(BytesUtil.doTransactionsContainTXO(input.InputHash, input.IndexNumber, BlockChain.get().getMempool())) {
+            if(BytesUtil.doTransactionsContainTXO(input.InputHash, input.IndexNumber, new ArrayList<>(Blockchain.get().getMempoolTransactions()))) {
                 Log.warning("Transaction contains outputs that are already in another mempool transaction! Discarding..."); // todo this might not be necessary as long as utxos are checked to be unique on adding to candidate block
                 return;
             }
         }
 
         System.out.println("Storing transaction in mempool...");
-        BlockChain.get().addToMempool(transaction);
+        Blockchain.get().putMempoolTransaction(transaction);
 
         System.out.println("Rebroadcasting...");
         thisNode.broadcastTransactionToPeers(transaction);

@@ -1,8 +1,7 @@
 package com.bradyrussell.uiscoin.netty;
 
 import com.bradyrussell.uiscoin.BytesUtil;
-import com.bradyrussell.uiscoin.blockchain.BlockChain;
-import com.bradyrussell.uiscoin.blockchain.BlockChainStorageFile;
+import com.bradyrussell.uiscoin.blockchain.storage.Blockchain;
 import com.bradyrussell.uiscoin.node.BlockHeaderResponse;
 import com.bradyrussell.uiscoin.node.BlockRequest;
 import io.netty.channel.ChannelFuture;
@@ -35,14 +34,15 @@ public class NodeP2PReceiveBlockRequestHandler extends SimpleChannelInboundHandl
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, BlockRequest blockRequest) throws Exception {
         Log.info("Handler Received block request " + BytesUtil.base64Encode(blockRequest.BlockHash));
-        if (!BlockChain.get().exists(blockRequest.BlockHash, blockRequest.bOnlyHeader ? BlockChainStorageFile.BlockHeadersDatabase : BlockChainStorageFile.BlocksDatabase)) {
+
+        if(Blockchain.get().getBlockHeader(blockRequest.BlockHash) == null) {
             System.out.println("Not found in database! Discarding.");
             return;
         }
 
         Log.info("Sending block" + (blockRequest.bOnlyHeader ? "header" : "") + "...");
 
-        ChannelFuture channelFuture = channelHandlerContext.writeAndFlush(blockRequest.bOnlyHeader ? new BlockHeaderResponse(blockRequest.BlockHash, BlockChain.get().getBlockHeader(blockRequest.BlockHash)) : BlockChain.get().getBlock(blockRequest.BlockHash));
+        ChannelFuture channelFuture = channelHandlerContext.writeAndFlush(blockRequest.bOnlyHeader ? new BlockHeaderResponse(blockRequest.BlockHash, Blockchain.get().getBlockHeader(blockRequest.BlockHash)) : Blockchain.get().getBlock(blockRequest.BlockHash));
         channelFuture.addListener((ChannelFutureListener) channelFuture1 -> {
             if (!channelFuture1.isSuccess())
                 channelFuture1.cause().printStackTrace();

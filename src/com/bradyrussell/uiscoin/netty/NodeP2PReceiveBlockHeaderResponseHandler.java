@@ -1,8 +1,7 @@
 package com.bradyrussell.uiscoin.netty;
 
 import com.bradyrussell.uiscoin.BytesUtil;
-import com.bradyrussell.uiscoin.blockchain.BlockChain;
-import com.bradyrussell.uiscoin.blockchain.BlockChainStorageBase;
+import com.bradyrussell.uiscoin.blockchain.storage.Blockchain;
 import com.bradyrussell.uiscoin.node.BlockHeaderResponse;
 import com.bradyrussell.uiscoin.node.Node;
 import io.netty.channel.ChannelHandlerContext;
@@ -12,12 +11,6 @@ import java.util.logging.Logger;
 
 public class NodeP2PReceiveBlockHeaderResponseHandler extends SimpleChannelInboundHandler<BlockHeaderResponse> {
     private static final Logger Log = Logger.getLogger(NodeP2PReceiveBlockHeaderResponseHandler.class.getName());
-
-    Node thisNode;
-
-    public NodeP2PReceiveBlockHeaderResponseHandler(Node thisNode) {
-        this.thisNode = thisNode;
-    }
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
@@ -41,7 +34,7 @@ public class NodeP2PReceiveBlockHeaderResponseHandler extends SimpleChannelInbou
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, BlockHeaderResponse blockHeaderResponse) throws Exception {
         Log.info("Handler Received block header "+ BytesUtil.base64Encode(blockHeaderResponse.BlockHash));
 
-        if(BlockChain.get().exists(blockHeaderResponse.BlockHash, BlockChainStorageBase.BlockHeadersDatabase)){
+        if(Blockchain.get().getBlockHeader(blockHeaderResponse.BlockHash) != null){
             Log.info("Already have. Discarding...");
             return;
         }
@@ -52,7 +45,6 @@ public class NodeP2PReceiveBlockHeaderResponseHandler extends SimpleChannelInbou
         }
 
         Log.info("Storing blockheader...");
-        BlockChain.get().putBlockHeader(blockHeaderResponse.blockHeader);
-
+        Blockchain.get().putBlockHeader(blockHeaderResponse.blockHeader);
     }
 }

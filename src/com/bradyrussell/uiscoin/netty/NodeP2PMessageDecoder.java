@@ -4,7 +4,7 @@ import com.bradyrussell.uiscoin.MagicBytes;
 import com.bradyrussell.uiscoin.BytesUtil;
 import com.bradyrussell.uiscoin.block.Block;
 import com.bradyrussell.uiscoin.block.BlockHeader;
-import com.bradyrussell.uiscoin.blockchain.BlockChain;
+import com.bradyrussell.uiscoin.blockchain.storage.Blockchain;
 import com.bradyrussell.uiscoin.node.*;
 import com.bradyrussell.uiscoin.transaction.Transaction;
 import io.netty.buffer.ByteBuf;
@@ -45,6 +45,7 @@ public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
                 case GREETING -> {
                     Log.fine("3 Received greeting!");
                     int Version = byteBuf.readInt();
+                    long nodeId = byteBuf.readLong();
                     if(Version != MagicBytes.ProtocolVersion.Value) {
                         Log.info("Protocol version mismatch, disconnecting!");
                         channelHandlerContext.disconnect();
@@ -52,12 +53,18 @@ public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
                         return;
                     }
 
+                    if(node.nodeId == nodeId) {
+                        Log.info("Connection to self not allowed!");
+                        channelHandlerContext.disconnect();
+                        list.add(true);
+                        return;
+                    }
+
                     Log.fine("4 Broadcasting new peer");
                     node.broadcastPeerToPeers(((InetSocketAddress)channelHandlerContext.channel().remoteAddress()).getAddress());
-
-                    for (InetAddress peer : node.getPeers()) {
-                        if(!peer.equals(((InetSocketAddress)channelHandlerContext.channel().remoteAddress()).getAddress())) channelHandlerContext.write(peer);
-                    }
+/*                    for (InetAddress peer : node.getPeers()) {
+                        if(!peer.equals(((InetSocketAddress)channelHandlerContext.channel().remoteAddress()).getAddress())) channelHandlerContext.writeAndFlush(peer);
+                    }*/
 
                     ByteBuf wrappedBuffer = Unpooled.buffer();
                     wrappedBuffer.writeByte(PeerPacketType.HANDSHAKE.Header);
@@ -148,7 +155,7 @@ public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
                         ByteBuf buffer = Unpooled.buffer();
                         buffer.writeByte(PeerPacketType.SYNC.Header);
                         buffer.writeBoolean(false);
-                        buffer.writeInt(BlockChain.get().BlockHeight+1); // start from next block after ours
+                        buffer.writeInt(Blockchain.get().getBlockHeight()+1); // start from next block after ours
                         channelHandlerContext.writeAndFlush(buffer);
                     }
                     list.add(true);
@@ -169,7 +176,7 @@ public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
 
                     //if(BlockHeight > BlockChain.get().BlockHeight) BlockHeight = BlockChain.get().BlockHeight;
 
-                    List<Block> blockChainFromHeight = BlockChain.get().getBlockChainFromHeight(BlockHeight);
+                    List<Block> blockChainFromHeight = Blockchain.get().getBlockchainRange(BlockHeight, Blockchain.get().getBlockHeight());
                     for (int i = 0; i < blockChainFromHeight.size(); i++) {
                         Block block = blockChainFromHeight.get(i);
                         Log.fine("4 Sending blockchain "+i+"/"+blockChainFromHeight.size());
@@ -186,7 +193,7 @@ public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
                 }
                 case MEMPOOL -> {
                     Log.fine("3 Received mempool query");
-                    for (Transaction transaction : BlockChain.get().getMempool()) {
+                    for (Transaction transaction : Blockchain.get().getMempoolTransactions()) {
                         channelHandlerContext.write(transaction);
                     }
                     channelHandlerContext.flush();
@@ -197,9 +204,9 @@ public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
                     Log.fine("3 Received blockheight query");
                     ByteBuf buf = Unpooled.buffer();
                     buf.writeByte(PeerPacketType.HEIGHT.Header);
-                    buf.writeInt(BlockChain.get().BlockHeight);
+                    buf.writeInt(Blockchain.get().getBlockHeight());
 
-                    Log.fine("4 Sending blockheight "+BlockChain.get().BlockHeight);
+                    Log.fine("4 Sending blockheight "+Blockchain.get().getBlockHeight());
 
                     ChannelFuture channelFuture = channelHandlerContext.writeAndFlush(buf);
 

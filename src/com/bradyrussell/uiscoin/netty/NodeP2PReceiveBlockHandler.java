@@ -2,8 +2,7 @@ package com.bradyrussell.uiscoin.netty;
 
 import com.bradyrussell.uiscoin.BytesUtil;
 import com.bradyrussell.uiscoin.block.Block;
-import com.bradyrussell.uiscoin.blockchain.BlockChain;
-import com.bradyrussell.uiscoin.blockchain.BlockChainStorageBase;
+import com.bradyrussell.uiscoin.blockchain.storage.Blockchain;
 import com.bradyrussell.uiscoin.node.Node;
 import com.bradyrussell.uiscoin.node.PeerPacketType;
 import io.netty.buffer.ByteBuf;
@@ -40,41 +39,40 @@ public class NodeP2PReceiveBlockHandler extends SimpleChannelInboundHandler<Bloc
 
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, Block block) throws Exception {
-        Log.info("Handler Received block "+ BytesUtil.base64Encode(block.Header.getHash()));
+        Log.info("Handler Received block " + BytesUtil.base64Encode(block.Header.getHash()));
 
-        if(BlockChain.get().BlockHeight >= block.Header.BlockHeight && BlockChain.get().exists(block.Header.getHash(), BlockChainStorageBase.BlocksDatabase)){
-            Log.info("Already have. Discarding...");
-            return;
-        }
-        if(BlockChain.get().BlockHeight >= block.Header.BlockHeight) {
-            Log.info("Block is on a shorter chain. Discarding...");
+        int currentBlockHeight = Blockchain.get().getBlockHeight();
+        if (currentBlockHeight >= block.Header.BlockHeight) {
+            if (Blockchain.get().getBlockHeader(block.Header.getHash()) != null) {
+                Log.info("Already have. Discarding...");
+            } else {
+                Log.info("Block is on a shorter chain. Discarding...");
 
-            // inform them of our longer chain
-            ByteBuf buf = Unpooled.buffer();
-            buf.writeByte(PeerPacketType.HEIGHT.Header);
-            buf.writeInt(BlockChain.get().BlockHeight);
-            channelHandlerContext.writeAndFlush(buf);
+                // inform them of our longer chain
+                ByteBuf buf = Unpooled.buffer();
+                buf.writeByte(PeerPacketType.HEIGHT.Header);
+                buf.writeInt(currentBlockHeight);
+                channelHandlerContext.writeAndFlush(buf);
+            }
+        } else {
+            // todo handle reorgs, right now they will only be accepted on restart
 
-            return; // we are on a longer chain!
-        }
+            if (!block.verify()) {
+                block.debugVerify();
+                Log.info("Invalid block! Discarding.");
+                return;
+            }
 
-        if(!block.verify()) {
-            block.debugVerify();
-            Log.info("Invalid block! Discarding.");
-            return;
-        }
-
-        if (BlockChain.get().BlockHeight < block.Header.BlockHeight) {
-            if(!block.verifyTransactionsUnspent()) {
+            if (!block.verifyTransactionsUnspent()) {
                 Log.warning("Block contains spent transactions! Discarding!");
                 return;
             }
+
+            Log.info("Storing block...");
+            Blockchain.get().putBlock(block);
+
+            Log.info("Rebroadcasting...");
+            thisNode.broadcastBlockToPeers(block);
         }
-
-        Log.info("Storing block...");
-        BlockChain.get().putBlock(block);
-
-        Log.info("Rebroadcasting...");
-        thisNode.broadcastBlockToPeers(block);
     }
 }

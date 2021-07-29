@@ -4,8 +4,8 @@ import com.bradyrussell.uiscoin.Hash;
 import com.bradyrussell.uiscoin.IBinaryData;
 import com.bradyrussell.uiscoin.IVerifiable;
 import com.bradyrussell.uiscoin.MagicNumbers;
-import com.bradyrussell.uiscoin.blockchain.BlockChain;
 import com.bradyrussell.uiscoin.blockchain.exception.NoSuchBlockException;
+import com.bradyrussell.uiscoin.blockchain.storage.Blockchain;
 
 import java.nio.ByteBuffer;
 import java.time.Instant;
@@ -109,7 +109,7 @@ public class BlockHeader implements IBinaryData, IVerifiable {
         if(BlockHeight > 0) {
             BlockHeader previousBlockHeader;
             try {
-                previousBlockHeader = BlockChain.get().getBlockHeader(HashPreviousBlock);
+                previousBlockHeader = Blockchain.get().getBlockHeader(HashPreviousBlock);
             } catch (NoSuchBlockException e) {
                 e.printStackTrace();
                 return false;

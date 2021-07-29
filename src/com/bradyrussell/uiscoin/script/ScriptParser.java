@@ -88,7 +88,7 @@ public class ScriptParser {
                 if(GotoTable.containsKey(gotoLabel)) {
                     GotoTable.get(gotoLabel).add(jumpPosition);
                 } else {
-                    GotoTable.put(gotoLabel, new ArrayList<Integer>(Collections.singletonList(jumpPosition)));
+                    GotoTable.put(gotoLabel, new ArrayList<>(Collections.singletonList(jumpPosition)));
                 }
                 continue;
             } else if (token.startsWith(":")) { // label

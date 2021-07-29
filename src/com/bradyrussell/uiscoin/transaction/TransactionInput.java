@@ -1,9 +1,9 @@
 package com.bradyrussell.uiscoin.transaction;
 
 import com.bradyrussell.uiscoin.*;
-import com.bradyrussell.uiscoin.blockchain.BlockChain;
 import com.bradyrussell.uiscoin.blockchain.exception.NoSuchBlockException;
 import com.bradyrussell.uiscoin.blockchain.exception.NoSuchTransactionException;
+import com.bradyrussell.uiscoin.blockchain.storage.Blockchain;
 import com.bradyrussell.uiscoin.script.ScriptExecution;
 import com.bradyrussell.uiscoin.script.exception.ScriptEmptyStackException;
 import com.bradyrussell.uiscoin.script.exception.ScriptInvalidException;
@@ -89,7 +89,7 @@ public class TransactionInput  implements IBinaryData, IVerifiable {
 
         Transaction transaction;
         try {
-            transaction = BlockChain.get().getTransaction(InputHash);
+            transaction = Blockchain.get().getTransaction(InputHash);
             if(Instant.now().getEpochSecond() < transaction.TimeStamp) {
                 Log.info("Verification failed! Input is locked until "+transaction.TimeStamp+" ("+(transaction.TimeStamp-Instant.now().getEpochSecond())+" seconds from now)!");
                 return false;

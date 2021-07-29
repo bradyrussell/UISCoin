@@ -2,7 +2,7 @@ package com.bradyrussell.uiscoin.node;
 
 public enum PeerPacketType {
     DISCONNECT(0x00),
-    GREETING(0x01), // includes version
+    GREETING(0x01), // includes version and nodeId
     HANDSHAKE(0x02), // includes version
     PING(0x03),
     PEER(0x04), // includes a peer's address (will be the same version)

@@ -1,9 +1,9 @@
 package com.bradyrussell.uiscoin.transaction;
 
 import com.bradyrussell.uiscoin.*;
-import com.bradyrussell.uiscoin.blockchain.BlockChain;
 import com.bradyrussell.uiscoin.blockchain.exception.NoSuchBlockException;
 import com.bradyrussell.uiscoin.blockchain.exception.NoSuchTransactionException;
+import com.bradyrussell.uiscoin.blockchain.storage.Blockchain;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -214,7 +214,7 @@ public class Transaction implements IBinaryData, IVerifiable {
 
     public boolean verifyInputsUnspent() throws NoSuchTransactionException {
         for (TransactionInput input : Inputs) {
-            if (BlockChain.get().getUnspentTransactionOutput(input.InputHash, input.IndexNumber) == null) {
+            if (Blockchain.get().isTransactionOutputSpent(input.InputHash, input.IndexNumber)) {
                 Log.info("Could not verify that transaction " + BytesUtil.base64Encode(getHash()) + " input " + BytesUtil.base64Encode(input.InputHash) + " " + input.IndexNumber + " was UTXO!");
                 return false;
             }
@@ -226,7 +226,7 @@ public class Transaction implements IBinaryData, IVerifiable {
         long amount = 0;
         for (TransactionInput input : Inputs) {
             if (!Arrays.equals(input.InputHash, new byte[64])) // in case of coinbase transaction
-                amount += BlockChain.get().getTransactionOutput(input.InputHash, input.IndexNumber).Amount;// Blockchain lookup : input.InputHash
+                amount += Blockchain.get().getTransactionOutput(input.InputHash, input.IndexNumber).Amount;// Blockchain lookup : input.InputHash
         }
         return amount;
     }

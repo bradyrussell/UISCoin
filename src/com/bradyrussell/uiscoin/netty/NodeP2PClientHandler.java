@@ -2,6 +2,7 @@ package com.bradyrussell.uiscoin.netty;
 
 import com.bradyrussell.uiscoin.MagicBytes;
 import com.bradyrussell.uiscoin.node.BlockRequest;
+import com.bradyrussell.uiscoin.node.Node;
 import com.bradyrussell.uiscoin.node.PeerPacketType;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -15,6 +16,11 @@ import java.util.logging.Logger;
 public class NodeP2PClientHandler extends SimpleChannelInboundHandler<ByteBuf> {
     private static final Logger Log = Logger.getLogger(NodeP2PClientHandler.class.getName());
     private ChannelHandlerContext ctx;
+    private final Node node;
+
+    public NodeP2PClientHandler(Node node) {
+        this.node = node;
+    }
 
     @Deprecated
     public void SendBlockRequest(BlockRequest request){ // i feel like this is a threading issue
@@ -34,6 +40,7 @@ public class NodeP2PClientHandler extends SimpleChannelInboundHandler<ByteBuf> {
         ByteBuf wrappedBuffer = Unpooled.buffer();
         wrappedBuffer.writeByte(PeerPacketType.GREETING.Header);
         wrappedBuffer.writeInt(MagicBytes.ProtocolVersion.Value);
+        wrappedBuffer.writeLong(node.nodeId);
 
         ChannelFuture channelFuture = ctx.writeAndFlush(wrappedBuffer);
         // wrappedBuffer.release();

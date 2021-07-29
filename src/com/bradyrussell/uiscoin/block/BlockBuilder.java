@@ -1,10 +1,10 @@
 package com.bradyrussell.uiscoin.block;
 
 import com.bradyrussell.uiscoin.Hash;
-import com.bradyrussell.uiscoin.blockchain.BlockChain;
 import com.bradyrussell.uiscoin.blockchain.exception.InvalidBlockException;
 import com.bradyrussell.uiscoin.blockchain.exception.NoSuchBlockException;
 import com.bradyrussell.uiscoin.blockchain.exception.NoSuchTransactionException;
+import com.bradyrussell.uiscoin.blockchain.storage.Blockchain;
 import com.bradyrussell.uiscoin.script.ScriptBuilder;
 import com.bradyrussell.uiscoin.script.ScriptOperator;
 import com.bradyrussell.uiscoin.transaction.Transaction;
@@ -66,7 +66,7 @@ public class BlockBuilder {
     }
 
     public BlockBuilder calculateDifficultyTarget() throws NoSuchBlockException {
-        Block lastBlock = BlockChain.get().getBlock(BlockChain.get().HighestBlockHash);
+        Block lastBlock = Blockchain.get().getHighestBlock();
         setDifficultyTarget(BlockHeader.calculateDifficultyTarget(block.Header.Time - lastBlock.Header.Time, lastBlock.Header.DifficultyTarget));
         return this;
     }
@@ -81,8 +81,8 @@ public class BlockBuilder {
         return this;
     }
 
-    public BlockBuilder addMemPoolTransactions(int SizeLimit){
-        List<Transaction> mempool = BlockChain.get().getMempool();
+    public BlockBuilder addMempoolTransactions(int SizeLimit){
+        List<Transaction> mempool = new ArrayList<>(Blockchain.get().getMempoolTransactions());
         mempool.sort((a,b)->{
             long ASecondsOld = Instant.now().getEpochSecond() - a.TimeStamp;
             long BSecondsOld = Instant.now().getEpochSecond() - b.TimeStamp;
@@ -95,13 +95,13 @@ public class BlockBuilder {
             }
         });
 
-        ArrayList<Transaction> toRemove = new ArrayList<>();
+        ArrayList<byte[]> toRemove = new ArrayList<>();
 
         int size = 0;
         for(Transaction t:mempool){
             try {
                 if(!t.verify()  || !t.verifyInputsUnspent()) {
-                    toRemove.add(t);
+                    toRemove.add(t.getHash());
                     continue;
                 }
             } catch (NoSuchTransactionException e) {
@@ -115,7 +115,9 @@ public class BlockBuilder {
             }
         }
 
-        BlockChain.get().getMempool().removeAll(toRemove);
+        for (byte[] transaction : toRemove) {
+            Blockchain.get().removeMempoolTransaction(transaction);
+        }
         return this;
     }
 

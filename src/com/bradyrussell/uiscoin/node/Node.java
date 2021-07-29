@@ -25,6 +25,7 @@ import io.netty.util.concurrent.GlobalEventExecutor;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Logger;
 
 public class Node {
@@ -32,22 +33,21 @@ public class Node {
 
     public ArrayList<InetAddress> peersEverSeen = new ArrayList<>();
 
-    EventLoopGroup bossGroup;
-    EventLoopGroup workerGroup;
-    Channel serverChannel;
+    private EventLoopGroup bossGroup;
+    private EventLoopGroup workerGroup;
+    private Channel serverChannel;
 
-    EventLoopGroup peerGroup = new NioEventLoopGroup();
-    Bootstrap peerBootstrap = new Bootstrap().group(peerGroup).channel(NioSocketChannel.class);
+    private final EventLoopGroup peerGroup = new NioEventLoopGroup();
+    private final Bootstrap peerBootstrap = new Bootstrap().group(peerGroup).channel(NioSocketChannel.class);
 
     public ChannelGroup nodeClients = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE); // nodes connections to me
     public ChannelGroup peerClients = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE); // my connection to other nodes
 
-    int Version;
+    public final long nodeId = ThreadLocalRandom.current().nextLong();
 
     public int HighestSeenBlockHeight;
 
-    public Node(int Version) {
-        this.Version = Version;
+    public Node() {
         this.HighestSeenBlockHeight = -1; // we have not seen another nodes blockheight yet
     }
 
@@ -71,7 +71,7 @@ public class Node {
         // ChannelFuture closeFuture = sync.channel().closeFuture();
     }
 
-    public void RequestBlockHeightFromPeers(){
+    public void requestBlockHeightFromPeers(){
         ByteBuf buffer = Unpooled.buffer();
         buffer.writeByte(PeerPacketType.HEIGHTQUERY.Header);
 
@@ -123,9 +123,8 @@ public class Node {
     }
 
     public void start(){
-        //startup the node server
-        EventLoopGroup bossGroup = new NioEventLoopGroup(1);
-        EventLoopGroup workerGroup = new NioEventLoopGroup();
+        bossGroup = new NioEventLoopGroup(1);
+        workerGroup = new NioEventLoopGroup();
         ServerBootstrap b = new ServerBootstrap();
         b.group(bossGroup, workerGroup)
                 .channel(NioServerSocketChannel.class)
@@ -137,7 +136,6 @@ public class Node {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
     }
 
     public void stop(){
@@ -150,14 +148,11 @@ public class Node {
                 serverChannel.close().sync();
                 serverChannel.eventLoop().shutdownGracefully().sync();
             }
+
             if(bossGroup != null) bossGroup.shutdownGracefully();
             if(workerGroup != null) workerGroup.shutdownGracefully();
-            if(peerGroup != null) peerGroup.shutdownGracefully();
+            peerGroup.shutdownGracefully().sync();
             Log.info("Closed channel and shutdown worker event groups.");
-
-/*            if(bossGroup != null) bossGroup.shutdownNow();
-            if(workerGroup != null) workerGroup.shutdownNow();
-            if(peerGroup != null) peerGroup.shutdownNow();*/
             Log.info("Shutting down...");
         } catch (InterruptedException e) {
             e.printStackTrace();
