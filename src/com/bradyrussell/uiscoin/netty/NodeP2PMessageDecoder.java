@@ -93,7 +93,7 @@ public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
                     list.add(true);
                 }
                 case PING -> {
-                    Log.info("3 Received ping!");
+                    Log.info("3 Received ping from "+((InetSocketAddress)channelHandlerContext.channel().remoteAddress()).getAddress().getHostAddress());
                     list.add(true);
                 }
                 case PEER -> {
