@@ -15,9 +15,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class BlockchainStorageEphemeral implements BlockchainStorage {
     protected final ArrayList<Block> blocksByHeight = new ArrayList<>(); // this should be all that needs stored, everything else can be reconstructed
-    private final HashMap<byte[], Block> blocks = new HashMap<>();
-    private final HashMap<byte[], byte[]> blockHashesByTransaction = new HashMap<>();
-    private final HashMap<byte[], Transaction> mempool = new HashMap<>();
+    private final HashMap<String, Block> blocks = new HashMap<>();
+    private final HashMap<String, byte[]> blockHashesByTransaction = new HashMap<>();
+    private final HashMap<String, Transaction> mempool = new HashMap<>();
     private final AtomicInteger blockheight = new AtomicInteger(-1);
 
     private final HashSet<TransactionOutputIdentifier> unspentTransactionOutputSet = new HashSet<>();
@@ -53,6 +53,22 @@ public class BlockchainStorageEphemeral implements BlockchainStorage {
     }
 
     @Override
+    public boolean verify() {
+        for (Block block : getBlockchain()) {
+            if(!block.verify()) return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean verifyRange(int beginHeight, int endHeight) throws NoSuchBlockException {
+        for (Block block : getBlockchainRange(beginHeight, endHeight)) {
+            if(!block.verify()) return false;
+        }
+        return true;
+    }
+
+    @Override
     public int getBlockHeight() {
         return blockheight.get();
     }
@@ -64,7 +80,7 @@ public class BlockchainStorageEphemeral implements BlockchainStorage {
 
     @Override
     public List<Block> getBlockchainRange(int beginHeight, int endHeight) throws NoSuchBlockException {
-        if(beginHeight < 0 || beginHeight > blockheight.get() || endHeight < 0 || endHeight > blockheight.get() || beginHeight > endHeight) throw new NoSuchBlockException("");
+        if(beginHeight < 0 || beginHeight > blockheight.get() || endHeight < 0 || endHeight > blockheight.get() || beginHeight > endHeight) throw new NoSuchBlockException("Cannot find block");
         return blocksByHeight.subList(beginHeight, endHeight);
     }
 
@@ -80,8 +96,8 @@ public class BlockchainStorageEphemeral implements BlockchainStorage {
 
     @Override
     public BlockHeader getBlockHeader(byte[] blockHash) throws NoSuchBlockException {
-        if(!blocks.containsKey(blockHash)) throw new NoSuchBlockException("");
-        return blocks.get(blockHash).Header;
+        if(!blocks.containsKey(BytesUtil.base64Encode(blockHash))) throw new NoSuchBlockException("Cannot find block header for block "+BytesUtil.base64Encode(blockHash));
+        return blocks.get(BytesUtil.base64Encode(blockHash)).Header;
     }
 
     @Override
@@ -91,31 +107,31 @@ public class BlockchainStorageEphemeral implements BlockchainStorage {
 
     @Override
     public Block getBlock(byte[] blockHash) throws NoSuchBlockException {
-        if(!blocks.containsKey(blockHash)) throw new NoSuchBlockException("");
-        return blocks.get(blockHash);
+        if(!blocks.containsKey(BytesUtil.base64Encode(blockHash))) throw new NoSuchBlockException("Cannot find block "+BytesUtil.base64Encode(blockHash));
+        return blocks.get(BytesUtil.base64Encode(blockHash));
     }
 
     @Override
     public Block getBlockByHeight(int height) throws NoSuchBlockException {
-        if(height < 0 || height > blockheight.get()) throw new NoSuchBlockException("");
+        if(height < 0 || height > blockheight.get()) throw new NoSuchBlockException("Cannot find block "+height);
         return blocksByHeight.get(height);
     }
 
     @Override
     public Block getBlockByTransaction(byte[] transactionHash) throws NoSuchBlockException, NoSuchTransactionException {
-        if(!blockHashesByTransaction.containsKey(transactionHash)) throw new NoSuchTransactionException("");
-        return getBlock(blockHashesByTransaction.get(transactionHash));
+        if(!blockHashesByTransaction.containsKey(BytesUtil.base64Encode(transactionHash))) throw new NoSuchTransactionException("Cannot find transaction "+BytesUtil.base64Encode(transactionHash));
+        return getBlock(blockHashesByTransaction.get(BytesUtil.base64Encode(transactionHash)));
     }
 
     @Override
     public boolean putBlock(Block block) {
         blockheight.set(block.Header.BlockHeight);
-        blocks.put(block.Header.getHash(), block);
-        blocksByHeight.ensureCapacity(block.Header.BlockHeight + 1);
+        blocks.put(BytesUtil.base64Encode(block.Header.getHash()), block);
+        while(blocksByHeight.size() < block.Header.BlockHeight + 1) blocksByHeight.add(null);
         blocksByHeight.set(block.Header.BlockHeight, block);
 
         for (Transaction transaction : block.Transactions) {
-            blockHashesByTransaction.put(transaction.getHash(), block.getHash());
+            blockHashesByTransaction.put(BytesUtil.base64Encode(transaction.getHash()), block.Header.getHash());
 
             if(computeUnspentTransactionOutputs) {
                 for (TransactionInput input : transaction.Inputs) {
@@ -152,7 +168,7 @@ public class BlockchainStorageEphemeral implements BlockchainStorage {
 
     @Override
     public boolean isTransactionOutputSpent(byte[] transactionHash, int index) {
-        return unspentTransactionOutputSet.contains(new TransactionOutputIdentifier(transactionHash, index));
+        return !unspentTransactionOutputSet.contains(new TransactionOutputIdentifier(transactionHash, index));
     }
 
     @Override
@@ -167,18 +183,18 @@ public class BlockchainStorageEphemeral implements BlockchainStorage {
 
     @Override
     public Transaction getMempoolTransaction(byte[] transactionHash) throws NoSuchTransactionException {
-        if(!mempool.containsKey(transactionHash)) throw new NoSuchTransactionException("");
-        return mempool.get(transactionHash);
+        if(!mempool.containsKey(BytesUtil.base64Encode(transactionHash))) throw new NoSuchTransactionException("Cannot find transaction "+BytesUtil.base64Encode(transactionHash));
+        return mempool.get(BytesUtil.base64Encode(transactionHash));
     }
 
     @Override
     public boolean putMempoolTransaction(Transaction transaction) {
-        mempool.put(transaction.getHash(), transaction);
+        mempool.put(BytesUtil.base64Encode(transaction.getHash()), transaction);
         return true;
     }
 
     @Override
     public boolean removeMempoolTransaction(byte[] transactionHash) {
-        return mempool.remove(transactionHash) != null;
+        return mempool.remove(BytesUtil.base64Encode(transactionHash)) != null;
     }
 }

@@ -1,5 +1,6 @@
 package com.bradyrussell.uiscoin.blockchain;
 
+import com.bradyrussell.uiscoin.BytesUtil;
 import com.bradyrussell.uiscoin.block.Block;
 import com.bradyrussell.uiscoin.block.BlockHeader;
 import com.bradyrussell.uiscoin.blockchain.exception.NoSuchBlockException;
@@ -17,6 +18,8 @@ public interface BlockchainStorage {
     boolean open();
     boolean close();
     boolean isOperational();
+    boolean verify();
+    boolean verifyRange(int beginHeight, int endHeight) throws NoSuchBlockException;
 
     int getBlockHeight();
     List<Block> getBlockchain();
@@ -54,6 +57,11 @@ public interface BlockchainStorage {
         public TransactionOutputIdentifier(byte[] transactionHash, int index) {
             this.transactionHash = transactionHash;
             this.index = index;
+        }
+
+        @Override
+        public String toString() {
+            return "TransactionOutputIdentifier{ hash:"+ BytesUtil.base64Encode(transactionHash) +", index: "+index+" }";
         }
 
         @Override
