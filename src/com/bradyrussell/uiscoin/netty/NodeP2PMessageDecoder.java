@@ -174,19 +174,19 @@ public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
                     boolean bOnlyHeader = byteBuf.readBoolean();
                     int BlockHeight = byteBuf.readInt();
 
-                    Log.fine("3 Received sync request "+BlockHeight);
+                    Log.info("3 Received sync request "+BlockHeight);
 
                     //if(BlockHeight > BlockChain.get().BlockHeight) BlockHeight = BlockChain.get().BlockHeight;
 
                     if(BlockHeight >= Blockchain.get().getBlockHeight()) {
-                        Log.fine("3 Cannot serve requested block height "+BlockHeight);
+                        Log.info("3 Cannot serve requested block height "+BlockHeight);
                         list.add(true);
                     }
 
                     List<Block> blockChainFromHeight = Blockchain.get().getBlockchainRange(BlockHeight, Blockchain.get().getBlockHeight());
                     for (int i = 0; i < blockChainFromHeight.size(); i++) {
                         Block block = blockChainFromHeight.get(i);
-                        Log.fine("4 Sending blockchain "+i+"/"+blockChainFromHeight.size());
+                        Log.info("4 Sending blockchain "+i+"/"+blockChainFromHeight.size());
                         ChannelFuture channelFuture = channelHandlerContext.write(bOnlyHeader ? block.Header : block);
 
                         channelFuture.addListener((ChannelFutureListener) channelFuture1 -> {

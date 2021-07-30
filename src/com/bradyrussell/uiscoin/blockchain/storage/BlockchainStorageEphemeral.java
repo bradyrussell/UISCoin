@@ -81,7 +81,7 @@ public class BlockchainStorageEphemeral implements BlockchainStorage {
     @Override
     public List<Block> getBlockchainRange(int beginHeight, int endHeight) throws NoSuchBlockException {
         if(beginHeight < 0 || beginHeight > blockheight.get() || endHeight < 0 || endHeight > blockheight.get() || beginHeight > endHeight) throw new NoSuchBlockException("Cannot find block");
-        return blocksByHeight.subList(beginHeight, endHeight);
+        return blocksByHeight.subList(beginHeight, endHeight+1);
     }
 
     @Override
