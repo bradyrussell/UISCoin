@@ -2,8 +2,8 @@ package com.bradyrussell.uiscoin;
 
 public enum MagicNumbers {
     NodeP2PPort(25920),
-    NodeP2PTimeout(60),
-    NodeP2PPingInterval(30),
+    NodeP2PTimeout(120),
+    NodeP2PPingInterval(60),
     MaxTransactionSize(1024*5),
     MaxBlockSize(1024*1024*10),
     MinSatPerByte(1),
