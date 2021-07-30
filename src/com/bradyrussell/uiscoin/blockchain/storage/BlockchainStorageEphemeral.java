@@ -38,6 +38,11 @@ public class BlockchainStorageEphemeral implements BlockchainStorage {
     }
 
     @Override
+    public boolean hasMempoolTransaction(byte[] transactionHash) {
+        return mempool.containsKey(BytesUtil.base64Encode(transactionHash));
+    }
+
+    @Override
     public boolean open() {
         return true;
     }
@@ -95,6 +100,11 @@ public class BlockchainStorageEphemeral implements BlockchainStorage {
     }
 
     @Override
+    public boolean hasBlockHeader(byte[] blockHash) {
+        return hasBlock(blockHash);
+    }
+
+    @Override
     public BlockHeader getBlockHeader(byte[] blockHash) throws NoSuchBlockException {
         if(!blocks.containsKey(BytesUtil.base64Encode(blockHash))) throw new NoSuchBlockException("Cannot find block header for block "+BytesUtil.base64Encode(blockHash));
         return blocks.get(BytesUtil.base64Encode(blockHash)).Header;
@@ -103,6 +113,11 @@ public class BlockchainStorageEphemeral implements BlockchainStorage {
     @Override
     public BlockHeader getBlockHeaderByHeight(int height) throws NoSuchBlockException {
         return getBlockByHeight(height).Header;
+    }
+
+    @Override
+    public boolean hasBlock(byte[] blockHash) {
+        return blocks.containsKey(BytesUtil.base64Encode(blockHash));
     }
 
     @Override
@@ -150,6 +165,11 @@ public class BlockchainStorageEphemeral implements BlockchainStorage {
     @Override
     public boolean putBlockHeader(BlockHeader blockHeader) {
         return true;
+    }
+
+    @Override
+    public boolean hasTransaction(byte[] transactionHash) {
+        return blockHashesByTransaction.containsKey(BytesUtil.base64Encode(transactionHash));
     }
 
     @Override

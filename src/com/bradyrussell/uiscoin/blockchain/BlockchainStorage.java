@@ -27,9 +27,11 @@ public interface BlockchainStorage {
     byte[] getHighestBlockHash() throws NoSuchBlockException;
     Block getHighestBlock() throws NoSuchBlockException;
 
+    boolean hasBlockHeader(byte[] blockHash);
     BlockHeader getBlockHeader(byte[] blockHash) throws NoSuchBlockException;
     BlockHeader getBlockHeaderByHeight(int height) throws NoSuchBlockException;
 
+    boolean hasBlock(byte[] blockHash);
     Block getBlock(byte[] blockHash) throws NoSuchBlockException;
     Block getBlockByHeight(int height) throws NoSuchBlockException;
     Block getBlockByTransaction(byte[] transactionHash) throws NoSuchBlockException, NoSuchTransactionException;
@@ -38,6 +40,7 @@ public interface BlockchainStorage {
     // optional for header only clients
     boolean putBlockHeader(BlockHeader blockHeader);
 
+    boolean hasTransaction(byte[] transactionHash);
     Transaction getTransaction(byte[] transactionHash) throws NoSuchTransactionException, NoSuchBlockException;
     TransactionInput getTransactionInput(byte[] transactionHash, int index) throws NoSuchTransactionException, NoSuchBlockException;
     TransactionOutput getTransactionOutput(byte[] transactionHash, int index) throws NoSuchTransactionException, NoSuchBlockException;
@@ -45,6 +48,7 @@ public interface BlockchainStorage {
     Set<TransactionOutputIdentifier> getUnspentTransactionOutputs();
     void buildUnspentTransactionOutputSet();
 
+    boolean hasMempoolTransaction(byte[] transactionHash);
     Set<Transaction> getMempoolTransactions();
     Transaction getMempoolTransaction(byte[] transactionHash) throws NoSuchTransactionException;
     boolean putMempoolTransaction(Transaction transaction);

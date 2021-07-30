@@ -36,7 +36,7 @@ public class NodeP2PReceivePeerHandler extends SimpleChannelInboundHandler<InetA
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, InetAddress inetAddress) throws Exception {
         Log.info("Handler Received peer "+ inetAddress.getHostAddress());
 
-        if(thisNode.getPeers().contains(inetAddress) || inetAddress.isLoopbackAddress()) {
+        if(thisNode.getPeers().contains(inetAddress) || inetAddress.isLoopbackAddress() || thisNode.peersEverSeen.contains(inetAddress)) {
             Log.info("4 Already known, discarding...");
             return;
         }

@@ -35,7 +35,7 @@ public class NodeP2PReceiveBlockRequestHandler extends SimpleChannelInboundHandl
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, BlockRequest blockRequest) throws Exception {
         Log.info("Handler Received block request " + BytesUtil.base64Encode(blockRequest.BlockHash));
 
-        if(Blockchain.get().getBlockHeader(blockRequest.BlockHash) == null) {
+        if(!Blockchain.get().hasBlockHeader(blockRequest.BlockHash)) {
             System.out.println("Not found in database! Discarding.");
             return;
         }

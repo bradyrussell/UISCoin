@@ -43,7 +43,7 @@ public class NodeP2PReceiveBlockHandler extends SimpleChannelInboundHandler<Bloc
 
         int currentBlockHeight = Blockchain.get().getBlockHeight();
         if (currentBlockHeight >= block.Header.BlockHeight) {
-            if (Blockchain.get().getBlockHeader(block.Header.getHash()) != null) {
+            if (Blockchain.get().hasBlock(block.Header.getHash())) {
                 Log.info("Already have. Discarding...");
             } else {
                 Log.info("Block is on a shorter chain. Discarding...");
