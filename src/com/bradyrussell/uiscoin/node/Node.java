@@ -2,6 +2,7 @@ package com.bradyrussell.uiscoin.node;
 
 import com.bradyrussell.uiscoin.MagicNumbers;
 import com.bradyrussell.uiscoin.block.Block;
+import com.bradyrussell.uiscoin.blockchain.storage.Blockchain;
 import com.bradyrussell.uiscoin.netty.NodeP2PClientInitializer;
 import com.bradyrussell.uiscoin.netty.NodeP2PServerInitializer;
 import com.bradyrussell.uiscoin.transaction.Transaction;
@@ -48,7 +49,7 @@ public class Node {
     public int HighestSeenBlockHeight;
 
     public Node() {
-        this.HighestSeenBlockHeight = -1; // we have not seen another nodes blockheight yet
+        this.HighestSeenBlockHeight = Blockchain.get().getBlockHeight(); // we have not seen another nodes blockheight yet
     }
 
     public void connectToPeer(InetAddress Address){

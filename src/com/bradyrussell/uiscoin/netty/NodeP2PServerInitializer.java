@@ -1,5 +1,6 @@
 package com.bradyrussell.uiscoin.netty;
 
+import com.bradyrussell.uiscoin.MagicNumbers;
 import com.bradyrussell.uiscoin.node.Node;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
@@ -35,7 +36,7 @@ public class NodeP2PServerInitializer extends ChannelInitializer<SocketChannel> 
         pipeline.addLast(ZlibCodecFactory.newZlibEncoder(ZlibWrapper.GZIP));
         pipeline.addLast(ZlibCodecFactory.newZlibDecoder(ZlibWrapper.GZIP));
 
-        pipeline.addLast(new IdleStateHandler(60, 30, 0));
+        pipeline.addLast(new IdleStateHandler(MagicNumbers.NodeP2PTimeout.Value, MagicNumbers.NodeP2PPingInterval.Value, 0));
         pipeline.addLast(new NodeP2PIdleStateHandler());
 
         pipeline.addLast(new NodeP2PTransactionEncoder()); // need encoders before decoder so it can send blocks back

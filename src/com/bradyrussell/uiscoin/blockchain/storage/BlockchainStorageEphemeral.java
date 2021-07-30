@@ -126,6 +126,7 @@ public class BlockchainStorageEphemeral implements BlockchainStorage {
     @Override
     public boolean putBlock(Block block) {
         blockheight.set(block.Header.BlockHeight);
+        System.out.println("Block Height is now "+blockheight.get());
         blocks.put(BytesUtil.base64Encode(block.Header.getHash()), block);
         while(blocksByHeight.size() < block.Header.BlockHeight + 1) blocksByHeight.add(null);
         blocksByHeight.set(block.Header.BlockHeight, block);

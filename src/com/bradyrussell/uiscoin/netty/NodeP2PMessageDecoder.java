@@ -93,7 +93,7 @@ public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
                     list.add(true);
                 }
                 case PING -> {
-                    Log.fine("3 Received ping!");
+                    Log.info("3 Received ping!");
                     list.add(true);
                 }
                 case PEER -> {
@@ -146,10 +146,10 @@ public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
                 case HEIGHT -> {
                     int BlockHeight = byteBuf.readInt();
 
-                    Log.fine("3 Received block height "+BlockHeight);
+                    Log.info("3 Received block height "+BlockHeight);
 
                     if(BlockHeight > node.HighestSeenBlockHeight) {
-                        Log.fine("4 This is a longer chain! Syncing...");
+                        Log.info("4 This is a longer chain! Syncing...");
                         node.HighestSeenBlockHeight = BlockHeight;
 
                         ByteBuf buffer = Unpooled.buffer();
@@ -157,6 +157,8 @@ public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
                         buffer.writeBoolean(false);
                         buffer.writeInt(Blockchain.get().getBlockHeight()+1); // start from next block after ours
                         channelHandlerContext.writeAndFlush(buffer);
+
+                        Log.info("Requesting blockchain from height "+(Blockchain.get().getBlockHeight()+1));
                     }
                     list.add(true);
                 }
@@ -175,6 +177,11 @@ public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
                     Log.fine("3 Received sync request "+BlockHeight);
 
                     //if(BlockHeight > BlockChain.get().BlockHeight) BlockHeight = BlockChain.get().BlockHeight;
+
+                    if(BlockHeight >= Blockchain.get().getBlockHeight()) {
+                        Log.fine("3 Cannot serve requested block height "+BlockHeight);
+                        list.add(true);
+                    }
 
                     List<Block> blockChainFromHeight = Blockchain.get().getBlockchainRange(BlockHeight, Blockchain.get().getBlockHeight());
                     for (int i = 0; i < blockChainFromHeight.size(); i++) {
