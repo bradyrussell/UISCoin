@@ -1,23 +1,25 @@
+/* (C) Brady Russell 2021 */
 package com.bradyrussell.uiscoin.netty;
 
-import com.bradyrussell.uiscoin.MagicBytes;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.util.List;
+import java.util.logging.Logger;
+
 import com.bradyrussell.uiscoin.BytesUtil;
+import com.bradyrussell.uiscoin.MagicBytes;
 import com.bradyrussell.uiscoin.block.Block;
 import com.bradyrussell.uiscoin.block.BlockHeader;
 import com.bradyrussell.uiscoin.blockchain.storage.Blockchain;
 import com.bradyrussell.uiscoin.node.*;
 import com.bradyrussell.uiscoin.transaction.Transaction;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ReplayingDecoder;
-
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.util.List;
-import java.util.logging.Logger;
 
 public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
     private static final Logger Log = Logger.getLogger(NodeP2PMessageDecoder.class.getName());

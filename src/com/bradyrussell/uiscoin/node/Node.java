@@ -1,4 +1,11 @@
+/* (C) Brady Russell 2021 */
 package com.bradyrussell.uiscoin.node;
+
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.logging.Logger;
 
 import com.bradyrussell.uiscoin.MagicNumbers;
 import com.bradyrussell.uiscoin.block.Block;
@@ -6,6 +13,7 @@ import com.bradyrussell.uiscoin.blockchain.storage.Blockchain;
 import com.bradyrussell.uiscoin.netty.NodeP2PClientInitializer;
 import com.bradyrussell.uiscoin.netty.NodeP2PServerInitializer;
 import com.bradyrussell.uiscoin.transaction.Transaction;
+
 import io.netty.bootstrap.Bootstrap;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBuf;
@@ -22,12 +30,6 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.util.concurrent.GlobalEventExecutor;
-
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.logging.Logger;
 
 public class Node {
     private static final Logger Log = Logger.getLogger(Node.class.getName());

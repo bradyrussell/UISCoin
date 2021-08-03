@@ -1,4 +1,8 @@
+/* (C) Brady Russell 2021 */
 package com.bradyrussell.uiscoin.blockchain.storage;
+
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import com.bradyrussell.uiscoin.BytesUtil;
 import com.bradyrussell.uiscoin.block.Block;
@@ -9,9 +13,6 @@ import com.bradyrussell.uiscoin.blockchain.exception.NoSuchTransactionException;
 import com.bradyrussell.uiscoin.transaction.Transaction;
 import com.bradyrussell.uiscoin.transaction.TransactionInput;
 import com.bradyrussell.uiscoin.transaction.TransactionOutput;
-
-import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class BlockchainStorageEphemeral implements BlockchainStorage {
     protected final ArrayList<Block> blocksByHeight = new ArrayList<>(); // this should be all that needs stored, everything else can be reconstructed

@@ -1,8 +1,15 @@
+/* (C) Brady Russell 2021 */
 package com.bradyrussell.uiscoin;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.time.Instant;
+import java.util.Arrays;
+import java.util.concurrent.ThreadLocalRandom;
+
+import com.bradyrussell.uiscoin.BytesUtil;
 import com.bradyrussell.uiscoin.Conversions;
 import com.bradyrussell.uiscoin.Hash;
-import com.bradyrussell.uiscoin.BytesUtil;
 import com.bradyrussell.uiscoin.address.UISCoinKeypair;
 import com.bradyrussell.uiscoin.block.Block;
 import com.bradyrussell.uiscoin.block.BlockBuilder;
@@ -10,14 +17,9 @@ import com.bradyrussell.uiscoin.blockchain.exception.InvalidBlockException;
 import com.bradyrussell.uiscoin.blockchain.exception.NoSuchBlockException;
 import com.bradyrussell.uiscoin.blockchain.exception.NoSuchTransactionException;
 import com.bradyrussell.uiscoin.transaction.*;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.RepeatedTest;
-
-import java.time.Instant;
-import java.util.Arrays;
-import java.util.concurrent.ThreadLocalRandom;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class BlockTest {
     @RepeatedTest(10)

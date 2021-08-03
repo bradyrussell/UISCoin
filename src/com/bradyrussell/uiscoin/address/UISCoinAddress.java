@@ -1,11 +1,12 @@
+/* (C) Brady Russell 2021 */
 package com.bradyrussell.uiscoin.address;
-
-import com.bradyrussell.uiscoin.Hash;
-import com.bradyrussell.uiscoin.MagicBytes;
-import com.bradyrussell.uiscoin.BytesUtil;
 
 import java.security.interfaces.ECPublicKey;
 import java.util.logging.Logger;
+
+import com.bradyrussell.uiscoin.BytesUtil;
+import com.bradyrussell.uiscoin.Hash;
+import com.bradyrussell.uiscoin.MagicBytes;
 
 public class UISCoinAddress {
     private static final Logger Log = Logger.getLogger(UISCoinAddress.class.getName());

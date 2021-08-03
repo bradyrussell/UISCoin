@@ -1,4 +1,11 @@
+/* (C) Brady Russell 2021 */
 package com.bradyrussell.uiscoin.block;
+
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.logging.Logger;
 
 import com.bradyrussell.uiscoin.Hash;
 import com.bradyrussell.uiscoin.blockchain.exception.InvalidBlockException;
@@ -11,12 +18,6 @@ import com.bradyrussell.uiscoin.transaction.Transaction;
 import com.bradyrussell.uiscoin.transaction.TransactionBuilder;
 import com.bradyrussell.uiscoin.transaction.TransactionInputBuilder;
 import com.bradyrussell.uiscoin.transaction.TransactionOutputBuilder;
-
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.logging.Logger;
 
 public class BlockBuilder {
     private static final Logger Log = Logger.getLogger(BlockBuilder.class.getName());

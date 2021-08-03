@@ -1,4 +1,10 @@
+/* (C) Brady Russell 2021 */
 package com.bradyrussell.uiscoin.blockchain;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 import com.bradyrussell.uiscoin.BytesUtil;
 import com.bradyrussell.uiscoin.block.Block;
@@ -8,11 +14,6 @@ import com.bradyrussell.uiscoin.blockchain.exception.NoSuchTransactionException;
 import com.bradyrussell.uiscoin.transaction.Transaction;
 import com.bradyrussell.uiscoin.transaction.TransactionInput;
 import com.bradyrussell.uiscoin.transaction.TransactionOutput;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
 
 public interface BlockchainStorage {
     boolean open();

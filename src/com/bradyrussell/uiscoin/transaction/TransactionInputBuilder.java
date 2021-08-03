@@ -1,16 +1,17 @@
+/* (C) Brady Russell 2021 */
 package com.bradyrussell.uiscoin.transaction;
-
-import com.bradyrussell.uiscoin.Keys;
-import com.bradyrussell.uiscoin.MagicNumbers;
-import com.bradyrussell.uiscoin.BytesUtil;
-import com.bradyrussell.uiscoin.address.UISCoinKeypair;
-import com.bradyrussell.uiscoin.script.ScriptBuilder;
 
 import java.nio.charset.Charset;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
 import java.util.List;
+
+import com.bradyrussell.uiscoin.BytesUtil;
+import com.bradyrussell.uiscoin.Keys;
+import com.bradyrussell.uiscoin.MagicNumbers;
+import com.bradyrussell.uiscoin.address.UISCoinKeypair;
+import com.bradyrussell.uiscoin.script.ScriptBuilder;
 
 public class TransactionInputBuilder {
     TransactionInput input = new TransactionInput();

@@ -1,23 +1,8 @@
+/* (C) Brady Russell 2021 */
 package com.bradyrussell.uiscoin;
 
-import com.bradyrussell.uiscoin.*;
-import com.bradyrussell.uiscoin.address.UISCoinAddress;
-import com.bradyrussell.uiscoin.address.UISCoinKeypair;
-import com.bradyrussell.uiscoin.script.*;
-import com.bradyrussell.uiscoin.script.exception.ScriptEmptyStackException;
-import com.bradyrussell.uiscoin.script.exception.ScriptInvalidException;
-import com.bradyrussell.uiscoin.script.exception.ScriptInvalidParameterException;
-import com.bradyrussell.uiscoin.script.exception.ScriptUnsupportedOperationException;
-import com.bradyrussell.uiscoin.transaction.TransactionInputBuilder;
-import com.bradyrussell.uiscoin.transaction.TransactionOutput;
-import com.bradyrussell.uiscoin.transaction.TransactionOutputBuilder;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.RepeatedTest;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -32,7 +17,25 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static org.junit.jupiter.api.Assertions.*;
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+
+import com.bradyrussell.uiscoin.*;
+import com.bradyrussell.uiscoin.address.UISCoinAddress;
+import com.bradyrussell.uiscoin.address.UISCoinKeypair;
+import com.bradyrussell.uiscoin.script.*;
+import com.bradyrussell.uiscoin.script.exception.ScriptEmptyStackException;
+import com.bradyrussell.uiscoin.script.exception.ScriptInvalidException;
+import com.bradyrussell.uiscoin.script.exception.ScriptInvalidParameterException;
+import com.bradyrussell.uiscoin.script.exception.ScriptUnsupportedOperationException;
+import com.bradyrussell.uiscoin.transaction.TransactionInputBuilder;
+import com.bradyrussell.uiscoin.transaction.TransactionOutput;
+import com.bradyrussell.uiscoin.transaction.TransactionOutputBuilder;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.api.Test;
 
 public class ScriptTest {
     @Test

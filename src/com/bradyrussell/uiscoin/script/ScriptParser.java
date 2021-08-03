@@ -1,12 +1,13 @@
+/* (C) Brady Russell 2021 */
 package com.bradyrussell.uiscoin.script;
-
-import com.bradyrussell.uiscoin.BytesUtil;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+
+import com.bradyrussell.uiscoin.BytesUtil;
 
 public class ScriptParser {
 

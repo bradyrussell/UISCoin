@@ -1,3 +1,4 @@
+/* (C) Brady Russell 2021 */
 package com.bradyrussell.uiscoin.script.exception;
 
 import com.bradyrussell.uiscoin.UISCoinException;

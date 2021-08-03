@@ -51,7 +51,7 @@ spotless {
 	java {
 		toggleOffOn()
 		importOrder('java', 'javax', 'com', 'org')
-		googleJavaFormat('1.11.0').aosp()
+		//googleJavaFormat('1.11.0').aosp()
 		licenseHeader '/* (C) Brady Russell $YEAR */'
 	}
 }

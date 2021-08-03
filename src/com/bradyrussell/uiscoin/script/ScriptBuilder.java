@@ -1,11 +1,12 @@
+/* (C) Brady Russell 2021 */
 package com.bradyrussell.uiscoin.script;
-
-import com.bradyrussell.uiscoin.BytesUtil;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.logging.Logger;
+
+import com.bradyrussell.uiscoin.BytesUtil;
 
 public class ScriptBuilder {
     private static final Logger Log = Logger.getLogger(StringBuilder.class.getName());

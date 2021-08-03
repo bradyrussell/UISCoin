@@ -1,3 +1,4 @@
+/* (C) Brady Russell 2021 */
 package com.bradyrussell.uiscoin.script;
 
 public enum ScriptOperator {

@@ -1,12 +1,14 @@
+/* (C) Brady Russell 2021 */
 package com.bradyrussell.uiscoin.netty;
-
-import com.bradyrussell.uiscoin.node.PeerPacketType;
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.MessageToByteEncoder;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+
+import com.bradyrussell.uiscoin.node.PeerPacketType;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.MessageToByteEncoder;
 
 public class NodeP2PPeerEncoder extends MessageToByteEncoder<InetAddress> {
     @Override

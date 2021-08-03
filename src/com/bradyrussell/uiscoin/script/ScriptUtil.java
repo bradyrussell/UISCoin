@@ -1,8 +1,9 @@
+/* (C) Brady Russell 2021 */
 package com.bradyrussell.uiscoin.script;
 
-import com.bradyrussell.uiscoin.BytesUtil;
-
 import java.util.*;
+
+import com.bradyrussell.uiscoin.BytesUtil;
 
 public class ScriptUtil {
     public static String PrintStack(Enumeration<byte[]> StackValues, byte[] PoppedElement){

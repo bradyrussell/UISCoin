@@ -1,4 +1,8 @@
+/* (C) Brady Russell 2021 */
 package com.bradyrussell.uiscoin.blockchain;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import com.bradyrussell.uiscoin.blockchain.exception.NoSuchBlockException;
 import com.bradyrussell.uiscoin.blockchain.exception.NoSuchTransactionException;
@@ -6,9 +10,6 @@ import com.bradyrussell.uiscoin.blockchain.storage.Blockchain;
 import com.bradyrussell.uiscoin.script.ScriptMatcher;
 import com.bradyrussell.uiscoin.transaction.Transaction;
 import com.bradyrussell.uiscoin.transaction.TransactionOutput;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 
 public class BlockchainUtil {
     public static ArrayList<BlockchainStorage.TransactionOutputIdentifier> matchUtxoForP2phkAddress(byte[] PublicKeyHash) {

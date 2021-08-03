@@ -1,14 +1,15 @@
+/* (C) Brady Russell 2021 */
 package com.bradyrussell.uiscoin.address;
-
-import com.bradyrussell.uiscoin.Hash;
-import com.bradyrussell.uiscoin.IBinaryData;
-import com.bradyrussell.uiscoin.MagicBytes;
 
 import java.nio.ByteBuffer;
 import java.security.interfaces.ECPublicKey;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+
+import com.bradyrussell.uiscoin.Hash;
+import com.bradyrussell.uiscoin.IBinaryData;
+import com.bradyrussell.uiscoin.MagicBytes;
 
 public class UISCoinWallet implements IBinaryData {
     private static final Logger Log = Logger.getLogger(UISCoinWallet.class.getName());

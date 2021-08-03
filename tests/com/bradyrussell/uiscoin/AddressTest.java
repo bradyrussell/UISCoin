@@ -1,10 +1,7 @@
+/* (C) Brady Russell 2021 */
 package com.bradyrussell.uiscoin;
 
-import com.bradyrussell.uiscoin.Keys;
-import com.bradyrussell.uiscoin.BytesUtil;
-import com.bradyrussell.uiscoin.address.UISCoinAddress;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.RepeatedTest;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.security.InvalidAlgorithmParameterException;
 import java.security.KeyPair;
@@ -13,7 +10,12 @@ import java.security.interfaces.ECPublicKey;
 import java.util.Base64;
 import java.util.concurrent.ThreadLocalRandom;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import com.bradyrussell.uiscoin.BytesUtil;
+import com.bradyrussell.uiscoin.Keys;
+import com.bradyrussell.uiscoin.address.UISCoinAddress;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.RepeatedTest;
 
 public class AddressTest {
     @RepeatedTest(1000)

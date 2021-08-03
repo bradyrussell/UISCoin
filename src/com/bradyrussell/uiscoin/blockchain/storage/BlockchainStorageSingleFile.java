@@ -1,14 +1,16 @@
+/* (C) Brady Russell 2021 */
 package com.bradyrussell.uiscoin.blockchain.storage;
-
-import com.bradyrussell.uiscoin.block.Block;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
+
+import com.bradyrussell.uiscoin.block.Block;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 public class BlockchainStorageSingleFile extends BlockchainStorageEphemeral {
     private final Path databasePath;

@@ -1,7 +1,5 @@
+/* (C) Brady Russell 2021 */
 package com.bradyrussell.uiscoin;
-
-import com.bradyrussell.uiscoin.transaction.Transaction;
-import com.bradyrussell.uiscoin.transaction.TransactionInput;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -10,6 +8,9 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 import java.util.zip.*;
+
+import com.bradyrussell.uiscoin.transaction.Transaction;
+import com.bradyrussell.uiscoin.transaction.TransactionInput;
 
 public class BytesUtil {
     @Deprecated

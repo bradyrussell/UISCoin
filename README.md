@@ -32,63 +32,63 @@ It adds another BlockChainStorage class, this one using a LevelDB database which
 
 For a demonstration of the API, here is how I created the Genesis Block.
 
-        public static void CreateGenesisBlock() {
-        BlockChain.Initialize(BlockChainStorageFile.class);
-        BlockChain.get().open();
+		public static void CreateGenesisBlock() {
+		BlockChain.Initialize(BlockChainStorageFile.class);
+		BlockChain.get().open();
 
-        UISCoinKeypair genesisCoins = UISCoinKeypair.Create();
-        Wallet.SaveKeypairToFileWithPassword(Path.of("WALLET.uisw"), "PASSWORD", genesisCoins);
+		UISCoinKeypair genesisCoins = UISCoinKeypair.Create();
+		Wallet.SaveKeypairToFileWithPassword(Path.of("WALLET.uisw"), "PASSWORD", genesisCoins);
 
-        byte[] address = UISCoinAddress.fromPublicKey((ECPublicKey) genesisCoins.Keys.getPublic());
-        UISCoinAddress.DecodedAddress decodedAddress = UISCoinAddress.decodeAddress(address);
+		byte[] address = UISCoinAddress.fromPublicKey((ECPublicKey) genesisCoins.Keys.getPublic());
+		UISCoinAddress.DecodedAddress decodedAddress = UISCoinAddress.decodeAddress(address);
 
-        long timestamp = Instant.now().getEpochSecond();
-        
-        BlockBuilder blockBuilder = new BlockBuilder().setVersion(1)
-                .setTimestamp(timestamp)
-                .setDifficultyTarget(3)
-                .setBlockHeight(0)
-                .setHashPreviousBlock(Hash.getSHA512Bytes("UISCoin 1.0 written by Brady Russell. Thanks to https://learnmeabitcoin.com/ and https://www.oreilly.com/library/view/mastering-bitcoin/9781491902639/ for the knowledge."))
-                .addCoinbasePayToPublicKeyHash(decodedAddress.PublicKeyHash, "https://www.bbc.com/news - Trump and Melania test positive for coronavirus: The US president and Melania Trump were tested after his close aide was confirmed to have Covid-19. 8m minutes ago US & Canada") /* reference to Satoshi's The Times 03/Jan/2009 Chancellor on brink of second bailout for banks*/
-                .CalculateMerkleRoot();
-        
-        System.out.println("Begin mining genesis block...");
+		long timestamp = Instant.now().getEpochSecond();
 
-        int i = Integer.MIN_VALUE;
-        while (bIsRunning && !blockBuilder.get().Verify()) {
-            blockBuilder.setNonce(i++);
-        }
+		BlockBuilder blockBuilder = new BlockBuilder().setVersion(1)
+				.setTimestamp(timestamp)
+				.setDifficultyTarget(3)
+				.setBlockHeight(0)
+				.setHashPreviousBlock(Hash.getSHA512Bytes("UISCoin 1.0 written by Brady Russell. Thanks to https://learnmeabitcoin.com/ and https://www.oreilly.com/library/view/mastering-bitcoin/9781491902639/ for the knowledge."))
+				.addCoinbasePayToPublicKeyHash(decodedAddress.PublicKeyHash, "https://www.bbc.com/news - Trump and Melania test positive for coronavirus: The US president and Melania Trump were tested after his close aide was confirmed to have Covid-19. 8m minutes ago US & Canada") /* reference to Satoshi's The Times 03/Jan/2009 Chancellor on brink of second bailout for banks*/
+				.CalculateMerkleRoot();
 
-        Block finalBlock = blockBuilder.get();
+		System.out.println("Begin mining genesis block...");
 
-        System.out.println(Util.Base64Encode(finalBlock.Header.getHash()));
+		int i = Integer.MIN_VALUE;
+		while (bIsRunning && !blockBuilder.get().Verify()) {
+			blockBuilder.setNonce(i++);
+		}
 
-        BlockChain.get().putBlock(finalBlock);
-        node.BroadcastBlockToPeers(finalBlock);
-        System.out.println("Genesis block broadcast!");
-        BlockChain.get().close();
-    }
+		Block finalBlock = blockBuilder.get();
+
+		System.out.println(Util.Base64Encode(finalBlock.Header.getHash()));
+
+		BlockChain.get().putBlock(finalBlock);
+		node.BroadcastBlockToPeers(finalBlock);
+		System.out.println("Genesis block broadcast!");
+		BlockChain.get().close();
+	}
 
 
 # Scripting Language
 The UISCoin scripting language is executed in bytecode format. [See the available OPCodes.](https://bradyrussell.github.io/UISCoin/com/bradyrussell/uiscoin/script/ScriptOperator.html) Scripts can be converted back and forth between bytecode and script using ScriptBuilder.fromText() and ScriptBuilder.toText(). Scripts can also be created using the Builder pattern as seen below:
 
-                byte[] a  = new ScriptBuilder(128)
-                .op(ScriptOperator.DUP) // dup the public key
-                .op(ScriptOperator.SHA512) // hash it
-                .push(A) // push the address
-                .op(ScriptOperator.LEN) // take its length
-                .pushInt(4) // push 4
-                .op(ScriptOperator.SWAP) // make length the top stack element, then 4
-                .op(ScriptOperator.SUBTRACT) // do length - 4
-                .op(ScriptOperator.LIMIT) // limit the address to length - 4 (remove checksum)
-                .op(ScriptOperator.BYTESEQUAL) // equal to pubkey hash?
-                .op(ScriptOperator.VERIFY)
-                .op(ScriptOperator.VERIFYSIG)
-                .get();
+				byte[] a  = new ScriptBuilder(128)
+				.op(ScriptOperator.DUP) // dup the public key
+				.op(ScriptOperator.SHA512) // hash it
+				.push(A) // push the address
+				.op(ScriptOperator.LEN) // take its length
+				.pushInt(4) // push 4
+				.op(ScriptOperator.SWAP) // make length the top stack element, then 4
+				.op(ScriptOperator.SUBTRACT) // do length - 4
+				.op(ScriptOperator.LIMIT) // limit the address to length - 4 (remove checksum)
+				.op(ScriptOperator.BYTESEQUAL) // equal to pubkey hash?
+				.op(ScriptOperator.VERIFY)
+				.op(ScriptOperator.VERIFYSIG)
+				.get();
 
-                byte[] b= new ScriptBuilder(128).fromText("dup sha512").push(A).fromText("len push 4 swap subtract limit bytesequal verify verifysig").get();
-                assertTrue(Arrays.equals(a,b));// true
+				byte[] b= new ScriptBuilder(128).fromText("dup sha512").push(A).fromText("len push 4 swap subtract limit bytesequal verify verifysig").get();
+				assertTrue(Arrays.equals(a,b));// true
 
 I am working on an IDE for scripts which can be seen here:
 ![Image of Script Editor](https://raw.githubusercontent.com/bradyrussell/UISCoin/master/script_ide.png)

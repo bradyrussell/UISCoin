@@ -1,6 +1,8 @@
+/* (C) Brady Russell 2021 */
 package com.bradyrussell.uiscoin.netty;
 
 import com.bradyrussell.uiscoin.node.PeerPacketType;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelDuplexHandler;

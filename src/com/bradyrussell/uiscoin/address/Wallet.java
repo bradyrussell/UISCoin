@@ -1,17 +1,19 @@
+/* (C) Brady Russell 2021 */
 package com.bradyrussell.uiscoin.address;
 
-import com.bradyrussell.uiscoin.Encryption;
-import com.bradyrussell.uiscoin.Hash;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.logging.Logger;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+
+import com.bradyrussell.uiscoin.Encryption;
+import com.bradyrussell.uiscoin.Hash;
 
 public class Wallet {
     private static final Logger Log = Logger.getLogger(Wallet.class.getName());

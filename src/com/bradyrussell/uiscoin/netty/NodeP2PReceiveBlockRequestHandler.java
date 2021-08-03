@@ -1,15 +1,17 @@
+/* (C) Brady Russell 2021 */
 package com.bradyrussell.uiscoin.netty;
+
+import java.util.logging.Logger;
 
 import com.bradyrussell.uiscoin.BytesUtil;
 import com.bradyrussell.uiscoin.blockchain.storage.Blockchain;
 import com.bradyrussell.uiscoin.node.BlockHeaderResponse;
 import com.bradyrussell.uiscoin.node.BlockRequest;
+
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-
-import java.util.logging.Logger;
 
 public class NodeP2PReceiveBlockRequestHandler extends SimpleChannelInboundHandler<BlockRequest> {
     private static final Logger Log = Logger.getLogger(NodeP2PReceiveBlockRequestHandler.class.getName());

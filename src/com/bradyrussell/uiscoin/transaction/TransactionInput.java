@@ -1,4 +1,9 @@
+/* (C) Brady Russell 2021 */
 package com.bradyrussell.uiscoin.transaction;
+
+import java.nio.ByteBuffer;
+import java.time.Instant;
+import java.util.logging.Logger;
 
 import com.bradyrussell.uiscoin.*;
 import com.bradyrussell.uiscoin.blockchain.exception.NoSuchBlockException;
@@ -9,10 +14,6 @@ import com.bradyrussell.uiscoin.script.exception.ScriptEmptyStackException;
 import com.bradyrussell.uiscoin.script.exception.ScriptInvalidException;
 import com.bradyrussell.uiscoin.script.exception.ScriptInvalidParameterException;
 import com.bradyrussell.uiscoin.script.exception.ScriptUnsupportedOperationException;
-
-import java.nio.ByteBuffer;
-import java.time.Instant;
-import java.util.logging.Logger;
 
 public class TransactionInput  implements IBinaryData, IVerifiable {
     private static final Logger Log = Logger.getLogger(TransactionInput.class.getName());

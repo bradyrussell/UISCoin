@@ -1,14 +1,15 @@
+/* (C) Brady Russell 2021 */
 package com.bradyrussell.uiscoin.transaction;
-
-import com.bradyrussell.uiscoin.Hash;
-import com.bradyrussell.uiscoin.MagicBytes;
-import com.bradyrussell.uiscoin.BytesUtil;
-import com.bradyrussell.uiscoin.address.UISCoinAddress;
-import com.bradyrussell.uiscoin.script.ScriptBuilder;
-import com.bradyrussell.uiscoin.script.ScriptOperator;
 
 import java.util.Arrays;
 import java.util.List;
+
+import com.bradyrussell.uiscoin.BytesUtil;
+import com.bradyrussell.uiscoin.Hash;
+import com.bradyrussell.uiscoin.MagicBytes;
+import com.bradyrussell.uiscoin.address.UISCoinAddress;
+import com.bradyrussell.uiscoin.script.ScriptBuilder;
+import com.bradyrussell.uiscoin.script.ScriptOperator;
 
 public class TransactionOutputBuilder {
     TransactionOutput output = new TransactionOutput();

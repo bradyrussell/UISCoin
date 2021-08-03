@@ -1,4 +1,8 @@
+/* (C) Brady Russell 2021 */
 package com.bradyrussell.uiscoin.netty;
+
+import java.util.ArrayList;
+import java.util.logging.Logger;
 
 import com.bradyrussell.uiscoin.BytesUtil;
 import com.bradyrussell.uiscoin.blockchain.exception.NoSuchTransactionException;
@@ -6,11 +10,9 @@ import com.bradyrussell.uiscoin.blockchain.storage.Blockchain;
 import com.bradyrussell.uiscoin.node.Node;
 import com.bradyrussell.uiscoin.transaction.Transaction;
 import com.bradyrussell.uiscoin.transaction.TransactionInput;
+
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-
-import java.util.ArrayList;
-import java.util.logging.Logger;
 
 public class NodeP2PReceiveTransactionHandler extends SimpleChannelInboundHandler<Transaction> {
     private static final Logger Log = Logger.getLogger(NodeP2PReceiveTransactionHandler.class.getName());

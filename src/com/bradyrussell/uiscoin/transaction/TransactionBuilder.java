@@ -1,4 +1,9 @@
+/* (C) Brady Russell 2021 */
 package com.bradyrussell.uiscoin.transaction;
+
+import java.security.interfaces.ECPublicKey;
+import java.util.*;
+import java.util.logging.Logger;
 
 import com.bradyrussell.uiscoin.address.UISCoinAddress;
 import com.bradyrussell.uiscoin.address.UISCoinKeypair;
@@ -7,10 +12,6 @@ import com.bradyrussell.uiscoin.blockchain.BlockchainUtil;
 import com.bradyrussell.uiscoin.blockchain.exception.NoSuchBlockException;
 import com.bradyrussell.uiscoin.blockchain.exception.NoSuchTransactionException;
 import com.bradyrussell.uiscoin.blockchain.storage.Blockchain;
-
-import java.security.interfaces.ECPublicKey;
-import java.util.*;
-import java.util.logging.Logger;
 
 public class TransactionBuilder {
     private static final Logger Log = Logger.getLogger(TransactionBuilder.class.getName());

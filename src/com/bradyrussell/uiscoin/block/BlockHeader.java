@@ -1,4 +1,10 @@
+/* (C) Brady Russell 2021 */
 package com.bradyrussell.uiscoin.block;
+
+import java.nio.ByteBuffer;
+import java.time.Instant;
+import java.util.Arrays;
+import java.util.logging.Logger;
 
 import com.bradyrussell.uiscoin.Hash;
 import com.bradyrussell.uiscoin.IBinaryData;
@@ -6,11 +12,6 @@ import com.bradyrussell.uiscoin.IVerifiable;
 import com.bradyrussell.uiscoin.MagicNumbers;
 import com.bradyrussell.uiscoin.blockchain.exception.NoSuchBlockException;
 import com.bradyrussell.uiscoin.blockchain.storage.Blockchain;
-
-import java.nio.ByteBuffer;
-import java.time.Instant;
-import java.util.Arrays;
-import java.util.logging.Logger;
 
 public class BlockHeader implements IBinaryData, IVerifiable {
     private static final Logger Log = Logger.getLogger(BlockHeader.class.getName());

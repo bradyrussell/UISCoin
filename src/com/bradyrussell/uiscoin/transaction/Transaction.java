@@ -1,14 +1,15 @@
+/* (C) Brady Russell 2021 */
 package com.bradyrussell.uiscoin.transaction;
-
-import com.bradyrussell.uiscoin.*;
-import com.bradyrussell.uiscoin.blockchain.exception.NoSuchBlockException;
-import com.bradyrussell.uiscoin.blockchain.exception.NoSuchTransactionException;
-import com.bradyrussell.uiscoin.blockchain.storage.Blockchain;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.logging.Logger;
+
+import com.bradyrussell.uiscoin.*;
+import com.bradyrussell.uiscoin.blockchain.exception.NoSuchBlockException;
+import com.bradyrussell.uiscoin.blockchain.exception.NoSuchTransactionException;
+import com.bradyrussell.uiscoin.blockchain.storage.Blockchain;
 
 public class Transaction implements IBinaryData, IVerifiable {
     private static final Logger Log = Logger.getLogger(Transaction.class.getName());

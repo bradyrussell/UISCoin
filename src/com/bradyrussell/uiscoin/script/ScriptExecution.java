@@ -1,17 +1,8 @@
+/* (C) Brady Russell 2021 */
 package com.bradyrussell.uiscoin.script;
 
-import com.bradyrussell.uiscoin.Encryption;
-import com.bradyrussell.uiscoin.Hash;
-import com.bradyrussell.uiscoin.Keys;
-import com.bradyrussell.uiscoin.BytesUtil;
-import com.bradyrussell.uiscoin.script.exception.ScriptEmptyStackException;
-import com.bradyrussell.uiscoin.script.exception.ScriptInvalidException;
-import com.bradyrussell.uiscoin.script.exception.ScriptInvalidParameterException;
-import com.bradyrussell.uiscoin.script.exception.ScriptUnsupportedOperationException;
+import static com.bradyrussell.uiscoin.BytesUtil.*;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
@@ -19,7 +10,18 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.*;
 import java.util.logging.Logger;
 
-import static com.bradyrussell.uiscoin.BytesUtil.*;
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+
+import com.bradyrussell.uiscoin.BytesUtil;
+import com.bradyrussell.uiscoin.Encryption;
+import com.bradyrussell.uiscoin.Hash;
+import com.bradyrussell.uiscoin.Keys;
+import com.bradyrussell.uiscoin.script.exception.ScriptEmptyStackException;
+import com.bradyrussell.uiscoin.script.exception.ScriptInvalidException;
+import com.bradyrussell.uiscoin.script.exception.ScriptInvalidParameterException;
+import com.bradyrussell.uiscoin.script.exception.ScriptUnsupportedOperationException;
 
 public class ScriptExecution {
     private static final Logger Log = Logger.getLogger(ScriptExecution.class.getName());

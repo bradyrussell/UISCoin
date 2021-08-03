@@ -1,17 +1,19 @@
+/* (C) Brady Russell 2021 */
 package com.bradyrussell.uiscoin;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.Arrays;
+import java.util.concurrent.ThreadLocalRandom;
 
 import com.bradyrussell.uiscoin.script.*;
 import com.bradyrussell.uiscoin.script.exception.ScriptEmptyStackException;
 import com.bradyrussell.uiscoin.script.exception.ScriptInvalidException;
 import com.bradyrussell.uiscoin.script.exception.ScriptInvalidParameterException;
 import com.bradyrussell.uiscoin.script.exception.ScriptUnsupportedOperationException;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.RepeatedTest;
-
-import java.util.Arrays;
-import java.util.concurrent.ThreadLocalRandom;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class ScriptOptimizationTest {
     @RepeatedTest(100)

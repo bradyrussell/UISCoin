@@ -1,10 +1,12 @@
+/* (C) Brady Russell 2021 */
 package com.bradyrussell.uiscoin.netty;
 
+import java.util.logging.Logger;
+
 import com.bradyrussell.uiscoin.node.Node;
+
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-
-import java.util.logging.Logger;
 
 public class NodeP2PServerHandler extends ChannelInboundHandlerAdapter {
     private static final Logger Log = Logger.getLogger(NodeP2PServerHandler.class.getName());

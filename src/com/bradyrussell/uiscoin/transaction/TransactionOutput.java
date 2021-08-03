@@ -1,11 +1,12 @@
+/* (C) Brady Russell 2021 */
 package com.bradyrussell.uiscoin.transaction;
+
+import java.nio.ByteBuffer;
 
 import com.bradyrussell.uiscoin.Hash;
 import com.bradyrussell.uiscoin.IBinaryData;
 import com.bradyrussell.uiscoin.IVerifiable;
 import com.bradyrussell.uiscoin.MagicNumbers;
-
-import java.nio.ByteBuffer;
 
 public class TransactionOutput  implements IBinaryData, IVerifiable {
     public long Amount;

@@ -1,7 +1,9 @@
+/* (C) Brady Russell 2021 */
 package com.bradyrussell.uiscoin.netty;
 
 import com.bradyrussell.uiscoin.MagicNumbers;
 import com.bradyrussell.uiscoin.node.Node;
+
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;

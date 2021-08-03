@@ -1,11 +1,12 @@
+/* (C) Brady Russell 2021 */
 package com.bradyrussell.uiscoin.script;
-
-import com.bradyrussell.uiscoin.BytesUtil;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+
+import com.bradyrussell.uiscoin.BytesUtil;
 @Deprecated
 public class ScriptOptimizer {
     public static String OptimizeScriptHighLevel(String UnoptimizedHighLevel) {

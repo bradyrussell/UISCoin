@@ -1,12 +1,13 @@
+/* (C) Brady Russell 2021 */
 package com.bradyrussell.uiscoin.address;
-
-import com.bradyrussell.uiscoin.*;
 
 import java.nio.ByteBuffer;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Logger;
+
+import com.bradyrussell.uiscoin.*;
 
 public class UISCoinKeypair implements IBinaryData {
     private static final Logger Log = Logger.getLogger(UISCoinKeypair.class.getName());
