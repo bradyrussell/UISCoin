@@ -32,7 +32,7 @@ test {
 }
 
 task copyDependencies(type: Copy) {
-	from configurations.default
+	from configurations.runtimeClasspath
 	into 'dependencies'
 }
 
