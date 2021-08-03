@@ -5,8 +5,8 @@ import java.util.logging.Logger;
 
 import com.bradyrussell.uiscoin.MagicBytes;
 import com.bradyrussell.uiscoin.node.BlockRequest;
-import com.bradyrussell.uiscoin.node.Node;
 import com.bradyrussell.uiscoin.node.PeerPacketType;
+import com.bradyrussell.uiscoin.node.UISCoinNode;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -18,9 +18,9 @@ import io.netty.channel.SimpleChannelInboundHandler;
 public class NodeP2PClientHandler extends SimpleChannelInboundHandler<ByteBuf> {
     private static final Logger Log = Logger.getLogger(NodeP2PClientHandler.class.getName());
     private ChannelHandlerContext ctx;
-    private final Node node;
+    private final UISCoinNode node;
 
-    public NodeP2PClientHandler(Node node) {
+    public NodeP2PClientHandler(UISCoinNode node) {
         this.node = node;
     }
 

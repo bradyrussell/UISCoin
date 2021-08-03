@@ -31,8 +31,8 @@ import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.util.concurrent.GlobalEventExecutor;
 
-public class Node {
-    private static final Logger Log = Logger.getLogger(Node.class.getName());
+public class UISCoinNode {
+    private static final Logger Log = Logger.getLogger(UISCoinNode.class.getName());
 
     public ArrayList<InetAddress> peersEverSeen = new ArrayList<>();
 
@@ -50,7 +50,7 @@ public class Node {
 
     public int HighestSeenBlockHeight;
 
-    public Node() {
+    public UISCoinNode() {
         this.HighestSeenBlockHeight = Blockchain.get().getBlockHeight(); // we have not seen another nodes blockheight yet
     }
 

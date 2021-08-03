@@ -36,6 +36,11 @@ task copyDependencies(type: Copy) {
 	into 'dependencies'
 }
 
+task copyJar(type: Copy) {
+	from layout.buildDirectory.dir("libs")
+	into 'jar'
+}
+
 task copyJavadoc(type: Copy) {
 	from layout.buildDirectory.dir("docs")
 	into "docs"
@@ -51,9 +56,9 @@ spotless {
 	java {
 		toggleOffOn()
 		importOrder('java', 'javax', 'com', 'org')
-		//googleJavaFormat('1.11.0').aosp()
+		//googleJavaFormat('1.11.0').aosp() // unfortunately you cannot adjust line lengths for this. maybe wait until spotless issue #817 is fixed
 		licenseHeader '/* (C) Brady Russell $YEAR */'
 	}
 }
 
-//gradle clean spotlessCheck test javadoc jar copyJavadoc copyDependencies
+//gradle clean spotlessCheck test javadoc jar copyJar copyJavadoc copyDependencies

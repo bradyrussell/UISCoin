@@ -6,7 +6,6 @@ import java.util.logging.Logger;
 import com.bradyrussell.uiscoin.BytesUtil;
 import com.bradyrussell.uiscoin.blockchain.storage.Blockchain;
 import com.bradyrussell.uiscoin.node.BlockHeaderResponse;
-import com.bradyrussell.uiscoin.node.Node;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;

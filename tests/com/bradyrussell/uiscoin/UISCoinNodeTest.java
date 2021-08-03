@@ -4,21 +4,15 @@ package com.bradyrussell.uiscoin;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
-import java.net.InetAddress;
 import java.util.Base64;
 import java.util.HashMap;
 
-import com.bradyrussell.uiscoin.HTTP;
 import com.bradyrussell.uiscoin.blockchain.BlockchainStorage;
-import com.bradyrussell.uiscoin.blockchain.storage.Blockchain;
-import com.bradyrussell.uiscoin.blockchain.storage.BlockchainStorageEphemeral;
-import com.bradyrussell.uiscoin.node.Node;
 
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
-public class NodeTest {
+public class UISCoinNodeTest {
 /*    @Test
     @DisplayName("Node does not connect to self") // this doesnt actually appear to be trying to connect to itself,
     void TestNodeConnectToSelf() throws IOException, InterruptedException {

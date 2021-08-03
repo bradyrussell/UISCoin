@@ -3,15 +3,15 @@ package com.bradyrussell.uiscoin.netty;
 
 import java.util.logging.Logger;
 
-import com.bradyrussell.uiscoin.node.Node;
+import com.bradyrussell.uiscoin.node.UISCoinNode;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
 public class NodeP2PServerHandler extends ChannelInboundHandlerAdapter {
     private static final Logger Log = Logger.getLogger(NodeP2PServerHandler.class.getName());
-    Node node;
-    public NodeP2PServerHandler(Node node) {
+    UISCoinNode node;
+    public NodeP2PServerHandler(UISCoinNode node) {
         this.node = node;
     }
 

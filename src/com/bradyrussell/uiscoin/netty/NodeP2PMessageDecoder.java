@@ -24,9 +24,9 @@ import io.netty.handler.codec.ReplayingDecoder;
 public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
     private static final Logger Log = Logger.getLogger(NodeP2PMessageDecoder.class.getName());
 
-    Node node;
+    UISCoinNode node;
 
-    public NodeP2PMessageDecoder(Node node) {
+    public NodeP2PMessageDecoder(UISCoinNode node) {
         this.node = node;
     }
 

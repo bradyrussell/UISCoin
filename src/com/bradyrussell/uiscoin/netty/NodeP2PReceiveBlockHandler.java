@@ -6,8 +6,8 @@ import java.util.logging.Logger;
 import com.bradyrussell.uiscoin.BytesUtil;
 import com.bradyrussell.uiscoin.block.Block;
 import com.bradyrussell.uiscoin.blockchain.storage.Blockchain;
-import com.bradyrussell.uiscoin.node.Node;
 import com.bradyrussell.uiscoin.node.PeerPacketType;
+import com.bradyrussell.uiscoin.node.UISCoinNode;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -16,9 +16,9 @@ import io.netty.channel.SimpleChannelInboundHandler;
 
 public class NodeP2PReceiveBlockHandler extends SimpleChannelInboundHandler<Block> {
     private static final Logger Log = Logger.getLogger(NodeP2PReceiveBlockHandler.class.getName());
-    Node thisNode;
+    UISCoinNode thisNode;
 
-    public NodeP2PReceiveBlockHandler(Node thisNode) {
+    public NodeP2PReceiveBlockHandler(UISCoinNode thisNode) {
         this.thisNode = thisNode;
     }
 

@@ -2,7 +2,7 @@
 package com.bradyrussell.uiscoin.netty;
 
 import com.bradyrussell.uiscoin.MagicNumbers;
-import com.bradyrussell.uiscoin.node.Node;
+import com.bradyrussell.uiscoin.node.UISCoinNode;
 
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
@@ -12,9 +12,9 @@ import io.netty.handler.codec.compression.ZlibWrapper;
 import io.netty.handler.timeout.IdleStateHandler;
 
 public class NodeP2PClientInitializer extends ChannelInitializer<SocketChannel> {
-Node node;
+UISCoinNode node;
 
-    public NodeP2PClientInitializer(Node node) {
+    public NodeP2PClientInitializer(UISCoinNode node) {
         this.node = node;
     }
     //  private final SslContext sslCtx;
