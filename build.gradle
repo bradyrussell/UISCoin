@@ -37,13 +37,13 @@ task copyDependencies(type: Copy) {
 }
 
 task copyJar(type: Copy) {
-	dependsOn(Jar)
+	dependsOn("Jar")
 	from layout.buildDirectory.dir("libs")
 	into 'jar'
 }
 
 task copyJavadoc(type: Copy) {
-	dependsOn(Javadoc)
+	dependsOn("Javadoc")
 	from layout.buildDirectory.dir("docs")
 	into "docs"
 }
