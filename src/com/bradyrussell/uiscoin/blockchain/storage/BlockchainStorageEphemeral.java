@@ -25,16 +25,26 @@ public class BlockchainStorageEphemeral implements BlockchainStorage {
 
     @Override
     public void buildUnspentTransactionOutputSet() {
+        unspentTransactionOutputSet.clear();
         for (Block block : blocksByHeight) {
+            System.out.println("Block "+block.Header.BlockHeight);
             for (Transaction transaction : block.Transactions) {
+                System.out.println("Transaction "+Base64.getUrlEncoder().encodeToString(transaction.getHash()));
                 for (TransactionInput input : transaction.Inputs) {
                     unspentTransactionOutputSet.remove(new TransactionOutputIdentifier(input.InputHash, input.IndexNumber)); //spent
+                    System.out.println("<-- Spending output: "+Base64.getUrlEncoder().encodeToString(input.InputHash)+" : "+input.IndexNumber);
                 }
                 for (int i = 0; i < transaction.Outputs.size(); i++) {
                     unspentTransactionOutputSet.add(new TransactionOutputIdentifier(transaction.getHash(), i));
+                    System.out.println("--> Adding output: "+Base64.getUrlEncoder().encodeToString(transaction.getHash())+" : "+i);
                 }
             }
         }
+        System.out.println();
+        for (TransactionOutputIdentifier transactionOutputIdentifier : unspentTransactionOutputSet) {
+            System.out.println("--> Adding output: "+Base64.getUrlEncoder().encodeToString(transactionOutputIdentifier.transactionHash)+" : "+transactionOutputIdentifier.index);
+        }
+        System.out.println("Built UTXO set with "+unspentTransactionOutputSet.size()+" UTXO.");
     }
 
     @Override
