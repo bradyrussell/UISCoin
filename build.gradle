@@ -32,5 +32,10 @@ test {
 
 task copyDependencies(type: Copy) {
     from configurations.default
-    into 'build/dependencies'
+    into 'dependencies'
+}
+
+task copyJavadoc(type: Copy) {
+    from layout.buildDirectory.dir("docs")
+    into "docs"
 }
