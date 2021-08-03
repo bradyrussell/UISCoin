@@ -1,41 +1,59 @@
 plugins {
-    id 'java'
+	id 'java'
+	id "com.diffplug.spotless" version "5.14.2"
 }
 
 group 'com.bradyrussell'
 version '1.1-SNAPSHOT'
 
 repositories {
-    mavenCentral()
+	mavenCentral()
 }
 
 sourceSets.main.java.srcDirs = ['src']
 sourceSets.test.java.srcDirs = ['tests']
 
 java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(14))
-    }
+	toolchain {
+		languageVersion.set(JavaLanguageVersion.of(14))
+	}
 }
 
 dependencies {
-    implementation 'org.jetbrains:annotations:15.0'
-    implementation 'io.netty:netty-all:4.1.24.Final'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
+	implementation 'org.jetbrains:annotations:15.0'
+	implementation 'io.netty:netty-all:4.1.24.Final'
+	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
+	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
 }
 
 test {
-    useJUnitPlatform()
-    maxHeapSize = '1G'
+	useJUnitPlatform()
+	maxHeapSize = '1G'
 }
 
 task copyDependencies(type: Copy) {
-    from configurations.default
-    into 'dependencies'
+	from configurations.default
+	into 'dependencies'
 }
 
 task copyJavadoc(type: Copy) {
-    from layout.buildDirectory.dir("docs")
-    into "docs"
+	from layout.buildDirectory.dir("docs")
+	into "docs"
 }
+
+spotless {
+	format 'misc', {
+		target '*.gradle', '*.md', '.gitignore'
+		trimTrailingWhitespace()
+		indentWithTabs()
+		endWithNewline()
+	}
+	java {
+		toggleOffOn()
+		importOrder('java', 'javax', 'com', 'org')
+		googleJavaFormat('1.11.0').aosp()
+		licenseHeader '/* (C) Brady Russell $YEAR */'
+	}
+}
+
+//gradle clean spotlessCheck test javadoc jar copyJavadoc copyDependencies
