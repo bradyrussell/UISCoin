@@ -174,12 +174,16 @@ extends <a href="BlockchainStorageEphemeral.html" title="class in com.bradyrusse
 <tr class="altColor" id="i0">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#close()">close</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Called once to perform any cleanup or saving after all blockchain operations have been completed.</div>
+</td>
 </tr>
 <tr class="rowColor" id="i1">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#open()">open</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Called once to perform any initialization before accessing the blockchain.</div>
+</td>
 </tr>
 </tbody>
 </table>
@@ -228,11 +232,15 @@ extends <a href="BlockchainStorageEphemeral.html" title="class in com.bradyrusse
 <section class="detail">
 <h3><a id="open()">open</a></h3>
 <div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="returnType">boolean</span>&nbsp;<span class="memberName">open</span>()</div>
+<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../BlockchainStorage.html#open()">BlockchainStorage</a></code></span></div>
+<div class="block">Called once to perform any initialization before accessing the blockchain.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../BlockchainStorage.html#open()">open</a></code>&nbsp;in interface&nbsp;<code><a href="../BlockchainStorage.html" title="interface in com.bradyrussell.uiscoin.blockchain">BlockchainStorage</a></code></dd>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code><a href="BlockchainStorageEphemeral.html#open()">open</a></code>&nbsp;in class&nbsp;<code><a href="BlockchainStorageEphemeral.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageEphemeral</a></code></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>Whether initialization was successful.</dd>
 </dl>
 </section>
 </li>
@@ -240,11 +248,15 @@ extends <a href="BlockchainStorageEphemeral.html" title="class in com.bradyrusse
 <section class="detail">
 <h3><a id="close()">close</a></h3>
 <div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="returnType">boolean</span>&nbsp;<span class="memberName">close</span>()</div>
+<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../BlockchainStorage.html#close()">BlockchainStorage</a></code></span></div>
+<div class="block">Called once to perform any cleanup or saving after all blockchain operations have been completed.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../BlockchainStorage.html#close()">close</a></code>&nbsp;in interface&nbsp;<code><a href="../BlockchainStorage.html" title="interface in com.bradyrussell.uiscoin.blockchain">BlockchainStorage</a></code></dd>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code><a href="BlockchainStorageEphemeral.html#close()">close</a></code>&nbsp;in class&nbsp;<code><a href="BlockchainStorageEphemeral.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageEphemeral</a></code></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>Whether cleanup and saving was successful.</dd>
 </dl>
 </section>
 </li>

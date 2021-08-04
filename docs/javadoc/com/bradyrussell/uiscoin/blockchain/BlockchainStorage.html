@@ -144,105 +144,145 @@ loadScripts(document, 'script');</script>
 <tr class="altColor" id="i0">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#buildUnspentTransactionOutputSet()">buildUnspentTransactionOutputSet</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Builds the local UTXO set from the entire blockchain.</div>
+</td>
 </tr>
 <tr class="rowColor" id="i1">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#close()">close</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Called once to perform any cleanup or saving after all blockchain operations have been completed.</div>
+</td>
 </tr>
 <tr class="altColor" id="i2">
 <td class="colFirst"><code><a href="../block/Block.html" title="class in com.bradyrussell.uiscoin.block">Block</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getBlock(byte%5B%5D)">getBlock</a></span>&#8203;(byte[]&nbsp;blockHash)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Retrieves the block associated with the specified block hash.</div>
+</td>
 </tr>
 <tr class="rowColor" id="i3">
 <td class="colFirst"><code><a href="../block/Block.html" title="class in com.bradyrussell.uiscoin.block">Block</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getBlockByHeight(int)">getBlockByHeight</a></span>&#8203;(int&nbsp;height)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Retrieves the block associated with the specified block height.</div>
+</td>
 </tr>
 <tr class="altColor" id="i4">
 <td class="colFirst"><code><a href="../block/Block.html" title="class in com.bradyrussell.uiscoin.block">Block</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getBlockByTransaction(byte%5B%5D)">getBlockByTransaction</a></span>&#8203;(byte[]&nbsp;transactionHash)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Retrieves the block associated with the specified transaction.</div>
+</td>
 </tr>
 <tr class="rowColor" id="i5">
 <td class="colFirst"><code>java.util.List&lt;<a href="../block/Block.html" title="class in com.bradyrussell.uiscoin.block">Block</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getBlockchain()">getBlockchain</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns an ordered list of the entire local blockchain.</div>
+</td>
 </tr>
 <tr class="altColor" id="i6">
 <td class="colFirst"><code>java.util.List&lt;<a href="../block/Block.html" title="class in com.bradyrussell.uiscoin.block">Block</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getBlockchainRange(int,int)">getBlockchainRange</a></span>&#8203;(int&nbsp;beginHeight,
 int&nbsp;endHeight)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns an ordered list of a range of the local blockchain.</div>
+</td>
 </tr>
 <tr class="rowColor" id="i7">
 <td class="colFirst"><code><a href="../block/BlockHeader.html" title="class in com.bradyrussell.uiscoin.block">BlockHeader</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getBlockHeader(byte%5B%5D)">getBlockHeader</a></span>&#8203;(byte[]&nbsp;blockHash)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Retrieves the block header associated with the specified block hash.</div>
+</td>
 </tr>
 <tr class="altColor" id="i8">
 <td class="colFirst"><code><a href="../block/BlockHeader.html" title="class in com.bradyrussell.uiscoin.block">BlockHeader</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getBlockHeaderByHeight(int)">getBlockHeaderByHeight</a></span>&#8203;(int&nbsp;height)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Retrieves the block header associated with the specified block height.</div>
+</td>
 </tr>
 <tr class="rowColor" id="i9">
 <td class="colFirst"><code>int</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getBlockHeight()">getBlockHeight</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Gets the current local block height, can be thought of as the index of the most recent block (zero-indexed).</div>
+</td>
 </tr>
 <tr class="altColor" id="i10">
 <td class="colFirst"><code><a href="../block/Block.html" title="class in com.bradyrussell.uiscoin.block">Block</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getHighestBlock()">getHighestBlock</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns the most recent block in the local blockchain.</div>
+</td>
 </tr>
 <tr class="rowColor" id="i11">
 <td class="colFirst"><code>byte[]</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getHighestBlockHash()">getHighestBlockHash</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns the block hash of the most recent block in the local blockchain.</div>
+</td>
 </tr>
 <tr class="altColor" id="i12">
 <td class="colFirst"><code><a href="../transaction/Transaction.html" title="class in com.bradyrussell.uiscoin.transaction">Transaction</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getMempoolTransaction(byte%5B%5D)">getMempoolTransaction</a></span>&#8203;(byte[]&nbsp;transactionHash)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns the mempool transaction specified.</div>
+</td>
 </tr>
 <tr class="rowColor" id="i13">
 <td class="colFirst"><code>java.util.Set&lt;<a href="../transaction/Transaction.html" title="class in com.bradyrussell.uiscoin.transaction">Transaction</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getMempoolTransactions()">getMempoolTransactions</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns the current set of mempool (pending) transactions.</div>
+</td>
 </tr>
 <tr class="altColor" id="i14">
 <td class="colFirst"><code><a href="../transaction/Transaction.html" title="class in com.bradyrussell.uiscoin.transaction">Transaction</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getTransaction(byte%5B%5D)">getTransaction</a></span>&#8203;(byte[]&nbsp;transactionHash)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Retrieve a transaction by its hash.</div>
+</td>
 </tr>
 <tr class="rowColor" id="i15">
 <td class="colFirst"><code><a href="../transaction/TransactionInput.html" title="class in com.bradyrussell.uiscoin.transaction">TransactionInput</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getTransactionInput(byte%5B%5D,int)">getTransactionInput</a></span>&#8203;(byte[]&nbsp;transactionHash,
 int&nbsp;index)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns the transaction input from the transaction hash and index.</div>
+</td>
 </tr>
 <tr class="altColor" id="i16">
 <td class="colFirst"><code><a href="../transaction/TransactionOutput.html" title="class in com.bradyrussell.uiscoin.transaction">TransactionOutput</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getTransactionOutput(byte%5B%5D,int)">getTransactionOutput</a></span>&#8203;(byte[]&nbsp;transactionHash,
 int&nbsp;index)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns the transaction output from the transaction hash and index.</div>
+</td>
 </tr>
 <tr class="rowColor" id="i17">
 <td class="colFirst"><code>java.util.Set&lt;<a href="BlockchainStorage.TransactionOutputIdentifier.html" title="class in com.bradyrussell.uiscoin.blockchain">BlockchainStorage.TransactionOutputIdentifier</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getUnspentTransactionOutputs()">getUnspentTransactionOutputs</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns the local UTXO (unspent transaction output) set.</div>
+</td>
 </tr>
 <tr class="altColor" id="i18">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#hasBlock(byte%5B%5D)">hasBlock</a></span>&#8203;(byte[]&nbsp;blockHash)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns whether the local blockchain contains a block corresponding to the provided block hash.</div>
+</td>
 </tr>
 <tr class="rowColor" id="i19">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#hasBlockHeader(byte%5B%5D)">hasBlockHeader</a></span>&#8203;(byte[]&nbsp;blockHash)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns whether the local blockchain contains a block header corresponding to the provided block hash.</div>
+</td>
 </tr>
 <tr class="altColor" id="i20">
 <td class="colFirst"><code>boolean</code></td>
@@ -252,54 +292,74 @@ int&nbsp;index)</code></th>
 <tr class="rowColor" id="i21">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#hasTransaction(byte%5B%5D)">hasTransaction</a></span>&#8203;(byte[]&nbsp;transactionHash)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns whether a transaction with the specified hash exist on the local blockchain.</div>
+</td>
 </tr>
 <tr class="altColor" id="i22">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isOperational()">isOperational</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Called to determine whether it is safe to perform blockchain operations.</div>
+</td>
 </tr>
 <tr class="rowColor" id="i23">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isTransactionOutputSpent(byte%5B%5D,int)">isTransactionOutputSpent</a></span>&#8203;(byte[]&nbsp;transactionHash,
 int&nbsp;index)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns whether the specified transaction output has been spent.</div>
+</td>
 </tr>
 <tr class="altColor" id="i24">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#open()">open</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Called once to perform any initialization before accessing the blockchain.</div>
+</td>
 </tr>
 <tr class="rowColor" id="i25">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#putBlock(com.bradyrussell.uiscoin.block.Block)">putBlock</a></span>&#8203;(<a href="../block/Block.html" title="class in com.bradyrussell.uiscoin.block">Block</a>&nbsp;block)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Store a block on the local blockchain.</div>
+</td>
 </tr>
 <tr class="altColor" id="i26">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#putBlockHeader(com.bradyrussell.uiscoin.block.BlockHeader)">putBlockHeader</a></span>&#8203;(<a href="../block/BlockHeader.html" title="class in com.bradyrussell.uiscoin.block">BlockHeader</a>&nbsp;blockHeader)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Store a block header on the local blockchain.</div>
+</td>
 </tr>
 <tr class="rowColor" id="i27">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#putMempoolTransaction(com.bradyrussell.uiscoin.transaction.Transaction)">putMempoolTransaction</a></span>&#8203;(<a href="../transaction/Transaction.html" title="class in com.bradyrussell.uiscoin.transaction">Transaction</a>&nbsp;transaction)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Stores the specified transaction in the mempool.</div>
+</td>
 </tr>
 <tr class="altColor" id="i28">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#removeMempoolTransaction(byte%5B%5D)">removeMempoolTransaction</a></span>&#8203;(byte[]&nbsp;transactionHash)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Remove the specified transaction from the mempool.</div>
+</td>
 </tr>
 <tr class="rowColor" id="i29">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#verify()">verify</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Verify the validity of the entire blockchain.</div>
+</td>
 </tr>
 <tr class="altColor" id="i30">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#verifyRange(int,int)">verifyRange</a></span>&#8203;(int&nbsp;beginHeight,
 int&nbsp;endHeight)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Verify whether a range of the local blockchain is valid.</div>
+</td>
 </tr>
 </tbody>
 </table>
@@ -322,24 +382,44 @@ int&nbsp;endHeight)</code></th>
 <section class="detail">
 <h3><a id="open()">open</a></h3>
 <div class="memberSignature"><span class="returnType">boolean</span>&nbsp;<span class="memberName">open</span>()</div>
+<div class="block">Called once to perform any initialization before accessing the blockchain.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>Whether initialization was successful.</dd>
+</dl>
 </section>
 </li>
 <li class="blockList">
 <section class="detail">
 <h3><a id="close()">close</a></h3>
 <div class="memberSignature"><span class="returnType">boolean</span>&nbsp;<span class="memberName">close</span>()</div>
+<div class="block">Called once to perform any cleanup or saving after all blockchain operations have been completed.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>Whether cleanup and saving was successful.</dd>
+</dl>
 </section>
 </li>
 <li class="blockList">
 <section class="detail">
 <h3><a id="isOperational()">isOperational</a></h3>
 <div class="memberSignature"><span class="returnType">boolean</span>&nbsp;<span class="memberName">isOperational</span>()</div>
+<div class="block">Called to determine whether it is safe to perform blockchain operations.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>Whether it is safe to perform blockchain operations.</dd>
+</dl>
 </section>
 </li>
 <li class="blockList">
 <section class="detail">
 <h3><a id="verify()">verify</a></h3>
 <div class="memberSignature"><span class="returnType">boolean</span>&nbsp;<span class="memberName">verify</span>()</div>
+<div class="block">Verify the validity of the entire blockchain.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>Whether the entire blockchain is valid.</dd>
+</dl>
 </section>
 </li>
 <li class="blockList">
@@ -348,9 +428,15 @@ int&nbsp;endHeight)</code></th>
 <div class="memberSignature"><span class="returnType">boolean</span>&nbsp;<span class="memberName">verifyRange</span>&#8203;(<span class="arguments">int&nbsp;beginHeight,
 int&nbsp;endHeight)</span>
              throws <span class="exceptions"><a href="exception/NoSuchBlockException.html" title="class in com.bradyrussell.uiscoin.blockchain.exception">NoSuchBlockException</a></span></div>
+<div class="block">Verify whether a range of the local blockchain is valid.</div>
 <dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>beginHeight</code> - The first block to validate, inclusive.</dd>
+<dd><code>endHeight</code> - The last block to validate, inclusive.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>Whether the range of blocks is valid.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code><a href="exception/NoSuchBlockException.html" title="class in com.bradyrussell.uiscoin.blockchain.exception">NoSuchBlockException</a></code></dd>
+<dd><code><a href="exception/NoSuchBlockException.html" title="class in com.bradyrussell.uiscoin.blockchain.exception">NoSuchBlockException</a></code> - If the range provided is not within the bounds of the local blockchain.</dd>
 </dl>
 </section>
 </li>
@@ -358,12 +444,22 @@ int&nbsp;endHeight)</span>
 <section class="detail">
 <h3><a id="getBlockHeight()">getBlockHeight</a></h3>
 <div class="memberSignature"><span class="returnType">int</span>&nbsp;<span class="memberName">getBlockHeight</span>()</div>
+<div class="block">Gets the current local block height, can be thought of as the index of the most recent block (zero-indexed).</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The current local block height.</dd>
+</dl>
 </section>
 </li>
 <li class="blockList">
 <section class="detail">
 <h3><a id="getBlockchain()">getBlockchain</a></h3>
 <div class="memberSignature"><span class="returnType">java.util.List&lt;<a href="../block/Block.html" title="class in com.bradyrussell.uiscoin.block">Block</a>&gt;</span>&nbsp;<span class="memberName">getBlockchain</span>()</div>
+<div class="block">Returns an ordered list of the entire local blockchain.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>An ordered list of the entire local blockchain.</dd>
+</dl>
 </section>
 </li>
 <li class="blockList">
@@ -372,9 +468,15 @@ int&nbsp;endHeight)</span>
 <div class="memberSignature"><span class="returnType">java.util.List&lt;<a href="../block/Block.html" title="class in com.bradyrussell.uiscoin.block">Block</a>&gt;</span>&nbsp;<span class="memberName">getBlockchainRange</span>&#8203;(<span class="arguments">int&nbsp;beginHeight,
 int&nbsp;endHeight)</span>
                                   throws <span class="exceptions"><a href="exception/NoSuchBlockException.html" title="class in com.bradyrussell.uiscoin.blockchain.exception">NoSuchBlockException</a></span></div>
+<div class="block">Returns an ordered list of a range of the local blockchain.</div>
 <dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>beginHeight</code> - The first block to include in the list, inclusive.</dd>
+<dd><code>endHeight</code> - The last block to include in the list, inclusive.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>Whether the range of blocks is valid.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code><a href="exception/NoSuchBlockException.html" title="class in com.bradyrussell.uiscoin.blockchain.exception">NoSuchBlockException</a></code></dd>
+<dd><code><a href="exception/NoSuchBlockException.html" title="class in com.bradyrussell.uiscoin.blockchain.exception">NoSuchBlockException</a></code> - If the range provided is not within the bounds of the local blockchain.</dd>
 </dl>
 </section>
 </li>
@@ -383,9 +485,12 @@ int&nbsp;endHeight)</span>
 <h3><a id="getHighestBlockHash()">getHighestBlockHash</a></h3>
 <div class="memberSignature"><span class="returnType">byte[]</span>&nbsp;<span class="memberName">getHighestBlockHash</span>()
                     throws <span class="exceptions"><a href="exception/NoSuchBlockException.html" title="class in com.bradyrussell.uiscoin.blockchain.exception">NoSuchBlockException</a></span></div>
+<div class="block">Returns the block hash of the most recent block in the local blockchain.</div>
 <dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The block hash of the most recent block in the local blockchain.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code><a href="exception/NoSuchBlockException.html" title="class in com.bradyrussell.uiscoin.blockchain.exception">NoSuchBlockException</a></code></dd>
+<dd><code><a href="exception/NoSuchBlockException.html" title="class in com.bradyrussell.uiscoin.blockchain.exception">NoSuchBlockException</a></code> - If there are no blocks in the local blockchain.</dd>
 </dl>
 </section>
 </li>
@@ -394,9 +499,12 @@ int&nbsp;endHeight)</span>
 <h3><a id="getHighestBlock()">getHighestBlock</a></h3>
 <div class="memberSignature"><span class="returnType"><a href="../block/Block.html" title="class in com.bradyrussell.uiscoin.block">Block</a></span>&nbsp;<span class="memberName">getHighestBlock</span>()
                throws <span class="exceptions"><a href="exception/NoSuchBlockException.html" title="class in com.bradyrussell.uiscoin.blockchain.exception">NoSuchBlockException</a></span></div>
+<div class="block">Returns the most recent block in the local blockchain.</div>
 <dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The most recent block in the local blockchain.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code><a href="exception/NoSuchBlockException.html" title="class in com.bradyrussell.uiscoin.blockchain.exception">NoSuchBlockException</a></code></dd>
+<dd><code><a href="exception/NoSuchBlockException.html" title="class in com.bradyrussell.uiscoin.blockchain.exception">NoSuchBlockException</a></code> - If there are no blocks in the local blockchain.</dd>
 </dl>
 </section>
 </li>
@@ -404,6 +512,13 @@ int&nbsp;endHeight)</span>
 <section class="detail">
 <h3><a id="hasBlockHeader(byte[])">hasBlockHeader</a></h3>
 <div class="memberSignature"><span class="returnType">boolean</span>&nbsp;<span class="memberName">hasBlockHeader</span>&#8203;(<span class="arguments">byte[]&nbsp;blockHash)</span></div>
+<div class="block">Returns whether the local blockchain contains a block header corresponding to the provided block hash.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>blockHash</code> - The block hash to search by.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>Whether the local blockchain contains a block header corresponding to the provided block hash.</dd>
+</dl>
 </section>
 </li>
 <li class="blockList">
@@ -411,9 +526,14 @@ int&nbsp;endHeight)</span>
 <h3><a id="getBlockHeader(byte[])">getBlockHeader</a></h3>
 <div class="memberSignature"><span class="returnType"><a href="../block/BlockHeader.html" title="class in com.bradyrussell.uiscoin.block">BlockHeader</a></span>&nbsp;<span class="memberName">getBlockHeader</span>&#8203;(<span class="arguments">byte[]&nbsp;blockHash)</span>
                     throws <span class="exceptions"><a href="exception/NoSuchBlockException.html" title="class in com.bradyrussell.uiscoin.blockchain.exception">NoSuchBlockException</a></span></div>
+<div class="block">Retrieves the block header associated with the specified block hash.</div>
 <dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>blockHash</code> - The block hash to search by.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The block header associated with the specified block hash.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code><a href="exception/NoSuchBlockException.html" title="class in com.bradyrussell.uiscoin.blockchain.exception">NoSuchBlockException</a></code></dd>
+<dd><code><a href="exception/NoSuchBlockException.html" title="class in com.bradyrussell.uiscoin.blockchain.exception">NoSuchBlockException</a></code> - If there was no block header associated with the provided block hash.</dd>
 </dl>
 </section>
 </li>
@@ -422,9 +542,14 @@ int&nbsp;endHeight)</span>
 <h3><a id="getBlockHeaderByHeight(int)">getBlockHeaderByHeight</a></h3>
 <div class="memberSignature"><span class="returnType"><a href="../block/BlockHeader.html" title="class in com.bradyrussell.uiscoin.block">BlockHeader</a></span>&nbsp;<span class="memberName">getBlockHeaderByHeight</span>&#8203;(<span class="arguments">int&nbsp;height)</span>
                             throws <span class="exceptions"><a href="exception/NoSuchBlockException.html" title="class in com.bradyrussell.uiscoin.blockchain.exception">NoSuchBlockException</a></span></div>
+<div class="block">Retrieves the block header associated with the specified block height.</div>
 <dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>height</code> - The block height to search by.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The block header associated with the specified block height.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code><a href="exception/NoSuchBlockException.html" title="class in com.bradyrussell.uiscoin.blockchain.exception">NoSuchBlockException</a></code></dd>
+<dd><code><a href="exception/NoSuchBlockException.html" title="class in com.bradyrussell.uiscoin.blockchain.exception">NoSuchBlockException</a></code> - If there was no block header associated with the provided block height.</dd>
 </dl>
 </section>
 </li>
@@ -432,6 +557,13 @@ int&nbsp;endHeight)</span>
 <section class="detail">
 <h3><a id="hasBlock(byte[])">hasBlock</a></h3>
 <div class="memberSignature"><span class="returnType">boolean</span>&nbsp;<span class="memberName">hasBlock</span>&#8203;(<span class="arguments">byte[]&nbsp;blockHash)</span></div>
+<div class="block">Returns whether the local blockchain contains a block corresponding to the provided block hash.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>blockHash</code> - The block hash to search by.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>Whether the local blockchain contains a block corresponding to the provided block hash.</dd>
+</dl>
 </section>
 </li>
 <li class="blockList">
@@ -439,9 +571,14 @@ int&nbsp;endHeight)</span>
 <h3><a id="getBlock(byte[])">getBlock</a></h3>
 <div class="memberSignature"><span class="returnType"><a href="../block/Block.html" title="class in com.bradyrussell.uiscoin.block">Block</a></span>&nbsp;<span class="memberName">getBlock</span>&#8203;(<span class="arguments">byte[]&nbsp;blockHash)</span>
         throws <span class="exceptions"><a href="exception/NoSuchBlockException.html" title="class in com.bradyrussell.uiscoin.blockchain.exception">NoSuchBlockException</a></span></div>
+<div class="block">Retrieves the block associated with the specified block hash.</div>
 <dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>blockHash</code> - The block hash to search by.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The block associated with the specified block hash.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code><a href="exception/NoSuchBlockException.html" title="class in com.bradyrussell.uiscoin.blockchain.exception">NoSuchBlockException</a></code></dd>
+<dd><code><a href="exception/NoSuchBlockException.html" title="class in com.bradyrussell.uiscoin.blockchain.exception">NoSuchBlockException</a></code> - If there was no block associated with the provided block hash.</dd>
 </dl>
 </section>
 </li>
@@ -450,9 +587,14 @@ int&nbsp;endHeight)</span>
 <h3><a id="getBlockByHeight(int)">getBlockByHeight</a></h3>
 <div class="memberSignature"><span class="returnType"><a href="../block/Block.html" title="class in com.bradyrussell.uiscoin.block">Block</a></span>&nbsp;<span class="memberName">getBlockByHeight</span>&#8203;(<span class="arguments">int&nbsp;height)</span>
                 throws <span class="exceptions"><a href="exception/NoSuchBlockException.html" title="class in com.bradyrussell.uiscoin.blockchain.exception">NoSuchBlockException</a></span></div>
+<div class="block">Retrieves the block associated with the specified block height.</div>
 <dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>height</code> - The block height to search by.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The block associated with the specified block height.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code><a href="exception/NoSuchBlockException.html" title="class in com.bradyrussell.uiscoin.blockchain.exception">NoSuchBlockException</a></code></dd>
+<dd><code><a href="exception/NoSuchBlockException.html" title="class in com.bradyrussell.uiscoin.blockchain.exception">NoSuchBlockException</a></code> - If there was no block associated with the provided block height.</dd>
 </dl>
 </section>
 </li>
@@ -462,10 +604,15 @@ int&nbsp;endHeight)</span>
 <div class="memberSignature"><span class="returnType"><a href="../block/Block.html" title="class in com.bradyrussell.uiscoin.block">Block</a></span>&nbsp;<span class="memberName">getBlockByTransaction</span>&#8203;(<span class="arguments">byte[]&nbsp;transactionHash)</span>
                      throws <span class="exceptions"><a href="exception/NoSuchBlockException.html" title="class in com.bradyrussell.uiscoin.blockchain.exception">NoSuchBlockException</a>,
 <a href="exception/NoSuchTransactionException.html" title="class in com.bradyrussell.uiscoin.blockchain.exception">NoSuchTransactionException</a></span></div>
+<div class="block">Retrieves the block associated with the specified transaction.</div>
 <dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>transactionHash</code> - The hash of the transaction to search by.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The block containing the specified transaction.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code><a href="exception/NoSuchBlockException.html" title="class in com.bradyrussell.uiscoin.blockchain.exception">NoSuchBlockException</a></code></dd>
-<dd><code><a href="exception/NoSuchTransactionException.html" title="class in com.bradyrussell.uiscoin.blockchain.exception">NoSuchTransactionException</a></code></dd>
+<dd><code><a href="exception/NoSuchBlockException.html" title="class in com.bradyrussell.uiscoin.blockchain.exception">NoSuchBlockException</a></code> - If there is no block associated with the specified transaction in the local blockchain.</dd>
+<dd><code><a href="exception/NoSuchTransactionException.html" title="class in com.bradyrussell.uiscoin.blockchain.exception">NoSuchTransactionException</a></code> - If there is no transaction with the specified hash in the local blockchain.</dd>
 </dl>
 </section>
 </li>
@@ -473,18 +620,39 @@ int&nbsp;endHeight)</span>
 <section class="detail">
 <h3><a id="putBlock(com.bradyrussell.uiscoin.block.Block)">putBlock</a></h3>
 <div class="memberSignature"><span class="returnType">boolean</span>&nbsp;<span class="memberName">putBlock</span>&#8203;(<span class="arguments"><a href="../block/Block.html" title="class in com.bradyrussell.uiscoin.block">Block</a>&nbsp;block)</span></div>
+<div class="block">Store a block on the local blockchain.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>block</code> - The block to store.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>Whether the block was stored successfully.</dd>
+</dl>
 </section>
 </li>
 <li class="blockList">
 <section class="detail">
 <h3><a id="putBlockHeader(com.bradyrussell.uiscoin.block.BlockHeader)">putBlockHeader</a></h3>
 <div class="memberSignature"><span class="returnType">boolean</span>&nbsp;<span class="memberName">putBlockHeader</span>&#8203;(<span class="arguments"><a href="../block/BlockHeader.html" title="class in com.bradyrussell.uiscoin.block">BlockHeader</a>&nbsp;blockHeader)</span></div>
+<div class="block">Store a block header on the local blockchain. Optional, for header only clients.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>blockHeader</code> - The block header to store.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>Whether the block header was stored successfully.</dd>
+</dl>
 </section>
 </li>
 <li class="blockList">
 <section class="detail">
 <h3><a id="hasTransaction(byte[])">hasTransaction</a></h3>
 <div class="memberSignature"><span class="returnType">boolean</span>&nbsp;<span class="memberName">hasTransaction</span>&#8203;(<span class="arguments">byte[]&nbsp;transactionHash)</span></div>
+<div class="block">Returns whether a transaction with the specified hash exist on the local blockchain.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>transactionHash</code> - The transaction hash to search by.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>Whether a transaction with the specified hash exist on the local blockchain.</dd>
+</dl>
 </section>
 </li>
 <li class="blockList">
@@ -493,10 +661,15 @@ int&nbsp;endHeight)</span>
 <div class="memberSignature"><span class="returnType"><a href="../transaction/Transaction.html" title="class in com.bradyrussell.uiscoin.transaction">Transaction</a></span>&nbsp;<span class="memberName">getTransaction</span>&#8203;(<span class="arguments">byte[]&nbsp;transactionHash)</span>
                     throws <span class="exceptions"><a href="exception/NoSuchTransactionException.html" title="class in com.bradyrussell.uiscoin.blockchain.exception">NoSuchTransactionException</a>,
 <a href="exception/NoSuchBlockException.html" title="class in com.bradyrussell.uiscoin.blockchain.exception">NoSuchBlockException</a></span></div>
+<div class="block">Retrieve a transaction by its hash.</div>
 <dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>transactionHash</code> - The transaction hash to search by.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The transaction with the specified hash.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code><a href="exception/NoSuchTransactionException.html" title="class in com.bradyrussell.uiscoin.blockchain.exception">NoSuchTransactionException</a></code></dd>
-<dd><code><a href="exception/NoSuchBlockException.html" title="class in com.bradyrussell.uiscoin.blockchain.exception">NoSuchBlockException</a></code></dd>
+<dd><code><a href="exception/NoSuchTransactionException.html" title="class in com.bradyrussell.uiscoin.blockchain.exception">NoSuchTransactionException</a></code> - If there is no transaction with that hash in the local blockchain.</dd>
+<dd><code><a href="exception/NoSuchBlockException.html" title="class in com.bradyrussell.uiscoin.blockchain.exception">NoSuchBlockException</a></code> - If there is no block associated with the specified transaction in the local blockchain.</dd>
 </dl>
 </section>
 </li>
@@ -507,10 +680,16 @@ int&nbsp;endHeight)</span>
 int&nbsp;index)</span>
                               throws <span class="exceptions"><a href="exception/NoSuchTransactionException.html" title="class in com.bradyrussell.uiscoin.blockchain.exception">NoSuchTransactionException</a>,
 <a href="exception/NoSuchBlockException.html" title="class in com.bradyrussell.uiscoin.blockchain.exception">NoSuchBlockException</a></span></div>
+<div class="block">Returns the transaction input from the transaction hash and index.</div>
 <dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>transactionHash</code> - The transaction hash to search by.</dd>
+<dd><code>index</code> - The input index.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The transaction input specified.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code><a href="exception/NoSuchTransactionException.html" title="class in com.bradyrussell.uiscoin.blockchain.exception">NoSuchTransactionException</a></code></dd>
-<dd><code><a href="exception/NoSuchBlockException.html" title="class in com.bradyrussell.uiscoin.blockchain.exception">NoSuchBlockException</a></code></dd>
+<dd><code><a href="exception/NoSuchTransactionException.html" title="class in com.bradyrussell.uiscoin.blockchain.exception">NoSuchTransactionException</a></code> - If there is no transaction with that hash in the local blockchain.</dd>
+<dd><code><a href="exception/NoSuchBlockException.html" title="class in com.bradyrussell.uiscoin.blockchain.exception">NoSuchBlockException</a></code> - If there is no block associated with the specified transaction in the local blockchain.</dd>
 </dl>
 </section>
 </li>
@@ -521,10 +700,16 @@ int&nbsp;index)</span>
 int&nbsp;index)</span>
                                 throws <span class="exceptions"><a href="exception/NoSuchTransactionException.html" title="class in com.bradyrussell.uiscoin.blockchain.exception">NoSuchTransactionException</a>,
 <a href="exception/NoSuchBlockException.html" title="class in com.bradyrussell.uiscoin.blockchain.exception">NoSuchBlockException</a></span></div>
+<div class="block">Returns the transaction output from the transaction hash and index.</div>
 <dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>transactionHash</code> - The transaction hash to search by.</dd>
+<dd><code>index</code> - The output index.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The transaction output specified.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code><a href="exception/NoSuchTransactionException.html" title="class in com.bradyrussell.uiscoin.blockchain.exception">NoSuchTransactionException</a></code></dd>
-<dd><code><a href="exception/NoSuchBlockException.html" title="class in com.bradyrussell.uiscoin.blockchain.exception">NoSuchBlockException</a></code></dd>
+<dd><code><a href="exception/NoSuchTransactionException.html" title="class in com.bradyrussell.uiscoin.blockchain.exception">NoSuchTransactionException</a></code> - If there is no transaction with that hash in the local blockchain.</dd>
+<dd><code><a href="exception/NoSuchBlockException.html" title="class in com.bradyrussell.uiscoin.blockchain.exception">NoSuchBlockException</a></code> - If there is no block associated with the specified transaction in the local blockchain.</dd>
 </dl>
 </section>
 </li>
@@ -533,18 +718,32 @@ int&nbsp;index)</span>
 <h3><a id="isTransactionOutputSpent(byte[],int)">isTransactionOutputSpent</a></h3>
 <div class="memberSignature"><span class="returnType">boolean</span>&nbsp;<span class="memberName">isTransactionOutputSpent</span>&#8203;(<span class="arguments">byte[]&nbsp;transactionHash,
 int&nbsp;index)</span></div>
+<div class="block">Returns whether the specified transaction output has been spent. Typically, this will check whether it exists in the UTXO set.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>transactionHash</code> - The transaction hash to search by.</dd>
+<dd><code>index</code> - The output index.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>Whether the transaction output has been spent. (true for spent, false for unspent)</dd>
+</dl>
 </section>
 </li>
 <li class="blockList">
 <section class="detail">
 <h3><a id="getUnspentTransactionOutputs()">getUnspentTransactionOutputs</a></h3>
 <div class="memberSignature"><span class="returnType">java.util.Set&lt;<a href="BlockchainStorage.TransactionOutputIdentifier.html" title="class in com.bradyrussell.uiscoin.blockchain">BlockchainStorage.TransactionOutputIdentifier</a>&gt;</span>&nbsp;<span class="memberName">getUnspentTransactionOutputs</span>()</div>
+<div class="block">Returns the local UTXO (unspent transaction output) set.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>A set of TransactionOutputIdentifier representing the local UTXO set.</dd>
+</dl>
 </section>
 </li>
 <li class="blockList">
 <section class="detail">
 <h3><a id="buildUnspentTransactionOutputSet()">buildUnspentTransactionOutputSet</a></h3>
 <div class="memberSignature"><span class="returnType">void</span>&nbsp;<span class="memberName">buildUnspentTransactionOutputSet</span>()</div>
+<div class="block">Builds the local UTXO set from the entire blockchain.</div>
 </section>
 </li>
 <li class="blockList">
@@ -557,6 +756,10 @@ int&nbsp;index)</span></div>
 <section class="detail">
 <h3><a id="getMempoolTransactions()">getMempoolTransactions</a></h3>
 <div class="memberSignature"><span class="returnType">java.util.Set&lt;<a href="../transaction/Transaction.html" title="class in com.bradyrussell.uiscoin.transaction">Transaction</a>&gt;</span>&nbsp;<span class="memberName">getMempoolTransactions</span>()</div>
+<div class="block">Returns the current set of mempool (pending) transactions.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+</dl>
 </section>
 </li>
 <li class="blockList">
@@ -564,9 +767,14 @@ int&nbsp;index)</span></div>
 <h3><a id="getMempoolTransaction(byte[])">getMempoolTransaction</a></h3>
 <div class="memberSignature"><span class="returnType"><a href="../transaction/Transaction.html" title="class in com.bradyrussell.uiscoin.transaction">Transaction</a></span>&nbsp;<span class="memberName">getMempoolTransaction</span>&#8203;(<span class="arguments">byte[]&nbsp;transactionHash)</span>
                            throws <span class="exceptions"><a href="exception/NoSuchTransactionException.html" title="class in com.bradyrussell.uiscoin.blockchain.exception">NoSuchTransactionException</a></span></div>
+<div class="block">Returns the mempool transaction specified.</div>
 <dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>transactionHash</code> - The transaction hash to search by.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The specified mempool transaction.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code><a href="exception/NoSuchTransactionException.html" title="class in com.bradyrussell.uiscoin.blockchain.exception">NoSuchTransactionException</a></code></dd>
+<dd><code><a href="exception/NoSuchTransactionException.html" title="class in com.bradyrussell.uiscoin.blockchain.exception">NoSuchTransactionException</a></code> - If the specified transaction does not exist in the mempool.</dd>
 </dl>
 </section>
 </li>
@@ -574,12 +782,26 @@ int&nbsp;index)</span></div>
 <section class="detail">
 <h3><a id="putMempoolTransaction(com.bradyrussell.uiscoin.transaction.Transaction)">putMempoolTransaction</a></h3>
 <div class="memberSignature"><span class="returnType">boolean</span>&nbsp;<span class="memberName">putMempoolTransaction</span>&#8203;(<span class="arguments"><a href="../transaction/Transaction.html" title="class in com.bradyrussell.uiscoin.transaction">Transaction</a>&nbsp;transaction)</span></div>
+<div class="block">Stores the specified transaction in the mempool.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>transaction</code> - The transaction to store in the mempool.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>Whether the transaction was successfully stored in the mempool.</dd>
+</dl>
 </section>
 </li>
 <li class="blockList">
 <section class="detail">
 <h3><a id="removeMempoolTransaction(byte[])">removeMempoolTransaction</a></h3>
 <div class="memberSignature"><span class="returnType">boolean</span>&nbsp;<span class="memberName">removeMempoolTransaction</span>&#8203;(<span class="arguments">byte[]&nbsp;transactionHash)</span></div>
+<div class="block">Remove the specified transaction from the mempool.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>transactionHash</code> - The hash of the transaction to remove from the mempool.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>Whether the transaction was removed from the mempool.</dd>
+</dl>
 </section>
 </li>
 </ul>
