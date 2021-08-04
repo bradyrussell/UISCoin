@@ -94,4 +94,8 @@ spotless {
 	}
 }
 
+// pre commit:
+//gradle clean spotlessApply test javadoc copyJavadoc
+
+// post commit (Jenkins):
 //gradle clean spotlessCheck test javadoc jar javadocJar sourcesJar copyJar copyJavadoc copyDependencies publish

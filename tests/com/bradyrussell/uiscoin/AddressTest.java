@@ -18,7 +18,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.RepeatedTest;
 
 public class AddressTest {
-    @RepeatedTest(1000)
+    @RepeatedTest(100)
     @DisplayName("Address Checksum")
     void TestAddressChecksum() {
         try {
@@ -49,7 +49,7 @@ public class AddressTest {
         }
     }
 
-    @RepeatedTest(1000)
+    @RepeatedTest(100)
     @DisplayName("Script Hash Address Checksum")
     void TestSHAddressChecksum() {
         byte[] Randomseed = new byte[64];

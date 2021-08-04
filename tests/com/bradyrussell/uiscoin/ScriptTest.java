@@ -519,7 +519,7 @@ public class ScriptTest {
 
     }
 
-    @RepeatedTest(1000)
+    @RepeatedTest(100)
     @DisplayName("Script Call")
     void TestCall() throws ScriptInvalidException, ScriptEmptyStackException, ScriptInvalidParameterException, ScriptUnsupportedOperationException {
         byte[] A = new byte[ThreadLocalRandom.current().nextInt(16,127)];
@@ -565,7 +565,7 @@ public class ScriptTest {
         assertFalse(scriptExecution.bScriptFailed);
     }
 
-    @RepeatedTest(1000)
+    @RepeatedTest(100)
     @DisplayName("Script call Pass In Stack")
     void TestcallInStack() throws ScriptInvalidException, ScriptEmptyStackException, ScriptInvalidParameterException, ScriptUnsupportedOperationException {
         byte[] A = new byte[ThreadLocalRandom.current().nextInt(16,127)];
@@ -653,7 +653,7 @@ public class ScriptTest {
         assertTrue(Arrays.equals(Original, sb2.get()));
     }
 
-    @RepeatedTest(1000)
+    @RepeatedTest(100)
     @DisplayName("Script call Pass Out Stack")
     void TestcallOutStack() throws ScriptInvalidException, ScriptEmptyStackException, ScriptInvalidParameterException, ScriptUnsupportedOperationException {
         byte[] A = new byte[ThreadLocalRandom.current().nextInt(16,127)];
@@ -702,7 +702,7 @@ public class ScriptTest {
         assertFalse(scriptExecution.bScriptFailed);
     }
 
-    @RepeatedTest(1000)
+    @RepeatedTest(100)
     @DisplayName("Script call Pass In/Out Stack")
     void TestcallInOutStack() throws ScriptInvalidException, ScriptEmptyStackException, ScriptInvalidParameterException, ScriptUnsupportedOperationException {
         byte[] A = new byte[ThreadLocalRandom.current().nextInt(16,127)];
