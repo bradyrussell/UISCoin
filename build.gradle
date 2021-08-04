@@ -68,7 +68,7 @@ task copyDependencies(type: Copy) {
 }
 
 task copyJar(type: Copy) {
-	dependsOn("jar")
+	dependsOn("jar", "javadocJar", "sourcesJar")
 	from layout.buildDirectory.dir("libs")
 	into 'jar'
 }
