@@ -1,6 +1,8 @@
 plugins {
 	id 'java'
 	id "com.diffplug.spotless" version "5.14.2"
+	id 'maven-publish'
+	id 'signing'
 }
 
 group 'com.bradyrussell'
@@ -8,12 +10,41 @@ version '1.1-SNAPSHOT'
 
 repositories {
 	mavenCentral()
+
+	maven {
+		url "https://repo.bradyrussell.com/repository/bradyrussell-release/"
+	}
+
+	maven {
+		url "https://repo.bradyrussell.com/repository/bradyrussell-snapshot/"
+	}
+}
+
+publishing {
+	publications {
+		UISCoin(MavenPublication) {
+			from components.java
+		}
+	}
+
+	repositories {
+		maven {
+			url = version.endsWith('SNAPSHOT') ? "https://repo.bradyrussell.com/repository/bradyrussell-snapshot/" : "https://repo.bradyrussell.com/repository/bradyrussell-release/"
+			credentials {
+				username = repoUsername
+				password = repoPassword
+			}
+		}
+	}
 }
 
 sourceSets.main.java.srcDirs = ['src']
 sourceSets.test.java.srcDirs = ['tests']
 
 java {
+	withJavadocJar()
+	withSourcesJar()
+
 	toolchain {
 		languageVersion.set(JavaLanguageVersion.of(14))
 	}
@@ -63,4 +94,4 @@ spotless {
 	}
 }
 
-//gradle clean spotlessCheck test javadoc jar copyJar copyJavadoc copyDependencies
+//gradle clean spotlessCheck test javadoc jar javadocJar sourcesJar copyJar copyJavadoc copyDependencies publish
