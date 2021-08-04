@@ -94,6 +94,10 @@ spotless {
 	}
 }
 
+task preCommit() {
+	dependsOn("clean", "spotlessApply", "test", "javadoc", "copyJavadoc")
+}
+
 // pre commit:
 //gradle clean spotlessApply test javadoc copyJavadoc
 

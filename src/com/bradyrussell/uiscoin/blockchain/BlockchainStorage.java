@@ -208,6 +208,11 @@ public interface BlockchainStorage {
      */
     void buildUnspentTransactionOutputSet();
 
+    /**
+     * Returns whether the mempool contains the specified transaction.
+     * @param transactionHash The transaction hash to search by.
+     * @return Whether the mempool contains the specified transaction.
+     */
     boolean hasMempoolTransaction(byte[] transactionHash);
 
     /**
