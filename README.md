@@ -23,7 +23,19 @@ While UISCoin was largely inspired by Bitcoin, there are some intentional differ
 - As alluded to in the previous bullet point, the target block time is five minutes rather than BTC's ten.
 
 # API
-JavaDoc is available here: https://bradyrussell.github.io/UISCoin/
+JavaDoc is available here: https://bradyrussell.github.io/UISCoin/javadoc
+
+Gradle Dependency:
+
+        repositories {
+            maven {
+                url "https://repo.bradyrussell.com/repository/bradyrussell-snapshot/"
+            }
+        }
+        
+        dependencies {
+            implementation 'com.bradyrussell:UISCoin:1.1+'
+        }
 
 I recommend looking at this extension as well: [UISCoin_BlockChainStorageLevelDB_Extension](https://github.com/bradyrussell/UISCoin_BlockChainStorageLevelDB_Extension/releases/tag/1.0)
 Or this one: [BlockchainStorageSQL.java](https://github.com/bradyrussell/UISCoinNodeREST/blob/master/src/main/java/com/bradyrussell/uiscoin/storage/BlockchainStorageSQL.java)
