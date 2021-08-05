@@ -63,10 +63,8 @@ public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
                     }
 
                     Log.fine("4 Broadcasting new peer");
-                    node.broadcastPeerToPeers(((InetSocketAddress)channelHandlerContext.channel().remoteAddress()).getAddress());
-/*                    for (InetAddress peer : node.getPeers()) {
-                        if(!peer.equals(((InetSocketAddress)channelHandlerContext.channel().remoteAddress()).getAddress())) channelHandlerContext.writeAndFlush(peer);
-                    }*/
+                    InetSocketAddress inetSocketAddress = (InetSocketAddress) channelHandlerContext.channel().remoteAddress();
+                    node.broadcastPeerToPeers(new PeerAddress(inetSocketAddress.getAddress(), inetSocketAddress.getPort()));
 
                     ByteBuf wrappedBuffer = Unpooled.buffer();
                     wrappedBuffer.writeByte(PeerPacketType.HANDSHAKE.Header);
@@ -103,10 +101,12 @@ public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
                     byte[] Bytes = new byte[Size];
                     byteBuf.readBytes(Bytes);
 
-                    InetAddress address = InetAddress.getByAddress(Bytes);
-                    Log.fine("3 Received peer "+ address.toString());
+                    int Port = byteBuf.readInt();
 
-                    list.add(address);
+                    InetAddress address = InetAddress.getByAddress(Bytes);
+                    PeerAddress peerAddress = new PeerAddress(address, Port);
+                    Log.fine("3 Received peer "+ peerAddress.toString());
+                    list.add(peerAddress);
                 }
                 case TRANSACTION -> {
                     int Size = byteBuf.readInt();

@@ -4,12 +4,13 @@ package com.bradyrussell.uiscoin.netty;
 import java.net.InetAddress;
 import java.util.logging.Logger;
 
+import com.bradyrussell.uiscoin.node.PeerAddress;
 import com.bradyrussell.uiscoin.node.UISCoinNode;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
-public class NodeP2PReceivePeerHandler extends SimpleChannelInboundHandler<InetAddress> {
+public class NodeP2PReceivePeerHandler extends SimpleChannelInboundHandler<PeerAddress> {
     private static final Logger Log = Logger.getLogger(NodeP2PReceivePeerHandler.class.getName());
     private final UISCoinNode thisNode;
 
@@ -34,17 +35,17 @@ public class NodeP2PReceivePeerHandler extends SimpleChannelInboundHandler<InetA
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext channelHandlerContext, InetAddress inetAddress) throws Exception {
-        Log.info("Handler Received peer "+ inetAddress.getHostAddress());
+    protected void channelRead0(ChannelHandlerContext ctx, PeerAddress msg) throws Exception {
+        Log.info("Handler Received peer "+ msg.toString());
 
-        if(thisNode.getPeers().contains(inetAddress) || inetAddress.isLoopbackAddress() || thisNode.peersEverSeen.contains(inetAddress)) {
+        if(thisNode.getPeers().contains(msg) || msg.getAddress().isLoopbackAddress() || thisNode.peersEverSeen.contains(msg)) {
             Log.info("4 Already known, discarding...");
             return;
         }
 
-        thisNode.connectToPeer(inetAddress);
+        thisNode.connectToPeer(msg);
 
         Log.info("Rebroadcasting...");
-        thisNode.broadcastPeerToPeers(inetAddress);
+        thisNode.broadcastPeerToPeers(msg);
     }
 }

@@ -120,7 +120,7 @@ public class UISCoinNode {
         nodeClients.writeAndFlush(transaction);
     }
 
-    public void broadcastPeerToPeers(InetAddress address) {
+    public void broadcastPeerToPeers(PeerAddress address) {
         peerClients.writeAndFlush(address);
         nodeClients.writeAndFlush(address);
     }
