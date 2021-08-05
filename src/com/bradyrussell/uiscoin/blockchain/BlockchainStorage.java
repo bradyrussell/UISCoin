@@ -217,7 +217,7 @@ public interface BlockchainStorage {
 
     /**
      * Returns the current set of mempool (pending) transactions.
-     * @return
+     * @return The current set of mempool (pending) transactions.
      */
     Set<Transaction> getMempoolTransactions();
 
@@ -244,8 +244,8 @@ public interface BlockchainStorage {
     boolean removeMempoolTransaction(byte[] transactionHash);
 
     class TransactionOutputIdentifier {
-        public byte[] transactionHash;
-        public int index;
+        public final byte[] transactionHash;
+        public final int index;
 
         public TransactionOutputIdentifier(byte[] transactionHash, int index) {
             this.transactionHash = transactionHash;

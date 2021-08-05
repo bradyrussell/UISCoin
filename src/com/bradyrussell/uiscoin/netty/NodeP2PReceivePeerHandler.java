@@ -1,7 +1,6 @@
 /* (C) Brady Russell 2021 */
 package com.bradyrussell.uiscoin.netty;
 
-import java.net.InetAddress;
 import java.util.logging.Logger;
 
 import com.bradyrussell.uiscoin.node.PeerAddress;

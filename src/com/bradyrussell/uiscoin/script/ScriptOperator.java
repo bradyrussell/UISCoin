@@ -46,7 +46,7 @@ public enum ScriptOperator {
     PICK(0x07), //
 
     /**
-     * Pop the top stack element as N, pop the next stack element and put it into the Nth from the BOTTOM elements location
+     * Pop the top stack element as N, pop the next stack element and put it into the Nth from the BOTTOM element's location
      * put(byte[] Value, byte Address)
      */
     PUT(0x08), //
@@ -92,7 +92,7 @@ public enum ScriptOperator {
 
     /**
      * set(int SourceStackElement, int SourceBeginIndex, int DestStackElement, int DestBeginIndex, int Length)
-     * From source, copy from the begin index to Length into StackElement at DestBeginIndex to DestBeginIndex+Length
+     * From source, copy from the beginning index to Length into StackElement at DestBeginIndex to DestBeginIndex+Length
      */
     COPY(0x1c),
 
@@ -151,12 +151,12 @@ public enum ScriptOperator {
      */
     MODULO(0x29),
     /**
-     *  Converts an 8 bit integer to a 32 bit integer
+     *  Converts an 8-bit integer to a 32-bit integer
      */
     CONVERT8TO32(0x2a),
 
     /**
-     *  Converts a 32 bit integer to an 8 bit integer
+     *  Converts a 32-bit integer to an 8-bit integer
      */
     CONVERT32TO8(0x2b),
 
@@ -411,7 +411,7 @@ public enum ScriptOperator {
     /**
      * Executes script bytecode from the stack. Stack elements are [virtual script bytecode] [byte number of stack items to take] then N byte arrays
      * Pushes the resulting stack and then a true or false based on whether the execution was successful
-     * Used to be called virtual script because a new virtual machine is created to run the function (cannot access outside of its scope)
+     * Used to be called virtual script because a new virtual machine is created to run the function (cannot access outside its scope)
      */
     CALL(0xd0),
 

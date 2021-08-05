@@ -5,7 +5,7 @@ import java.util.logging.Logger;
 
 public class ScriptMatcherBuilder {
     private static final Logger Log = Logger.getLogger(StringBuilder.class.getName());
-    private ScriptMatcher matcher = new ScriptMatcher();
+    private final ScriptMatcher matcher = new ScriptMatcher();
 
     public ScriptMatcherBuilder op(ScriptOperator Operator){
         matcher.scriptMatch.add(Operator);

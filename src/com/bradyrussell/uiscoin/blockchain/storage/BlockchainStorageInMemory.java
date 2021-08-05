@@ -15,14 +15,14 @@ import com.bradyrussell.uiscoin.transaction.TransactionInput;
 import com.bradyrussell.uiscoin.transaction.TransactionOutput;
 
 public class BlockchainStorageInMemory implements BlockchainStorage {
-    protected final ArrayList<Block> blocksByHeight = new ArrayList<>(); // this should be all that needs stored, everything else can be reconstructed
+    protected final ArrayList<Block> blocksByHeight = new ArrayList<>(); // this should be all that needs to be stored, everything else can be reconstructed
     private final HashMap<String, Block> blocks = new HashMap<>();
     private final HashMap<String, byte[]> blockHashesByTransaction = new HashMap<>();
     private final HashMap<String, Transaction> mempool = new HashMap<>();
     private final AtomicInteger blockheight = new AtomicInteger(-1);
 
     private final HashSet<TransactionOutputIdentifier> unspentTransactionOutputSet = new HashSet<>();
-    private boolean computeUnspentTransactionOutputs = true; // should disable if getting blocks out of order, and then build at the end
+    private final boolean computeUnspentTransactionOutputs = true; // should disable if getting blocks out of order, and then build at the end
 
     @Override
     public void buildUnspentTransactionOutputSet() {
@@ -71,7 +71,7 @@ public class BlockchainStorageInMemory implements BlockchainStorage {
     @Override
     public boolean verify() {
         for (Block block : getBlockchain()) {
-            if(!block.verify()) return false;
+            if(!block.verify(this)) return false;
         }
         return true;
     }
@@ -79,7 +79,7 @@ public class BlockchainStorageInMemory implements BlockchainStorage {
     @Override
     public boolean verifyRange(int beginHeight, int endHeight) throws NoSuchBlockException {
         for (Block block : getBlockchainRange(beginHeight, endHeight)) {
-            if(!block.verify()) return false;
+            if(!block.verify(this)) return false;
         }
         return true;
     }

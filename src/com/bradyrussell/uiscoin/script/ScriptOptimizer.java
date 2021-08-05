@@ -249,8 +249,8 @@ public class ScriptOptimizer {
     }
 
     private static class ScriptOptimizationAlignmentSection{
-        int Index;
-        int Offset;
+        final int Index;
+        final int Offset;
 
         public ScriptOptimizationAlignmentSection(int index, int offset) {
             Index = index;
@@ -259,7 +259,7 @@ public class ScriptOptimizer {
     }
 
     private static class ScriptOptimizationAlignment{
-        ArrayList<ScriptOptimizationAlignmentSection> Sections = new ArrayList<>();
+        final ArrayList<ScriptOptimizationAlignmentSection> Sections = new ArrayList<>();
 
         void Add(int Index, int Offset){
             Sections.add(new ScriptOptimizationAlignmentSection(Index, Offset));

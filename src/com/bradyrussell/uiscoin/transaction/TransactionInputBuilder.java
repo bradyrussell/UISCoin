@@ -14,7 +14,7 @@ import com.bradyrussell.uiscoin.address.UISCoinKeypair;
 import com.bradyrussell.uiscoin.script.ScriptBuilder;
 
 public class TransactionInputBuilder {
-    TransactionInput input = new TransactionInput();
+    final TransactionInput input = new TransactionInput();
 
     public TransactionInputBuilder setInputTransactionHash(byte[] Hash){
         input.InputHash = Hash;

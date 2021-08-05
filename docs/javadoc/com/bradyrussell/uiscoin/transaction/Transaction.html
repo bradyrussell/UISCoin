@@ -92,12 +92,12 @@ loadScripts(document, 'script');</script>
 <section class="description">
 <dl>
 <dt>All Implemented Interfaces:</dt>
-<dd><code><a href="../IBinaryData.html" title="interface in com.bradyrussell.uiscoin">IBinaryData</a></code>, <code><a href="../IVerifiable.html" title="interface in com.bradyrussell.uiscoin">IVerifiable</a></code></dd>
+<dd><code><a href="../IBinaryData.html" title="interface in com.bradyrussell.uiscoin">IBinaryData</a></code>, <code><a href="../VerifiableWithBlockchain.html" title="interface in com.bradyrussell.uiscoin">VerifiableWithBlockchain</a></code></dd>
 </dl>
 <hr>
 <pre>public class <span class="typeNameLabel">Transaction</span>
 extends java.lang.Object
-implements <a href="../IBinaryData.html" title="interface in com.bradyrussell.uiscoin">IBinaryData</a>, <a href="../IVerifiable.html" title="interface in com.bradyrussell.uiscoin">IVerifiable</a></pre>
+implements <a href="../IBinaryData.html" title="interface in com.bradyrussell.uiscoin">IBinaryData</a>, <a href="../VerifiableWithBlockchain.html" title="interface in com.bradyrussell.uiscoin">VerifiableWithBlockchain</a></pre>
 </section>
 <section class="summary">
 <ul class="blockList">
@@ -210,12 +210,13 @@ java.util.ArrayList&lt;<a href="TransactionOutput.html" title="class in com.brad
 </tr>
 <tr class="altColor" id="i2">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#debugVerify()">debugVerify</a></span>()</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#debugVerify(com.bradyrussell.uiscoin.blockchain.BlockchainStorage)">debugVerify</a></span>&#8203;(<a href="../blockchain/BlockchainStorage.html" title="interface in com.bradyrussell.uiscoin.blockchain">BlockchainStorage</a>&nbsp;blockchain)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="rowColor" id="i3">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#debugVerifyCoinbase(int)">debugVerifyCoinbase</a></span>&#8203;(int&nbsp;BlockHeight)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#debugVerifyCoinbase(com.bradyrussell.uiscoin.blockchain.BlockchainStorage,int)">debugVerifyCoinbase</a></span>&#8203;(<a href="../blockchain/BlockchainStorage.html" title="interface in com.bradyrussell.uiscoin.blockchain">BlockchainStorage</a>&nbsp;blockchain,
+int&nbsp;BlockHeight)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="altColor" id="i4">
@@ -230,7 +231,7 @@ java.util.ArrayList&lt;<a href="TransactionOutput.html" title="class in com.brad
 </tr>
 <tr class="altColor" id="i6">
 <td class="colFirst"><code>long</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getFees()">getFees</a></span>()</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getFees(com.bradyrussell.uiscoin.blockchain.BlockchainStorage)">getFees</a></span>&#8203;(<a href="../blockchain/BlockchainStorage.html" title="interface in com.bradyrussell.uiscoin.blockchain">BlockchainStorage</a>&nbsp;blockchain)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="rowColor" id="i7">
@@ -240,7 +241,7 @@ java.util.ArrayList&lt;<a href="TransactionOutput.html" title="class in com.brad
 </tr>
 <tr class="altColor" id="i8">
 <td class="colFirst"><code>long</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getInputTotal()">getInputTotal</a></span>()</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getInputTotal(com.bradyrussell.uiscoin.blockchain.BlockchainStorage)">getInputTotal</a></span>&#8203;(<a href="../blockchain/BlockchainStorage.html" title="interface in com.bradyrussell.uiscoin.blockchain">BlockchainStorage</a>&nbsp;blockchain)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="rowColor" id="i9">
@@ -260,17 +261,18 @@ java.util.ArrayList&lt;<a href="TransactionOutput.html" title="class in com.brad
 </tr>
 <tr class="altColor" id="i12">
 <td class="colFirst"><code>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#verify()">verify</a></span>()</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#verify(com.bradyrussell.uiscoin.blockchain.BlockchainStorage)">verify</a></span>&#8203;(<a href="../blockchain/BlockchainStorage.html" title="interface in com.bradyrussell.uiscoin.blockchain">BlockchainStorage</a>&nbsp;blockchain)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="rowColor" id="i13">
 <td class="colFirst"><code>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#verifyCoinbase(int)">verifyCoinbase</a></span>&#8203;(int&nbsp;BlockHeight)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#verifyCoinbase(com.bradyrussell.uiscoin.blockchain.BlockchainStorage,int)">verifyCoinbase</a></span>&#8203;(<a href="../blockchain/BlockchainStorage.html" title="interface in com.bradyrussell.uiscoin.blockchain">BlockchainStorage</a>&nbsp;blockchain,
+int&nbsp;BlockHeight)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="altColor" id="i14">
 <td class="colFirst"><code>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#verifyInputsUnspent()">verifyInputsUnspent</a></span>()</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#verifyInputsUnspent(com.bradyrussell.uiscoin.blockchain.BlockchainStorage)">verifyInputsUnspent</a></span>&#8203;(<a href="../blockchain/BlockchainStorage.html" title="interface in com.bradyrussell.uiscoin.blockchain">BlockchainStorage</a>&nbsp;blockchain)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </tbody>
@@ -304,13 +306,13 @@ java.util.ArrayList&lt;<a href="TransactionOutput.html" title="class in com.brad
 <li class="blockList">
 <section class="detail">
 <h3><a id="Inputs">Inputs</a></h3>
-<div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="returnType">java.util.ArrayList&lt;<a href="TransactionInput.html" title="class in com.bradyrussell.uiscoin.transaction">TransactionInput</a>&gt;</span>&nbsp;<span class="memberName">Inputs</span></div>
+<div class="memberSignature"><span class="modifiers">public final</span>&nbsp;<span class="returnType">java.util.ArrayList&lt;<a href="TransactionInput.html" title="class in com.bradyrussell.uiscoin.transaction">TransactionInput</a>&gt;</span>&nbsp;<span class="memberName">Inputs</span></div>
 </section>
 </li>
 <li class="blockList">
 <section class="detail">
 <h3><a id="Outputs">Outputs</a></h3>
-<div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="returnType">java.util.ArrayList&lt;<a href="TransactionOutput.html" title="class in com.bradyrussell.uiscoin.transaction">TransactionOutput</a>&gt;</span>&nbsp;<span class="memberName">Outputs</span></div>
+<div class="memberSignature"><span class="modifiers">public final</span>&nbsp;<span class="returnType">java.util.ArrayList&lt;<a href="TransactionOutput.html" title="class in com.bradyrussell.uiscoin.transaction">TransactionOutput</a>&gt;</span>&nbsp;<span class="memberName">Outputs</span></div>
 </section>
 </li>
 <li class="blockList">
@@ -415,24 +417,15 @@ java.util.ArrayList&lt;<a href="TransactionOutput.html" title="class in com.brad
 </li>
 <li class="blockList">
 <section class="detail">
-<h3><a id="verify()">verify</a></h3>
-<div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="returnType">boolean</span>&nbsp;<span class="memberName">verify</span>()</div>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../IVerifiable.html#verify()">verify</a></code>&nbsp;in interface&nbsp;<code><a href="../IVerifiable.html" title="interface in com.bradyrussell.uiscoin">IVerifiable</a></code></dd>
-</dl>
+<h3><a id="verifyCoinbase(com.bradyrussell.uiscoin.blockchain.BlockchainStorage,int)">verifyCoinbase</a></h3>
+<div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="returnType">boolean</span>&nbsp;<span class="memberName">verifyCoinbase</span>&#8203;(<span class="arguments"><a href="../blockchain/BlockchainStorage.html" title="interface in com.bradyrussell.uiscoin.blockchain">BlockchainStorage</a>&nbsp;blockchain,
+int&nbsp;BlockHeight)</span></div>
 </section>
 </li>
 <li class="blockList">
 <section class="detail">
-<h3><a id="verifyCoinbase(int)">verifyCoinbase</a></h3>
-<div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="returnType">boolean</span>&nbsp;<span class="memberName">verifyCoinbase</span>&#8203;(<span class="arguments">int&nbsp;BlockHeight)</span></div>
-</section>
-</li>
-<li class="blockList">
-<section class="detail">
-<h3><a id="debugVerify()">debugVerify</a></h3>
-<div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="returnType">void</span>&nbsp;<span class="memberName">debugVerify</span>()
+<h3><a id="debugVerify(com.bradyrussell.uiscoin.blockchain.BlockchainStorage)">debugVerify</a></h3>
+<div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="returnType">void</span>&nbsp;<span class="memberName">debugVerify</span>&#8203;(<span class="arguments"><a href="../blockchain/BlockchainStorage.html" title="interface in com.bradyrussell.uiscoin.blockchain">BlockchainStorage</a>&nbsp;blockchain)</span>
                  throws <span class="exceptions"><a href="../blockchain/exception/NoSuchTransactionException.html" title="class in com.bradyrussell.uiscoin.blockchain.exception">NoSuchTransactionException</a>,
 <a href="../blockchain/exception/NoSuchBlockException.html" title="class in com.bradyrussell.uiscoin.blockchain.exception">NoSuchBlockException</a></span></div>
 <dl>
@@ -444,14 +437,15 @@ java.util.ArrayList&lt;<a href="TransactionOutput.html" title="class in com.brad
 </li>
 <li class="blockList">
 <section class="detail">
-<h3><a id="debugVerifyCoinbase(int)">debugVerifyCoinbase</a></h3>
-<div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="returnType">void</span>&nbsp;<span class="memberName">debugVerifyCoinbase</span>&#8203;(<span class="arguments">int&nbsp;BlockHeight)</span></div>
+<h3><a id="debugVerifyCoinbase(com.bradyrussell.uiscoin.blockchain.BlockchainStorage,int)">debugVerifyCoinbase</a></h3>
+<div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="returnType">void</span>&nbsp;<span class="memberName">debugVerifyCoinbase</span>&#8203;(<span class="arguments"><a href="../blockchain/BlockchainStorage.html" title="interface in com.bradyrussell.uiscoin.blockchain">BlockchainStorage</a>&nbsp;blockchain,
+int&nbsp;BlockHeight)</span></div>
 </section>
 </li>
 <li class="blockList">
 <section class="detail">
-<h3><a id="verifyInputsUnspent()">verifyInputsUnspent</a></h3>
-<div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="returnType">boolean</span>&nbsp;<span class="memberName">verifyInputsUnspent</span>()
+<h3><a id="verifyInputsUnspent(com.bradyrussell.uiscoin.blockchain.BlockchainStorage)">verifyInputsUnspent</a></h3>
+<div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="returnType">boolean</span>&nbsp;<span class="memberName">verifyInputsUnspent</span>&#8203;(<span class="arguments"><a href="../blockchain/BlockchainStorage.html" title="interface in com.bradyrussell.uiscoin.blockchain">BlockchainStorage</a>&nbsp;blockchain)</span>
                             throws <span class="exceptions"><a href="../blockchain/exception/NoSuchTransactionException.html" title="class in com.bradyrussell.uiscoin.blockchain.exception">NoSuchTransactionException</a></span></div>
 <dl>
 <dt><span class="throwsLabel">Throws:</span></dt>
@@ -461,8 +455,8 @@ java.util.ArrayList&lt;<a href="TransactionOutput.html" title="class in com.brad
 </li>
 <li class="blockList">
 <section class="detail">
-<h3><a id="getInputTotal()">getInputTotal</a></h3>
-<div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="returnType">long</span>&nbsp;<span class="memberName">getInputTotal</span>()
+<h3><a id="getInputTotal(com.bradyrussell.uiscoin.blockchain.BlockchainStorage)">getInputTotal</a></h3>
+<div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="returnType">long</span>&nbsp;<span class="memberName">getInputTotal</span>&#8203;(<span class="arguments"><a href="../blockchain/BlockchainStorage.html" title="interface in com.bradyrussell.uiscoin.blockchain">BlockchainStorage</a>&nbsp;blockchain)</span>
                    throws <span class="exceptions"><a href="../blockchain/exception/NoSuchTransactionException.html" title="class in com.bradyrussell.uiscoin.blockchain.exception">NoSuchTransactionException</a>,
 <a href="../blockchain/exception/NoSuchBlockException.html" title="class in com.bradyrussell.uiscoin.blockchain.exception">NoSuchBlockException</a></span></div>
 <dl>
@@ -480,8 +474,8 @@ java.util.ArrayList&lt;<a href="TransactionOutput.html" title="class in com.brad
 </li>
 <li class="blockList">
 <section class="detail">
-<h3><a id="getFees()">getFees</a></h3>
-<div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="returnType">long</span>&nbsp;<span class="memberName">getFees</span>()
+<h3><a id="getFees(com.bradyrussell.uiscoin.blockchain.BlockchainStorage)">getFees</a></h3>
+<div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="returnType">long</span>&nbsp;<span class="memberName">getFees</span>&#8203;(<span class="arguments"><a href="../blockchain/BlockchainStorage.html" title="interface in com.bradyrussell.uiscoin.blockchain">BlockchainStorage</a>&nbsp;blockchain)</span>
              throws <span class="exceptions"><a href="../blockchain/exception/NoSuchTransactionException.html" title="class in com.bradyrussell.uiscoin.blockchain.exception">NoSuchTransactionException</a>,
 <a href="../blockchain/exception/NoSuchBlockException.html" title="class in com.bradyrussell.uiscoin.blockchain.exception">NoSuchBlockException</a></span></div>
 <dl>
@@ -498,6 +492,16 @@ java.util.ArrayList&lt;<a href="TransactionOutput.html" title="class in com.brad
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code>equals</code>&nbsp;in class&nbsp;<code>java.lang.Object</code></dd>
+</dl>
+</section>
+</li>
+<li class="blockList">
+<section class="detail">
+<h3><a id="verify(com.bradyrussell.uiscoin.blockchain.BlockchainStorage)">verify</a></h3>
+<div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="returnType">boolean</span>&nbsp;<span class="memberName">verify</span>&#8203;(<span class="arguments"><a href="../blockchain/BlockchainStorage.html" title="interface in com.bradyrussell.uiscoin.blockchain">BlockchainStorage</a>&nbsp;blockchain)</span></div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../VerifiableWithBlockchain.html#verify(com.bradyrussell.uiscoin.blockchain.BlockchainStorage)">verify</a></code>&nbsp;in interface&nbsp;<code><a href="../VerifiableWithBlockchain.html" title="interface in com.bradyrussell.uiscoin">VerifiableWithBlockchain</a></code></dd>
 </dl>
 </section>
 </li>

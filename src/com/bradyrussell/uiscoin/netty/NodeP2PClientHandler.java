@@ -25,7 +25,7 @@ public class NodeP2PClientHandler extends SimpleChannelInboundHandler<ByteBuf> {
     }
 
     @Deprecated
-    public void SendBlockRequest(BlockRequest request){ // i feel like this is a threading issue
+    public void SendBlockRequest(BlockRequest request){ // I feel like this is a threading issue
         ChannelFuture channelFuture = ctx.writeAndFlush(request);
         // wrappedBuffer.release();
         channelFuture.addListener((ChannelFutureListener) channelFuture1 -> {

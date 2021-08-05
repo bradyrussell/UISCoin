@@ -10,7 +10,7 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 
 public class NodeP2PServerHandler extends ChannelInboundHandlerAdapter {
     private static final Logger Log = Logger.getLogger(NodeP2PServerHandler.class.getName());
-    UISCoinNode node;
+    final UISCoinNode node;
     public NodeP2PServerHandler(UISCoinNode node) {
         this.node = node;
     }

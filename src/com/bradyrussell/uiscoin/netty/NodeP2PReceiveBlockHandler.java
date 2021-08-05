@@ -5,7 +5,6 @@ import java.util.logging.Logger;
 
 import com.bradyrussell.uiscoin.BytesUtil;
 import com.bradyrussell.uiscoin.block.Block;
-import com.bradyrussell.uiscoin.blockchain.storage.Blockchain;
 import com.bradyrussell.uiscoin.node.PeerPacketType;
 import com.bradyrussell.uiscoin.node.UISCoinNode;
 
@@ -16,7 +15,7 @@ import io.netty.channel.SimpleChannelInboundHandler;
 
 public class NodeP2PReceiveBlockHandler extends SimpleChannelInboundHandler<Block> {
     private static final Logger Log = Logger.getLogger(NodeP2PReceiveBlockHandler.class.getName());
-    UISCoinNode thisNode;
+    private final UISCoinNode thisNode;
 
     public NodeP2PReceiveBlockHandler(UISCoinNode thisNode) {
         this.thisNode = thisNode;
@@ -43,9 +42,9 @@ public class NodeP2PReceiveBlockHandler extends SimpleChannelInboundHandler<Bloc
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, Block block) throws Exception {
         Log.info("Handler Received block " + BytesUtil.base64Encode(block.Header.getHash()));
 
-        int currentBlockHeight = Blockchain.get().getBlockHeight();
+        int currentBlockHeight = thisNode.getBlockchain().getBlockHeight();
         if (currentBlockHeight >= block.Header.BlockHeight) {
-            if (Blockchain.get().hasBlock(block.Header.getHash())) {
+            if (thisNode.getBlockchain().hasBlock(block.Header.getHash())) {
                 Log.info("Already have. Discarding...");
             } else {
                 Log.info("Block is on a shorter chain. Discarding...");
@@ -59,19 +58,19 @@ public class NodeP2PReceiveBlockHandler extends SimpleChannelInboundHandler<Bloc
         } else {
             // todo handle reorgs, right now they will only be accepted on restart
 
-            if (!block.verify()) {
-                block.debugVerify();
+            if (!block.verify(thisNode.getBlockchain())) {
+                block.debugVerify(thisNode.getBlockchain());
                 Log.info("Invalid block! Discarding.");
                 return;
             }
 
-            if (!block.verifyTransactionsUnspent()) {
+            if (!block.verifyTransactionsUnspent(thisNode.getBlockchain())) {
                 Log.warning("Block contains spent transactions! Discarding!");
                 return;
             }
 
             Log.info("Storing block...");
-            Blockchain.get().putBlock(block);
+            thisNode.getBlockchain().putBlock(block);
 
             Log.info("Rebroadcasting...");
             thisNode.broadcastBlockToPeers(block);

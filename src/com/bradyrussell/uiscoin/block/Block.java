@@ -8,17 +8,18 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import com.bradyrussell.uiscoin.*;
+import com.bradyrussell.uiscoin.blockchain.BlockchainStorage;
 import com.bradyrussell.uiscoin.blockchain.exception.InvalidBlockException;
 import com.bradyrussell.uiscoin.blockchain.exception.NoSuchBlockException;
 import com.bradyrussell.uiscoin.blockchain.exception.NoSuchTransactionException;
 import com.bradyrussell.uiscoin.transaction.Transaction;
 import com.bradyrussell.uiscoin.transaction.TransactionInput;
 
-public class Block implements IBinaryData, IVerifiable {
+public class Block implements IBinaryData, VerifiableWithBlockchain {
     private static final Logger Log = Logger.getLogger(Block.class.getName());
 
     public BlockHeader Header;
-    public ArrayList<Transaction> Transactions;
+    public final ArrayList<Transaction> Transactions;
 
     public Block() {
         Transactions = new ArrayList<>();
@@ -148,23 +149,13 @@ public class Block implements IBinaryData, IVerifiable {
         //return Hash.getSHA512Bytes(getBinaryData());
     }
 
-    @Override
-    public boolean verify() {
-        try {
-            return Header.verify() && verifyTransactions() && verifyBlockReward() && verifyProofOfWork() && getSize() < MagicNumbers.MaxBlockSize.Value && Arrays.equals(Header.HashMerkleRoot, calculateMerkleRoot());
-        } catch (NoSuchBlockException | NoSuchTransactionException | InvalidBlockException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    public void debugVerify() throws NoSuchTransactionException, NoSuchBlockException, InvalidBlockException {
-        Log.warning("Header verify: "+ Header.verify());
-       assert Header.verify();
-        Log.warning("Transactions verify: "+ verifyTransactions());
-       assert verifyTransactions();
-        Log.warning("BlockReward verify: "+ verifyBlockReward()+Transactions.get(0).getOutputTotal()+" > " + calculateBlockReward(Header.BlockHeight)+"+" + getFees());
-       assert verifyBlockReward();
+    public void debugVerify(BlockchainStorage blockchain) throws NoSuchTransactionException, NoSuchBlockException, InvalidBlockException {
+        Log.warning("Header verify: "+ Header.verify(blockchain));
+       assert Header.verify(blockchain);
+        Log.warning("Transactions verify: "+ verifyTransactions(blockchain));
+       assert verifyTransactions(blockchain);
+        Log.warning("BlockReward verify: "+ verifyBlockReward(blockchain)+Transactions.get(0).getOutputTotal()+" > " + calculateBlockReward(Header.BlockHeight)+"+" + getFees(blockchain));
+       assert verifyBlockReward(blockchain);
         Log.warning("PoW verify: "+ Hash.validateHash(Header.getHash(), Header.DifficultyTarget));
        assert Hash.validateHash(Header.getHash(), Header.DifficultyTarget);
         Log.warning("Size verify: "+(getSize() < MagicNumbers.MaxBlockSize.Value));
@@ -173,7 +164,7 @@ public class Block implements IBinaryData, IVerifiable {
         assert Arrays.equals(Header.HashMerkleRoot, calculateMerkleRoot());
     }
 
-    private boolean verifyTransactions(){
+    private boolean verifyTransactions(BlockchainStorage blockchain){
         ArrayList<byte[]> TransactionOutputs = new ArrayList<>();
 
         if(Header.BlockHeight != 0 && Transactions.size() < 2) {
@@ -183,9 +174,9 @@ public class Block implements IBinaryData, IVerifiable {
         for (int i = 0; i < Transactions.size(); i++) {
             Transaction transaction = Transactions.get(i);
             if (i == 0)  {
-                if (!transaction.verifyCoinbase(Header.BlockHeight)) {
+                if (!transaction.verifyCoinbase(blockchain, Header.BlockHeight)) {
                     Log.warning("Failed coinbase verification!");
-                    transaction.debugVerifyCoinbase(Header.BlockHeight);
+                    transaction.debugVerifyCoinbase(blockchain, Header.BlockHeight);
                     return false;
                 }
             } else {
@@ -201,9 +192,9 @@ public class Block implements IBinaryData, IVerifiable {
                     TransactionOutputs.add(inputTXO);
                 }
 
-                if (!transaction.verify()){
+                if (!transaction.verify(blockchain)){
                     try {
-                        transaction.debugVerify();
+                        transaction.debugVerify(blockchain);
                     } catch (NoSuchTransactionException | NoSuchBlockException e) {
                         e.printStackTrace();
                     }
@@ -214,10 +205,10 @@ public class Block implements IBinaryData, IVerifiable {
         return true;
     }
 
-    public boolean verifyTransactionsUnspent() {
+    public boolean verifyTransactionsUnspent(BlockchainStorage blockchain) {
         for (int i = 0; i < Transactions.size(); i++) {
             try {
-                if (i != 0 && !Transactions.get(i).verifyInputsUnspent()) return false;
+                if (i != 0 && !Transactions.get(i).verifyInputsUnspent(blockchain)) return false;
             } catch (NoSuchTransactionException e) {
                 e.printStackTrace();
                 return false;
@@ -239,23 +230,33 @@ public class Block implements IBinaryData, IVerifiable {
         return Conversions.coinsToSatoshis(50) >> NumberOfHalvings;
     }
 
-    private boolean verifyBlockReward() throws NoSuchTransactionException, NoSuchBlockException, InvalidBlockException {
+    private boolean verifyBlockReward(BlockchainStorage blockchain) throws NoSuchTransactionException, NoSuchBlockException, InvalidBlockException {
         Transaction coinbase = Transactions.get(0);
         if(coinbase == null) return false;
-        return coinbase.getOutputTotal() <= calculateBlockReward(Header.BlockHeight) + getFees();
+        return coinbase.getOutputTotal() <= calculateBlockReward(Header.BlockHeight) + getFees(blockchain);
     }
 
     public boolean verifyProofOfWork(){
         return Hash.validateHash(Header.getHash(), Header.DifficultyTarget);
     }
 
-    public long getFees() throws NoSuchTransactionException, NoSuchBlockException, InvalidBlockException {
+    public long getFees(BlockchainStorage blockchain) throws NoSuchTransactionException, NoSuchBlockException, InvalidBlockException {
         if(Transactions.size() <= 0) return 0;
         long totalFees = 0;
         for (Transaction transaction : Transactions) {
-            totalFees += Math.max(transaction.getFees(), 0);
+            totalFees += Math.max(transaction.getFees(blockchain), 0);
         }
         if(totalFees < 0) throw new InvalidBlockException("This block has negative fees.");
         return totalFees;
+    }
+
+    @Override
+    public boolean verify(BlockchainStorage blockchain) {
+        try {
+            return Header.verify(blockchain) && verifyTransactions(blockchain) && verifyBlockReward(blockchain) && verifyProofOfWork() && getSize() < MagicNumbers.MaxBlockSize.Value && Arrays.equals(Header.HashMerkleRoot, calculateMerkleRoot());
+        } catch (NoSuchBlockException | NoSuchTransactionException | InvalidBlockException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

@@ -47,9 +47,9 @@ public class Keys {
     }
 
     public static class SignedData {
-        public byte[] Pubkey;
-        public byte[] Signature;
-        public byte[] Message;
+        public final byte[] Pubkey;
+        public final byte[] Signature;
+        public final byte[] Message;
 
         public SignedData(byte[] pubkey, byte[] signature, byte[] message) {
             Pubkey = pubkey;

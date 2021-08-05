@@ -6,15 +6,15 @@ import java.util.logging.Logger;
 
 /**
  * ScriptMatcher is used to match and / or extract push data from scripts.
- * ScriptMatcher#match returns a boolean as to whether the script matches the matcher.
+ * ScriptMatcher#match returns a boolean whether the script matches the matcher.
  * A matcher, created with ScriptMatcherBuilder, matches a script
  * There are default matchers provided for the default transaction types.
  */
 public class ScriptMatcher {
     private static final Logger Log = Logger.getLogger(ScriptMatcher.class.getName());
     // null = 1 byte wildcard
-    public ArrayList<ScriptOperator> scriptMatch = new ArrayList<>();
-    public ArrayList<byte[]> PushContents = new ArrayList<>();
+    public final ArrayList<ScriptOperator> scriptMatch = new ArrayList<>();
+    public final ArrayList<byte[]> PushContents = new ArrayList<>();
     public int OptionalOperatorsAtEnd = 0;
 
     public boolean match(byte[] Script) {

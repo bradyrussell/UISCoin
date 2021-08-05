@@ -19,7 +19,7 @@
 <script type="text/javascript" src="../../../../script-dir/jquery-ui.js"></script>
 </head>
 <body class="class-declaration">
-<script type="text/javascript">var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":42,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10};
+<script type="text/javascript">var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":42,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"],32:["t6","Deprecated Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -160,7 +160,7 @@ extends java.lang.Object</pre>
 </thead>
 <tbody>
 <tr class="altColor">
-<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E()">UISCoinNode</a></span>()</code></th>
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(com.bradyrussell.uiscoin.blockchain.BlockchainStorage)">UISCoinNode</a></span>&#8203;(<a href="../blockchain/BlockchainStorage.html" title="interface in com.bradyrussell.uiscoin.blockchain">BlockchainStorage</a>&nbsp;blockchain)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </tbody>
@@ -212,48 +212,53 @@ extends java.lang.Object</pre>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="rowColor" id="i5">
+<td class="colFirst"><code><a href="../blockchain/BlockchainStorage.html" title="interface in com.bradyrussell.uiscoin.blockchain">BlockchainStorage</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getBlockchain()">getBlockchain</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="altColor" id="i6">
 <td class="colFirst"><code>java.util.List&lt;<a href="PeerAddress.html" title="class in com.bradyrussell.uiscoin.node">PeerAddress</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getPeers()">getPeers</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="altColor" id="i6">
+<tr class="rowColor" id="i7">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#requestBlockChainFromPeers(int)">requestBlockChainFromPeers</a></span>&#8203;(int&nbsp;BlockHeight)</code></th>
 <td class="colLast">
 <div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
 </td>
 </tr>
-<tr class="rowColor" id="i7">
+<tr class="altColor" id="i8">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#requestBlockFromPeers(com.bradyrussell.uiscoin.node.BlockRequest)">requestBlockFromPeers</a></span>&#8203;(<a href="BlockRequest.html" title="class in com.bradyrussell.uiscoin.node">BlockRequest</a>&nbsp;request)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="altColor" id="i8">
+<tr class="rowColor" id="i9">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#requestBlockHeightFromPeers()">requestBlockHeightFromPeers</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="rowColor" id="i9">
+<tr class="altColor" id="i10">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#requestMemPoolFromPeers()">requestMemPoolFromPeers</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="altColor" id="i10">
+<tr class="rowColor" id="i11">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#retryPeers()">retryPeers</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="rowColor" id="i11">
+<tr class="altColor" id="i12">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#start()">start</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="altColor" id="i12">
+<tr class="rowColor" id="i13">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#start(int)">start</a></span>&#8203;(int&nbsp;Port)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="rowColor" id="i13">
+<tr class="altColor" id="i14">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#stop()">stop</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
@@ -283,19 +288,19 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <section class="detail">
 <h3><a id="peersEverSeen">peersEverSeen</a></h3>
-<div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="returnType">java.util.ArrayList&lt;<a href="PeerAddress.html" title="class in com.bradyrussell.uiscoin.node">PeerAddress</a>&gt;</span>&nbsp;<span class="memberName">peersEverSeen</span></div>
+<div class="memberSignature"><span class="modifiers">public final</span>&nbsp;<span class="returnType">java.util.ArrayList&lt;<a href="PeerAddress.html" title="class in com.bradyrussell.uiscoin.node">PeerAddress</a>&gt;</span>&nbsp;<span class="memberName">peersEverSeen</span></div>
 </section>
 </li>
 <li class="blockList">
 <section class="detail">
 <h3><a id="nodeClients">nodeClients</a></h3>
-<div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="returnType">io.netty.channel.group.ChannelGroup</span>&nbsp;<span class="memberName">nodeClients</span></div>
+<div class="memberSignature"><span class="modifiers">public final</span>&nbsp;<span class="returnType">io.netty.channel.group.ChannelGroup</span>&nbsp;<span class="memberName">nodeClients</span></div>
 </section>
 </li>
 <li class="blockList">
 <section class="detail">
 <h3><a id="peerClients">peerClients</a></h3>
-<div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="returnType">io.netty.channel.group.ChannelGroup</span>&nbsp;<span class="memberName">peerClients</span></div>
+<div class="memberSignature"><span class="modifiers">public final</span>&nbsp;<span class="returnType">io.netty.channel.group.ChannelGroup</span>&nbsp;<span class="memberName">peerClients</span></div>
 </section>
 </li>
 <li class="blockList">
@@ -322,8 +327,8 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <section class="detail">
-<h3><a id="&lt;init&gt;()">UISCoinNode</a></h3>
-<div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="memberName">UISCoinNode</span>()</div>
+<h3><a id="&lt;init&gt;(com.bradyrussell.uiscoin.blockchain.BlockchainStorage)">UISCoinNode</a></h3>
+<div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="memberName">UISCoinNode</span>&#8203;(<span class="arguments"><a href="../blockchain/BlockchainStorage.html" title="interface in com.bradyrussell.uiscoin.blockchain">BlockchainStorage</a>&nbsp;blockchain)</span></div>
 </section>
 </li>
 </ul>
@@ -336,6 +341,12 @@ extends java.lang.Object</pre>
 </a>
 <h2>Method Details</h2>
 <ul class="blockList">
+<li class="blockList">
+<section class="detail">
+<h3><a id="getBlockchain()">getBlockchain</a></h3>
+<div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="returnType"><a href="../blockchain/BlockchainStorage.html" title="interface in com.bradyrussell.uiscoin.blockchain">BlockchainStorage</a></span>&nbsp;<span class="memberName">getBlockchain</span>()</div>
+</section>
+</li>
 <li class="blockList">
 <section class="detail">
 <h3><a id="connectToPeer(com.bradyrussell.uiscoin.node.PeerAddress)">connectToPeer</a></h3>

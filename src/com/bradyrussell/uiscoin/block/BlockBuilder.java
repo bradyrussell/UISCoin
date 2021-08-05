@@ -8,10 +8,10 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import com.bradyrussell.uiscoin.Hash;
+import com.bradyrussell.uiscoin.blockchain.BlockchainStorage;
 import com.bradyrussell.uiscoin.blockchain.exception.InvalidBlockException;
 import com.bradyrussell.uiscoin.blockchain.exception.NoSuchBlockException;
 import com.bradyrussell.uiscoin.blockchain.exception.NoSuchTransactionException;
-import com.bradyrussell.uiscoin.blockchain.storage.Blockchain;
 import com.bradyrussell.uiscoin.script.ScriptBuilder;
 import com.bradyrussell.uiscoin.script.ScriptOperator;
 import com.bradyrussell.uiscoin.transaction.Transaction;
@@ -21,8 +21,12 @@ import com.bradyrussell.uiscoin.transaction.TransactionOutputBuilder;
 
 public class BlockBuilder {
     private static final Logger Log = Logger.getLogger(BlockBuilder.class.getName());
+    private final Block block = new Block();
+    private final BlockchainStorage storage;
 
-    Block block = new Block();
+    public BlockBuilder(BlockchainStorage storage) {
+        this.storage = storage;
+    }
 
     private BlockHeader getOrCreateHeader(){
         if(block.Header == null) {
@@ -67,7 +71,7 @@ public class BlockBuilder {
     }
 
     public BlockBuilder calculateDifficultyTarget() throws NoSuchBlockException {
-        Block lastBlock = Blockchain.get().getHighestBlock();
+        Block lastBlock = storage.getHighestBlock();
         setDifficultyTarget(BlockHeader.calculateDifficultyTarget(block.Header.Time - lastBlock.Header.Time, lastBlock.Header.DifficultyTarget));
         return this;
     }
@@ -83,13 +87,13 @@ public class BlockBuilder {
     }
 
     public BlockBuilder addMempoolTransactions(int SizeLimit){
-        List<Transaction> mempool = new ArrayList<>(Blockchain.get().getMempoolTransactions());
+        List<Transaction> mempool = new ArrayList<>(storage.getMempoolTransactions());
         mempool.sort((a,b)->{
             long ASecondsOld = Instant.now().getEpochSecond() - a.TimeStamp;
             long BSecondsOld = Instant.now().getEpochSecond() - b.TimeStamp;
 
             try {
-                return (int) ((b.getFees() * ((BSecondsOld / 600) + 1)) - (a.getFees() * ((ASecondsOld / 600) + 1))); // sort by fee but add a bonus multiplier for every 10 minutes old
+                return (int) ((b.getFees(storage) * ((BSecondsOld / 600) + 1)) - (a.getFees(storage) * ((ASecondsOld / 600) + 1))); // sort by fee but add a bonus multiplier for every 10 minutes old
             } catch (NoSuchTransactionException | NoSuchBlockException e) {
                 e.printStackTrace();
                 return 0;
@@ -101,7 +105,7 @@ public class BlockBuilder {
         int size = 0;
         for(Transaction t:mempool){
             try {
-                if(!t.verify()  || !t.verifyInputsUnspent()) {
+                if(!t.verify(storage)  || !t.verifyInputsUnspent(storage)) {
                     toRemove.add(t.getHash());
                     continue;
                 }
@@ -117,7 +121,7 @@ public class BlockBuilder {
         }
 
         for (byte[] transaction : toRemove) {
-            Blockchain.get().removeMempoolTransaction(transaction);
+            storage.removeMempoolTransaction(transaction);
         }
         return this;
     }
@@ -134,12 +138,12 @@ public class BlockBuilder {
         if(block.Transactions.size() == 0) {
             Log.warning("Coinbase transaction should be added last in order to calculate fees!");
         }
-        if(block.getFees() <= 0) {
+        if(block.getFees(storage) <= 0) {
             Log.warning("Coinbase transaction does not collect any fees!");
         }
-        Transaction transaction = new TransactionBuilder().setVersion(1).setLockTime(0)
+        Transaction transaction = new TransactionBuilder(storage).setVersion(1).setLockTime(0)
                 .addInput(new TransactionInputBuilder().setInputTransaction(new byte[64], block.Header.BlockHeight).setUnlockingScript(new ScriptBuilder(68).push(Hash.getSHA512Bytes(CoinbaseMessage)).op(ScriptOperator.TRUE).op(ScriptOperator.VERIFY).get()).get())
-                .addOutput(new TransactionOutputBuilder().setPayToPublicKeyHash(PublicKeyHash).setAmount(Block.calculateBlockReward(block.Header.BlockHeight) + block.getFees()).get()).get();
+                .addOutput(new TransactionOutputBuilder().setPayToPublicKeyHash(PublicKeyHash).setAmount(Block.calculateBlockReward(block.Header.BlockHeight) + block.getFees(storage)).get()).get();
         block.addCoinbaseTransaction(transaction);
         return this;
     }

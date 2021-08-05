@@ -14,7 +14,7 @@ import io.netty.handler.timeout.IdleStateHandler;
 
 public class NodeP2PServerInitializer extends ChannelInitializer<SocketChannel> {
 
-    UISCoinNode node;
+    final UISCoinNode node;
 
     public NodeP2PServerInitializer(UISCoinNode node) {
         this.node = node;
@@ -57,10 +57,10 @@ public class NodeP2PServerInitializer extends ChannelInitializer<SocketChannel> 
         // Please note we create a handler for every new channel
         // because it has stateful properties.
         pipeline.addLast(new NodeP2PReceiveBlockHandler(node));
-        pipeline.addLast(new NodeP2PReceiveBlockHeaderResponseHandler());
+        pipeline.addLast(new NodeP2PReceiveBlockHeaderResponseHandler(node));
         pipeline.addLast(new NodeP2PReceiveTransactionHandler(node));
         pipeline.addLast(new NodeP2PReceivePeerHandler(node));
-        pipeline.addLast(new NodeP2PReceiveBlockRequestHandler());
+        pipeline.addLast(new NodeP2PReceiveBlockRequestHandler(node));
 
         pipeline.addLast(new NodeP2PServerHandler(node));
     }

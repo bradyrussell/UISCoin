@@ -10,7 +10,7 @@ import com.bradyrussell.uiscoin.BytesUtil;
 
 public class ScriptBuilder {
     private static final Logger Log = Logger.getLogger(StringBuilder.class.getName());
-    ByteBuffer buffer;
+    final ByteBuffer buffer;
 
     public ScriptBuilder(int BufferLength) {
         buffer = ByteBuffer.allocate(BufferLength);

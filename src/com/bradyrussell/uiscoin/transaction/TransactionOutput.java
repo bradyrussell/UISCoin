@@ -5,10 +5,11 @@ import java.nio.ByteBuffer;
 
 import com.bradyrussell.uiscoin.Hash;
 import com.bradyrussell.uiscoin.IBinaryData;
-import com.bradyrussell.uiscoin.IVerifiable;
 import com.bradyrussell.uiscoin.MagicNumbers;
+import com.bradyrussell.uiscoin.VerifiableWithBlockchain;
+import com.bradyrussell.uiscoin.blockchain.BlockchainStorage;
 
-public class TransactionOutput  implements IBinaryData, IVerifiable {
+public class TransactionOutput  implements IBinaryData, VerifiableWithBlockchain {
     public long Amount;
     public byte[] LockingScript; // aka scriptPubkey
 
@@ -51,7 +52,7 @@ public class TransactionOutput  implements IBinaryData, IVerifiable {
     }
 
     @Override
-    public boolean verify() {
+    public boolean verify(BlockchainStorage blockchain) {
         return LockingScript.length < MagicNumbers.MaxLockingScriptLength.Value && Amount > 0;
     }
 }

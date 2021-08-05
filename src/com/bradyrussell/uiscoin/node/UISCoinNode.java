@@ -1,7 +1,6 @@
 /* (C) Brady Russell 2021 */
 package com.bradyrussell.uiscoin.node;
 
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -9,7 +8,7 @@ import java.util.logging.Logger;
 
 import com.bradyrussell.uiscoin.MagicNumbers;
 import com.bradyrussell.uiscoin.block.Block;
-import com.bradyrussell.uiscoin.blockchain.storage.Blockchain;
+import com.bradyrussell.uiscoin.blockchain.BlockchainStorage;
 import com.bradyrussell.uiscoin.netty.NodeP2PClientInitializer;
 import com.bradyrussell.uiscoin.netty.NodeP2PServerInitializer;
 import com.bradyrussell.uiscoin.transaction.Transaction;
@@ -19,7 +18,6 @@ import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.group.ChannelGroup;
@@ -34,7 +32,7 @@ import io.netty.util.concurrent.GlobalEventExecutor;
 public class UISCoinNode {
     private static final Logger Log = Logger.getLogger(UISCoinNode.class.getName());
 
-    public ArrayList<PeerAddress> peersEverSeen = new ArrayList<>();
+    public final ArrayList<PeerAddress> peersEverSeen = new ArrayList<>();
 
     private EventLoopGroup bossGroup;
     private EventLoopGroup workerGroup;
@@ -43,15 +41,22 @@ public class UISCoinNode {
 
     private final EventLoopGroup peerGroup = new NioEventLoopGroup();
 
-    public ChannelGroup nodeClients = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE); // nodes connections to me
-    public ChannelGroup peerClients = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE); // my connection to other nodes
+    public final ChannelGroup nodeClients = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE); // nodes connections to me
+    public final ChannelGroup peerClients = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE); // my connection to other nodes
 
     public final long nodeId = ThreadLocalRandom.current().nextLong();
 
     public int HighestSeenBlockHeight;
+    
+    private final BlockchainStorage blockchain;
 
-    public UISCoinNode() {
-        this.HighestSeenBlockHeight = Blockchain.get().getBlockHeight(); // we have not seen another nodes blockheight yet
+    public BlockchainStorage getBlockchain() {
+        return blockchain;
+    }
+
+    public UISCoinNode(BlockchainStorage blockchain) {
+        this.blockchain = blockchain;
+        this.HighestSeenBlockHeight = this.blockchain.getBlockHeight(); // we have not seen another nodes blockheight yet
     }
 
     public void connectToPeer(PeerAddress address) {

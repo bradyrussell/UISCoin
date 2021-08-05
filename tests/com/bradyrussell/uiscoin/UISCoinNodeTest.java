@@ -9,7 +9,6 @@ import java.util.Base64;
 import java.util.HashMap;
 
 import com.bradyrussell.uiscoin.blockchain.BlockchainStorage;
-import com.bradyrussell.uiscoin.blockchain.storage.Blockchain;
 import com.bradyrussell.uiscoin.blockchain.storage.BlockchainStorageInMemory;
 import com.bradyrussell.uiscoin.node.PeerAddress;
 import com.bradyrussell.uiscoin.node.UISCoinNode;
@@ -49,9 +48,8 @@ public class UISCoinNodeTest {
     @Test
     @DisplayName("Basic Node Test") //
     void TestNode() throws IOException, InterruptedException {
-        Blockchain.initialize(new BlockchainStorageInMemory());
-        UISCoinNode a = new UISCoinNode();
-        UISCoinNode b = new UISCoinNode();
+        UISCoinNode a = new UISCoinNode(new BlockchainStorageInMemory());
+        UISCoinNode b = new UISCoinNode(new BlockchainStorageInMemory());
 
         a.start(54321);
         b.start(54322);

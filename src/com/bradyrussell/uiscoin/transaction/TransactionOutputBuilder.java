@@ -12,7 +12,7 @@ import com.bradyrussell.uiscoin.script.ScriptBuilder;
 import com.bradyrussell.uiscoin.script.ScriptOperator;
 
 public class TransactionOutputBuilder {
-    TransactionOutput output = new TransactionOutput();
+    final TransactionOutput output = new TransactionOutput();
     private String Memo = null;
 
     public TransactionOutputBuilder setAmount(long Amount){
@@ -23,7 +23,7 @@ public class TransactionOutputBuilder {
     /**
      * Helper function decides what type of address is provided and writes the appropriate script.
      * @param Address The full UISCoin address to pay to, including headers and checksum.
-     * @return
+     * @return The {@link TransactionOutputBuilder} with the script added.
      */
     public TransactionOutputBuilder setPayToAddress(byte[] Address){
         UISCoinAddress.DecodedAddress decodedAddress = UISCoinAddress.decodeAddress(Address);

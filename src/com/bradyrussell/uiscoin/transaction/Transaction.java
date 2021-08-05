@@ -7,15 +7,15 @@ import java.util.Arrays;
 import java.util.logging.Logger;
 
 import com.bradyrussell.uiscoin.*;
+import com.bradyrussell.uiscoin.blockchain.BlockchainStorage;
 import com.bradyrussell.uiscoin.blockchain.exception.NoSuchBlockException;
 import com.bradyrussell.uiscoin.blockchain.exception.NoSuchTransactionException;
-import com.bradyrussell.uiscoin.blockchain.storage.Blockchain;
 
-public class Transaction implements IBinaryData, IVerifiable {
+public class Transaction implements IBinaryData, VerifiableWithBlockchain {
     private static final Logger Log = Logger.getLogger(Transaction.class.getName());
     public int Version; // 4
-    public ArrayList<TransactionInput> Inputs;
-    public ArrayList<TransactionOutput> Outputs;
+    public final ArrayList<TransactionInput> Inputs;
+    public final ArrayList<TransactionOutput> Outputs;
     public long TimeStamp; // 8
 
     public Transaction() {
@@ -137,33 +137,21 @@ public class Transaction implements IBinaryData, IVerifiable {
     public byte[] getHash() {
         return Hash.getSHA512Bytes(getBinaryData());
     }
-
-    @Override //https://www.oreilly.com/library/view/mastering-bitcoin/9781491902639/ch08.html
-    public boolean verify() {
-        try {
-            return verifyInputs() && verifyOutputs() && getFees() > (long) getSize() * MagicNumbers.MinSatPerByte.Value
-                    && Inputs.size() > 0 && Outputs.size() > 0 && TimeStamp < Long.MAX_VALUE
-                    && getSize() < MagicNumbers.MaxTransactionSize.Value && getFees() > 0 && getInputTotal() > 0 && getOutputTotal() > 0;
-        } catch (NoSuchTransactionException | NoSuchBlockException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    public boolean verifyCoinbase(int BlockHeight) {
-        return verifyCoinbaseInputs() && verifyOutputs()
+    
+    public boolean verifyCoinbase(BlockchainStorage blockchain, int BlockHeight) {
+        return verifyCoinbaseInputs() && verifyOutputs(blockchain)
                 && Inputs.size() == 1 && Outputs.size() > 0 && TimeStamp < Long.MAX_VALUE
                 && getSize() < MagicNumbers.MaxTransactionSize.Value && Inputs.get(0).IndexNumber == BlockHeight
                 && Arrays.equals(Inputs.get(0).InputHash, new byte[64]);
     }
 
-    public void debugVerify() throws NoSuchTransactionException, NoSuchBlockException {
-        Log.warning("VerifyInputs " + verifyInputs());
-        assert verifyInputs();
-        Log.warning("VerifyOutputs " + verifyOutputs());
-        assert verifyOutputs();
-        Log.warning("VerifyFees " + (getFees() > (long) getSize() * MagicNumbers.MinSatPerByte.Value)+" fee: "+getFees()+" size: "+getSize());
-        assert getFees() > (long) getSize() * MagicNumbers.MinSatPerByte.Value;
+    public void debugVerify(BlockchainStorage blockchain) throws NoSuchTransactionException, NoSuchBlockException {
+        Log.warning("VerifyInputs " + verifyInputs(blockchain));
+        assert verifyInputs(blockchain);
+        Log.warning("VerifyOutputs " + verifyOutputs(blockchain));
+        assert verifyOutputs(blockchain);
+        Log.warning("VerifyFees " + (getFees(blockchain) > (long) getSize() * MagicNumbers.MinSatPerByte.Value)+" fee: "+getFees(blockchain)+" size: "+getSize());
+        assert getFees(blockchain) > (long) getSize() * MagicNumbers.MinSatPerByte.Value;
         Log.warning("VerifyInputsSize " + (Inputs.size() > 0));
         assert Inputs.size() > 0;
         Log.warning("VerifyOutputsSize " + (Outputs.size() > 0));
@@ -172,17 +160,17 @@ public class Transaction implements IBinaryData, IVerifiable {
         assert TimeStamp < Long.MAX_VALUE;
         Log.warning("VerifySize " + (getSize() < MagicNumbers.MaxTransactionSize.Value));
         assert getSize() < MagicNumbers.MaxTransactionSize.Value;
-        Log.warning("VerifyInputsFees>0 " + (getFees() > 0));
-        assert getFees() > 0;
-        Log.warning("VerifyInputs>0 " + (getInputTotal() > 0));
-        assert getInputTotal() > 0;
+        Log.warning("VerifyInputsFees>0 " + (getFees(blockchain) > 0));
+        assert getFees(blockchain) > 0;
+        Log.warning("VerifyInputs>0 " + (getInputTotal(blockchain) > 0));
+        assert getInputTotal(blockchain) > 0;
         Log.warning("VerifyOutputs>0 " + (getOutputTotal() > 0));
         assert getOutputTotal() > 0;
     }
 
-    public void debugVerifyCoinbase(int BlockHeight) {
+    public void debugVerifyCoinbase(BlockchainStorage blockchain, int BlockHeight) {
         assert verifyCoinbaseInputs();
-        assert verifyOutputs();
+        assert verifyOutputs(blockchain);
         assert Inputs.size() == 1;
         assert Inputs.get(0).IndexNumber == BlockHeight;
         assert Outputs.size() > 0;
@@ -192,16 +180,16 @@ public class Transaction implements IBinaryData, IVerifiable {
     }
 
 
-    private boolean verifyOutputs() {
+    private boolean verifyOutputs(BlockchainStorage blockchain) {
         for (TransactionOutput output : Outputs) {
-            if (!output.verify()) return false;
+            if (!output.verify(blockchain)) return false;
         }
         return true;
     }
 
-    private boolean verifyInputs() {
+    private boolean verifyInputs(BlockchainStorage blockchain) {
         for (TransactionInput input : Inputs) {
-            if (!input.verify()) return false;
+            if (!input.verify(blockchain)) return false;
         }
         return true;
     }
@@ -213,10 +201,10 @@ public class Transaction implements IBinaryData, IVerifiable {
         return true;
     }
 
-    public boolean verifyInputsUnspent() throws NoSuchTransactionException {
+    public boolean verifyInputsUnspent(BlockchainStorage blockchain) throws NoSuchTransactionException {
         for (TransactionInput input : Inputs) {
-            if (Blockchain.get().isTransactionOutputSpent(input.InputHash, input.IndexNumber)) {
-                Log.info(Blockchain.get().getUnspentTransactionOutputs().toString());
+            if (blockchain.isTransactionOutputSpent(input.InputHash, input.IndexNumber)) {
+                Log.info(blockchain.getUnspentTransactionOutputs().toString());
                 Log.info("Could not verify that transaction " + BytesUtil.base64Encode(getHash()) + " input " + BytesUtil.base64Encode(input.InputHash) + " " + input.IndexNumber + " was UTXO!");
                 return false;
             }
@@ -224,11 +212,11 @@ public class Transaction implements IBinaryData, IVerifiable {
         return true;
     }
 
-    public long getInputTotal() throws NoSuchTransactionException, NoSuchBlockException {
+    public long getInputTotal(BlockchainStorage blockchain) throws NoSuchTransactionException, NoSuchBlockException {
         long amount = 0;
         for (TransactionInput input : Inputs) {
             if (!Arrays.equals(input.InputHash, new byte[64])) // in case of coinbase transaction
-                amount += Blockchain.get().getTransactionOutput(input.InputHash, input.IndexNumber).Amount;// Blockchain lookup : input.InputHash
+                amount += blockchain.getTransactionOutput(input.InputHash, input.IndexNumber).Amount;// Blockchain lookup : input.InputHash
         }
         return amount;
     }
@@ -241,8 +229,8 @@ public class Transaction implements IBinaryData, IVerifiable {
         return amount;
     }
 
-    public long getFees() throws NoSuchTransactionException, NoSuchBlockException {
-        return getInputTotal() - getOutputTotal();
+    public long getFees(BlockchainStorage blockchain) throws NoSuchTransactionException, NoSuchBlockException {
+        return getInputTotal(blockchain) - getOutputTotal();
     }
 
     @Override
@@ -251,5 +239,17 @@ public class Transaction implements IBinaryData, IVerifiable {
         if (o == null || getClass() != o.getClass()) return false;
         Transaction that = (Transaction) o;
         return Arrays.equals(getHash(), that.getHash());
+    }
+
+    @Override //https://www.oreilly.com/library/view/mastering-bitcoin/9781491902639/ch08.html
+    public boolean verify(BlockchainStorage blockchain) {
+        try {
+            return verifyInputs(blockchain) && verifyOutputs(blockchain) && getFees(blockchain) > (long) getSize() * MagicNumbers.MinSatPerByte.Value
+                    && Inputs.size() > 0 && Outputs.size() > 0 && TimeStamp < Long.MAX_VALUE
+                    && getSize() < MagicNumbers.MaxTransactionSize.Value && getFees(blockchain) > 0 && getInputTotal(blockchain) > 0 && getOutputTotal() > 0;
+        } catch (NoSuchTransactionException | NoSuchBlockException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

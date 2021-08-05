@@ -6,16 +6,16 @@ import java.time.Instant;
 import java.util.logging.Logger;
 
 import com.bradyrussell.uiscoin.*;
+import com.bradyrussell.uiscoin.blockchain.BlockchainStorage;
 import com.bradyrussell.uiscoin.blockchain.exception.NoSuchBlockException;
 import com.bradyrussell.uiscoin.blockchain.exception.NoSuchTransactionException;
-import com.bradyrussell.uiscoin.blockchain.storage.Blockchain;
 import com.bradyrussell.uiscoin.script.ScriptExecution;
 import com.bradyrussell.uiscoin.script.exception.ScriptEmptyStackException;
 import com.bradyrussell.uiscoin.script.exception.ScriptInvalidException;
 import com.bradyrussell.uiscoin.script.exception.ScriptInvalidParameterException;
 import com.bradyrussell.uiscoin.script.exception.ScriptUnsupportedOperationException;
 
-public class TransactionInput  implements IBinaryData, IVerifiable {
+public class TransactionInput  implements IBinaryData, VerifiableWithBlockchain {
     private static final Logger Log = Logger.getLogger(TransactionInput.class.getName());
     public byte[] InputHash; // 64 // the UTXO hash // also txOutpoint??
     public int IndexNumber; // 4  // the UTXO index
@@ -80,9 +80,9 @@ public class TransactionInput  implements IBinaryData, IVerifiable {
     public byte[] getHash() {
         return Hash.getSHA512Bytes(getBinaryData());
     }
-
+    
     @Override
-    public boolean verify() {
+    public boolean verify(BlockchainStorage blockchain) {
         if(UnlockingScript.length > MagicNumbers.MaxUnlockingScriptLength.Value) {
             Log.info("Verification failed! Unlocking script is too long! Maximum length is "+MagicNumbers.MaxUnlockingScriptLength.Value+" bytes.");
             return false;
@@ -90,7 +90,7 @@ public class TransactionInput  implements IBinaryData, IVerifiable {
 
         Transaction transaction;
         try {
-            transaction = Blockchain.get().getTransaction(InputHash);
+            transaction = blockchain.getTransaction(InputHash);
             if(Instant.now().getEpochSecond() < transaction.TimeStamp) {
                 Log.info("Verification failed! Input is locked until "+transaction.TimeStamp+" ("+(transaction.TimeStamp-Instant.now().getEpochSecond())+" seconds from now)!");
                 return false;

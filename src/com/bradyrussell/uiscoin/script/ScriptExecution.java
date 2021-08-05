@@ -28,12 +28,12 @@ public class ScriptExecution {
     public int InstructionCounter;
     public Stack<byte[]> Stack;
     public boolean bScriptFailed = false;
-    public int MaximumStepsAllowed = 1000;
+    public final int MaximumStepsAllowed = 1000;
     public boolean bExtendedFlowControl = false;
 
     public boolean LogScriptExecution = false;
 
-    private byte[] SignatureVerificationMessage = null; // we need a way to pass in the data for verifysig. i dont like this but...
+    private byte[] SignatureVerificationMessage = null; // we need a way to pass in the data for verifysig. i don't like this but...
     //private long BlockTime = 0; // need a way to pass in blocktime for TIME operator
 
     public byte[] Script;
@@ -71,16 +71,6 @@ public class ScriptExecution {
 
     public void dumpStack() {
         Stack.elements().asIterator().forEachRemaining((byte[] bytes) -> Log.fine(Arrays.toString(bytes)));
-    }
-
-    public void dumpStackReadable() {
-        Object[] toArray = Stack.toArray();
-
-        for (int i = 0, toArrayLength = toArray.length; i < toArrayLength; i++) {
-            byte[] stackElem = (byte[]) toArray[i];
-            Log.info(i + " ");
-            BytesUtil.printBytesReadable(stackElem);
-        }
     }
 
     public String getStackContents() {

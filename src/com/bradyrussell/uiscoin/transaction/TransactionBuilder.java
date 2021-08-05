@@ -11,11 +11,15 @@ import com.bradyrussell.uiscoin.blockchain.BlockchainStorage;
 import com.bradyrussell.uiscoin.blockchain.BlockchainUtil;
 import com.bradyrussell.uiscoin.blockchain.exception.NoSuchBlockException;
 import com.bradyrussell.uiscoin.blockchain.exception.NoSuchTransactionException;
-import com.bradyrussell.uiscoin.blockchain.storage.Blockchain;
 
 public class TransactionBuilder {
     private static final Logger Log = Logger.getLogger(TransactionBuilder.class.getName());
-    Transaction transaction = new Transaction();
+    private final Transaction transaction = new Transaction();
+    private final BlockchainStorage blockchain;
+
+    public TransactionBuilder(BlockchainStorage blockchain) {
+        this.blockchain = blockchain;
+    }
 
     public TransactionBuilder setVersion(int Version) {
         transaction.Version = Version;
@@ -39,10 +43,10 @@ public class TransactionBuilder {
     }
 
     public TransactionBuilder addChangeOutputToPublicKeyHash(byte[] PublicKeyHash, long FeeToLeave) throws NoSuchTransactionException, NoSuchBlockException {
-        long Amount = (transaction.getInputTotal() - transaction.getOutputTotal()) - FeeToLeave;
+        long Amount = (transaction.getInputTotal(blockchain) - transaction.getOutputTotal()) - FeeToLeave;
 
         if (Amount < 0) {
-            Log.warning("Insufficient inputs for this transaction! Input: " + transaction.getInputTotal() + " Output: " + transaction.getOutputTotal() + " Fee: " + FeeToLeave);
+            Log.warning("Insufficient inputs for this transaction! Input: " + transaction.getInputTotal(blockchain) + " Output: " + transaction.getOutputTotal() + " Fee: " + FeeToLeave);
         }
         if (Amount == 0) {
             Log.info("There is no extra change for this transaction.");
@@ -56,13 +60,13 @@ public class TransactionBuilder {
     }
 
     public TransactionBuilder addInputsFromAllP2pkhUtxo(UISCoinKeypair UnlockingKeypair) {
-        ArrayList<BlockchainStorage.TransactionOutputIdentifier> outputsToAddress = BlockchainUtil.matchUtxoForP2phkAddress(UISCoinAddress.decodeAddress(UISCoinAddress.fromPublicKey((ECPublicKey) UnlockingKeypair.Keys.getPublic())).HashData);
+        ArrayList<BlockchainStorage.TransactionOutputIdentifier> outputsToAddress = BlockchainUtil.matchUtxoForP2phkAddress(blockchain, UISCoinAddress.decodeAddress(UISCoinAddress.fromPublicKey((ECPublicKey) UnlockingKeypair.Keys.getPublic())).HashData);
 
         System.out.println("Found " + outputsToAddress.size() + " unspent outputs to your address.");
 
         for (BlockchainStorage.TransactionOutputIdentifier toAddress : outputsToAddress) {
             try {
-                TransactionOutput output = Blockchain.get().getTransactionOutput(toAddress.transactionHash, toAddress.index);
+                TransactionOutput output = blockchain.getTransactionOutput(toAddress.transactionHash, toAddress.index);
                 transaction.addInput(
                         new TransactionInputBuilder()
                                 .setUnlockPayToPublicKeyHash(UnlockingKeypair, output)
@@ -78,9 +82,9 @@ public class TransactionBuilder {
     }
 
     public static class UTXO {
-        BlockchainStorage.TransactionOutputIdentifier id;
-        long value;
-        UISCoinKeypair unlockingKeypair;
+        final BlockchainStorage.TransactionOutputIdentifier id;
+        final long value;
+        final UISCoinKeypair unlockingKeypair;
 
         public UTXO(byte[] hash, int index, long value, UISCoinKeypair unlockingKeypair) {
             this.id = new BlockchainStorage.TransactionOutputIdentifier(hash, index);
@@ -102,12 +106,12 @@ public class TransactionBuilder {
 
         for (UISCoinKeypair keypair : keypairs) {
             try {
-                ArrayList<BlockchainStorage.TransactionOutputIdentifier> outputsToAddress = BlockchainUtil.matchUtxoForP2phkAddress(UISCoinAddress.decodeAddress(UISCoinAddress.fromPublicKey((ECPublicKey) keypair.Keys.getPublic())).HashData);
+                ArrayList<BlockchainStorage.TransactionOutputIdentifier> outputsToAddress = BlockchainUtil.matchUtxoForP2phkAddress(blockchain, UISCoinAddress.decodeAddress(UISCoinAddress.fromPublicKey((ECPublicKey) keypair.Keys.getPublic())).HashData);
                 for (BlockchainStorage.TransactionOutputIdentifier toAddress : outputsToAddress) {
                     long amount;
                     try {
-                        if(Blockchain.get().isTransactionOutputSpent(toAddress.transactionHash, toAddress.index)) continue;
-                        amount = Blockchain.get().getTransactionOutput(toAddress.transactionHash, toAddress.index).Amount;
+                        if(blockchain.isTransactionOutputSpent(toAddress.transactionHash, toAddress.index)) continue;
+                        amount = blockchain.getTransactionOutput(toAddress.transactionHash, toAddress.index).Amount;
                     } catch (NoSuchTransactionException e) {
                         e.printStackTrace();
                         continue;
@@ -130,7 +134,7 @@ public class TransactionBuilder {
 
         for (Map.Entry<Long, UTXO> utxo : utxos.entrySet()) {
             try {
-                TransactionOutput output = Blockchain.get().getTransactionOutput(utxo.getValue().id.transactionHash, utxo.getValue().id.index);
+                TransactionOutput output = blockchain.getTransactionOutput(utxo.getValue().id.transactionHash, utxo.getValue().id.index);
                 currentTotal += utxo.getKey();
                 transaction.addInput(
                         new TransactionInputBuilder()

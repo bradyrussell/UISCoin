@@ -242,7 +242,7 @@ extends java.lang.Enum&lt;<a href="ScriptOperator.html" title="enum in com.brady
 <tr class="altColor">
 <th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#CONVERT32TO8">CONVERT32TO8</a></span></code></th>
 <td class="colLast">
-<div class="block">Converts a 32 bit integer to an 8 bit integer</div>
+<div class="block">Converts a 32-bit integer to an 8-bit integer</div>
 </td>
 </tr>
 <tr class="rowColor">
@@ -260,7 +260,7 @@ extends java.lang.Enum&lt;<a href="ScriptOperator.html" title="enum in com.brady
 <tr class="rowColor">
 <th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#CONVERT8TO32">CONVERT8TO32</a></span></code></th>
 <td class="colLast">
-<div class="block">Converts an 8 bit integer to a 32 bit integer</div>
+<div class="block">Converts an 8-bit integer to a 32-bit integer</div>
 </td>
 </tr>
 <tr class="altColor">
@@ -273,7 +273,7 @@ extends java.lang.Enum&lt;<a href="ScriptOperator.html" title="enum in com.brady
 <th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#COPY">COPY</a></span></code></th>
 <td class="colLast">
 <div class="block">set(int SourceStackElement, int SourceBeginIndex, int DestStackElement, int DestBeginIndex, int Length)
- From source, copy from the begin index to Length into StackElement at DestBeginIndex to DestBeginIndex+Length</div>
+ From source, copy from the beginning index to Length into StackElement at DestBeginIndex to DestBeginIndex+Length</div>
 </td>
 </tr>
 <tr class="altColor">
@@ -523,7 +523,7 @@ extends java.lang.Enum&lt;<a href="ScriptOperator.html" title="enum in com.brady
 <tr class="altColor">
 <th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#PUT">PUT</a></span></code></th>
 <td class="colLast">
-<div class="block">Pop the top stack element as N, pop the next stack element and put it into the Nth from the BOTTOM elements location
+<div class="block">Pop the top stack element as N, pop the next stack element and put it into the Nth from the BOTTOM element's location
  put(byte[] Value, byte Address)</div>
 </td>
 </tr>
@@ -840,7 +840,7 @@ the order they are declared.</div>
 <section class="detail">
 <h3><a id="PUT">PUT</a></h3>
 <div class="memberSignature"><span class="modifiers">public static final</span>&nbsp;<span class="returnType"><a href="ScriptOperator.html" title="enum in com.bradyrussell.uiscoin.script">ScriptOperator</a></span>&nbsp;<span class="memberName">PUT</span></div>
-<div class="block">Pop the top stack element as N, pop the next stack element and put it into the Nth from the BOTTOM elements location
+<div class="block">Pop the top stack element as N, pop the next stack element and put it into the Nth from the BOTTOM element's location
  put(byte[] Value, byte Address)</div>
 </section>
 </li>
@@ -931,7 +931,7 @@ the order they are declared.</div>
 <h3><a id="COPY">COPY</a></h3>
 <div class="memberSignature"><span class="modifiers">public static final</span>&nbsp;<span class="returnType"><a href="ScriptOperator.html" title="enum in com.bradyrussell.uiscoin.script">ScriptOperator</a></span>&nbsp;<span class="memberName">COPY</span></div>
 <div class="block">set(int SourceStackElement, int SourceBeginIndex, int DestStackElement, int DestBeginIndex, int Length)
- From source, copy from the begin index to Length into StackElement at DestBeginIndex to DestBeginIndex+Length</div>
+ From source, copy from the beginning index to Length into StackElement at DestBeginIndex to DestBeginIndex+Length</div>
 </section>
 </li>
 <li class="blockList">
@@ -1023,14 +1023,14 @@ the order they are declared.</div>
 <section class="detail">
 <h3><a id="CONVERT8TO32">CONVERT8TO32</a></h3>
 <div class="memberSignature"><span class="modifiers">public static final</span>&nbsp;<span class="returnType"><a href="ScriptOperator.html" title="enum in com.bradyrussell.uiscoin.script">ScriptOperator</a></span>&nbsp;<span class="memberName">CONVERT8TO32</span></div>
-<div class="block">Converts an 8 bit integer to a 32 bit integer</div>
+<div class="block">Converts an 8-bit integer to a 32-bit integer</div>
 </section>
 </li>
 <li class="blockList">
 <section class="detail">
 <h3><a id="CONVERT32TO8">CONVERT32TO8</a></h3>
 <div class="memberSignature"><span class="modifiers">public static final</span>&nbsp;<span class="returnType"><a href="ScriptOperator.html" title="enum in com.bradyrussell.uiscoin.script">ScriptOperator</a></span>&nbsp;<span class="memberName">CONVERT32TO8</span></div>
-<div class="block">Converts a 32 bit integer to an 8 bit integer</div>
+<div class="block">Converts a 32-bit integer to an 8-bit integer</div>
 </section>
 </li>
 <li class="blockList">
@@ -1419,7 +1419,7 @@ the order they are declared.</div>
 <div class="memberSignature"><span class="modifiers">public static final</span>&nbsp;<span class="returnType"><a href="ScriptOperator.html" title="enum in com.bradyrussell.uiscoin.script">ScriptOperator</a></span>&nbsp;<span class="memberName">CALL</span></div>
 <div class="block">Executes script bytecode from the stack. Stack elements are [virtual script bytecode] [byte number of stack items to take] then N byte arrays
  Pushes the resulting stack and then a true or false based on whether the execution was successful
- Used to be called virtual script because a new virtual machine is created to run the function (cannot access outside of its scope)</div>
+ Used to be called virtual script because a new virtual machine is created to run the function (cannot access outside its scope)</div>
 </section>
 </li>
 <li class="blockList">

@@ -14,7 +14,7 @@ import com.bradyrussell.uiscoin.MagicBytes;
 public class UISCoinWallet implements IBinaryData {
     private static final Logger Log = Logger.getLogger(UISCoinWallet.class.getName());
 
-    public ArrayList<UISCoinKeypair> Keypairs = new ArrayList<>();
+    public final ArrayList<UISCoinKeypair> Keypairs = new ArrayList<>();
 
     public UISCoinKeypair generateNewKey(){
         UISCoinKeypair create = UISCoinKeypair.create();

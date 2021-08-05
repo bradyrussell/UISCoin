@@ -44,7 +44,7 @@ public class ScriptParser {
         } else if(s.startsWith("\"") || s.startsWith("'")){ // string push data
             return( s.substring(1, s.length()-1)).getBytes(StandardCharsets.US_ASCII);
         } else {                                // interp as numeric push data
-            // we have other ways to push bytes and need an easy way to push 32 bit low numbers
+            // we have other ways to push bytes and need an easy way to push 32-bit low numbers
            return ( ScriptUtil.NumberStringToBytes(s, true));
         }
     }
@@ -148,8 +148,8 @@ public class ScriptParser {
                     String arrayGetter = Tokens.get(++i); // [0:4]
                     String[] arrayGetterSplit = arrayGetter.replace("[", "").replace("]", "").split(":");
 
-                    int ArrayIndex = -1;
-                    int TypeSize = -1;
+                    int ArrayIndex;
+                    int TypeSize;
                     try {
                         ArrayIndex = Integer.parseInt(arrayGetterSplit[0]);
                         TypeSize = Integer.parseInt(arrayGetterSplit[1]);
@@ -348,7 +348,6 @@ public class ScriptParser {
 
                             if(!SymbolTable.containsKey(assignedSymbol)) {
                                 System.out.println("Error! Symbol \""+assignedSymbol+"\" was not defined in this scope!");
-                                continue;
                             } else {
                                 scriptBuilder.pushByte(SymbolTable.get(assignedSymbol));
                             }
@@ -397,7 +396,7 @@ public class ScriptParser {
                 case BIGPUSH, PUSH -> {
                     String Token = Tokens.get(++i);
 
-                    if(Token.startsWith("$")){ // variable / pick x // in case i need to pop a var onto the stack
+                    if(Token.startsWith("$")){ // variable / pick x // in case I need to pop a var onto the stack
                         scriptBuilder.push( ScriptUtil.NumberStringToBytes(Token.substring(1), false)).op(ScriptOperator.PICK);
                     } else {
                         scriptBuilder.push(TokenLiteralToBytes(Token));
@@ -419,7 +418,7 @@ public class ScriptParser {
         }
         Initializer[NumberOfVariables] = ScriptOperator.DEPTH.OPCode; // surround the variables with the count on both ends
         Initializer[NumberOfVariables+1] = ScriptOperator.DUP.OPCode;  // at the end we can shift it back down and bytesequal it
-        Initializer[NumberOfVariables+2] = ScriptOperator.SHIFTUP.OPCode; // to check the variable space wasnt messed with
+        Initializer[NumberOfVariables+2] = ScriptOperator.SHIFTUP.OPCode; // to check the variable space wasn't messed with
         Initializer[NumberOfVariables+3] = ScriptOperator.FLAG.OPCode;
         Initializer[NumberOfVariables+4] = (byte) 0xFF;
         return Initializer;

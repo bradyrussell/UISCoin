@@ -8,12 +8,12 @@ import java.util.logging.Logger;
 
 import com.bradyrussell.uiscoin.Hash;
 import com.bradyrussell.uiscoin.IBinaryData;
-import com.bradyrussell.uiscoin.IVerifiable;
 import com.bradyrussell.uiscoin.MagicNumbers;
+import com.bradyrussell.uiscoin.VerifiableWithBlockchain;
+import com.bradyrussell.uiscoin.blockchain.BlockchainStorage;
 import com.bradyrussell.uiscoin.blockchain.exception.NoSuchBlockException;
-import com.bradyrussell.uiscoin.blockchain.storage.Blockchain;
 
-public class BlockHeader implements IBinaryData, IVerifiable {
+public class BlockHeader implements IBinaryData, VerifiableWithBlockchain {
     private static final Logger Log = Logger.getLogger(BlockHeader.class.getName());
 
     public int Version; // 4
@@ -105,12 +105,18 @@ public class BlockHeader implements IBinaryData, IVerifiable {
         return Hash.getSHA512Bytes(getBinaryData());
     }
 
+    public static int calculateDifficultyTarget(long TimeSinceLastBlock, int LastBlockDifficulty) {
+        if(TimeSinceLastBlock < MagicNumbers.TargetSecondsPerBlock.Value) return Math.min(63, LastBlockDifficulty + 1);
+        if(TimeSinceLastBlock > MagicNumbers.TargetSecondsPerBlock.Value) return Math.max(3, LastBlockDifficulty - 1);
+        return LastBlockDifficulty;
+    }
+
     @Override
-    public boolean verify() {
+    public boolean verify(BlockchainStorage blockchain) {
         if(BlockHeight > 0) {
             BlockHeader previousBlockHeader;
             try {
-                previousBlockHeader = Blockchain.get().getBlockHeader(HashPreviousBlock);
+                previousBlockHeader = blockchain.getBlockHeader(HashPreviousBlock);
             } catch (NoSuchBlockException e) {
                 e.printStackTrace();
                 return false;
@@ -124,23 +130,15 @@ public class BlockHeader implements IBinaryData, IVerifiable {
                 assert (DifficultyTarget >= calculateDifficultyTarget(Time - previousBlockHeader.Time, previousBlockHeader.DifficultyTarget));
                 return false;
             }
-
         }
 
-        boolean timeValid = (Time - 30) <= Instant.now().getEpochSecond();
+        boolean timeValid = (Time - MagicNumbers.TimeVarianceAllowedSeconds.Value) <= Instant.now().getEpochSecond();
 
         if(!timeValid){
             Log.severe("Error: Block time is in the future! Please check the system time is correct.");
-            assert timeValid;
             return false;
         }
 
         return true;
-    }
-
-    public static int calculateDifficultyTarget(long TimeSinceLastBlock, int LastBlockDifficulty) {
-        if(TimeSinceLastBlock < MagicNumbers.TargetSecondsPerBlock.Value) return Math.min(63, LastBlockDifficulty + 1);
-        if(TimeSinceLastBlock > MagicNumbers.TargetSecondsPerBlock.Value) return Math.max(3, LastBlockDifficulty - 1);
-        return LastBlockDifficulty;
     }
 }

@@ -3,7 +3,7 @@ package com.bradyrussell.uiscoin.node;
 
 public class BlockRequest {
     public boolean bOnlyHeader = false;
-    public byte[] BlockHash;
+    public final byte[] BlockHash;
 
     public BlockRequest(byte[] blockHash) {
         BlockHash = blockHash;

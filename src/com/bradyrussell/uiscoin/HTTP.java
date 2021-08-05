@@ -14,8 +14,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class HTTP {
     private static final Logger Log = Logger.getLogger(HTTP.class.getName());
-    public static boolean LogRequests = true;
-    public static boolean LogRequestTimes = true;
+    public static final boolean LogRequests = true;
+    public static final boolean LogRequestTimes = true;
 
     public static @Nullable
     String request(String URL, String Method, Map<String, String> Properties, String Content) throws IOException {

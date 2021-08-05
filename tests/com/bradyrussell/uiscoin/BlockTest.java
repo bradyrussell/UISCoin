@@ -7,15 +7,13 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.concurrent.ThreadLocalRandom;
 
-import com.bradyrussell.uiscoin.BytesUtil;
-import com.bradyrussell.uiscoin.Conversions;
-import com.bradyrussell.uiscoin.Hash;
 import com.bradyrussell.uiscoin.address.UISCoinKeypair;
 import com.bradyrussell.uiscoin.block.Block;
 import com.bradyrussell.uiscoin.block.BlockBuilder;
 import com.bradyrussell.uiscoin.blockchain.exception.InvalidBlockException;
 import com.bradyrussell.uiscoin.blockchain.exception.NoSuchBlockException;
 import com.bradyrussell.uiscoin.blockchain.exception.NoSuchTransactionException;
+import com.bradyrussell.uiscoin.blockchain.storage.BlockchainStorageInMemory;
 import com.bradyrussell.uiscoin.transaction.*;
 
 import org.junit.jupiter.api.DisplayName;
@@ -41,13 +39,15 @@ public class BlockTest {
         ThreadLocalRandom.current().nextBytes(RandomHash5);
         ThreadLocalRandom.current().nextBytes(RandomHash6);
 
-        TransactionBuilder tb = new TransactionBuilder();
+        BlockchainStorageInMemory blockchainStorageInMemory = new BlockchainStorageInMemory();
+
+        TransactionBuilder tb = new TransactionBuilder(blockchainStorageInMemory);
         Transaction transaction = tb.setVersion(1).setLockTime(-1)
                 .addInput(new TransactionInputBuilder().setInputTransaction(RandomHash2,0).setUnlockingScript(Hash.getSHA512Bytes("aaa")).get())
                 .addOutput(new TransactionOutput(Conversions.coinsToSatoshis(.5), RandomHash2))
                 .get();
 
-        Block block = new BlockBuilder().setBlockHeight(1).addCoinbasePayToPublicKeyHash(RandomHash1).setHashPreviousBlock(RandomHash2).get();
+        Block block = new BlockBuilder(blockchainStorageInMemory).setBlockHeight(1).addCoinbasePayToPublicKeyHash(RandomHash1).setHashPreviousBlock(RandomHash2).get();
 
         block.addTransaction(transaction);
 

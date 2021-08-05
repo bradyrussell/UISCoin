@@ -6,20 +6,18 @@ import java.util.Arrays;
 
 import com.bradyrussell.uiscoin.blockchain.exception.NoSuchBlockException;
 import com.bradyrussell.uiscoin.blockchain.exception.NoSuchTransactionException;
-import com.bradyrussell.uiscoin.blockchain.storage.Blockchain;
 import com.bradyrussell.uiscoin.script.ScriptMatcher;
-import com.bradyrussell.uiscoin.transaction.Transaction;
 import com.bradyrussell.uiscoin.transaction.TransactionOutput;
 
 public class BlockchainUtil {
-    public static ArrayList<BlockchainStorage.TransactionOutputIdentifier> matchUtxoForP2phkAddress(byte[] PublicKeyHash) {
+    public static ArrayList<BlockchainStorage.TransactionOutputIdentifier> matchUtxoForP2phkAddress(BlockchainStorage blockchain, byte[] PublicKeyHash) {
         ArrayList<BlockchainStorage.TransactionOutputIdentifier> utxo = new ArrayList<>();
 
         ScriptMatcher matcherP2PKH = ScriptMatcher.getMatcherP2PKH();
 
-        for (BlockchainStorage.TransactionOutputIdentifier unspentTransactionOutput : Blockchain.get().getUnspentTransactionOutputs()) {
+        for (BlockchainStorage.TransactionOutputIdentifier unspentTransactionOutput : blockchain.getUnspentTransactionOutputs()) {
             try {
-                TransactionOutput output = Blockchain.get().getTransactionOutput(unspentTransactionOutput.transactionHash, unspentTransactionOutput.index);
+                TransactionOutput output = blockchain.getTransactionOutput(unspentTransactionOutput.transactionHash, unspentTransactionOutput.index);
                 if(matcherP2PKH.match(output.LockingScript) && Arrays.equals(matcherP2PKH.getPushData(0),PublicKeyHash)) {
                     utxo.add(unspentTransactionOutput);
                 }
@@ -32,14 +30,14 @@ public class BlockchainUtil {
     }
 
 
-    public static long getBalanceForP2phkAddress(byte[] PublicKeyHash) {
+    public static long getBalanceForP2phkAddress(BlockchainStorage blockchain, byte[] PublicKeyHash) {
         long total = 0;
 
         ScriptMatcher matcherP2PKH = ScriptMatcher.getMatcherP2PKH();
 
-        for (BlockchainStorage.TransactionOutputIdentifier unspentTransactionOutput : Blockchain.get().getUnspentTransactionOutputs()) {
+        for (BlockchainStorage.TransactionOutputIdentifier unspentTransactionOutput : blockchain.getUnspentTransactionOutputs()) {
             try {
-                TransactionOutput output = Blockchain.get().getTransactionOutput(unspentTransactionOutput.transactionHash, unspentTransactionOutput.index);
+                TransactionOutput output = blockchain.getTransactionOutput(unspentTransactionOutput.transactionHash, unspentTransactionOutput.index);
                 if(matcherP2PKH.match(output.LockingScript) && Arrays.equals(matcherP2PKH.getPushData(0),PublicKeyHash)) {
                     total += output.Amount;
                 }
