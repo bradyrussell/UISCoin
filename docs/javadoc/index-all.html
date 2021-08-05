@@ -249,7 +249,7 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/node/UISCoinNode.html#broadcastBlockToPeers(com.bradyrussell.uiscoin.block.Block)">broadcastBlockToPeers(Block)</a></span> - Method in class com.bradyrussell.uiscoin.node.<a href="com/bradyrussell/uiscoin/node/UISCoinNode.html" title="class in com.bradyrussell.uiscoin.node">UISCoinNode</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/node/UISCoinNode.html#broadcastPeerToPeers(java.net.InetAddress)">broadcastPeerToPeers(InetAddress)</a></span> - Method in class com.bradyrussell.uiscoin.node.<a href="com/bradyrussell/uiscoin/node/UISCoinNode.html" title="class in com.bradyrussell.uiscoin.node">UISCoinNode</a></dt>
+<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/node/UISCoinNode.html#broadcastPeerToPeers(com.bradyrussell.uiscoin.node.PeerAddress)">broadcastPeerToPeers(PeerAddress)</a></span> - Method in class com.bradyrussell.uiscoin.node.<a href="com/bradyrussell/uiscoin/node/UISCoinNode.html" title="class in com.bradyrussell.uiscoin.node">UISCoinNode</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/node/UISCoinNode.html#broadcastTransactionToPeers(com.bradyrussell.uiscoin.transaction.Transaction)">broadcastTransactionToPeers(Transaction)</a></span> - Method in class com.bradyrussell.uiscoin.node.<a href="com/bradyrussell/uiscoin/node/UISCoinNode.html" title="class in com.bradyrussell.uiscoin.node">UISCoinNode</a></dt>
 <dd>&nbsp;</dd>
@@ -351,11 +351,11 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/netty/NodeP2PReceiveBlockRequestHandler.html#channelRead0(io.netty.channel.ChannelHandlerContext,com.bradyrussell.uiscoin.node.BlockRequest)">channelRead0(ChannelHandlerContext, BlockRequest)</a></span> - Method in class com.bradyrussell.uiscoin.netty.<a href="com/bradyrussell/uiscoin/netty/NodeP2PReceiveBlockRequestHandler.html" title="class in com.bradyrussell.uiscoin.netty">NodeP2PReceiveBlockRequestHandler</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/netty/NodeP2PReceivePeerHandler.html#channelRead0(io.netty.channel.ChannelHandlerContext,com.bradyrussell.uiscoin.node.PeerAddress)">channelRead0(ChannelHandlerContext, PeerAddress)</a></span> - Method in class com.bradyrussell.uiscoin.netty.<a href="com/bradyrussell/uiscoin/netty/NodeP2PReceivePeerHandler.html" title="class in com.bradyrussell.uiscoin.netty">NodeP2PReceivePeerHandler</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/netty/NodeP2PReceiveTransactionHandler.html#channelRead0(io.netty.channel.ChannelHandlerContext,com.bradyrussell.uiscoin.transaction.Transaction)">channelRead0(ChannelHandlerContext, Transaction)</a></span> - Method in class com.bradyrussell.uiscoin.netty.<a href="com/bradyrussell/uiscoin/netty/NodeP2PReceiveTransactionHandler.html" title="class in com.bradyrussell.uiscoin.netty">NodeP2PReceiveTransactionHandler</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/netty/NodeP2PClientHandler.html#channelRead0(io.netty.channel.ChannelHandlerContext,io.netty.buffer.ByteBuf)">channelRead0(ChannelHandlerContext, ByteBuf)</a></span> - Method in class com.bradyrussell.uiscoin.netty.<a href="com/bradyrussell/uiscoin/netty/NodeP2PClientHandler.html" title="class in com.bradyrussell.uiscoin.netty">NodeP2PClientHandler</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/netty/NodeP2PReceivePeerHandler.html#channelRead0(io.netty.channel.ChannelHandlerContext,java.net.InetAddress)">channelRead0(ChannelHandlerContext, InetAddress)</a></span> - Method in class com.bradyrussell.uiscoin.netty.<a href="com/bradyrussell/uiscoin/netty/NodeP2PReceivePeerHandler.html" title="class in com.bradyrussell.uiscoin.netty">NodeP2PReceivePeerHandler</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/address/UISCoinAddress.DecodedAddress.html#Checksum">Checksum</a></span> - Variable in class com.bradyrussell.uiscoin.address.<a href="com/bradyrussell/uiscoin/address/UISCoinAddress.DecodedAddress.html" title="class in com.bradyrussell.uiscoin.address">UISCoinAddress.DecodedAddress</a></dt>
 <dd>&nbsp;</dd>
@@ -415,7 +415,7 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/BytesUtil.html#concatArray(byte%5B%5D,byte%5B%5D)">concatArray(byte[], byte[])</a></span> - Static method in class com.bradyrussell.uiscoin.<a href="com/bradyrussell/uiscoin/BytesUtil.html" title="class in com.bradyrussell.uiscoin">BytesUtil</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/node/UISCoinNode.html#connectToPeer(java.net.InetAddress)">connectToPeer(InetAddress)</a></span> - Method in class com.bradyrussell.uiscoin.node.<a href="com/bradyrussell/uiscoin/node/UISCoinNode.html" title="class in com.bradyrussell.uiscoin.node">UISCoinNode</a></dt>
+<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/node/UISCoinNode.html#connectToPeer(com.bradyrussell.uiscoin.node.PeerAddress)">connectToPeer(PeerAddress)</a></span> - Method in class com.bradyrussell.uiscoin.node.<a href="com/bradyrussell/uiscoin/node/UISCoinNode.html" title="class in com.bradyrussell.uiscoin.node">UISCoinNode</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/bradyrussell/uiscoin/Conversions.html" title="class in com.bradyrussell.uiscoin"><span class="typeNameLink">Conversions</span></a> - Class in <a href="com/bradyrussell/uiscoin/package-summary.html">com.bradyrussell.uiscoin</a></dt>
 <dd>&nbsp;</dd>
@@ -536,9 +536,9 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/netty/NodeP2PBlockRequestEncoder.html#encode(io.netty.channel.ChannelHandlerContext,com.bradyrussell.uiscoin.node.BlockRequest,io.netty.buffer.ByteBuf)">encode(ChannelHandlerContext, BlockRequest, ByteBuf)</a></span> - Method in class com.bradyrussell.uiscoin.netty.<a href="com/bradyrussell/uiscoin/netty/NodeP2PBlockRequestEncoder.html" title="class in com.bradyrussell.uiscoin.netty">NodeP2PBlockRequestEncoder</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/netty/NodeP2PTransactionEncoder.html#encode(io.netty.channel.ChannelHandlerContext,com.bradyrussell.uiscoin.transaction.Transaction,io.netty.buffer.ByteBuf)">encode(ChannelHandlerContext, Transaction, ByteBuf)</a></span> - Method in class com.bradyrussell.uiscoin.netty.<a href="com/bradyrussell/uiscoin/netty/NodeP2PTransactionEncoder.html" title="class in com.bradyrussell.uiscoin.netty">NodeP2PTransactionEncoder</a></dt>
+<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/netty/NodeP2PPeerEncoder.html#encode(io.netty.channel.ChannelHandlerContext,com.bradyrussell.uiscoin.node.PeerAddress,io.netty.buffer.ByteBuf)">encode(ChannelHandlerContext, PeerAddress, ByteBuf)</a></span> - Method in class com.bradyrussell.uiscoin.netty.<a href="com/bradyrussell/uiscoin/netty/NodeP2PPeerEncoder.html" title="class in com.bradyrussell.uiscoin.netty">NodeP2PPeerEncoder</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/netty/NodeP2PPeerEncoder.html#encode(io.netty.channel.ChannelHandlerContext,java.net.InetAddress,io.netty.buffer.ByteBuf)">encode(ChannelHandlerContext, InetAddress, ByteBuf)</a></span> - Method in class com.bradyrussell.uiscoin.netty.<a href="com/bradyrussell/uiscoin/netty/NodeP2PPeerEncoder.html" title="class in com.bradyrussell.uiscoin.netty">NodeP2PPeerEncoder</a></dt>
+<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/netty/NodeP2PTransactionEncoder.html#encode(io.netty.channel.ChannelHandlerContext,com.bradyrussell.uiscoin.transaction.Transaction,io.netty.buffer.ByteBuf)">encode(ChannelHandlerContext, Transaction, ByteBuf)</a></span> - Method in class com.bradyrussell.uiscoin.netty.<a href="com/bradyrussell/uiscoin/netty/NodeP2PTransactionEncoder.html" title="class in com.bradyrussell.uiscoin.netty">NodeP2PTransactionEncoder</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/Encryption.html#encrypt(byte%5B%5D,byte%5B%5D)">encrypt(byte[], byte[])</a></span> - Static method in class com.bradyrussell.uiscoin.<a href="com/bradyrussell/uiscoin/Encryption.html" title="class in com.bradyrussell.uiscoin">Encryption</a></dt>
 <dd>&nbsp;</dd>
@@ -553,6 +553,8 @@ loadScripts(document, 'script');</script>
 <dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/block/Block.html#equals(java.lang.Object)">equals(Object)</a></span> - Method in class com.bradyrussell.uiscoin.block.<a href="com/bradyrussell/uiscoin/block/Block.html" title="class in com.bradyrussell.uiscoin.block">Block</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/BlockchainStorage.TransactionOutputIdentifier.html#equals(java.lang.Object)">equals(Object)</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.<a href="com/bradyrussell/uiscoin/blockchain/BlockchainStorage.TransactionOutputIdentifier.html" title="class in com.bradyrussell.uiscoin.blockchain">BlockchainStorage.TransactionOutputIdentifier</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/node/PeerAddress.html#equals(java.lang.Object)">equals(Object)</a></span> - Method in class com.bradyrussell.uiscoin.node.<a href="com/bradyrussell/uiscoin/node/PeerAddress.html" title="class in com.bradyrussell.uiscoin.node">PeerAddress</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/transaction/Transaction.html#equals(java.lang.Object)">equals(Object)</a></span> - Method in class com.bradyrussell.uiscoin.transaction.<a href="com/bradyrussell/uiscoin/transaction/Transaction.html" title="class in com.bradyrussell.uiscoin.transaction">Transaction</a></dt>
 <dd>&nbsp;</dd>
@@ -633,6 +635,8 @@ loadScripts(document, 'script');</script>
  StackElement is the Nth (from BOTTOM of the stack) element on the stack
  From StackElement, copy from BeginIndex to BeginIndex+Length onto the top of the stack</div>
 </dd>
+<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/node/PeerAddress.html#getAddress()">getAddress()</a></span> - Method in class com.bradyrussell.uiscoin.node.<a href="com/bradyrussell/uiscoin/node/PeerAddress.html" title="class in com.bradyrussell.uiscoin.node">PeerAddress</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/address/UISCoinWallet.html#getAddresses()">getAddresses()</a></span> - Method in class com.bradyrussell.uiscoin.address.<a href="com/bradyrussell/uiscoin/address/UISCoinWallet.html" title="class in com.bradyrussell.uiscoin.address">UISCoinWallet</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/BlockchainUtil.html#getBalanceForP2phkAddress(byte%5B%5D)">getBalanceForP2phkAddress(byte[])</a></span> - Static method in class com.bradyrussell.uiscoin.blockchain.<a href="com/bradyrussell/uiscoin/blockchain/BlockchainUtil.html" title="class in com.bradyrussell.uiscoin.blockchain">BlockchainUtil</a></dt>
@@ -777,6 +781,8 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/node/UISCoinNode.html#getPeers()">getPeers()</a></span> - Method in class com.bradyrussell.uiscoin.node.<a href="com/bradyrussell/uiscoin/node/UISCoinNode.html" title="class in com.bradyrussell.uiscoin.node">UISCoinNode</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/node/PeerAddress.html#getPort()">getPort()</a></span> - Method in class com.bradyrussell.uiscoin.node.<a href="com/bradyrussell/uiscoin/node/PeerAddress.html" title="class in com.bradyrussell.uiscoin.node">PeerAddress</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/Keys.html#getPublicKeyFromPrivateKey(java.security.interfaces.ECPrivateKey)">getPublicKeyFromPrivateKey(ECPrivateKey)</a></span> - Static method in class com.bradyrussell.uiscoin.<a href="com/bradyrussell/uiscoin/Keys.html" title="class in com.bradyrussell.uiscoin">Keys</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/script/ScriptMatcher.html#getPushCount()">getPushCount()</a></span> - Method in class com.bradyrussell.uiscoin.script.<a href="com/bradyrussell/uiscoin/script/ScriptMatcher.html" title="class in com.bradyrussell.uiscoin.script">ScriptMatcher</a></dt>
@@ -870,6 +876,8 @@ loadScripts(document, 'script');</script>
 <dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/Hash.html#%3Cinit%3E()">Hash()</a></span> - Constructor for class com.bradyrussell.uiscoin.<a href="com/bradyrussell/uiscoin/Hash.html" title="class in com.bradyrussell.uiscoin">Hash</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/BlockchainStorage.TransactionOutputIdentifier.html#hashCode()">hashCode()</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.<a href="com/bradyrussell/uiscoin/blockchain/BlockchainStorage.TransactionOutputIdentifier.html" title="class in com.bradyrussell.uiscoin.blockchain">BlockchainStorage.TransactionOutputIdentifier</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/node/PeerAddress.html#hashCode()">hashCode()</a></span> - Method in class com.bradyrussell.uiscoin.node.<a href="com/bradyrussell/uiscoin/node/PeerAddress.html" title="class in com.bradyrussell.uiscoin.node">PeerAddress</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/address/UISCoinAddress.DecodedAddress.html#HashData">HashData</a></span> - Variable in class com.bradyrussell.uiscoin.address.<a href="com/bradyrussell/uiscoin/address/UISCoinAddress.DecodedAddress.html" title="class in com.bradyrussell.uiscoin.address">UISCoinAddress.DecodedAddress</a></dt>
 <dd>&nbsp;</dd>
@@ -1267,6 +1275,10 @@ loadScripts(document, 'script');</script>
 <dl>
 <dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/node/PeerPacketType.html#PEER">PEER</a></span> - com.bradyrussell.uiscoin.node.<a href="com/bradyrussell/uiscoin/node/PeerPacketType.html" title="enum in com.bradyrussell.uiscoin.node">PeerPacketType</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="com/bradyrussell/uiscoin/node/PeerAddress.html" title="class in com.bradyrussell.uiscoin.node"><span class="typeNameLink">PeerAddress</span></a> - Class in <a href="com/bradyrussell/uiscoin/node/package-summary.html">com.bradyrussell.uiscoin.node</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/node/PeerAddress.html#%3Cinit%3E(java.net.InetAddress,int)">PeerAddress(InetAddress, int)</a></span> - Constructor for class com.bradyrussell.uiscoin.node.<a href="com/bradyrussell/uiscoin/node/PeerAddress.html" title="class in com.bradyrussell.uiscoin.node">PeerAddress</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/node/UISCoinNode.html#peerClients">peerClients</a></span> - Variable in class com.bradyrussell.uiscoin.node.<a href="com/bradyrussell/uiscoin/node/UISCoinNode.html" title="class in com.bradyrussell.uiscoin.node">UISCoinNode</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/bradyrussell/uiscoin/node/PeerPacketType.html" title="enum in com.bradyrussell.uiscoin.node"><span class="typeNameLink">PeerPacketType</span></a> - Enum in <a href="com/bradyrussell/uiscoin/node/package-summary.html">com.bradyrussell.uiscoin.node</a></dt>
@@ -1652,6 +1664,8 @@ loadScripts(document, 'script');</script>
 <dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/transaction/Transaction.html#TimeStamp">TimeStamp</a></span> - Variable in class com.bradyrussell.uiscoin.transaction.<a href="com/bradyrussell/uiscoin/transaction/Transaction.html" title="class in com.bradyrussell.uiscoin.transaction">Transaction</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/BlockchainStorage.TransactionOutputIdentifier.html#toString()">toString()</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.<a href="com/bradyrussell/uiscoin/blockchain/BlockchainStorage.TransactionOutputIdentifier.html" title="class in com.bradyrussell.uiscoin.blockchain">BlockchainStorage.TransactionOutputIdentifier</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/node/PeerAddress.html#toString()">toString()</a></span> - Method in class com.bradyrussell.uiscoin.node.<a href="com/bradyrussell/uiscoin/node/PeerAddress.html" title="class in com.bradyrussell.uiscoin.node">PeerAddress</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/script/ScriptBuilder.html#toText()">toText()</a></span> - Method in class com.bradyrussell.uiscoin.script.<a href="com/bradyrussell/uiscoin/script/ScriptBuilder.html" title="class in com.bradyrussell.uiscoin.script">ScriptBuilder</a></dt>
 <dd>&nbsp;</dd>

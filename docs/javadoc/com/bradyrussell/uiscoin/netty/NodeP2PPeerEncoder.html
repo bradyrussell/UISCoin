@@ -89,7 +89,7 @@ loadScripts(document, 'script');</script>
 <div class="inheritance" title="Inheritance Tree">java.lang.Object
 <div class="inheritance">io.netty.channel.ChannelHandlerAdapter
 <div class="inheritance">io.netty.channel.ChannelOutboundHandlerAdapter
-<div class="inheritance">io.netty.handler.codec.MessageToByteEncoder&lt;java.net.InetAddress&gt;
+<div class="inheritance">io.netty.handler.codec.MessageToByteEncoder&lt;<a href="../node/PeerAddress.html" title="class in com.bradyrussell.uiscoin.node">PeerAddress</a>&gt;
 <div class="inheritance">com.bradyrussell.uiscoin.netty.NodeP2PPeerEncoder</div>
 </div>
 </div>
@@ -102,7 +102,7 @@ loadScripts(document, 'script');</script>
 </dl>
 <hr>
 <pre>public class <span class="typeNameLabel">NodeP2PPeerEncoder</span>
-extends io.netty.handler.codec.MessageToByteEncoder&lt;java.net.InetAddress&gt;</pre>
+extends io.netty.handler.codec.MessageToByteEncoder&lt;<a href="../node/PeerAddress.html" title="class in com.bradyrussell.uiscoin.node">PeerAddress</a>&gt;</pre>
 </section>
 <section class="summary">
 <ul class="blockList">
@@ -164,9 +164,9 @@ extends io.netty.handler.codec.MessageToByteEncoder&lt;java.net.InetAddress&gt;<
 <tbody>
 <tr class="altColor" id="i0">
 <td class="colFirst"><code>protected void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#encode(io.netty.channel.ChannelHandlerContext,java.net.InetAddress,io.netty.buffer.ByteBuf)">encode</a></span>&#8203;(io.netty.channel.ChannelHandlerContext&nbsp;channelHandlerContext,
-java.net.InetAddress&nbsp;inetAddress,
-io.netty.buffer.ByteBuf&nbsp;byteBuf)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#encode(io.netty.channel.ChannelHandlerContext,com.bradyrussell.uiscoin.node.PeerAddress,io.netty.buffer.ByteBuf)">encode</a></span>&#8203;(io.netty.channel.ChannelHandlerContext&nbsp;ctx,
+<a href="../node/PeerAddress.html" title="class in com.bradyrussell.uiscoin.node">PeerAddress</a>&nbsp;msg,
+io.netty.buffer.ByteBuf&nbsp;out)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </tbody>
@@ -229,14 +229,14 @@ io.netty.buffer.ByteBuf&nbsp;byteBuf)</code></th>
 <ul class="blockList">
 <li class="blockList">
 <section class="detail">
-<h3><a id="encode(io.netty.channel.ChannelHandlerContext,java.net.InetAddress,io.netty.buffer.ByteBuf)">encode</a></h3>
-<div class="memberSignature"><span class="modifiers">protected</span>&nbsp;<span class="returnType">void</span>&nbsp;<span class="memberName">encode</span>&#8203;(<span class="arguments">io.netty.channel.ChannelHandlerContext&nbsp;channelHandlerContext,
-java.net.InetAddress&nbsp;inetAddress,
-io.netty.buffer.ByteBuf&nbsp;byteBuf)</span>
+<h3><a id="encode(io.netty.channel.ChannelHandlerContext,com.bradyrussell.uiscoin.node.PeerAddress,io.netty.buffer.ByteBuf)">encode</a></h3>
+<div class="memberSignature"><span class="modifiers">protected</span>&nbsp;<span class="returnType">void</span>&nbsp;<span class="memberName">encode</span>&#8203;(<span class="arguments">io.netty.channel.ChannelHandlerContext&nbsp;ctx,
+<a href="../node/PeerAddress.html" title="class in com.bradyrussell.uiscoin.node">PeerAddress</a>&nbsp;msg,
+io.netty.buffer.ByteBuf&nbsp;out)</span>
                throws <span class="exceptions">java.lang.Exception</span></div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code>encode</code>&nbsp;in class&nbsp;<code>io.netty.handler.codec.MessageToByteEncoder&lt;java.net.InetAddress&gt;</code></dd>
+<dd><code>encode</code>&nbsp;in class&nbsp;<code>io.netty.handler.codec.MessageToByteEncoder&lt;<a href="../node/PeerAddress.html" title="class in com.bradyrussell.uiscoin.node">PeerAddress</a>&gt;</code></dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code>java.lang.Exception</code></dd>
 </dl>

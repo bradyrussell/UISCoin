@@ -89,7 +89,7 @@ loadScripts(document, 'script');</script>
 <div class="inheritance" title="Inheritance Tree">java.lang.Object
 <div class="inheritance">io.netty.channel.ChannelHandlerAdapter
 <div class="inheritance">io.netty.channel.ChannelInboundHandlerAdapter
-<div class="inheritance">io.netty.channel.SimpleChannelInboundHandler&lt;java.net.InetAddress&gt;
+<div class="inheritance">io.netty.channel.SimpleChannelInboundHandler&lt;<a href="../node/PeerAddress.html" title="class in com.bradyrussell.uiscoin.node">PeerAddress</a>&gt;
 <div class="inheritance">com.bradyrussell.uiscoin.netty.NodeP2PReceivePeerHandler</div>
 </div>
 </div>
@@ -102,7 +102,7 @@ loadScripts(document, 'script');</script>
 </dl>
 <hr>
 <pre>public class <span class="typeNameLabel">NodeP2PReceivePeerHandler</span>
-extends io.netty.channel.SimpleChannelInboundHandler&lt;java.net.InetAddress&gt;</pre>
+extends io.netty.channel.SimpleChannelInboundHandler&lt;<a href="../node/PeerAddress.html" title="class in com.bradyrussell.uiscoin.node">PeerAddress</a>&gt;</pre>
 </section>
 <section class="summary">
 <ul class="blockList">
@@ -174,8 +174,8 @@ extends io.netty.channel.SimpleChannelInboundHandler&lt;java.net.InetAddress&gt;
 </tr>
 <tr class="altColor" id="i2">
 <td class="colFirst"><code>protected void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#channelRead0(io.netty.channel.ChannelHandlerContext,java.net.InetAddress)">channelRead0</a></span>&#8203;(io.netty.channel.ChannelHandlerContext&nbsp;channelHandlerContext,
-java.net.InetAddress&nbsp;inetAddress)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#channelRead0(io.netty.channel.ChannelHandlerContext,com.bradyrussell.uiscoin.node.PeerAddress)">channelRead0</a></span>&#8203;(io.netty.channel.ChannelHandlerContext&nbsp;ctx,
+<a href="../node/PeerAddress.html" title="class in com.bradyrussell.uiscoin.node">PeerAddress</a>&nbsp;msg)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="rowColor" id="i3">
@@ -292,13 +292,13 @@ java.lang.Throwable&nbsp;cause)</span>
 </li>
 <li class="blockList">
 <section class="detail">
-<h3><a id="channelRead0(io.netty.channel.ChannelHandlerContext,java.net.InetAddress)">channelRead0</a></h3>
-<div class="memberSignature"><span class="modifiers">protected</span>&nbsp;<span class="returnType">void</span>&nbsp;<span class="memberName">channelRead0</span>&#8203;(<span class="arguments">io.netty.channel.ChannelHandlerContext&nbsp;channelHandlerContext,
-java.net.InetAddress&nbsp;inetAddress)</span>
+<h3><a id="channelRead0(io.netty.channel.ChannelHandlerContext,com.bradyrussell.uiscoin.node.PeerAddress)">channelRead0</a></h3>
+<div class="memberSignature"><span class="modifiers">protected</span>&nbsp;<span class="returnType">void</span>&nbsp;<span class="memberName">channelRead0</span>&#8203;(<span class="arguments">io.netty.channel.ChannelHandlerContext&nbsp;ctx,
+<a href="../node/PeerAddress.html" title="class in com.bradyrussell.uiscoin.node">PeerAddress</a>&nbsp;msg)</span>
                      throws <span class="exceptions">java.lang.Exception</span></div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code>channelRead0</code>&nbsp;in class&nbsp;<code>io.netty.channel.SimpleChannelInboundHandler&lt;java.net.InetAddress&gt;</code></dd>
+<dd><code>channelRead0</code>&nbsp;in class&nbsp;<code>io.netty.channel.SimpleChannelInboundHandler&lt;<a href="../node/PeerAddress.html" title="class in com.bradyrussell.uiscoin.node">PeerAddress</a>&gt;</code></dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code>java.lang.Exception</code></dd>
 </dl>
