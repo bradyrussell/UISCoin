@@ -8,10 +8,10 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import com.bradyrussell.uiscoin.Hash;
-import com.bradyrussell.uiscoin.IBinaryData;
 import com.bradyrussell.uiscoin.MagicBytes;
+import com.bradyrussell.uiscoin.SerializableAsBinaryData;
 
-public class UISCoinWallet implements IBinaryData {
+public class UISCoinWallet implements SerializableAsBinaryData {
     private static final Logger Log = Logger.getLogger(UISCoinWallet.class.getName());
 
     public final ArrayList<UISCoinKeypair> Keypairs = new ArrayList<>();

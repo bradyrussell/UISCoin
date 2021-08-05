@@ -7,13 +7,13 @@ import java.util.Arrays;
 import java.util.logging.Logger;
 
 import com.bradyrussell.uiscoin.Hash;
-import com.bradyrussell.uiscoin.IBinaryData;
 import com.bradyrussell.uiscoin.MagicNumbers;
+import com.bradyrussell.uiscoin.SerializableAsBinaryData;
 import com.bradyrussell.uiscoin.VerifiableWithBlockchain;
 import com.bradyrussell.uiscoin.blockchain.BlockchainStorage;
 import com.bradyrussell.uiscoin.blockchain.exception.NoSuchBlockException;
 
-public class BlockHeader implements IBinaryData, VerifiableWithBlockchain {
+public class BlockHeader implements SerializableAsBinaryData, VerifiableWithBlockchain {
     private static final Logger Log = Logger.getLogger(BlockHeader.class.getName());
 
     public int Version; // 4

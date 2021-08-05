@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 
 import com.bradyrussell.uiscoin.*;
 
-public class UISCoinKeypair implements IBinaryData {
+public class UISCoinKeypair implements SerializableAsBinaryData {
     private static final Logger Log = Logger.getLogger(UISCoinKeypair.class.getName());
 
     public KeyPair Keys;

@@ -15,7 +15,7 @@ import com.bradyrussell.uiscoin.script.exception.ScriptInvalidException;
 import com.bradyrussell.uiscoin.script.exception.ScriptInvalidParameterException;
 import com.bradyrussell.uiscoin.script.exception.ScriptUnsupportedOperationException;
 
-public class TransactionInput  implements IBinaryData, VerifiableWithBlockchain {
+public class TransactionInput  implements SerializableAsBinaryData, VerifiableWithBlockchain {
     private static final Logger Log = Logger.getLogger(TransactionInput.class.getName());
     public byte[] InputHash; // 64 // the UTXO hash // also txOutpoint??
     public int IndexNumber; // 4  // the UTXO index

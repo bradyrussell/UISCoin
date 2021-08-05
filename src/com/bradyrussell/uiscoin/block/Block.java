@@ -15,7 +15,7 @@ import com.bradyrussell.uiscoin.blockchain.exception.NoSuchTransactionException;
 import com.bradyrussell.uiscoin.transaction.Transaction;
 import com.bradyrussell.uiscoin.transaction.TransactionInput;
 
-public class Block implements IBinaryData, VerifiableWithBlockchain {
+public class Block implements SerializableAsBinaryData, VerifiableWithBlockchain {
     private static final Logger Log = Logger.getLogger(Block.class.getName());
 
     public BlockHeader Header;

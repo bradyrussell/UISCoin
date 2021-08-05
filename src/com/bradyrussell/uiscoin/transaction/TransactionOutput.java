@@ -4,12 +4,12 @@ package com.bradyrussell.uiscoin.transaction;
 import java.nio.ByteBuffer;
 
 import com.bradyrussell.uiscoin.Hash;
-import com.bradyrussell.uiscoin.IBinaryData;
 import com.bradyrussell.uiscoin.MagicNumbers;
+import com.bradyrussell.uiscoin.SerializableAsBinaryData;
 import com.bradyrussell.uiscoin.VerifiableWithBlockchain;
 import com.bradyrussell.uiscoin.blockchain.BlockchainStorage;
 
-public class TransactionOutput  implements IBinaryData, VerifiableWithBlockchain {
+public class TransactionOutput  implements SerializableAsBinaryData, VerifiableWithBlockchain {
     public long Amount;
     public byte[] LockingScript; // aka scriptPubkey
 
