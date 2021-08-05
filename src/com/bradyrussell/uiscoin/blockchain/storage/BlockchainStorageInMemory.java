@@ -41,9 +41,9 @@ public class BlockchainStorageInMemory implements BlockchainStorage {
                 }
             }
         }
-        System.out.println();
+        System.out.println("Full UTXO set is as follows: ");
         for (TransactionOutputIdentifier transactionOutputIdentifier : unspentTransactionOutputSet) {
-            System.out.println("--> Adding output: "+Base64.getUrlEncoder().encodeToString(transactionOutputIdentifier.transactionHash)+" : "+transactionOutputIdentifier.index);
+            System.out.println(Base64.getUrlEncoder().encodeToString(transactionOutputIdentifier.transactionHash)+" : "+transactionOutputIdentifier.index);
         }
         System.out.println("Built UTXO set with "+unspentTransactionOutputSet.size()+" UTXO.");
     }
