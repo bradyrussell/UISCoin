@@ -197,9 +197,9 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="com/bradyrussell/uiscoin/blockchain/BlockchainStorage.TransactionOutputIdentifier.html" title="class in com.bradyrussell.uiscoin.blockchain"><span class="typeNameLink">BlockchainStorage.TransactionOutputIdentifier</span></a> - Class in <a href="com/bradyrussell/uiscoin/blockchain/package-summary.html">com.bradyrussell.uiscoin.blockchain</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html" title="class in com.bradyrussell.uiscoin.blockchain.storage"><span class="typeNameLink">BlockchainStorageEphemeral</span></a> - Class in <a href="com/bradyrussell/uiscoin/blockchain/storage/package-summary.html">com.bradyrussell.uiscoin.blockchain.storage</a></dt>
+<dt><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html" title="class in com.bradyrussell.uiscoin.blockchain.storage"><span class="typeNameLink">BlockchainStorageInMemory</span></a> - Class in <a href="com/bradyrussell/uiscoin/blockchain/storage/package-summary.html">com.bradyrussell.uiscoin.blockchain.storage</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html#%3Cinit%3E()">BlockchainStorageEphemeral()</a></span> - Constructor for class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageEphemeral</a></dt>
+<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html#%3Cinit%3E()">BlockchainStorageInMemory()</a></span> - Constructor for class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageInMemory</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageSingleFile.html" title="class in com.bradyrussell.uiscoin.blockchain.storage"><span class="typeNameLink">BlockchainStorageSingleFile</span></a> - Class in <a href="com/bradyrussell/uiscoin/blockchain/storage/package-summary.html">com.bradyrussell.uiscoin.blockchain.storage</a></dt>
 <dd>&nbsp;</dd>
@@ -241,7 +241,7 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/node/BlockRequest.html#%3Cinit%3E(byte%5B%5D,boolean)">BlockRequest(byte[], boolean)</a></span> - Constructor for class com.bradyrussell.uiscoin.node.<a href="com/bradyrussell/uiscoin/node/BlockRequest.html" title="class in com.bradyrussell.uiscoin.node">BlockRequest</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html#blocksByHeight">blocksByHeight</a></span> - Variable in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageEphemeral</a></dt>
+<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html#blocksByHeight">blocksByHeight</a></span> - Variable in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageInMemory</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/node/BlockRequest.html#bOnlyHeader">bOnlyHeader</a></span> - Variable in class com.bradyrussell.uiscoin.node.<a href="com/bradyrussell/uiscoin/node/BlockRequest.html" title="class in com.bradyrussell.uiscoin.node">BlockRequest</a></dt>
 <dd>&nbsp;</dd>
@@ -259,7 +259,7 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Builds the local UTXO set from the entire blockchain.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html#buildUnspentTransactionOutputSet()">buildUnspentTransactionOutputSet()</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageEphemeral</a></dt>
+<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html#buildUnspentTransactionOutputSet()">buildUnspentTransactionOutputSet()</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageInMemory</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/script/ScriptUtil.html#ByteArrayStringToBytes(java.lang.String)">ByteArrayStringToBytes(String)</a></span> - Static method in class com.bradyrussell.uiscoin.script.<a href="com/bradyrussell/uiscoin/script/ScriptUtil.html" title="class in com.bradyrussell.uiscoin.script">ScriptUtil</a></dt>
 <dd>&nbsp;</dd>
@@ -373,7 +373,7 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Called once to perform any cleanup or saving after all blockchain operations have been completed.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html#close()">close()</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageEphemeral</a></dt>
+<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html#close()">close()</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageInMemory</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageSingleFile.html#close()">close()</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageSingleFile.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageSingleFile</a></dt>
 <dd>&nbsp;</dd>
@@ -657,49 +657,49 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Retrieves the block associated with the specified block hash.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html#getBlock(byte%5B%5D)">getBlock(byte[])</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageEphemeral</a></dt>
+<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html#getBlock(byte%5B%5D)">getBlock(byte[])</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageInMemory</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/BlockchainStorage.html#getBlockByHeight(int)">getBlockByHeight(int)</a></span> - Method in interface com.bradyrussell.uiscoin.blockchain.<a href="com/bradyrussell/uiscoin/blockchain/BlockchainStorage.html" title="interface in com.bradyrussell.uiscoin.blockchain">BlockchainStorage</a></dt>
 <dd>
 <div class="block">Retrieves the block associated with the specified block height.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html#getBlockByHeight(int)">getBlockByHeight(int)</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageEphemeral</a></dt>
+<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html#getBlockByHeight(int)">getBlockByHeight(int)</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageInMemory</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/BlockchainStorage.html#getBlockByTransaction(byte%5B%5D)">getBlockByTransaction(byte[])</a></span> - Method in interface com.bradyrussell.uiscoin.blockchain.<a href="com/bradyrussell/uiscoin/blockchain/BlockchainStorage.html" title="interface in com.bradyrussell.uiscoin.blockchain">BlockchainStorage</a></dt>
 <dd>
 <div class="block">Retrieves the block associated with the specified transaction.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html#getBlockByTransaction(byte%5B%5D)">getBlockByTransaction(byte[])</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageEphemeral</a></dt>
+<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html#getBlockByTransaction(byte%5B%5D)">getBlockByTransaction(byte[])</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageInMemory</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/BlockchainStorage.html#getBlockchain()">getBlockchain()</a></span> - Method in interface com.bradyrussell.uiscoin.blockchain.<a href="com/bradyrussell/uiscoin/blockchain/BlockchainStorage.html" title="interface in com.bradyrussell.uiscoin.blockchain">BlockchainStorage</a></dt>
 <dd>
 <div class="block">Returns an ordered list of the entire local blockchain.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html#getBlockchain()">getBlockchain()</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageEphemeral</a></dt>
+<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html#getBlockchain()">getBlockchain()</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageInMemory</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/BlockchainStorage.html#getBlockchainRange(int,int)">getBlockchainRange(int, int)</a></span> - Method in interface com.bradyrussell.uiscoin.blockchain.<a href="com/bradyrussell/uiscoin/blockchain/BlockchainStorage.html" title="interface in com.bradyrussell.uiscoin.blockchain">BlockchainStorage</a></dt>
 <dd>
 <div class="block">Returns an ordered list of a range of the local blockchain.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html#getBlockchainRange(int,int)">getBlockchainRange(int, int)</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageEphemeral</a></dt>
+<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html#getBlockchainRange(int,int)">getBlockchainRange(int, int)</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageInMemory</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/BlockchainStorage.html#getBlockHeader(byte%5B%5D)">getBlockHeader(byte[])</a></span> - Method in interface com.bradyrussell.uiscoin.blockchain.<a href="com/bradyrussell/uiscoin/blockchain/BlockchainStorage.html" title="interface in com.bradyrussell.uiscoin.blockchain">BlockchainStorage</a></dt>
 <dd>
 <div class="block">Retrieves the block header associated with the specified block hash.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html#getBlockHeader(byte%5B%5D)">getBlockHeader(byte[])</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageEphemeral</a></dt>
+<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html#getBlockHeader(byte%5B%5D)">getBlockHeader(byte[])</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageInMemory</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/BlockchainStorage.html#getBlockHeaderByHeight(int)">getBlockHeaderByHeight(int)</a></span> - Method in interface com.bradyrussell.uiscoin.blockchain.<a href="com/bradyrussell/uiscoin/blockchain/BlockchainStorage.html" title="interface in com.bradyrussell.uiscoin.blockchain">BlockchainStorage</a></dt>
 <dd>
 <div class="block">Retrieves the block header associated with the specified block height.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html#getBlockHeaderByHeight(int)">getBlockHeaderByHeight(int)</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageEphemeral</a></dt>
+<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html#getBlockHeaderByHeight(int)">getBlockHeaderByHeight(int)</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageInMemory</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/BlockchainStorage.html#getBlockHeight()">getBlockHeight()</a></span> - Method in interface com.bradyrussell.uiscoin.blockchain.<a href="com/bradyrussell/uiscoin/blockchain/BlockchainStorage.html" title="interface in com.bradyrussell.uiscoin.blockchain">BlockchainStorage</a></dt>
 <dd>
 <div class="block">Gets the current local block height, can be thought of as the index of the most recent block (zero-indexed).</div>
 </dd>
-<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html#getBlockHeight()">getBlockHeight()</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageEphemeral</a></dt>
+<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html#getBlockHeight()">getBlockHeight()</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageInMemory</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/node/PeerPacketType.html#getByHeader(byte)">getByHeader(byte)</a></span> - Static method in enum com.bradyrussell.uiscoin.node.<a href="com/bradyrussell/uiscoin/node/PeerPacketType.html" title="enum in com.bradyrussell.uiscoin.node">PeerPacketType</a></dt>
 <dd>&nbsp;</dd>
@@ -743,13 +743,13 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Returns the most recent block in the local blockchain.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html#getHighestBlock()">getHighestBlock()</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageEphemeral</a></dt>
+<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html#getHighestBlock()">getHighestBlock()</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageInMemory</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/BlockchainStorage.html#getHighestBlockHash()">getHighestBlockHash()</a></span> - Method in interface com.bradyrussell.uiscoin.blockchain.<a href="com/bradyrussell/uiscoin/blockchain/BlockchainStorage.html" title="interface in com.bradyrussell.uiscoin.blockchain">BlockchainStorage</a></dt>
 <dd>
 <div class="block">Returns the block hash of the most recent block in the local blockchain.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html#getHighestBlockHash()">getHighestBlockHash()</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageEphemeral</a></dt>
+<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html#getHighestBlockHash()">getHighestBlockHash()</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageInMemory</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/transaction/Transaction.html#getInputTotal()">getInputTotal()</a></span> - Method in class com.bradyrussell.uiscoin.transaction.<a href="com/bradyrussell/uiscoin/transaction/Transaction.html" title="class in com.bradyrussell.uiscoin.transaction">Transaction</a></dt>
 <dd>&nbsp;</dd>
@@ -765,13 +765,13 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Returns the mempool transaction specified.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html#getMempoolTransaction(byte%5B%5D)">getMempoolTransaction(byte[])</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageEphemeral</a></dt>
+<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html#getMempoolTransaction(byte%5B%5D)">getMempoolTransaction(byte[])</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageInMemory</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/BlockchainStorage.html#getMempoolTransactions()">getMempoolTransactions()</a></span> - Method in interface com.bradyrussell.uiscoin.blockchain.<a href="com/bradyrussell/uiscoin/blockchain/BlockchainStorage.html" title="interface in com.bradyrussell.uiscoin.blockchain">BlockchainStorage</a></dt>
 <dd>
 <div class="block">Returns the current set of mempool (pending) transactions.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html#getMempoolTransactions()">getMempoolTransactions()</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageEphemeral</a></dt>
+<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html#getMempoolTransactions()">getMempoolTransactions()</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageInMemory</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/transaction/Transaction.html#getOutputTotal()">getOutputTotal()</a></span> - Method in class com.bradyrussell.uiscoin.transaction.<a href="com/bradyrussell/uiscoin/transaction/Transaction.html" title="class in com.bradyrussell.uiscoin.transaction">Transaction</a></dt>
 <dd>&nbsp;</dd>
@@ -819,25 +819,25 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Retrieve a transaction by its hash.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html#getTransaction(byte%5B%5D)">getTransaction(byte[])</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageEphemeral</a></dt>
+<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html#getTransaction(byte%5B%5D)">getTransaction(byte[])</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageInMemory</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/BlockchainStorage.html#getTransactionInput(byte%5B%5D,int)">getTransactionInput(byte[], int)</a></span> - Method in interface com.bradyrussell.uiscoin.blockchain.<a href="com/bradyrussell/uiscoin/blockchain/BlockchainStorage.html" title="interface in com.bradyrussell.uiscoin.blockchain">BlockchainStorage</a></dt>
 <dd>
 <div class="block">Returns the transaction input from the transaction hash and index.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html#getTransactionInput(byte%5B%5D,int)">getTransactionInput(byte[], int)</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageEphemeral</a></dt>
+<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html#getTransactionInput(byte%5B%5D,int)">getTransactionInput(byte[], int)</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageInMemory</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/BlockchainStorage.html#getTransactionOutput(byte%5B%5D,int)">getTransactionOutput(byte[], int)</a></span> - Method in interface com.bradyrussell.uiscoin.blockchain.<a href="com/bradyrussell/uiscoin/blockchain/BlockchainStorage.html" title="interface in com.bradyrussell.uiscoin.blockchain">BlockchainStorage</a></dt>
 <dd>
 <div class="block">Returns the transaction output from the transaction hash and index.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html#getTransactionOutput(byte%5B%5D,int)">getTransactionOutput(byte[], int)</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageEphemeral</a></dt>
+<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html#getTransactionOutput(byte%5B%5D,int)">getTransactionOutput(byte[], int)</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageInMemory</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/BlockchainStorage.html#getUnspentTransactionOutputs()">getUnspentTransactionOutputs()</a></span> - Method in interface com.bradyrussell.uiscoin.blockchain.<a href="com/bradyrussell/uiscoin/blockchain/BlockchainStorage.html" title="interface in com.bradyrussell.uiscoin.blockchain">BlockchainStorage</a></dt>
 <dd>
 <div class="block">Returns the local UTXO (unspent transaction output) set.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html#getUnspentTransactionOutputs()">getUnspentTransactionOutputs()</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageEphemeral</a></dt>
+<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html#getUnspentTransactionOutputs()">getUnspentTransactionOutputs()</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageInMemory</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/script/ScriptOperator.html#GREATERTHAN">GREATERTHAN</a></span> - com.bradyrussell.uiscoin.script.<a href="com/bradyrussell/uiscoin/script/ScriptOperator.html" title="enum in com.bradyrussell.uiscoin.script">ScriptOperator</a></dt>
 <dd>&nbsp;</dd>
@@ -857,13 +857,13 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Returns whether the local blockchain contains a block corresponding to the provided block hash.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html#hasBlock(byte%5B%5D)">hasBlock(byte[])</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageEphemeral</a></dt>
+<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html#hasBlock(byte%5B%5D)">hasBlock(byte[])</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageInMemory</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/BlockchainStorage.html#hasBlockHeader(byte%5B%5D)">hasBlockHeader(byte[])</a></span> - Method in interface com.bradyrussell.uiscoin.blockchain.<a href="com/bradyrussell/uiscoin/blockchain/BlockchainStorage.html" title="interface in com.bradyrussell.uiscoin.blockchain">BlockchainStorage</a></dt>
 <dd>
 <div class="block">Returns whether the local blockchain contains a block header corresponding to the provided block hash.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html#hasBlockHeader(byte%5B%5D)">hasBlockHeader(byte[])</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageEphemeral</a></dt>
+<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html#hasBlockHeader(byte%5B%5D)">hasBlockHeader(byte[])</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageInMemory</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/bradyrussell/uiscoin/Hash.html" title="class in com.bradyrussell.uiscoin"><span class="typeNameLink">Hash</span></a> - Class in <a href="com/bradyrussell/uiscoin/package-summary.html">com.bradyrussell.uiscoin</a></dt>
 <dd>&nbsp;</dd>
@@ -881,13 +881,13 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Returns whether the mempool contains the specified transaction.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html#hasMempoolTransaction(byte%5B%5D)">hasMempoolTransaction(byte[])</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageEphemeral</a></dt>
+<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html#hasMempoolTransaction(byte%5B%5D)">hasMempoolTransaction(byte[])</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageInMemory</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/BlockchainStorage.html#hasTransaction(byte%5B%5D)">hasTransaction(byte[])</a></span> - Method in interface com.bradyrussell.uiscoin.blockchain.<a href="com/bradyrussell/uiscoin/blockchain/BlockchainStorage.html" title="interface in com.bradyrussell.uiscoin.blockchain">BlockchainStorage</a></dt>
 <dd>
 <div class="block">Returns whether a transaction with the specified hash exist on the local blockchain.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html#hasTransaction(byte%5B%5D)">hasTransaction(byte[])</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageEphemeral</a></dt>
+<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html#hasTransaction(byte%5B%5D)">hasTransaction(byte[])</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageInMemory</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/block/Block.html#Header">Header</a></span> - Variable in class com.bradyrussell.uiscoin.block.<a href="com/bradyrussell/uiscoin/block/Block.html" title="class in com.bradyrussell.uiscoin.block">Block</a></dt>
 <dd>&nbsp;</dd>
@@ -957,13 +957,13 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Called to determine whether it is safe to perform blockchain operations.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html#isOperational()">isOperational()</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageEphemeral</a></dt>
+<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html#isOperational()">isOperational()</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageInMemory</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/BlockchainStorage.html#isTransactionOutputSpent(byte%5B%5D,int)">isTransactionOutputSpent(byte[], int)</a></span> - Method in interface com.bradyrussell.uiscoin.blockchain.<a href="com/bradyrussell/uiscoin/blockchain/BlockchainStorage.html" title="interface in com.bradyrussell.uiscoin.blockchain">BlockchainStorage</a></dt>
 <dd>
 <div class="block">Returns whether the specified transaction output has been spent.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html#isTransactionOutputSpent(byte%5B%5D,int)">isTransactionOutputSpent(byte[], int)</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageEphemeral</a></dt>
+<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html#isTransactionOutputSpent(byte%5B%5D,int)">isTransactionOutputSpent(byte[], int)</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageInMemory</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/bradyrussell/uiscoin/IVerifiable.html" title="interface in com.bradyrussell.uiscoin"><span class="typeNameLink">IVerifiable</span></a> - Interface in <a href="com/bradyrussell/uiscoin/package-summary.html">com.bradyrussell.uiscoin</a></dt>
 <dd>&nbsp;</dd>
@@ -1233,7 +1233,7 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Called once to perform any initialization before accessing the blockchain.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html#open()">open()</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageEphemeral</a></dt>
+<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html#open()">open()</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageInMemory</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageSingleFile.html#open()">open()</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageSingleFile.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageSingleFile</a></dt>
 <dd>&nbsp;</dd>
@@ -1335,19 +1335,19 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Store a block on the local blockchain.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html#putBlock(com.bradyrussell.uiscoin.block.Block)">putBlock(Block)</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageEphemeral</a></dt>
+<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html#putBlock(com.bradyrussell.uiscoin.block.Block)">putBlock(Block)</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageInMemory</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/BlockchainStorage.html#putBlockHeader(com.bradyrussell.uiscoin.block.BlockHeader)">putBlockHeader(BlockHeader)</a></span> - Method in interface com.bradyrussell.uiscoin.blockchain.<a href="com/bradyrussell/uiscoin/blockchain/BlockchainStorage.html" title="interface in com.bradyrussell.uiscoin.blockchain">BlockchainStorage</a></dt>
 <dd>
 <div class="block">Store a block header on the local blockchain.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html#putBlockHeader(com.bradyrussell.uiscoin.block.BlockHeader)">putBlockHeader(BlockHeader)</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageEphemeral</a></dt>
+<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html#putBlockHeader(com.bradyrussell.uiscoin.block.BlockHeader)">putBlockHeader(BlockHeader)</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageInMemory</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/BlockchainStorage.html#putMempoolTransaction(com.bradyrussell.uiscoin.transaction.Transaction)">putMempoolTransaction(Transaction)</a></span> - Method in interface com.bradyrussell.uiscoin.blockchain.<a href="com/bradyrussell/uiscoin/blockchain/BlockchainStorage.html" title="interface in com.bradyrussell.uiscoin.blockchain">BlockchainStorage</a></dt>
 <dd>
 <div class="block">Stores the specified transaction in the mempool.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html#putMempoolTransaction(com.bradyrussell.uiscoin.transaction.Transaction)">putMempoolTransaction(Transaction)</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageEphemeral</a></dt>
+<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html#putMempoolTransaction(com.bradyrussell.uiscoin.transaction.Transaction)">putMempoolTransaction(Transaction)</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageInMemory</a></dt>
 <dd>&nbsp;</dd>
 </dl>
 <a id="I:R">
@@ -1359,7 +1359,7 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Remove the specified transaction from the mempool.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html#removeMempoolTransaction(byte%5B%5D)">removeMempoolTransaction(byte[])</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageEphemeral</a></dt>
+<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html#removeMempoolTransaction(byte%5B%5D)">removeMempoolTransaction(byte[])</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageInMemory</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/HTTP.html#request(java.lang.String,java.lang.String,java.util.Map,java.lang.String)">request(String, String, Map&lt;String, String&gt;, String)</a></span> - Static method in class com.bradyrussell.uiscoin.<a href="com/bradyrussell/uiscoin/HTTP.html" title="class in com.bradyrussell.uiscoin">HTTP</a></dt>
 <dd>&nbsp;</dd>
@@ -1811,7 +1811,7 @@ the order they are declared.</div>
 <dd>
 <div class="block">Verify the validity of the entire blockchain.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html#verify()">verify()</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageEphemeral</a></dt>
+<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html#verify()">verify()</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageInMemory</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/IVerifiable.html#verify()">verify()</a></span> - Method in interface com.bradyrussell.uiscoin.<a href="com/bradyrussell/uiscoin/IVerifiable.html" title="interface in com.bradyrussell.uiscoin">IVerifiable</a></dt>
 <dd>&nbsp;</dd>
@@ -1841,7 +1841,7 @@ the order they are declared.</div>
 <dd>
 <div class="block">Verify whether a range of the local blockchain is valid.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html#verifyRange(int,int)">verifyRange(int, int)</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageEphemeral.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageEphemeral</a></dt>
+<dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html#verifyRange(int,int)">verifyRange(int, int)</a></span> - Method in class com.bradyrussell.uiscoin.blockchain.storage.<a href="com/bradyrussell/uiscoin/blockchain/storage/BlockchainStorageInMemory.html" title="class in com.bradyrussell.uiscoin.blockchain.storage">BlockchainStorageInMemory</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/bradyrussell/uiscoin/script/ScriptOperator.html#VERIFYSIG">VERIFYSIG</a></span> - com.bradyrussell.uiscoin.script.<a href="com/bradyrussell/uiscoin/script/ScriptOperator.html" title="enum in com.bradyrussell.uiscoin.script">ScriptOperator</a></dt>
 <dd>

@@ -4,15 +4,13 @@ package com.bradyrussell.uiscoin.blockchain.storage;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collection;
 
 import com.bradyrussell.uiscoin.block.Block;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-public class BlockchainStorageSingleFile extends BlockchainStorageEphemeral {
+public class BlockchainStorageSingleFile extends BlockchainStorageInMemory {
     private final Path databasePath;
 
     public BlockchainStorageSingleFile(Path databasePath) {

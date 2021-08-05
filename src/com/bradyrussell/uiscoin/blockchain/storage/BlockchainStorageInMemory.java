@@ -14,7 +14,7 @@ import com.bradyrussell.uiscoin.transaction.Transaction;
 import com.bradyrussell.uiscoin.transaction.TransactionInput;
 import com.bradyrussell.uiscoin.transaction.TransactionOutput;
 
-public class BlockchainStorageEphemeral implements BlockchainStorage {
+public class BlockchainStorageInMemory implements BlockchainStorage {
     protected final ArrayList<Block> blocksByHeight = new ArrayList<>(); // this should be all that needs stored, everything else can be reconstructed
     private final HashMap<String, Block> blocks = new HashMap<>();
     private final HashMap<String, byte[]> blockHashesByTransaction = new HashMap<>();
