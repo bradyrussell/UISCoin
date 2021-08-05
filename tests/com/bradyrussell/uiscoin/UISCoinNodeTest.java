@@ -46,6 +46,13 @@ public class UISCoinNodeTest {
     }
 
     @Test
+    @DisplayName("PeerAddress Test") //
+    void TestPeerAddress() throws IOException, InterruptedException {
+        PeerAddress peerAddress = new PeerAddress(InetAddress.getByName("google.com"), 123);
+        System.out.println(peerAddress.toString());
+    }
+
+    @Test
     @DisplayName("Basic Node Test") //
     void TestNode() throws IOException, InterruptedException {
         UISCoinNode a = new UISCoinNode(new BlockchainStorageInMemory());

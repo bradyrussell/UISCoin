@@ -10,7 +10,7 @@ public enum MagicBytes {
     AddressVersion3(0xb3),
     //...
     AddressVersionP2SH(0xbf),
-    ProtocolVersion(0x02),
+    ProtocolVersion(0x03),
     ;
 
     public final byte Value;
