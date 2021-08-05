@@ -126,13 +126,17 @@ public class UISCoinNode {
     }
 
     public void start() {
+        start(MagicNumbers.NodeP2PPort.Value);
+    }
+
+    public void start(int Port) {
         bossGroup = new NioEventLoopGroup(1);
         workerGroup = new NioEventLoopGroup();
         try {
             serverChannel = new ServerBootstrap().group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
                     .handler(new LoggingHandler(LogLevel.INFO))
-                    .childHandler(new NodeP2PServerInitializer(this)).bind(MagicNumbers.NodeP2PPort.Value).sync().channel();
+                    .childHandler(new NodeP2PServerInitializer(this)).bind(Port).sync().channel();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
