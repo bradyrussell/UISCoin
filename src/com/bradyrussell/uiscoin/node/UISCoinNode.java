@@ -34,14 +34,14 @@ import io.netty.util.concurrent.GlobalEventExecutor;
 public class UISCoinNode {
     private static final Logger Log = Logger.getLogger(UISCoinNode.class.getName());
 
-    public ArrayList<InetAddress> peersEverSeen = new ArrayList<>();
+    public ArrayList<PeerAddress> peersEverSeen = new ArrayList<>();
 
     private EventLoopGroup bossGroup;
     private EventLoopGroup workerGroup;
+
     private Channel serverChannel;
 
     private final EventLoopGroup peerGroup = new NioEventLoopGroup();
-    private final Bootstrap peerBootstrap = new Bootstrap().group(peerGroup).channel(NioSocketChannel.class);
 
     public ChannelGroup nodeClients = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE); // nodes connections to me
     public ChannelGroup peerClients = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE); // my connection to other nodes
@@ -54,27 +54,27 @@ public class UISCoinNode {
         this.HighestSeenBlockHeight = Blockchain.get().getBlockHeight(); // we have not seen another nodes blockheight yet
     }
 
-    public void connectToPeer(InetAddress Address){
-        if(getPeers().contains(Address)) {
+    public void connectToPeer(PeerAddress address) {
+        if (getPeers().contains(address)) {
             Log.info("Already connected to this peer!");
             return;
         }
 
-        peerBootstrap.handler(new NodeP2PClientInitializer(this));
-
-        // Make a new connection.
-        ChannelFuture sync;
-        sync = peerBootstrap.connect(Address, MagicNumbers.NodeP2PPort.Value).addListener((ChannelFutureListener) channelFuture -> {
-            peerClients.add(channelFuture.channel());
-            if(channelFuture.isSuccess()) {
-                Log.info("Connection established with peer " + channelFuture.channel().remoteAddress().toString());
-                if(!peersEverSeen.contains(Address)) peersEverSeen.add(Address);
-            }
-        })/*.sync()*/;
-        // ChannelFuture closeFuture = sync.channel().closeFuture();
+        new Bootstrap()
+                .group(peerGroup)
+                .channel(NioSocketChannel.class)
+                .handler(new NodeP2PClientInitializer(this))
+                .connect(address.getAddress(), address.getPort())
+                .addListener((ChannelFutureListener) channelFuture -> {
+                    peerClients.add(channelFuture.channel());
+                    if (channelFuture.isSuccess()) {
+                        Log.info("Connection established with peer " + channelFuture.channel().remoteAddress().toString());
+                        if (!peersEverSeen.contains(address)) peersEverSeen.add(address);
+                    }
+                });
     }
 
-    public void requestBlockHeightFromPeers(){
+    public void requestBlockHeightFromPeers() {
         ByteBuf buffer = Unpooled.buffer();
         buffer.writeByte(PeerPacketType.HEIGHTQUERY.Header);
 
@@ -83,7 +83,7 @@ public class UISCoinNode {
     }
 
     @Deprecated
-    public void requestBlockChainFromPeers(int BlockHeight){
+    public void requestBlockChainFromPeers(int BlockHeight) {
         ByteBuf buffer = Unpooled.buffer();
         buffer.writeByte(PeerPacketType.SYNC.Header);
         buffer.writeBoolean(false);
@@ -93,67 +93,64 @@ public class UISCoinNode {
         nodeClients.writeAndFlush(buffer);
     }
 
-    public void requestBlockFromPeers(BlockRequest request){
+    public void requestBlockFromPeers(BlockRequest request) {
         peerClients.writeAndFlush(request);
         nodeClients.writeAndFlush(request);
     }
 
-    public void broadcastBlockToPeers(Block block){
+    public void broadcastBlockToPeers(Block block) {
         peerClients.writeAndFlush(block);
         nodeClients.writeAndFlush(block);
     }
 
-    public void requestMemPoolFromPeers(){
+    public void requestMemPoolFromPeers() {
         ByteBuf buffer = Unpooled.buffer();
         buffer.writeByte(PeerPacketType.MEMPOOL.Header);
         peerClients.writeAndFlush(buffer.copy());
         nodeClients.writeAndFlush(buffer);
     }
 
-    public void broadcastBlockHeaderToPeers(BlockHeaderResponse blockHeaderResponse){
+    public void broadcastBlockHeaderToPeers(BlockHeaderResponse blockHeaderResponse) {
         peerClients.writeAndFlush(blockHeaderResponse);
         nodeClients.writeAndFlush(blockHeaderResponse);
     }
 
-    public void broadcastTransactionToPeers(Transaction transaction){
+    public void broadcastTransactionToPeers(Transaction transaction) {
         peerClients.writeAndFlush(transaction);
         nodeClients.writeAndFlush(transaction);
     }
 
-    public void broadcastPeerToPeers(InetAddress address){
+    public void broadcastPeerToPeers(InetAddress address) {
         peerClients.writeAndFlush(address);
         nodeClients.writeAndFlush(address);
     }
 
-    public void start(){
+    public void start() {
         bossGroup = new NioEventLoopGroup(1);
         workerGroup = new NioEventLoopGroup();
-        ServerBootstrap b = new ServerBootstrap();
-        b.group(bossGroup, workerGroup)
-                .channel(NioServerSocketChannel.class)
-                .handler(new LoggingHandler(LogLevel.INFO))
-                .childHandler(new NodeP2PServerInitializer(this));
-
         try {
-            serverChannel = b.bind(MagicNumbers.NodeP2PPort.Value).sync().channel();
+            serverChannel = new ServerBootstrap().group(bossGroup, workerGroup)
+                    .channel(NioServerSocketChannel.class)
+                    .handler(new LoggingHandler(LogLevel.INFO))
+                    .childHandler(new NodeP2PServerInitializer(this)).bind(MagicNumbers.NodeP2PPort.Value).sync().channel();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
 
-    public void stop(){
+    public void stop() {
         try {
-            if(peerClients != null) peerClients.close().sync();
-            if(nodeClients != null) nodeClients.close().sync();
+            if (peerClients != null) peerClients.close().sync();
+            if (nodeClients != null) nodeClients.close().sync();
             Log.info("Closed peer connections.");
 
-            if(serverChannel != null) {
+            if (serverChannel != null) {
                 serverChannel.close().sync();
                 serverChannel.eventLoop().shutdownGracefully().sync();
             }
 
-            if(bossGroup != null) bossGroup.shutdownGracefully();
-            if(workerGroup != null) workerGroup.shutdownGracefully();
+            if (bossGroup != null) bossGroup.shutdownGracefully();
+            if (workerGroup != null) workerGroup.shutdownGracefully();
             peerGroup.shutdownGracefully().sync();
             Log.info("Closed channel and shutdown worker event groups.");
             Log.info("Shutting down...");
@@ -162,38 +159,38 @@ public class UISCoinNode {
         }
     }
 
-    public void retryPeers(){
-        ArrayList<InetAddress> peersToRetry = new ArrayList<>(peersEverSeen);
-
-        peersToRetry.removeAll(getPeers());
-
-        for (InetAddress inetAddress : peersToRetry) {
-            connectToPeer(inetAddress);
+    public void retryPeers() {
+        ArrayList<PeerAddress> peersToRetry = new ArrayList<>(peersEverSeen);
+        HashSet<PeerAddress> connectedPeers = new HashSet<>(getPeers());
+        for (PeerAddress peerAddress : peersToRetry) {
+            if(!connectedPeers.contains(peerAddress)) connectToPeer(peerAddress);
         }
     }
 
-    public List<InetAddress> getPeers(){
-        List<InetAddress> addresses = new ArrayList<>();
+    public List<PeerAddress> getPeers() {
+        List<PeerAddress> addresses = new ArrayList<>();
 
-        if(nodeClients != null)
-        nodeClients.forEach((channel -> {
-            if(channel.isActive() && channel.isOpen()) {
-                InetAddress address = ((InetSocketAddress) channel.remoteAddress()).getAddress();
-                if (!addresses.contains(address)) {
-                    addresses.add(address);
+        if (nodeClients != null)
+            nodeClients.forEach((channel -> {
+                if (channel.isActive() && channel.isOpen()) {
+                    InetSocketAddress inetSocketAddress = (InetSocketAddress) channel.remoteAddress();
+                    PeerAddress address = new PeerAddress(inetSocketAddress.getAddress(), inetSocketAddress.getPort());
+                    if (!addresses.contains(address)) {
+                        addresses.add(address);
+                    }
                 }
-            }
-        }));
+            }));
 
-        if(peerClients != null)
-        peerClients.forEach((channel -> {
-            if(channel.isActive() && channel.isOpen()) {
-                InetAddress address = ((InetSocketAddress) channel.remoteAddress()).getAddress();
-                if (!addresses.contains(address)) {
-                    addresses.add(address);
+        if (peerClients != null)
+            peerClients.forEach((channel -> {
+                if (channel.isActive() && channel.isOpen()) {
+                    InetSocketAddress inetSocketAddress = (InetSocketAddress) channel.remoteAddress();
+                    PeerAddress address = new PeerAddress(inetSocketAddress.getAddress(), inetSocketAddress.getPort());
+                    if (!addresses.contains(address)) {
+                        addresses.add(address);
+                    }
                 }
-            }
-        }));
+            }));
 
         return addresses;
     }
