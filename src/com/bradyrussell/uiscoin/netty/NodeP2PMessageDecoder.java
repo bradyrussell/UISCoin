@@ -149,9 +149,9 @@ public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
 
                     Log.info("3 Received block height "+BlockHeight);
 
-                    if(BlockHeight > node.HighestSeenBlockHeight) {
+                    if(BlockHeight > node.HighestSeenBlockHeight.get()) {
                         Log.info("4 This is a longer chain! Syncing...");
-                        node.HighestSeenBlockHeight = BlockHeight;
+                        node.HighestSeenBlockHeight.set(BlockHeight);
 
                         ByteBuf buffer = Unpooled.buffer();
                         buffer.writeByte(PeerPacketType.SYNC.Header);

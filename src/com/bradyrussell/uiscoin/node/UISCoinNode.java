@@ -4,6 +4,7 @@ package com.bradyrussell.uiscoin.node;
 import java.net.InetSocketAddress;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 
 import com.bradyrussell.uiscoin.MagicNumbers;
@@ -45,8 +46,7 @@ public class UISCoinNode {
     public final ChannelGroup peerClients = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE); // my connection to other nodes
 
     public final long nodeId = ThreadLocalRandom.current().nextLong();
-
-    public int HighestSeenBlockHeight;
+    public final AtomicInteger HighestSeenBlockHeight;
     
     private final BlockchainStorage blockchain;
 
@@ -56,7 +56,9 @@ public class UISCoinNode {
 
     public UISCoinNode(BlockchainStorage blockchain) {
         this.blockchain = blockchain;
-        this.HighestSeenBlockHeight = this.blockchain.getBlockHeight(); // we have not seen another nodes blockheight yet
+        if(!blockchain.isOperational()) blockchain.open();
+        if(!blockchain.isOperational()) throw new RuntimeException("Cannot start node without an operational blockchain storage!");
+        this.HighestSeenBlockHeight = new AtomicInteger(blockchain.getBlockHeight()); // we have not seen another nodes blockheight yet
     }
 
     public void connectToPeer(PeerAddress address) {
