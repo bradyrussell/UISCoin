@@ -28,44 +28,44 @@ public class BlockBuilder {
         this.storage = storage;
     }
 
-    private BlockHeader getOrCreateHeader(){
-        if(block.Header == null) {
+    private BlockHeader getOrCreateHeader() {
+        if (block.Header == null) {
             block.Header = new BlockHeader();
         }
         return block.Header;
     }
 
-    public BlockBuilder setVersion(int Version){
+    public BlockBuilder setVersion(int Version) {
         getOrCreateHeader().Version = Version;
         return this;
     }
 
-    public BlockBuilder setHashPreviousBlock(byte[] PreviousBlockHash){
+    public BlockBuilder setHashPreviousBlock(byte[] PreviousBlockHash) {
         getOrCreateHeader().HashPreviousBlock = PreviousBlockHash;
         return this;
     }
 
-    public BlockBuilder setTimestamp(long Time){
+    public BlockBuilder setTimestamp(long Time) {
         getOrCreateHeader().Time = Time;
         return this;
     }
 
-    public BlockBuilder setBlockHeight(int BlockHeight){
+    public BlockBuilder setBlockHeight(int BlockHeight) {
         getOrCreateHeader().BlockHeight = BlockHeight;
         return this;
     }
 
-    public BlockBuilder setNonce(int Nonce){
+    public BlockBuilder setNonce(int Nonce) {
         getOrCreateHeader().Nonce = Nonce;
         return this;
     }
 
-    public BlockBuilder calculateMerkleRoot(){
+    public BlockBuilder calculateMerkleRoot() {
         getOrCreateHeader().HashMerkleRoot = block.calculateMerkleRoot();
         return this;
     }
 
-    public BlockBuilder setDifficultyTarget(int DifficultyTarget){
+    public BlockBuilder setDifficultyTarget(int DifficultyTarget) {
         getOrCreateHeader().DifficultyTarget = DifficultyTarget;
         return this;
     }
@@ -76,19 +76,19 @@ public class BlockBuilder {
         return this;
     }
 
-    public BlockBuilder setCoinbase(Transaction coinbase){
+    public BlockBuilder setCoinbase(Transaction coinbase) {
         block.setCoinbaseTransaction(coinbase);
         return this;
     }
 
-    public BlockBuilder addTransaction(Transaction transaction){
+    public BlockBuilder addTransaction(Transaction transaction) {
         block.Transactions.add(transaction);
         return this;
     }
 
-    public BlockBuilder addMempoolTransactions(int SizeLimit){
+    public BlockBuilder addMempoolTransactions(int SizeLimit) {
         List<Transaction> mempool = new ArrayList<>(storage.getMempoolTransactions());
-        mempool.sort((a,b)->{
+        mempool.sort((a, b) -> {
             long ASecondsOld = Instant.now().getEpochSecond() - a.TimeStamp;
             long BSecondsOld = Instant.now().getEpochSecond() - b.TimeStamp;
 
@@ -103,9 +103,9 @@ public class BlockBuilder {
         ArrayList<byte[]> toRemove = new ArrayList<>();
 
         int size = 0;
-        for(Transaction t:mempool){
+        for (Transaction t : mempool) {
             try {
-                if(!t.verify(storage)  || !t.verifyInputsUnspent(storage)) {
+                if (!t.verify(storage) || !t.verifyInputsUnspent(storage)) {
                     toRemove.add(t.getHash());
                     continue;
                 }
@@ -113,7 +113,7 @@ public class BlockBuilder {
                 e.printStackTrace();
             }
 
-            if((size + t.getSize()) < SizeLimit) {
+            if ((size + t.getSize()) < SizeLimit) {
                 block.Transactions.add(t);
             } else {
                 break;
@@ -126,19 +126,20 @@ public class BlockBuilder {
         return this;
     }
 
-    public BlockBuilder addCoinbase(Transaction transaction){
+    public BlockBuilder addCoinbase(Transaction transaction) {
         block.addCoinbaseTransaction(transaction);
         return this;
     }
 
     public BlockBuilder addCoinbasePayToPublicKeyHash(byte[] PublicKeyHash) throws NoSuchTransactionException, NoSuchBlockException, InvalidBlockException {
-        return addCoinbasePayToPublicKeyHash(PublicKeyHash,"Default Coinbase Message");
+        return addCoinbasePayToPublicKeyHash(PublicKeyHash, "Default Coinbase Message");
     }
+
     public BlockBuilder addCoinbasePayToPublicKeyHash(byte[] PublicKeyHash, String CoinbaseMessage) throws NoSuchTransactionException, NoSuchBlockException, InvalidBlockException {
-        if(block.Transactions.size() == 0) {
+        if (block.Transactions.size() == 0) {
             Log.warning("Coinbase transaction should be added last in order to calculate fees!");
         }
-        if(block.getFees(storage) <= 0) {
+        if (block.getFees(storage) <= 0) {
             Log.warning("Coinbase transaction does not collect any fees!");
         }
         Transaction transaction = new TransactionBuilder(storage).setVersion(1).setLockTime(0)
@@ -148,7 +149,7 @@ public class BlockBuilder {
         return this;
     }
 
-    public BlockBuilder shuffleTransactions(){
+    public BlockBuilder shuffleTransactions() {
         Transaction coinbase = block.Transactions.get(0);
         block.Transactions.remove(0);
         Collections.shuffle(block.Transactions);
@@ -157,7 +158,21 @@ public class BlockBuilder {
         return this;
     }
 
-    public Block get(){
+    public static Block createBlockFromMempoolWithCoinbasePayToPublicKeyHash(BlockchainStorage storage, byte[] PublicKeyHash, String CoinbaseMessage, int SizeLimit) throws NoSuchBlockException, InvalidBlockException, NoSuchTransactionException {
+        return new BlockBuilder(storage)
+                .setTimestamp(Instant.now().getEpochSecond())
+                .setHashPreviousBlock(storage.getHighestBlockHash())
+                .setVersion(1)
+                .setBlockHeight(storage.getBlockHeight() + 1)
+                .calculateDifficultyTarget()
+                .addMempoolTransactions(SizeLimit)
+                .addCoinbasePayToPublicKeyHash(PublicKeyHash, CoinbaseMessage)
+                .shuffleTransactions()
+                .calculateMerkleRoot()
+                .get();
+    }
+
+    public Block get() {
         return block;
     }
 }
