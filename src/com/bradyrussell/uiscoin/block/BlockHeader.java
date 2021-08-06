@@ -62,6 +62,16 @@ public class BlockHeader implements SerializableAsBinaryData, VerifiableWithBloc
         BlockHeight = blockHeight;
     }
 
+    public BlockHeader(BlockHeader toCopy) {
+        Version = toCopy.Version;
+        HashPreviousBlock = toCopy.HashPreviousBlock;
+        HashMerkleRoot = toCopy.HashMerkleRoot;
+        Time = toCopy.Time;
+        DifficultyTarget = toCopy.DifficultyTarget;
+        Nonce = toCopy.Nonce;
+        BlockHeight = toCopy.BlockHeight;
+    }
+
     @Override
     public byte[] getBinaryData() {
         ByteBuffer buffer = ByteBuffer.allocate(getSize());
