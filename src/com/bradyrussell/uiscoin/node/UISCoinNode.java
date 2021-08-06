@@ -151,8 +151,8 @@ public class UISCoinNode {
 
     public void stop() {
         try {
-            if (peerClients != null) peerClients.close().sync();
-            if (nodeClients != null) nodeClients.close().sync();
+            peerClients.close().sync();
+            nodeClients.close().sync();
             Log.info("Closed peer connections.");
 
             if (serverChannel != null) {
@@ -181,27 +181,25 @@ public class UISCoinNode {
     public List<PeerAddress> getPeers() {
         List<PeerAddress> addresses = new ArrayList<>();
 
-        if (nodeClients != null)
-            nodeClients.forEach((channel -> {
-                if (channel.isActive() && channel.isOpen()) {
-                    InetSocketAddress inetSocketAddress = (InetSocketAddress) channel.remoteAddress();
-                    PeerAddress address = new PeerAddress(inetSocketAddress.getAddress(), inetSocketAddress.getPort());
-                    if (!addresses.contains(address)) {
-                        addresses.add(address);
-                    }
+        nodeClients.forEach((channel -> {
+            if (channel.isActive() && channel.isOpen()) {
+                InetSocketAddress inetSocketAddress = (InetSocketAddress) channel.remoteAddress();
+                PeerAddress address = new PeerAddress(inetSocketAddress.getAddress(), inetSocketAddress.getPort());
+                if (!addresses.contains(address)) {
+                    addresses.add(address);
                 }
-            }));
+            }
+        }));
 
-        if (peerClients != null)
-            peerClients.forEach((channel -> {
-                if (channel.isActive() && channel.isOpen()) {
-                    InetSocketAddress inetSocketAddress = (InetSocketAddress) channel.remoteAddress();
-                    PeerAddress address = new PeerAddress(inetSocketAddress.getAddress(), inetSocketAddress.getPort());
-                    if (!addresses.contains(address)) {
-                        addresses.add(address);
-                    }
+        peerClients.forEach((channel -> {
+            if (channel.isActive() && channel.isOpen()) {
+                InetSocketAddress inetSocketAddress = (InetSocketAddress) channel.remoteAddress();
+                PeerAddress address = new PeerAddress(inetSocketAddress.getAddress(), inetSocketAddress.getPort());
+                if (!addresses.contains(address)) {
+                    addresses.add(address);
                 }
-            }));
+            }
+        }));
 
         return addresses;
     }
