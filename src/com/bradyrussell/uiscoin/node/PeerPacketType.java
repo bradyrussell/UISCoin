@@ -15,6 +15,8 @@ public enum PeerPacketType {
     REQUEST(0x10), // this indicates a request for a block/header
     SYNC(0x11), // this indicates a request for the entire blockchain
     MEMPOOL(0x12), // requests a list of transaction hashes that are in the mempool
+
+    @Deprecated
     HEIGHTQUERY(0x13), // requests the blockheight
 ;
 

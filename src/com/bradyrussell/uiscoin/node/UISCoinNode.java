@@ -81,6 +81,7 @@ public class UISCoinNode {
                 });
     }
 
+    @Deprecated
     public void requestBlockHeightFromPeers() {
         ByteBuf buffer = Unpooled.buffer();
         buffer.writeByte(PeerPacketType.HEIGHTQUERY.Header);
@@ -89,7 +90,6 @@ public class UISCoinNode {
         nodeClients.writeAndFlush(buffer);
     }
 
-    @Deprecated
     public void requestBlockChainFromPeers(int BlockHeight) {
         ByteBuf buffer = Unpooled.buffer();
         buffer.writeByte(PeerPacketType.SYNC.Header);
