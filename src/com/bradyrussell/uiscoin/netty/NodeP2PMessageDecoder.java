@@ -92,7 +92,8 @@ public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
                     list.add(true);
                 }
                 case PING -> {
-                    Log.info("3 Received ping from "+((InetSocketAddress)channelHandlerContext.channel().remoteAddress()).getAddress().getHostAddress());
+                    InetSocketAddress inetSocketAddress = (InetSocketAddress) channelHandlerContext.channel().remoteAddress();
+                    Log.info("3 Received ping from "+ inetSocketAddress.getAddress().getHostAddress()+":"+inetSocketAddress.getPort());
                     list.add(true);
                 }
                 case PEER -> {
@@ -179,7 +180,7 @@ public class NodeP2PMessageDecoder extends ReplayingDecoder<Void>{
 
                     //if(BlockHeight > node.getBlockchain().BlockHeight) BlockHeight = node.getBlockchain().BlockHeight;
 
-                    if(BlockHeight >= node.getBlockchain().getBlockHeight()) {
+                    if(BlockHeight > node.getBlockchain().getBlockHeight()) {
                         Log.info("3 Cannot serve requested block height "+BlockHeight);
                         list.add(true);
                     }
