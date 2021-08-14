@@ -541,6 +541,54 @@ public class ScriptExecution {
                     return true;
                 }
                 case COPY -> {
+                    checkInsufficientStackSize(5);
+
+                    byte[] LengthBytes = Stack.pop();
+                    checkInsufficientBytes(LengthBytes, 4);
+                    int Length = byteArrayToNumber32(LengthBytes);
+
+                    byte[] DestBeginIndexBytes = Stack.pop();
+                    checkInsufficientBytes(DestBeginIndexBytes, 4);
+                    int DestBeginIndex = byteArrayToNumber32(DestBeginIndexBytes);
+
+                    byte[] DestStackElementBytes = Stack.pop();
+                    checkInsufficientBytes(DestStackElementBytes, 4);
+                    int DestStackElementIndex = byteArrayToNumber32(DestStackElementBytes);
+
+                    byte[] SourceBeginIndexBytes = Stack.pop();
+                    checkInsufficientBytes(SourceBeginIndexBytes, 4);
+                    int SourceBeginIndex = byteArrayToNumber32(SourceBeginIndexBytes);
+
+                    byte[] SourceStackElementBytes = Stack.pop();
+                    checkInsufficientBytes(SourceStackElementBytes, 4);
+                    int SourceStackElementIndex = byteArrayToNumber32(SourceStackElementBytes);
+
+                    // get the source
+
+                    checkInsufficientStackSize(SourceStackElementIndex+1);
+                    checkNumberIsInRange(SourceStackElementIndex, 0, Stack.size()-1);
+
+                    byte[] SourceStackElement = Stack.elementAt(SourceStackElementIndex);
+
+                    checkNumberIsInRange(Length, 0, SourceStackElement.length);
+                    checkNumberIsInRange(SourceBeginIndex, 0, SourceStackElement.length);
+
+                    checkInsufficientBytes(SourceStackElement, SourceBeginIndex+Length);
+
+                    // get the dest
+                    checkInsufficientStackSize(DestStackElementIndex+1);
+                    checkNumberIsInRange(SourceStackElementIndex, 0, Stack.size()-1);
+
+                    byte[] DestStackElement = Stack.elementAt(DestStackElementIndex);
+
+                    checkNumberIsInRange(Length, 0, DestStackElement.length);
+                    checkNumberIsInRange(DestBeginIndex, 0, DestStackElement.length);
+
+                    checkInsufficientBytes(DestStackElement, DestBeginIndex+Length);
+
+                    System.arraycopy(SourceStackElement, SourceBeginIndex, DestStackElement, DestBeginIndex, Length);
+                    return true;
+
                 }
                 case ALLOC -> {
                     checkInsufficientStackSize(1);

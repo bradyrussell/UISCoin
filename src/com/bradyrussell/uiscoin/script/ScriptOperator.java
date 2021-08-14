@@ -91,7 +91,7 @@ public enum ScriptOperator {
     SET(0x1b),
 
     /**
-     * set(int SourceStackElement, int SourceBeginIndex, int DestStackElement, int DestBeginIndex, int Length)
+     * copy(int SourceStackElement, int SourceBeginIndex, int DestStackElement, int DestBeginIndex, int Length)
      * From source, copy from the beginning index to Length into StackElement at DestBeginIndex to DestBeginIndex+Length
      */
     COPY(0x1c),
