@@ -335,6 +335,45 @@ public class ScriptTest {
     }
 
     @Test
+    @DisplayName("Script Copy")
+    void TestScriptCopy() throws ScriptInvalidException, ScriptEmptyStackException, ScriptInvalidParameterException, ScriptUnsupportedOperationException {
+        byte[] C = new byte[16];
+        ThreadLocalRandom.current().nextBytes(C);
+
+        byte[] B = new byte[16];
+        ThreadLocalRandom.current().nextBytes(B);
+
+        ScriptBuilder sb = new ScriptBuilder(2048);
+        sb
+                .push(C)
+                .push(B)
+                .pushInt(0)
+                .pushInt(0)
+                .pushInt(1)
+                .pushInt(0)
+                .pushInt(16)
+                .op(ScriptOperator.COPY)
+                .op(ScriptOperator.BYTESEQUAL)
+                .op(ScriptOperator.VERIFY);
+
+        System.out.println(Arrays.toString(sb.get()));
+
+        ScriptExecution scriptExecution = new ScriptExecution();
+
+        scriptExecution.initialize(sb.get());
+
+        while (scriptExecution.step()){
+            System.out.println("Stack: \n"+scriptExecution.getStackContents());
+        }
+
+        System.out.println("Script returned: "+!scriptExecution.bScriptFailed);
+
+        System.out.println("Finished: "+scriptExecution.InstructionCounter+" / "+scriptExecution.Script.length);
+
+        assertFalse(scriptExecution.bScriptFailed);
+    }
+
+    @Test
     @DisplayName("Script This")
     void TestScriptThis() throws ScriptInvalidException, ScriptEmptyStackException, ScriptInvalidParameterException, ScriptUnsupportedOperationException {
         byte[] C = new byte[2048];
