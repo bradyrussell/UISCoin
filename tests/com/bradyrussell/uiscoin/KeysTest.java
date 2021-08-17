@@ -23,10 +23,7 @@ import com.bradyrussell.uiscoin.address.Wallet;
 import com.bradyrussell.uiscoin.script.ScriptBuilder;
 import com.bradyrussell.uiscoin.script.ScriptExecution;
 import com.bradyrussell.uiscoin.script.ScriptOperator;
-import com.bradyrussell.uiscoin.script.exception.ScriptEmptyStackException;
-import com.bradyrussell.uiscoin.script.exception.ScriptInvalidException;
-import com.bradyrussell.uiscoin.script.exception.ScriptInvalidParameterException;
-import com.bradyrussell.uiscoin.script.exception.ScriptUnsupportedOperationException;
+import com.bradyrussell.uiscoin.script.exception.*;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.RepeatedTest;
@@ -65,7 +62,7 @@ public class KeysTest {
 
             assertFalse(lockingScript.bScriptFailed);
 
-        } catch (NoSuchAlgorithmException | InvalidAlgorithmParameterException | InvalidKeyException | SignatureException | InvalidKeySpecException | ScriptUnsupportedOperationException e) {
+        } catch (NoSuchAlgorithmException | InvalidAlgorithmParameterException | InvalidKeyException | SignatureException | InvalidKeySpecException | ScriptUnsupportedOperationException | ScriptFailedException e) {
             e.printStackTrace();
         }
     }

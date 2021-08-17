@@ -18,10 +18,7 @@ import com.bradyrussell.uiscoin.BytesUtil;
 import com.bradyrussell.uiscoin.Encryption;
 import com.bradyrussell.uiscoin.Hash;
 import com.bradyrussell.uiscoin.Keys;
-import com.bradyrussell.uiscoin.script.exception.ScriptEmptyStackException;
-import com.bradyrussell.uiscoin.script.exception.ScriptInvalidException;
-import com.bradyrussell.uiscoin.script.exception.ScriptInvalidParameterException;
-import com.bradyrussell.uiscoin.script.exception.ScriptUnsupportedOperationException;
+import com.bradyrussell.uiscoin.script.exception.*;
 
 public class ScriptExecution {
     private static final Logger Log = Logger.getLogger(ScriptExecution.class.getName());
@@ -30,6 +27,7 @@ public class ScriptExecution {
     public boolean bScriptFailed = false;
     public final int MaximumStepsAllowed = 1000;
     public boolean bExtendedFlowControl = false;
+    public boolean bThrowExceptionOnFailure = false;
 
     public boolean LogScriptExecution = false;
 
@@ -99,7 +97,7 @@ public class ScriptExecution {
     public int Steps = 0;
 
     // returns whether the script should continue
-    public boolean step() throws ScriptEmptyStackException, ScriptInvalidParameterException, ScriptInvalidException, ScriptUnsupportedOperationException {
+    public boolean step() throws ScriptEmptyStackException, ScriptInvalidParameterException, ScriptInvalidException, ScriptUnsupportedOperationException, ScriptFailedException {
         if (InstructionCounter >= Script.length) return false;
 
         if(Steps++ > MaximumStepsAllowed) throw new ScriptUnsupportedOperationException("Script exceeded the instruction limit.");
@@ -1088,6 +1086,7 @@ public class ScriptExecution {
 
                     if (!(bytes.length == 1 && bytes[0] == 1)) {
                         bScriptFailed = true;
+                        if(bThrowExceptionOnFailure) throw new ScriptFailedException(ScriptUtil.PrintScriptOpCodesSurroundingHighlight(Script, InstructionCounter - 1, 5, "Script failed here!")+"\n"+ScriptUtil.PrintStack(Stack.elements(), null));
                         return false;
                     }
 

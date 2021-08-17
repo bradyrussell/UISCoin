@@ -10,10 +10,7 @@ import com.bradyrussell.uiscoin.blockchain.BlockchainStorage;
 import com.bradyrussell.uiscoin.blockchain.exception.NoSuchBlockException;
 import com.bradyrussell.uiscoin.blockchain.exception.NoSuchTransactionException;
 import com.bradyrussell.uiscoin.script.ScriptExecution;
-import com.bradyrussell.uiscoin.script.exception.ScriptEmptyStackException;
-import com.bradyrussell.uiscoin.script.exception.ScriptInvalidException;
-import com.bradyrussell.uiscoin.script.exception.ScriptInvalidParameterException;
-import com.bradyrussell.uiscoin.script.exception.ScriptUnsupportedOperationException;
+import com.bradyrussell.uiscoin.script.exception.*;
 
 public class TransactionInput  implements SerializableAsBinaryData, VerifiableWithBlockchain {
     private static final Logger Log = Logger.getLogger(TransactionInput.class.getName());
@@ -108,7 +105,7 @@ public class TransactionInput  implements SerializableAsBinaryData, VerifiableWi
 
         try{
             while(UnlockingScriptEx.step());
-        } catch (ScriptInvalidException | ScriptEmptyStackException | ScriptInvalidParameterException | ScriptUnsupportedOperationException e) {
+        } catch (ScriptInvalidException | ScriptEmptyStackException | ScriptInvalidParameterException | ScriptUnsupportedOperationException | ScriptFailedException e) {
             e.printStackTrace();
         }
 
@@ -123,7 +120,7 @@ public class TransactionInput  implements SerializableAsBinaryData, VerifiableWi
 
         try{
             while(LockingScriptEx.step());
-        } catch (ScriptInvalidException | ScriptEmptyStackException | ScriptInvalidParameterException | ScriptUnsupportedOperationException e) {
+        } catch (ScriptInvalidException | ScriptEmptyStackException | ScriptInvalidParameterException | ScriptUnsupportedOperationException | ScriptFailedException e) {
             e.printStackTrace();
         }
 

@@ -7,10 +7,7 @@ import java.util.Arrays;
 import java.util.concurrent.ThreadLocalRandom;
 
 import com.bradyrussell.uiscoin.script.*;
-import com.bradyrussell.uiscoin.script.exception.ScriptEmptyStackException;
-import com.bradyrussell.uiscoin.script.exception.ScriptInvalidException;
-import com.bradyrussell.uiscoin.script.exception.ScriptInvalidParameterException;
-import com.bradyrussell.uiscoin.script.exception.ScriptUnsupportedOperationException;
+import com.bradyrussell.uiscoin.script.exception.*;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.RepeatedTest;
@@ -18,7 +15,7 @@ import org.junit.jupiter.api.RepeatedTest;
 public class ScriptOptimizationTest {
     @RepeatedTest(100)
     @DisplayName("Script Optimization - All")
-    void TestScriptOptimization_All() throws ScriptInvalidException, ScriptEmptyStackException, ScriptInvalidParameterException, ScriptUnsupportedOperationException {
+    void TestScriptOptimization_All() throws ScriptInvalidException, ScriptEmptyStackException, ScriptInvalidParameterException, ScriptUnsupportedOperationException, ScriptFailedException {
         float A = ThreadLocalRandom.current().nextFloat();
         float B = ThreadLocalRandom.current().nextFloat();
         float C = A + B;
@@ -75,7 +72,7 @@ public class ScriptOptimizationTest {
 
     @RepeatedTest(100)
     @DisplayName("Script Optimization - Push Boolean")
-    void TestScriptOptimization_PushBoolean() throws ScriptInvalidException, ScriptEmptyStackException, ScriptInvalidParameterException, ScriptUnsupportedOperationException {
+    void TestScriptOptimization_PushBoolean() throws ScriptInvalidException, ScriptEmptyStackException, ScriptInvalidParameterException, ScriptUnsupportedOperationException, ScriptFailedException {
         float A = ThreadLocalRandom.current().nextFloat();
         float B = ThreadLocalRandom.current().nextFloat();
         float C = A + B;
@@ -132,7 +129,7 @@ public class ScriptOptimizationTest {
 
     @RepeatedTest(100)
     @DisplayName("Script Optimization - Skip Unconditional Jump")
-    void TestScriptOptimization_SkipUnconditionalJump() throws ScriptInvalidException, ScriptEmptyStackException, ScriptInvalidParameterException, ScriptUnsupportedOperationException {
+    void TestScriptOptimization_SkipUnconditionalJump() throws ScriptInvalidException, ScriptEmptyStackException, ScriptInvalidParameterException, ScriptUnsupportedOperationException, ScriptFailedException {
         float A = ThreadLocalRandom.current().nextFloat();
         float B = ThreadLocalRandom.current().nextFloat();
         float C = A + B;
