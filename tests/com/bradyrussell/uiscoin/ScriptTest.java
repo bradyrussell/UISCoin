@@ -1605,6 +1605,41 @@ public class ScriptTest {
     }
 
     @RepeatedTest(100)
+    @DisplayName("Script Extra Math")
+    void TestScriptAdvancedMath() throws ScriptInvalidException, ScriptEmptyStackException, ScriptInvalidParameterException, ScriptUnsupportedOperationException, ScriptFailedException {
+        float A = ThreadLocalRandom.current().nextFloat();
+        float B = ThreadLocalRandom.current().nextFloat();
+        float C = (float) (Math.log(B) / Math.log(A));
+
+        ScriptBuilder sb = new ScriptBuilder(32);
+        sb
+                .fromText("push "+A+" push "+B)
+                .op(ScriptOperator.LOGN)
+                .pushFloat(C)
+                .op(ScriptOperator.NUMEQUAL)
+                .op(ScriptOperator.VERIFY);
+
+
+
+        System.out.println(Arrays.toString(sb.get()));
+
+        ScriptExecution scriptExecution = new ScriptExecution();
+        scriptExecution.LogScriptExecution = true;
+
+        scriptExecution.initialize(sb.get());
+
+        while (scriptExecution.step()){
+            System.out.println("Stack: \n"+scriptExecution.getStackContents());
+        }
+
+        System.out.println("Script returned: "+!scriptExecution.bScriptFailed);
+
+        System.out.println("Finished: "+scriptExecution.InstructionCounter+" / "+scriptExecution.Script.length);
+
+        assertFalse(scriptExecution.bScriptFailed);
+    }
+
+    @RepeatedTest(100)
     @DisplayName("Script Float Addition")
     void TestScriptFAddition() throws ScriptInvalidException, ScriptEmptyStackException, ScriptInvalidParameterException, ScriptUnsupportedOperationException, ScriptFailedException {
         float A = ThreadLocalRandom.current().nextFloat();

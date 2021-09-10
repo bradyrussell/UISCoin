@@ -179,6 +179,7 @@ public enum ScriptOperator {
      *  Converts a 32 bit integer to a 32 bit float
      */
     CONVERT32TOFLOAT(0x2f),
+
     // bit operations
     /**
      * bitwise operation
@@ -266,6 +267,98 @@ public enum ScriptOperator {
      * numeric
      */
     DIVIDEFLOAT(0x65),
+
+    // extra math functions
+
+    /**
+     * logn [float x] [float n] = Math.log(n) / Math.log(x);
+     */
+    LOGN(0x66),
+
+    /**
+     * isinf [float x] = Float.isInfinite(x);
+     */
+    ISINF(0x67),
+
+    /**
+     * isfin [float x] = Float.isFinite(x);
+     */
+    ISFIN(0x68),
+
+    /**
+    * exponent [float base] [float exponent] = Math.pow(base, exponent);
+     */
+    EXPONENT(0x70),
+
+    /**
+     * root [float base] [float exponent] = Math.pow(base, 1.0 / exponent);
+     */
+    ROOT(0x71),
+
+    /**
+     * abs [int x] = Math.abs(x);
+     */
+    ABS(0x72),
+
+    /**
+     * fabs [float x] = Math.abs(x);
+     */
+    FABS(0x73),
+
+    /**
+     * log [float x] = Math.log(x);
+     */
+    LOG(0x74),
+
+    /**
+     * sin [float x] = Math.sin(x);
+     */
+    SIN(0x75),
+
+    /**
+     * cos [float x] = Math.cos(x);
+     */
+    COS(0x77),
+
+    /**
+     * tan [float x] = Math.tan(x);
+     */
+    TAN(0x78),
+
+    /**
+     * asin [float x] = Math.asin(x);
+     */
+    ASIN(0x79),
+
+    /**
+     * acos [float x] = Math.acos(x);
+     */
+    ACOS(0x7a),
+
+    /**
+     * atan [float x] = Math.atan(x);
+     */
+    ATAN(0x7b),
+
+    /**
+     * floor [float x] = Math.floor(x);
+     */
+    FLOOR(0x7c),
+
+    /**
+     * ceil [float x] = Math.ceil(x);
+     */
+    CEIL(0x7d),
+
+    /**
+     * round [float x] = Math.round(x);
+     */
+    ROUND(0x7e),
+
+    /**
+     * isnan [float x] = Float.isNaN(x);
+     */
+    ISNAN(0x7f),
 
     // push constants
     /**

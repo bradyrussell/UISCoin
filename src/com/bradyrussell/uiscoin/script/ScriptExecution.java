@@ -120,6 +120,297 @@ public class ScriptExecution {
                     Stack.push(B);
                     return true;
                 }
+                case EXPONENT -> {
+                    checkInsufficientStackSize(2);
+                    byte[] ExponentBytes = Stack.pop();
+                    checkIncorrectNumberBytes(ExponentBytes, 4);
+                    byte[] BaseBytes = Stack.pop();
+                    checkIncorrectNumberBytes(BaseBytes, 4);
+
+                    float Base = byteArrayToFloat(BaseBytes);
+                    float Exponent = byteArrayToFloat(ExponentBytes);
+
+                    float Result = (float) Math.pow(Base, Exponent);
+
+                    if (LogScriptExecution) {
+                        Log.fine("Push " + Base + " to the " + Exponent + " power onto the stack: " + Result);
+                    }
+
+                    Stack.push(floatToByteArray(Result));
+                    return true;
+                }
+                case ROOT -> {
+                    checkInsufficientStackSize(2);
+                    byte[] ExponentBytes = Stack.pop();
+                    checkIncorrectNumberBytes(ExponentBytes, 4);
+                    byte[] BaseBytes = Stack.pop();
+                    checkIncorrectNumberBytes(BaseBytes, 4);
+
+                    float Base = byteArrayToFloat(BaseBytes);
+                    float Exponent = byteArrayToFloat(ExponentBytes);
+
+                    float Result = (float) Math.pow(Base, 1.0 / Exponent);
+
+                    if (LogScriptExecution) {
+                        Log.fine("Push " + Exponent + " root of " + Base + " onto the stack: " + Result);
+                    }
+
+                    Stack.push(floatToByteArray(Result));
+                    return true;
+                }
+                case ABS -> {
+                    checkInsufficientStackSize(1);
+
+                    byte[] A = Stack.pop();
+                    checkInsufficientBytes(A, 4);
+
+                    long iA;
+                    boolean bReturnLong = false;
+
+                    if (A.length < 8) {
+                        iA = byteArrayToNumber32(A);
+                    } else {
+                        iA = byteArrayToNumber64(A);
+                        bReturnLong = true;
+                    }
+
+                    long Result = Math.abs(iA);
+
+                    if (LogScriptExecution) {
+                        Log.fine("Push abs " + iA + " onto the stack: " + Result);
+                    }
+                    Stack.push(bReturnLong ? numberToByteArray64(Result) : numberToByteArray32((int) Result));
+                    return true;
+                }
+                case FABS -> {
+                    checkInsufficientStackSize(1);
+                    byte[] XBytes = Stack.pop();
+                    checkIncorrectNumberBytes(XBytes, 4);
+
+                    float X = byteArrayToFloat(XBytes);
+                    float Result = Math.abs(X);
+
+                    if (LogScriptExecution) {
+                        Log.fine("Push abs " + X + " onto the stack: " + Result);
+                    }
+
+                    Stack.push(floatToByteArray(Result));
+                    return true;
+                }
+                case LOG -> {
+                    checkInsufficientStackSize(1);
+                    byte[] XBytes = Stack.pop();
+                    checkIncorrectNumberBytes(XBytes, 4);
+
+                    float X = byteArrayToFloat(XBytes);
+                    float Result = (float) Math.log(X);
+
+                    if (LogScriptExecution) {
+                        Log.fine("Push log " + X + " onto the stack: " + Result);
+                    }
+
+                    Stack.push(floatToByteArray(Result));
+                    return true;
+                }
+                case LOGN -> {
+                    checkInsufficientStackSize(2);
+                    byte[] NBytes = Stack.pop();
+                    checkIncorrectNumberBytes(NBytes, 4);
+                    byte[] XBytes = Stack.pop();
+                    checkIncorrectNumberBytes(XBytes, 4);
+
+                    float X = byteArrayToFloat(XBytes);
+                    float N = byteArrayToFloat(NBytes);
+
+                    float Result = (float) (Math.log(N) / Math.log(X));
+
+                    if (LogScriptExecution) {
+                        Log.fine("Push log " + N + " of " + X + " onto the stack: " + Result);
+                    }
+
+                    Stack.push(floatToByteArray(Result));
+                    return true;
+                }
+                case SIN -> {
+                    checkInsufficientStackSize(1);
+                    byte[] XBytes = Stack.pop();
+                    checkIncorrectNumberBytes(XBytes, 4);
+
+                    float X = byteArrayToFloat(XBytes);
+                    float Result = (float) Math.sin(X);
+
+                    if (LogScriptExecution) {
+                        Log.fine("Push sin " + X + " onto the stack: " + Result);
+                    }
+
+                    Stack.push(floatToByteArray(Result));
+                    return true;
+                }
+                case COS -> {
+                    checkInsufficientStackSize(1);
+                    byte[] XBytes = Stack.pop();
+                    checkIncorrectNumberBytes(XBytes, 4);
+
+                    float X = byteArrayToFloat(XBytes);
+                    float Result = (float) Math.cos(X);
+
+                    if (LogScriptExecution) {
+                        Log.fine("Push cos " + X + " onto the stack: " + Result);
+                    }
+
+                    Stack.push(floatToByteArray(Result));
+                    return true;
+                }
+                case TAN -> {
+                    checkInsufficientStackSize(1);
+                    byte[] XBytes = Stack.pop();
+                    checkIncorrectNumberBytes(XBytes, 4);
+
+                    float X = byteArrayToFloat(XBytes);
+                    float Result = (float) Math.tan(X);
+
+                    if (LogScriptExecution) {
+                        Log.fine("Push tan " + X + " onto the stack: " + Result);
+                    }
+
+                    Stack.push(floatToByteArray(Result));
+                    return true;
+                }
+                case ASIN -> {
+                    checkInsufficientStackSize(1);
+                    byte[] XBytes = Stack.pop();
+                    checkIncorrectNumberBytes(XBytes, 4);
+
+                    float X = byteArrayToFloat(XBytes);
+                    float Result = (float) Math.asin(X);
+
+                    if (LogScriptExecution) {
+                        Log.fine("Push asin " + X + " onto the stack: " + Result);
+                    }
+
+                    Stack.push(floatToByteArray(Result));
+                    return true;
+                }
+                case ACOS -> {
+                    checkInsufficientStackSize(1);
+                    byte[] XBytes = Stack.pop();
+                    checkIncorrectNumberBytes(XBytes, 4);
+
+                    float X = byteArrayToFloat(XBytes);
+                    float Result = (float) Math.acos(X);
+
+                    if (LogScriptExecution) {
+                        Log.fine("Push acos " + X + " onto the stack: " + Result);
+                    }
+
+                    Stack.push(floatToByteArray(Result));
+                    return true;
+                }
+                case ATAN -> {
+                    checkInsufficientStackSize(1);
+                    byte[] XBytes = Stack.pop();
+                    checkIncorrectNumberBytes(XBytes, 4);
+
+                    float X = byteArrayToFloat(XBytes);
+                    float Result = (float) Math.atan(X);
+
+                    if (LogScriptExecution) {
+                        Log.fine("Push atan " + X + " onto the stack: " + Result);
+                    }
+
+                    Stack.push(floatToByteArray(Result));
+                    return true;
+                }
+                case FLOOR -> {
+                    checkInsufficientStackSize(1);
+                    byte[] XBytes = Stack.pop();
+                    checkIncorrectNumberBytes(XBytes, 4);
+
+                    float X = byteArrayToFloat(XBytes);
+                    float Result = (float) Math.floor(X);
+
+                    if (LogScriptExecution) {
+                        Log.fine("Push floor " + X + " onto the stack: " + Result);
+                    }
+
+                    Stack.push(floatToByteArray(Result));
+                    return true;
+                }
+                case CEIL -> {
+                    checkInsufficientStackSize(1);
+                    byte[] XBytes = Stack.pop();
+                    checkIncorrectNumberBytes(XBytes, 4);
+
+                    float X = byteArrayToFloat(XBytes);
+                    float Result = (float) Math.ceil(X);
+
+                    if (LogScriptExecution) {
+                        Log.fine("Push ceil " + X + " onto the stack: " + Result);
+                    }
+
+                    Stack.push(floatToByteArray(Result));
+                    return true;
+                }
+                case ROUND -> {
+                    checkInsufficientStackSize(1);
+                    byte[] XBytes = Stack.pop();
+                    checkIncorrectNumberBytes(XBytes, 4);
+
+                    float X = byteArrayToFloat(XBytes);
+                    float Result = (float) Math.round(X);
+
+                    if (LogScriptExecution) {
+                        Log.fine("Push round " + X + " onto the stack: " + Result);
+                    }
+
+                    Stack.push(floatToByteArray(Result));
+                    return true;
+                }
+                case ISNAN -> {
+                    checkInsufficientStackSize(1);
+                    byte[] XBytes = Stack.pop();
+                    checkIncorrectNumberBytes(XBytes, 4);
+
+                    float X = byteArrayToFloat(XBytes);
+                    boolean Result = Float.isNaN(X);
+
+                    if (LogScriptExecution) {
+                        Log.fine("Push isnan " + X + " onto the stack: " + Result);
+                    }
+
+                    Stack.push(new byte[]{Result ? (byte)1 : (byte)0});
+                    return true;
+                }
+                case ISINF -> {
+                    checkInsufficientStackSize(1);
+                    byte[] XBytes = Stack.pop();
+                    checkIncorrectNumberBytes(XBytes, 4);
+
+                    float X = byteArrayToFloat(XBytes);
+                    boolean Result = Float.isInfinite(X);
+
+                    if (LogScriptExecution) {
+                        Log.fine("Push isinfinite " + X + " onto the stack: " + Result);
+                    }
+
+                    Stack.push(new byte[]{Result ? (byte)1 : (byte)0});
+                    return true;
+                }
+                case ISFIN -> {
+                    checkInsufficientStackSize(1);
+                    byte[] XBytes = Stack.pop();
+                    checkIncorrectNumberBytes(XBytes, 4);
+
+                    float X = byteArrayToFloat(XBytes);
+                    boolean Result = Float.isFinite(X);
+
+                    if (LogScriptExecution) {
+                        Log.fine("Push isfinite " + X + " onto the stack: " + Result);
+                    }
+
+                    Stack.push(new byte[]{Result ? (byte)1 : (byte)0});
+                    return true;
+                }
                 case NULL -> {
                     if (LogScriptExecution) Log.fine("Push null onto the stack");
                     Stack.push(new byte[]{});
