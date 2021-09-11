@@ -315,7 +315,7 @@ extends java.lang.Enum&lt;<a href="ScriptOperator.html" title="enum in com.brady
 <tr class="altColor">
 <th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#DECRYPTAES">DECRYPTAES</a></span></code></th>
 <td class="colLast">
-<div class="block">Decrypts a message (top of stack) using the key (second to top) using Cipher.getInstance("AES/ECB/PKCS5Padding").</div>
+<div class="block">decryptaes [byte array message] [byte array key] using Cipher.getInstance("AES/ECB/PKCS5Padding").</div>
 </td>
 </tr>
 <tr class="rowColor">
@@ -375,7 +375,7 @@ extends java.lang.Enum&lt;<a href="ScriptOperator.html" title="enum in com.brady
 <tr class="altColor">
 <th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#ENCRYPTAES">ENCRYPTAES</a></span></code></th>
 <td class="colLast">
-<div class="block">Encrypts a message (top of stack) using the key (second to top) using Cipher.getInstance("AES/ECB/PKCS5Padding").</div>
+<div class="block">encryptaes [byte array message] [byte array key] using Cipher.getInstance("AES/ECB/PKCS5Padding").</div>
 </td>
 </tr>
 <tr class="rowColor">
@@ -1611,14 +1611,14 @@ the order they are declared.</div>
 <section class="detail">
 <h3><a id="ENCRYPTAES">ENCRYPTAES</a></h3>
 <div class="memberSignature"><span class="modifiers">public static final</span>&nbsp;<span class="returnType"><a href="ScriptOperator.html" title="enum in com.bradyrussell.uiscoin.script">ScriptOperator</a></span>&nbsp;<span class="memberName">ENCRYPTAES</span></div>
-<div class="block">Encrypts a message (top of stack) using the key (second to top) using Cipher.getInstance("AES/ECB/PKCS5Padding").</div>
+<div class="block">encryptaes [byte array message] [byte array key] using Cipher.getInstance("AES/ECB/PKCS5Padding").</div>
 </section>
 </li>
 <li class="blockList">
 <section class="detail">
 <h3><a id="DECRYPTAES">DECRYPTAES</a></h3>
 <div class="memberSignature"><span class="modifiers">public static final</span>&nbsp;<span class="returnType"><a href="ScriptOperator.html" title="enum in com.bradyrussell.uiscoin.script">ScriptOperator</a></span>&nbsp;<span class="memberName">DECRYPTAES</span></div>
-<div class="block">Decrypts a message (top of stack) using the key (second to top) using Cipher.getInstance("AES/ECB/PKCS5Padding").</div>
+<div class="block">decryptaes [byte array message] [byte array key] using Cipher.getInstance("AES/ECB/PKCS5Padding").</div>
 </section>
 </li>
 <li class="blockList">

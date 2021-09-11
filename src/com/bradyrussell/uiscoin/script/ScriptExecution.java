@@ -1419,8 +1419,8 @@ public class ScriptExecution {
                 }
                 case ENCRYPTAES -> {
                     checkInsufficientStackSize(2);
-                    byte[] Message = Stack.pop();
                     byte[] Key = Stack.pop();
+                    byte[] Message = Stack.pop();
 
                     try {
                         Stack.push(Encryption.encrypt(Message, Key));
@@ -1434,8 +1434,8 @@ public class ScriptExecution {
                 }
                 case DECRYPTAES -> {
                     checkInsufficientStackSize(2);
-                    byte[] Message = Stack.pop();
                     byte[] Key = Stack.pop();
+                    byte[] Message = Stack.pop();
 
                     try {
                         Stack.push(Encryption.decrypt(Message, Key));

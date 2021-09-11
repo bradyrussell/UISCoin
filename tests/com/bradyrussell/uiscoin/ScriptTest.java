@@ -699,11 +699,10 @@ public class ScriptTest {
 
         ScriptBuilder virtualSB = new ScriptBuilder(4096);
         virtualSB
-                .push(B)
                 .push(A)
+                .push(B)
                 .op(ScriptOperator.ENCRYPTAES)
                 .push(B)
-                .op(ScriptOperator.SWAP)
                 .op(ScriptOperator.DECRYPTAES)
                 .pushInt64(10);
 
@@ -796,10 +795,9 @@ public class ScriptTest {
                 .push(B)
                 .push(A)
                 .op(ScriptOperator.ENCRYPTAES)
-                .push(B)
-                .op(ScriptOperator.SWAP)
-                .op(ScriptOperator.DECRYPTAES)
                 .push(A)
+                .op(ScriptOperator.DECRYPTAES)
+                .push(B)
                 .op(ScriptOperator.BYTESEQUAL)
                 .op(ScriptOperator.VERIFY);
 
@@ -832,8 +830,8 @@ public class ScriptTest {
 
         ScriptBuilder sb = new ScriptBuilder(4096);
         sb
-                .push(B)
                 .push(A)
+                .push(B)
                 .op(ScriptOperator.ENCRYPTAES)
                 .push(Encryption.encrypt(A,B))
                 .op(ScriptOperator.BYTESEQUAL)
