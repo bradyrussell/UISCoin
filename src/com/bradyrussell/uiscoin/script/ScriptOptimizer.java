@@ -82,11 +82,12 @@ public class ScriptOptimizer {
                         optimizedBuffer.put(UnoptimizedBytecode[InstructionCounter+1]);
                     }
                 } else if (currentOperator == ScriptOperator.FLAGDATA) {
-                    byte bytesToPush = UnoptimizedBytecode[InstructionCounter + 1];
+                    throw new UnsupportedOperationException("havent impl new flagdata mechanics");
+/*                    byte bytesToPush = UnoptimizedBytecode[InstructionCounter + 1];
                     optimizedBuffer.put(UnoptimizedBytecode[++InstructionCounter]);
                     for (int InstructionCounterStart = InstructionCounter; InstructionCounter < InstructionCounterStart + bytesToPush; InstructionCounter++) {
                         optimizedBuffer.put(UnoptimizedBytecode[InstructionCounter+1]);
-                    }
+                    }*/
                 } else if (currentOperator == ScriptOperator.FLAG) {
                     optimizedBuffer.put(UnoptimizedBytecode[++InstructionCounter]);
                 }

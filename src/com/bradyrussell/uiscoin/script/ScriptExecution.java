@@ -246,6 +246,10 @@ public class ScriptExecution {
                     Stack.push(floatToByteArray(Result));
                     return true;
                 }
+                case PI -> {
+                    Stack.push(floatToByteArray((float) Math.PI));
+                    return true;
+                }
                 case COS -> {
                     checkInsufficientStackSize(1);
                     byte[] XBytes = Stack.pop();
@@ -411,6 +415,10 @@ public class ScriptExecution {
                     Stack.push(new byte[]{Result ? (byte)1 : (byte)0});
                     return true;
                 }
+                case E -> {
+                    Stack.push(floatToByteArray((float) Math.E));
+                    return true;
+                }
                 case NULL -> {
                     if (LogScriptExecution) Log.fine("Push null onto the stack");
                     Stack.push(new byte[]{});
@@ -482,8 +490,8 @@ public class ScriptExecution {
                 }
                 case FLAGDATA -> {
                     // flags are ignored by code
-                    checkScriptEndsBefore(1);
-
+                    checkScriptEndsBefore(2);
+                    byte Flag = Script[InstructionCounter++];
                     int NumberOfBytesForFlag = Script[InstructionCounter++];
 
                     if (NumberOfBytesForFlag <= 0) {
@@ -500,7 +508,7 @@ public class ScriptExecution {
                         bytes[i] = Script[InstructionCounter++];
                     }
                     if (LogScriptExecution)
-                        Log.fine("FlagData " + NumberOfBytesForFlag + " bytes: " + Arrays.toString(bytes));
+                        Log.fine("FlagData " + Flag + " " + NumberOfBytesForFlag + " bytes: " + Arrays.toString(bytes));
                     return true;
                 }
                 case TIME -> {

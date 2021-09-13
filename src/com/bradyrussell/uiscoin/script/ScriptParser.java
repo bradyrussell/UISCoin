@@ -391,7 +391,12 @@ public class ScriptParser {
                     }
                 }
                 case FLAGDATA -> {
-                    scriptBuilder.flagData(TokenLiteralToBytes(Tokens.get(++i)));
+                    if(Tokens.get(++i).startsWith("0x")){ // hex byte flag
+                        scriptBuilder.flagData(BytesUtil.getBytesFromHexString(Tokens.get(i).substring(2))[0], TokenLiteralToBytes(Tokens.get(++i)));
+                    } else { // interp as byte flag
+                        scriptBuilder.flagData(Byte.parseByte(Tokens.get(i)), TokenLiteralToBytes(Tokens.get(++i)));
+                    }
+                    //scriptBuilder.flagData((byte)1, TokenLiteralToBytes(Tokens.get(++i)));
                 }
                 case BIGPUSH, PUSH -> {
                     String Token = Tokens.get(++i);

@@ -29,8 +29,8 @@ public enum ScriptOperator {
     BIGPUSH(0x04), //
 
     /**
-     *the next byte specifies the number of following bytes to interpret as metadata
-     * MULTI BYTE OPERATION (Consumes the following byte as well as N bytes after)
+     * flagdata [byte flag] [byte number of bytes to push] [byte... bytes]
+     * MULTI BYTE OPERATION (Consumes the following two bytes as well as N bytes after)
      */
     FLAGDATA(0x05), //
 
@@ -316,6 +316,11 @@ public enum ScriptOperator {
     SIN(0x75),
 
     /**
+     * pi = Math.PI;
+     */
+    PI(0x76),
+
+    /**
      * cos [float x] = Math.cos(x);
      */
     COS(0x77),
@@ -361,6 +366,11 @@ public enum ScriptOperator {
     ISNAN(0x7f),
 
     // push constants
+    /**
+     *push Math.E onto the stack
+     */
+    E(0x80), //
+
     /**
      *push null onto the stack
      */

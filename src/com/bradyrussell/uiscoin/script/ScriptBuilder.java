@@ -60,8 +60,9 @@ public class ScriptBuilder {
         return this;
     }
 
-    public ScriptBuilder flagData(byte[] DataToPush){
+    public ScriptBuilder flagData(byte Flag, byte[] DataToPush){
         buffer.put(ScriptOperator.FLAGDATA.OPCode);
+        buffer.put(Flag);
         buffer.put((byte)DataToPush.length);
         buffer.put(DataToPush);
         return this;
@@ -162,6 +163,12 @@ public class ScriptBuilder {
             sb.append(scriptOperator);
 
             if(scriptOperator == ScriptOperator.PUSH || scriptOperator == ScriptOperator.BIGPUSH || scriptOperator == ScriptOperator.FLAGDATA) {
+
+                if(scriptOperator == ScriptOperator.FLAGDATA) {
+                    byte Flag = Script[InstructionCounter++];
+                    sb.append(" [").append(Flag).append("]");
+                }
+
                 byte NumberOfBytesToPush = Script[InstructionCounter++];
                 byte[] bytes = new byte[NumberOfBytesToPush];
 

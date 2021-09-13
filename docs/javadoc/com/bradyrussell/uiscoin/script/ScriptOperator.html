@@ -373,55 +373,60 @@ extends java.lang.Enum&lt;<a href="ScriptOperator.html" title="enum in com.brady
 </td>
 </tr>
 <tr class="altColor">
+<th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#E">E</a></span></code></th>
+<td class="colLast">
+<div class="block">push Math.E onto the stack</div>
+</td>
+</tr>
+<tr class="rowColor">
 <th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#ENCRYPTAES">ENCRYPTAES</a></span></code></th>
 <td class="colLast">
 <div class="block">encryptaes [byte array message] [byte array key] using Cipher.getInstance("AES/ECB/PKCS5Padding").</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#EXPONENT">EXPONENT</a></span></code></th>
 <td class="colLast">
 <div class="block">exponent [float base] [float exponent] = Math.pow(base, exponent);</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#FABS">FABS</a></span></code></th>
 <td class="colLast">
 <div class="block">fabs [float x] = Math.abs(x);</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#FALSE">FALSE</a></span></code></th>
 <td class="colLast">
 <div class="block">push 0 on the stack</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#FLAG">FLAG</a></span></code></th>
 <td class="colLast">
 <div class="block">Enables a specific metadata byte flag for the script.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#FLAGDATA">FLAGDATA</a></span></code></th>
 <td class="colLast">
-<div class="block">the next byte specifies the number of following bytes to interpret as metadata
- MULTI BYTE OPERATION (Consumes the following byte as well as N bytes after)</div>
+<div class="block">flagdata [byte flag] [byte number of bytes to push] [byte...</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#FLIP">FLIP</a></span></code></th>
 <td class="colLast">
 <div class="block">reverse the entire stack</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#FLOOR">FLOOR</a></span></code></th>
 <td class="colLast">
 <div class="block">floor [float x] = Math.floor(x);</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#GET">GET</a></span></code></th>
 <td class="colLast">
 <div class="block">get(int StackElementIndex, int BeginIndex, int Length)
@@ -429,166 +434,172 @@ extends java.lang.Enum&lt;<a href="ScriptOperator.html" title="enum in com.brady
  From StackElement, copy from BeginIndex to BeginIndex+Length onto the top of the stack</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#GREATERTHAN">GREATERTHAN</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#GREATERTHANEQUAL">GREATERTHANEQUAL</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#INSTRUCTION">INSTRUCTION</a></span></code></th>
 <td class="colLast">
 <div class="block">push the instruction counter value onto the stack</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#INVERTFLOAT">INVERTFLOAT</a></span></code></th>
 <td class="colLast">
 <div class="block">1/x</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#ISFIN">ISFIN</a></span></code></th>
 <td class="colLast">
 <div class="block">isfin [float x] = Float.isFinite(x);</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#ISINF">ISINF</a></span></code></th>
 <td class="colLast">
 <div class="block">isinf [float x] = Float.isInfinite(x);</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#ISNAN">ISNAN</a></span></code></th>
 <td class="colLast">
 <div class="block">isnan [float x] = Float.isNaN(x);</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#JUMP">JUMP</a></span></code></th>
 <td class="colLast">
 <div class="block">Jumps to the specified instruction.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#JUMPIF">JUMPIF</a></span></code></th>
 <td class="colLast">
 <div class="block">Jumps to the specified instruction.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#LEN">LEN</a></span></code></th>
 <td class="colLast">
 <div class="block">push the length of the top stack element on top of the stack WITHOUT removing it</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#LENEQUAL">LENEQUAL</a></span></code></th>
 <td class="colLast">
 <div class="block">are the top two values equal in length</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#LESSTHAN">LESSTHAN</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#LESSTHANEQUAL">LESSTHANEQUAL</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#LIMIT">LIMIT</a></span></code></th>
 <td class="colLast">
 <div class="block">top stack item is a byte number of elements to trim the second-to-top stack array to</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#LOG">LOG</a></span></code></th>
 <td class="colLast">
 <div class="block">log [float x] = Math.log(x);</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#LOGN">LOGN</a></span></code></th>
 <td class="colLast">
 <div class="block">logn [float x] [float n] = Math.log(n) / Math.log(x);</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#MODULO">MODULO</a></span></code></th>
 <td class="colLast">
 <div class="block">Second To Top Stack Element % Top Stack Element</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#MULTIPLY">MULTIPLY</a></span></code></th>
 <td class="colLast">
 <div class="block">numeric</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#MULTIPLYBYTES">MULTIPLYBYTES</a></span></code></th>
 <td class="colLast">
 <div class="block">a[i] * b[i] = c[i]</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#MULTIPLYFLOAT">MULTIPLYFLOAT</a></span></code></th>
 <td class="colLast">
 <div class="block">numeric</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#NEGATE">NEGATE</a></span></code></th>
 <td class="colLast">
 <div class="block">-x</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#NEGATEFLOAT">NEGATEFLOAT</a></span></code></th>
 <td class="colLast">
 <div class="block">-x</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#NOP">NOP</a></span></code></th>
 <td class="colLast">
 <div class="block">No operation, this operator is ignored</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#NOT">NOT</a></span></code></th>
 <td class="colLast">
 <div class="block">boolean logic (byte either 1 or 0)</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#NOTEQUAL">NOTEQUAL</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#NOTZERO">NOTZERO</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#NULL">NULL</a></span></code></th>
 <td class="colLast">
 <div class="block">push null onto the stack</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#NUMEQUAL">NUMEQUAL</a></span></code></th>
 <td class="colLast">
 <div class="block">are the top two values numerically equal when interpreted as 4 byte integers</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#OR">OR</a></span></code></th>
 <td class="colLast">
 <div class="block">boolean logic (byte either 1 or 0)</div>
+</td>
+</tr>
+<tr class="rowColor">
+<th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#PI">PI</a></span></code></th>
+<td class="colLast">
+<div class="block">pi = Math.PI;</div>
 </td>
 </tr>
 <tr class="altColor">
@@ -926,8 +937,8 @@ the order they are declared.</div>
 <section class="detail">
 <h3><a id="FLAGDATA">FLAGDATA</a></h3>
 <div class="memberSignature"><span class="modifiers">public static final</span>&nbsp;<span class="returnType"><a href="ScriptOperator.html" title="enum in com.bradyrussell.uiscoin.script">ScriptOperator</a></span>&nbsp;<span class="memberName">FLAGDATA</span></div>
-<div class="block">the next byte specifies the number of following bytes to interpret as metadata
- MULTI BYTE OPERATION (Consumes the following byte as well as N bytes after)</div>
+<div class="block">flagdata [byte flag] [byte number of bytes to push] [byte... bytes]
+ MULTI BYTE OPERATION (Consumes the following two bytes as well as N bytes after)</div>
 </section>
 </li>
 <li class="blockList">
@@ -1374,6 +1385,13 @@ the order they are declared.</div>
 </li>
 <li class="blockList">
 <section class="detail">
+<h3><a id="PI">PI</a></h3>
+<div class="memberSignature"><span class="modifiers">public static final</span>&nbsp;<span class="returnType"><a href="ScriptOperator.html" title="enum in com.bradyrussell.uiscoin.script">ScriptOperator</a></span>&nbsp;<span class="memberName">PI</span></div>
+<div class="block">pi = Math.PI;</div>
+</section>
+</li>
+<li class="blockList">
+<section class="detail">
 <h3><a id="COS">COS</a></h3>
 <div class="memberSignature"><span class="modifiers">public static final</span>&nbsp;<span class="returnType"><a href="ScriptOperator.html" title="enum in com.bradyrussell.uiscoin.script">ScriptOperator</a></span>&nbsp;<span class="memberName">COS</span></div>
 <div class="block">cos [float x] = Math.cos(x);</div>
@@ -1433,6 +1451,13 @@ the order they are declared.</div>
 <h3><a id="ISNAN">ISNAN</a></h3>
 <div class="memberSignature"><span class="modifiers">public static final</span>&nbsp;<span class="returnType"><a href="ScriptOperator.html" title="enum in com.bradyrussell.uiscoin.script">ScriptOperator</a></span>&nbsp;<span class="memberName">ISNAN</span></div>
 <div class="block">isnan [float x] = Float.isNaN(x);</div>
+</section>
+</li>
+<li class="blockList">
+<section class="detail">
+<h3><a id="E">E</a></h3>
+<div class="memberSignature"><span class="modifiers">public static final</span>&nbsp;<span class="returnType"><a href="ScriptOperator.html" title="enum in com.bradyrussell.uiscoin.script">ScriptOperator</a></span>&nbsp;<span class="memberName">E</span></div>
+<div class="block">push Math.E onto the stack</div>
 </section>
 </li>
 <li class="blockList">

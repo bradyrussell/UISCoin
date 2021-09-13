@@ -49,6 +49,20 @@ public class ScriptTest {
     }
 
     @Test
+    @DisplayName("Script Flag No Duplicate ByteCode Values")
+    void TestScriptNoDupFlags() {
+        ArrayList<Byte> values = new ArrayList<>();
+        for (ScriptFlag value : ScriptFlag.values()) {
+            if(values.contains(value.Bytecode)) {
+                System.out.println("Duplicate flag bytecode values: ");
+                BytesUtil.printBytesHex(new byte[]{value.Bytecode});
+                fail();
+            }
+            values.add(value.Bytecode);
+        }
+    }
+
+    @Test
     @DisplayName("Script Unused Operators")
     void TestScriptUnusedOps() {
         ArrayList<Byte> values = new ArrayList<>();
@@ -73,6 +87,34 @@ public class ScriptTest {
 
         System.out.println("There are "+values.size()+" used OPCode values.");
         System.out.println("There are "+unusedValues.size()+" unused OPCode values.");
+        assertTrue(true);
+    }
+
+    @Test
+    @DisplayName("Flag Unused Bytecode")
+    void TestScriptUnusedFlags() {
+        ArrayList<Byte> values = new ArrayList<>();
+        for (ScriptFlag value : ScriptFlag.values()) {
+            if(values.contains(value.Bytecode)) {
+                System.out.println("Duplicate opcode values: ");
+                BytesUtil.printBytesHex(new byte[]{value.Bytecode});
+                fail();
+            }
+            values.add(value.Bytecode);
+        }
+
+        ArrayList<Byte> unusedValues = new ArrayList<>();
+        for(int i = Byte.MIN_VALUE; i <= Byte.MAX_VALUE; i++){
+            if(!values.contains((byte)i)) unusedValues.add((byte)i);
+        }
+
+        System.out.println("Unused flag bytecode values: ");
+        for (Byte unusedValue : unusedValues) {
+            BytesUtil.printBytesHex(new byte[]{unusedValue});
+        }
+
+        System.out.println("There are "+values.size()+" used Flag ByteCode values.");
+        System.out.println("There are "+unusedValues.size()+" unused Flag ByteCode values.");
         assertTrue(true);
     }
 
@@ -581,7 +623,7 @@ public class ScriptTest {
 
         sb
                 .flag((byte)1)
-                .flagData(Hash.getSHA512Bytes("flag"))
+                .flagData((byte)1,Hash.getSHA512Bytes("flag"))
                 .call(virtualSB.get());
 
         ScriptExecution scriptExecution = new ScriptExecution();
@@ -1026,10 +1068,10 @@ public class ScriptTest {
 
         byte[] a  = new ScriptBuilder(128)
                 .flag((byte)2)
-                .flagData(BytesUtil.numberToByteArray32(1234))
+                .flagData((byte)2,BytesUtil.numberToByteArray32(1234))
                 .get();
 
-        byte[] b= new ScriptBuilder(128).fromText("flag 2 flagdata 1234").get();
+        byte[] b= new ScriptBuilder(128).fromText("flag 2 flagdata 2 1234").get();
 
         BytesUtil.printBytesReadable(a);
         BytesUtil.printBytesReadable(b);

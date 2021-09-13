@@ -13,6 +13,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.RepeatedTest;
 
 public class ScriptOptimizationTest {
+/*
     @RepeatedTest(100)
     @DisplayName("Script Optimization - All")
     void TestScriptOptimization_All() throws ScriptInvalidException, ScriptEmptyStackException, ScriptInvalidParameterException, ScriptUnsupportedOperationException, ScriptFailedException {
@@ -126,7 +127,9 @@ public class ScriptOptimizationTest {
         assertEquals(scriptExecutionO.getStackContents(), scriptExecution.getStackContents());
         assertTrue(optimized.length < unoptimized.length);
     }
+*/
 
+/*
     @RepeatedTest(100)
     @DisplayName("Script Optimization - Skip Unconditional Jump")
     void TestScriptOptimization_SkipUnconditionalJump() throws ScriptInvalidException, ScriptEmptyStackException, ScriptInvalidParameterException, ScriptUnsupportedOperationException, ScriptFailedException {
@@ -182,6 +185,7 @@ public class ScriptOptimizationTest {
         assertEquals(scriptExecutionO.getStackContents(), scriptExecution.getStackContents());
         assertTrue(optimized.length <= unoptimized.length);
     }
+*/
 
    /* @RepeatedTest(1)
     @DisplayName("Script Optimization - Skip NOP")
