@@ -4,8 +4,8 @@ package com.bradyrussell.uiscoin.script;
 public enum ScriptFlag {
     /* Debugging Information */
     LINE(0x10),
-    BEGINSECTION(0x11),
-    ENDSECTION(0x12),
+    PUSHSECTION(0x11),
+    POPSECTION(0x12),
     VARIABLEDECLARATION(0x13),
     FUNCTIONDECLARATION(0x14),
     VARIABLEREFERENCE(0x15),
