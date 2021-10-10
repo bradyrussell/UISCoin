@@ -1,6 +1,7 @@
 /* (C) Brady Russell 2021 */
 package com.bradyrussell.uiscoin;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -123,7 +124,7 @@ public class BytesUtil {
 
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream(compressedData.length);
             byte[] buffer = new byte[1024];
-            while (!inflater.finished()) {
+            while (!inflater.finished() && inflater.getBytesRead() < MagicNumbers.MaximumUnzipLength.Value) {
                 int count = inflater.inflate(buffer);
                 outputStream.write(buffer, 0, count);
             }

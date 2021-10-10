@@ -11,6 +11,7 @@ public enum MagicNumbers {
     MaxLockingScriptLength(256),
     MaxUnlockingScriptLength(256),
     TimeVarianceAllowedSeconds(30),
+    MaximumUnzipLength(32768),
 
     TargetSecondsPerBlock(300), // difficulty will adjust to meet this
     ;
