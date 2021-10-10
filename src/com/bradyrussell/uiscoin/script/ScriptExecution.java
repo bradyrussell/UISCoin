@@ -28,8 +28,9 @@ public class ScriptExecution {
     public final int MaximumStepsAllowed = 1000;
     public boolean bExtendedFlowControl = false;
     public boolean bThrowExceptionOnFailure = false;
-
+    public boolean bPrintStackTraces = false;
     public boolean LogScriptExecution = false;
+    
 
     private byte[] SignatureVerificationMessage = null; // we need a way to pass in the data for verifysig. i don't like this but...
     //private long BlockTime = 0; // need a way to pass in blocktime for TIME operator
@@ -1433,7 +1434,7 @@ public class ScriptExecution {
                     try {
                         Stack.push(Encryption.encrypt(Message, Key));
                     } catch (NoSuchPaddingException | NoSuchAlgorithmException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {
-                        e.printStackTrace();
+                        if(bPrintStackTraces) { e.printStackTrace(); }
                         bScriptFailed = true;
                         return false;
                     }
@@ -1448,7 +1449,7 @@ public class ScriptExecution {
                     try {
                         Stack.push(Encryption.decrypt(Message, Key));
                     } catch (NoSuchPaddingException | NoSuchAlgorithmException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {
-                        e.printStackTrace();
+                        if(bPrintStackTraces) { e.printStackTrace(); }
                         bScriptFailed = true;
                         return false;
                     }
@@ -1474,7 +1475,7 @@ public class ScriptExecution {
                         bScriptFailed = !verifySignedData;
                         return false;
                     } catch (NoSuchAlgorithmException | InvalidKeySpecException | InvalidKeyException | SignatureException e) {
-                        e.printStackTrace();
+                        if(bPrintStackTraces) { e.printStackTrace(); }
                         bScriptFailed = true;
                         return false;
                     }
@@ -1539,7 +1540,7 @@ public class ScriptExecution {
                                     break;//next signature
                                 }
                             } catch (NoSuchAlgorithmException | InvalidKeySpecException | InvalidKeyException | SignatureException e) {
-                                e.printStackTrace();
+                                if(bPrintStackTraces) { e.printStackTrace(); }
                                 bScriptFailed = true;
                                 return false;
                             }
