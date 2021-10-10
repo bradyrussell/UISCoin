@@ -141,7 +141,7 @@ public class BytesUtil {
                 }
                 result = bos.toByteArray();
             } catch (IOException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
             }
             return result;
         }
