@@ -71,7 +71,7 @@ public class BytesUtil {
                 (byte) (Number >> 16),
                 (byte) (Number >> 8),
                 (byte) Number
-                };
+        };
     }
 
     //https://stackoverflow.com/questions/4485128/how-do-i-convert-long-to-byte-and-back-in-java
@@ -96,49 +96,39 @@ public class BytesUtil {
                 (byte) (Number >> 16),
                 (byte) (Number >> 8),
                 (byte) Number
-                };
+        };
     }
 
     // zlib seems to produce smaller output in all my tests vs gzip
-    public static byte[] zipBytes(byte[] uncompressedData)  {
-        try {
-            Deflater deflater = new Deflater();
-            deflater.setInput(uncompressedData);
+    public static byte[] zipBytes(byte[] uncompressedData) throws IOException {
+        Deflater deflater = new Deflater();
+        deflater.setInput(uncompressedData);
 
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream(uncompressedData.length);
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream(uncompressedData.length);
 
-            deflater.finish();
+        deflater.finish();
+        byte[] buffer = new byte[1024];
+        while (!deflater.finished()) {
+            int count = deflater.deflate(buffer);
+            outputStream.write(buffer, 0, count);
+        }
+        outputStream.close();
+        return outputStream.toByteArray();
+    }
+
+    public static byte[] unzipBytes(byte[] compressedData) throws DataFormatException, IOException {
+        if (compressedData[0] == 120 && compressedData[1] == -100) { // zlib header
+            Inflater inflater = new Inflater();
+            inflater.setInput(compressedData);
+
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream(compressedData.length);
             byte[] buffer = new byte[1024];
-            while (!deflater.finished()) {
-                int count = deflater.deflate(buffer);
+            while (!inflater.finished()) {
+                int count = inflater.inflate(buffer);
                 outputStream.write(buffer, 0, count);
             }
             outputStream.close();
             return outputStream.toByteArray();
-        } catch (IOException e){
-            e.printStackTrace();
-            return new byte[0];
-        }
-    }
-
-    public static byte[] unzipBytes(byte[] compressedData) {
-        if(compressedData[0] == 120 && compressedData[1] == -100) { // zlib header
-            try {
-                Inflater inflater = new Inflater();
-                inflater.setInput(compressedData);
-
-                ByteArrayOutputStream outputStream = new ByteArrayOutputStream(compressedData.length);
-                byte[] buffer = new byte[1024];
-                while (!inflater.finished()) {
-                    int count = inflater.inflate(buffer);
-                    outputStream.write(buffer, 0, count);
-                }
-                outputStream.close();
-                return outputStream.toByteArray();
-            } catch (Exception e){
-                e.printStackTrace();
-                return new byte[0];
-            }
         } else { // for backwards compatibility
             byte[] result = new byte[]{};
             try (ByteArrayInputStream bis = new ByteArrayInputStream(compressedData);

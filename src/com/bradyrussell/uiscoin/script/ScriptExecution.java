@@ -3,12 +3,14 @@ package com.bradyrussell.uiscoin.script;
 
 import static com.bradyrussell.uiscoin.BytesUtil.*;
 
+import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.*;
 import java.util.logging.Logger;
+import java.util.zip.DataFormatException;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -1418,12 +1420,24 @@ public class ScriptExecution {
                 }
                 case ZIP -> {
                     checkInsufficientStackSize(1);
-                    Stack.push(BytesUtil.zipBytes(Stack.pop()));
+                    try {
+                        Stack.push(BytesUtil.zipBytes(Stack.pop()));
+                    } catch (IOException e) {
+                        if(bPrintStackTraces) { e.printStackTrace(); }
+                        bScriptFailed = true;
+                        return false;
+                    }
                     return true;
                 }
                 case UNZIP -> {
                     checkInsufficientStackSize(1);
-                    Stack.push(BytesUtil.unzipBytes(Stack.pop()));
+                    try {
+                        Stack.push(BytesUtil.unzipBytes(Stack.pop()));
+                    } catch (DataFormatException | IOException e) {
+                        if(bPrintStackTraces) { e.printStackTrace(); }
+                        bScriptFailed = true;
+                        return false;
+                    }
                     return true;
                 }
                 case ENCRYPTAES -> {

@@ -334,13 +334,25 @@ byte[]&nbsp;B)</span></div>
 <li class="blockList">
 <section class="detail">
 <h3><a id="zipBytes(byte[])">zipBytes</a></h3>
-<div class="memberSignature"><span class="modifiers">public static</span>&nbsp;<span class="returnType">byte[]</span>&nbsp;<span class="memberName">zipBytes</span>&#8203;(<span class="arguments">byte[]&nbsp;uncompressedData)</span></div>
+<div class="memberSignature"><span class="modifiers">public static</span>&nbsp;<span class="returnType">byte[]</span>&nbsp;<span class="memberName">zipBytes</span>&#8203;(<span class="arguments">byte[]&nbsp;uncompressedData)</span>
+                       throws <span class="exceptions">java.io.IOException</span></div>
+<dl>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code>java.io.IOException</code></dd>
+</dl>
 </section>
 </li>
 <li class="blockList">
 <section class="detail">
 <h3><a id="unzipBytes(byte[])">unzipBytes</a></h3>
-<div class="memberSignature"><span class="modifiers">public static</span>&nbsp;<span class="returnType">byte[]</span>&nbsp;<span class="memberName">unzipBytes</span>&#8203;(<span class="arguments">byte[]&nbsp;compressedData)</span></div>
+<div class="memberSignature"><span class="modifiers">public static</span>&nbsp;<span class="returnType">byte[]</span>&nbsp;<span class="memberName">unzipBytes</span>&#8203;(<span class="arguments">byte[]&nbsp;compressedData)</span>
+                         throws <span class="exceptions">java.util.zip.DataFormatException,
+java.io.IOException</span></div>
+<dl>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code>java.util.zip.DataFormatException</code></dd>
+<dd><code>java.io.IOException</code></dd>
+</dl>
 </section>
 </li>
 <li class="blockList">
