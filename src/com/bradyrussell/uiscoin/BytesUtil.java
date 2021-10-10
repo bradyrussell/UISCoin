@@ -124,7 +124,8 @@ public class BytesUtil {
 
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream(compressedData.length);
             byte[] buffer = new byte[1024];
-            while (!inflater.finished() && inflater.getBytesRead() < MagicNumbers.MaximumUnzipLength.Value) {
+            int iterations = 0;
+            while (!inflater.finished() && (iterations++ * 1024) < MagicNumbers.MaximumUnzipLength.Value) {
                 int count = inflater.inflate(buffer);
                 outputStream.write(buffer, 0, count);
             }
